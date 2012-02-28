@@ -1,0 +1,132 @@
+/**
+
+\page syntax Declarative Language Syntax
+\anchor syntax
+
+The Scopes framework offers a declarative interface, from which
+external applications can benefit. We have designed the language's
+grammar using the Extended Backus-Naur Form (EBNF). The language allows
+a declarative operation of scopes, namely scope creation and removal, as
+well as sending data to a scope's members.
+We proceed with a top down approach to the Scopes language.
+
+\section operations Scope Operations
+There are three operations, namely, to create a scope, to remove
+a scope, and to send data to all of a scope's members.
+
+\image html operation.svg
+
+\subsection creation Scope Creation
+This is the most complex statement, as it is very expressive and
+has many keywords. The general structure of the <tt>CREATE</tt>
+statement is:
+
+\image html scopeCreate.svg
+
+A scope can be specified as nested within another, parent scope.
+Both scope and parent scope are specified by a scope identifier,
+however, scope identifiers are hashed to 16-bit ids, which are used
+within the sensor network.
+
+\image html scopeProperties.svg
+
+Scopes are defined by means of logical expressions. These can be
+connected by logical operators <tt>AND</tt>, <tt>OR</tt> and <tt>NOT</tt>,
+or be recursively defined between parenthesis.
+
+\image html scopeExpression.svg
+
+At some point, logical expressions contain terms, e.g., subparts
+of the expression that evaluate to <tt>true</tt> or <tt>false</tt>. In Scopes there are
+three types of terms. To check whether a node has a populated sensor or
+not, the <tt>EXISTS SENSOR</tt> term is used (see below the array of
+predefined sensors). A typical term is that for comparison, which is
+binary. There are four types of operands that can be used for
+comparison, Finally, geometrical terms check for a three-dimensional
+aspect, typically using the position of the node.
+
+\image html scopeExpressionTerm.svg
+
+A compact example illustrating the first two clause types is
+presented next:
+<pre>
+CREATE SCOPE ScopeExample AS (
+   ( EXISTS SENSOR HUMIDITY AND NOT HUMIDITY <= 70) OR
+   NODE ID > 20 OR
+   REPOSITORY KEY 7 == 273);
+</pre>
+
+This expression is evaluated to <tt>true</tt> by a node if:
+<ul>
+	<li>both the humidity sensor is populated and the humidity is
+	greater than 70, or</li>
+	<li>the node's id is greater than 20, or</li>
+	<li>the repository entry with key value 7 equals the constant
+	value 273.</li>
+</ul>
+
+There are three geometrical operators supported currently by
+Scopes. The <tt>IN SPHERE</tt> clause is quite straightforward: it takes
+a sphere and a point as arguments, and returns <tt>true</tt> if the
+point is within or at the borders of the sphere, and <tt>false</tt>
+otherwise. Spheres are defined by their center and radius. The <tt>IN
+SEGMENT</tt> clause takes a segment and a point as argument, and returns <tt>true</tt>
+if the point is within the segment, <tt>false</tt> otherwise. Segments are
+defined as a sequence of points and a segment width. The <tt>IN
+POLYGON</tt> clause takes a polygon and a point as an argument, and returns
+<tt>true</tt> if the point is inside or at the borders of the polygon. Polygons
+are defined as a sequence of consecutive points, the last of which is
+implicitly connected to the first.
+
+
+\image html scopeGeom1.svg
+
+\image html scopeGeom2.svg
+
+As example of these constructs we present the following
+statement:
+
+<pre>
+CREATE SCOPE GeomScopeExample AS (
+  IN SPHERE ( SPHERE ( [100,50,50], 30), [101,51,49] ) OR
+  IN POLYGON ( POLYGON ([0,0,0], [0,100,0], [50,50,0] ), NODE POSITION) OR
+  IN SEGMENT ( SEGMENT ([0,0,0], [50,50,0], [50,100,0], 5) );
+</pre>
+
+This scope creation evaluates to <tt>true</tt> if:
+<ul>
+	<li>the point [101,51,49] is located within the sphere centered at
+	[100,50,50] and 30 meter radius ( <tt>true</tt> for these constants),
+	or</li>
+	<li>the node's position is located within the specified triangle
+	(polygon), or</li>
+	<li>the node's position is located up to 5 meters from the
+	specified line segments.</li>
+</ul>
+
+\subsection removal Scope Removal
+
+The removal of a scope is quite straightforward:
+
+\image html scopeRemove.svg
+
+\subsection sending Sending Data to a Scope
+Data can be declaratively sent from a scope's root node to its
+members. For a connection to an SOS node, the following parameters must
+be specified:
+
+<ul>
+	<li><tt>DEST MODULE</tt>: the id of the module that should receive
+	the message</li>
+	<li><tt>SOURCE MODULE</tt>: the module id that should be used as
+	sender module</li>
+	<li><tt>TYPE</tt>: the message type, i.e., the function that
+	should handle the message.</li>
+</ul>
+
+\image html scopeSendData.svg
+
+The payload is specified as a sequence of hexadecimal characters
+with the preceding format.
+
+*/
