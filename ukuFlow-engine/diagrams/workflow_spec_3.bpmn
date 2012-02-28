@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:BpmnDiagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:bpmn="http://stp.eclipse.org/bpmn" xmi:id="_JSmEAeE8EeCHlvxDDI54ZA" iD="_JSmEAOE8EeCHlvxDDI54ZA">
+  <pools xmi:type="bpmn:Pool" xmi:id="_JSmrEeE8EeCHlvxDDI54ZA" iD="_JSmrEOE8EeCHlvxDDI54ZA" name="Pool">
+    <vertices xmi:type="bpmn:Activity" xmi:id="_NkFuYeE8EeCHlvxDDI54ZA" iD="_NkFuYOE8EeCHlvxDDI54ZA" outgoingEdges="_PWUEgOE9EeCHlvxDDI54ZA" activityType="EventStartEmpty"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_N_yy8eE8EeCHlvxDDI54ZA" iD="_N_yy8OE8EeCHlvxDDI54ZA" incomingEdges="_fxyN4eE8EeCHlvxDDI54ZA" activityType="EventEndEmpty"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_TTXlYeE8EeCHlvxDDI54ZA" iD="_TTXlYOE8EeCHlvxDDI54ZA" outgoingEdges="_fxyN4eE8EeCHlvxDDI54ZA" incomingEdges="_elG_YeE8EeCHlvxDDI54ZA _fHIuYeE8EeCHlvxDDI54ZA" activityType="GatewayParallel"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_Tdz60eE8EeCHlvxDDI54ZA" iD="_Tdz60OE8EeCHlvxDDI54ZA" outgoingEdges="_dlKlUeE8EeCHlvxDDI54ZA _eFS24eE8EeCHlvxDDI54ZA" incomingEdges="_PWUEgOE9EeCHlvxDDI54ZA" activityType="GatewayParallel"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_bwPrGOE8EeCHlvxDDI54ZA" iD="_bwPrEOE8EeCHlvxDDI54ZA" outgoingEdges="_elG_YeE8EeCHlvxDDI54ZA" incomingEdges="_eFS24eE8EeCHlvxDDI54ZA" name="blink 5" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_cKf-KeE8EeCHlvxDDI54ZA" iD="_cKf-IeE8EeCHlvxDDI54ZA" outgoingEdges="_fHIuYeE8EeCHlvxDDI54ZA" incomingEdges="_dlKlUeE8EeCHlvxDDI54ZA" name="var1=1+2&#xA;var2=1+var1" activityType="Task"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_dlKlUeE8EeCHlvxDDI54ZA" iD="_dlKlUOE8EeCHlvxDDI54ZA"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_eFS24eE8EeCHlvxDDI54ZA" iD="_eFS24OE8EeCHlvxDDI54ZA"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_elG_YeE8EeCHlvxDDI54ZA" iD="_elG_YOE8EeCHlvxDDI54ZA"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_fHIuYeE8EeCHlvxDDI54ZA" iD="_fHIuYOE8EeCHlvxDDI54ZA"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_fxyN4eE8EeCHlvxDDI54ZA" iD="_fxyN4OE8EeCHlvxDDI54ZA"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_PWUEgOE9EeCHlvxDDI54ZA" iD="_PWTdcOE9EeCHlvxDDI54ZA"/>
+  </pools>
+</bpmn:BpmnDiagram>

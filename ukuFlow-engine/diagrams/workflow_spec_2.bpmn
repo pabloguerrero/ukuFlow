@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:BpmnDiagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:bpmn="http://stp.eclipse.org/bpmn" xmi:id="_riYZAeE6EeCHlvxDDI54ZA" iD="_riYZAOE6EeCHlvxDDI54ZA">
+  <pools xmi:type="bpmn:Pool" xmi:id="_riZnIOE6EeCHlvxDDI54ZA" iD="_riZAFOE6EeCHlvxDDI54ZA" name="Pool">
+    <artifacts xmi:type="bpmn:TextAnnotation" xmi:id="_cUD_QeE7EeCHlvxDDI54ZA" iD="_cUD_QOE7EeCHlvxDDI54ZA" name="scope 111: NODE_ID &lt;= 3&#xA;scope 222: NODE_ID > 3"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_riZnIuE6EeCHlvxDDI54ZA" iD="_riZnIeE6EeCHlvxDDI54ZA" outgoingEdges="_x4Zf4eE6EeCHlvxDDI54ZA" incomingEdges="_xUik4eE6EeCHlvxDDI54ZA" name="var1=1+2&#xA;var2=1+var1" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_t8r4QeE6EeCHlvxDDI54ZA" iD="_t8r4QOE6EeCHlvxDDI54ZA" outgoingEdges="_yYvz4eE6EeCHlvxDDI54ZA" incomingEdges="_x4Zf4eE6EeCHlvxDDI54ZA" name="blink 5" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_ur680eE6EeCHlvxDDI54ZA" iD="_ur680OE6EeCHlvxDDI54ZA" outgoingEdges="_y2zB0eE6EeCHlvxDDI54ZA" incomingEdges="_yYvz4eE6EeCHlvxDDI54ZA" name="bink 5 on scope 222" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_vqLU0eE6EeCHlvxDDI54ZA" iD="_vqLU0OE6EeCHlvxDDI54ZA" outgoingEdges="_xUik4eE6EeCHlvxDDI54ZA" activityType="EventStartEmpty"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_wijuUeE6EeCHlvxDDI54ZA" iD="_wijuUOE6EeCHlvxDDI54ZA" incomingEdges="_y2zB0eE6EeCHlvxDDI54ZA" activityType="EventEndEmpty"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_xUik4eE6EeCHlvxDDI54ZA" iD="_xUik4OE6EeCHlvxDDI54ZA"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_x4Zf4eE6EeCHlvxDDI54ZA" iD="_x4Zf4OE6EeCHlvxDDI54ZA"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_yYvz4eE6EeCHlvxDDI54ZA" iD="_yYvz4OE6EeCHlvxDDI54ZA"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_y2zB0eE6EeCHlvxDDI54ZA" iD="_y2zB0OE6EeCHlvxDDI54ZA"/>
+  </pools>
+</bpmn:BpmnDiagram>

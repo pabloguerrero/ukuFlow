@@ -1,0 +1,49 @@
+/**
+
+\mainpage The ukuFlow Workflow Engine Macroprogramming System
+
+ukuFlow is a multi-tasking workflow engine for memory-efficient
+networked embedded systems and wireless
+sensor networks.
+
+ukuFlow adopts BPMN 2.0 as standard for modeling and executing processes.
+
+Since ukuFlow is implemented on top of Contiki, it runs on a variety
+of platforms from embedded microcontrollers such as the MSP430 and the AVR to old
+homecomputers.
+
+ukuFlow is written in the C programming language.
+
+\section ukuflow-mainpage-bpmn BPMN
+
+ukuFlow adopts the Business Process Model and Notation (BPMN) v2.0 (http://www.bpmn.org/),
+which is a standard notation.
+
+
+\section ukuflow-mainpage-scopes Scopes
+
+Scopes a lightweight framework for defining groups of nodes declaratively.
+
+Scopes is built using the Rime communication stacks from Contiki.
+
+\sa "The Rime Communication Stack" <a href="">Rime</a>
+
+\section ukuflow-mainpage-scopes Scopes
+
+\section contiki-mainpage-threads Multi-programming
+
+ukuFlow's workflow engine is designed to execute multiple processes simultaneously.
+System users can register multiple processes, each of which can have multiple instances running in pseudo-parallel.
+ukuFlow's engine leverages Contiki's protothreads to parallelize the process execution, while ensuring that the network 
+doesn't get congested with event subscriptons, sensor events and action commands.
+
+\sa "Protothreads"
+
+\section ukuflow-mainpage-getting-started Getting started with ukuFlow
+
+ukuFlow ...
+
+See \ref testbed-getting-started Getting started with ukuFlow at TUD Contiki for the ESB platform
+
+
+*/

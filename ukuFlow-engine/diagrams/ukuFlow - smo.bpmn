@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:BpmnDiagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:bpmn="http://stp.eclipse.org/bpmn" xmi:id="_mNX_gU2HEeCjY_Ba1ac2zw" iD="_mNX_gE2HEeCjY_Ba1ac2zw">
+  <pools xmi:type="bpmn:Pool" xmi:id="_mNYmlE2HEeCjY_Ba1ac2zw" iD="_mNYmk02HEeCjY_Ba1ac2zw" name="Surface Management Operations">
+    <vertices xmi:type="bpmn:Activity" xmi:id="_osjs0E2JEeCjY_Ba1ac2zw" iD="_osjFwE2JEeCjY_Ba1ac2zw" outgoingEdges="_1VPPEVMwEeCpe6FVExXJAg" activityType="EventStartEmpty" looping="false"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_1NEnAVMvEeCpe6FVExXJAg" iD="_1NEnAFMvEeCpe6FVExXJAg" outgoingEdges="_DjD1IVMwEeCpe6FVExXJAg" incomingEdges="_fs0PQVk9EeCMmYqLnSAXXA" name="Deploy Jetways" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_3vL-cVMvEeCpe6FVExXJAg" iD="_3vL-cFMvEeCpe6FVExXJAg" outgoingEdges="_jI2vcVM2EeCpe6FVExXJAg" incomingEdges="_DjD1IVMwEeCpe6FVExXJAg" name="Deplane Pax" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_4_g94VMvEeCpe6FVExXJAg" iD="_4_g94FMvEeCpe6FVExXJAg" outgoingEdges="_9F0E4FMvEeCpe6FVExXJAg" incomingEdges="_mpquUVM3EeCpe6FVExXJAg" name="Open Cargo Doors" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_621E0VMvEeCpe6FVExXJAg" iD="_621E0FMvEeCpe6FVExXJAg" outgoingEdges="_SQwjMVMxEeCpe6FVExXJAg" incomingEdges="_9F0E4FMvEeCpe6FVExXJAg" name="Unload Bags &amp;&#xA;Cargo" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="__GQ5sVMvEeCpe6FVExXJAg" iD="__GQ5sFMvEeCpe6FVExXJAg" outgoingEdges="_AOcCsVMwEeCpe6FVExXJAg" incomingEdges="_XEAIYVM0EeCpe6FVExXJAg" name="Park Aircraft" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_B5eBIVMwEeCpe6FVExXJAg" iD="_B5eBIFMwEeCpe6FVExXJAg" outgoingEdges="_4Hje0VRmEeC_feqItmjNQQ _4hawUVRmEeC_feqItmjNQQ _mOvF0VM3EeCpe6FVExXJAg _mpquUVM3EeCpe6FVExXJAg _xAX3MVk8EeCMmYqLnSAXXA" incomingEdges="_AOcCsVMwEeCpe6FVExXJAg" activityType="GatewayDataBasedInclusive" looping="false"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_s0PeYVMwEeCpe6FVExXJAg" iD="_s0PeYFMwEeCpe6FVExXJAg" outgoingEdges="_t7uq4VMwEeCpe6FVExXJAg" incomingEdges="_1VPPEVMwEeCpe6FVExXJAg" name="Landing Clearance" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_yjjxoVMwEeCpe6FVExXJAg" iD="_yjjxoFMwEeCpe6FVExXJAg" outgoingEdges="_5Tl7AVMwEeCpe6FVExXJAg" incomingEdges="_SQwjMVMxEeCpe6FVExXJAg" name="Load Cargo &amp;&#xA;Bags" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_3-ODgVMwEeCpe6FVExXJAg" iD="_3-ODgFMwEeCpe6FVExXJAg" outgoingEdges="_nbnbEVRoEeC_feqItmjNQQ" incomingEdges="_5Tl7AVMwEeCpe6FVExXJAg" name="Close Cargo Doors" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_L36x0VMxEeCpe6FVExXJAg" iD="_L36x0FMxEeCpe6FVExXJAg" outgoingEdges="_VvKfkVM4EeCpe6FVExXJAg" incomingEdges="_WcWKgVX9EeC_feqItmjNQQ" name="Pushback Clearance" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_Vy83kVMxEeCpe6FVExXJAg" iD="_Vy83kFMxEeCpe6FVExXJAg" outgoingEdges="_WB2yEVM4EeCpe6FVExXJAg" incomingEdges="_VcLuAVX9EeC_feqItmjNQQ" name="Startup Clearance" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_XTYIgVMxEeCpe6FVExXJAg" iD="_XTYIgFMxEeCpe6FVExXJAg" outgoingEdges="_GLbr8VM4EeCpe6FVExXJAg" incomingEdges="_nIQu0VM3EeCpe6FVExXJAg" name="Deice Aircraft" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_ZnEpcVMxEeCpe6FVExXJAg" iD="_ZnEpcFMxEeCpe6FVExXJAg" outgoingEdges="_N0iIoVRnEeC_feqItmjNQQ" incomingEdges="_jZ8CUVX9EeC_feqItmjNQQ" name="Taxi out Clearance" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_Uy_vEFM0EeCpe6FVExXJAg" iD="_Uy_IAFM0EeCpe6FVExXJAg" outgoingEdges="_XEAIYVM0EeCpe6FVExXJAg" incomingEdges="_t7uq4VMwEeCpe6FVExXJAg" name="Taxi in Clearance" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_eogboVM0EeCpe6FVExXJAg" iD="_eogboFM0EeCpe6FVExXJAg" outgoingEdges="_CZ5UAVM4EeCpe6FVExXJAg" incomingEdges="_4hawUVRmEeC_feqItmjNQQ" name="Service Water &amp;&#xA;Potable Water" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_YZxMAVM1EeCpe6FVExXJAg" iD="_YZxMAFM1EeCpe6FVExXJAg" outgoingEdges="_pMDd8VRoEeC_feqItmjNQQ" incomingEdges="_7ZoWQVM3EeCpe6FVExXJAg" name="Close Cabin Doors" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_UxHN0VM2EeCpe6FVExXJAg" iD="_UxHN0FM2EeCpe6FVExXJAg" outgoingEdges="_erE8kVM2EeCpe6FVExXJAg _h1EVMFk9EeCMmYqLnSAXXA" incomingEdges="_jI2vcVM2EeCpe6FVExXJAg" activityType="GatewayParallel"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_Wmv5wVM2EeCpe6FVExXJAg" iD="_Wmv5wFM2EeCpe6FVExXJAg" outgoingEdges="_itiscVM2EeCpe6FVExXJAg" incomingEdges="_erE8kVM2EeCpe6FVExXJAg" name="Service Cabin" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_iR__8VM2EeCpe6FVExXJAg" iD="_iR__8FM2EeCpe6FVExXJAg" outgoingEdges="_A2CUkVM4EeCpe6FVExXJAg" incomingEdges="_itiscVM2EeCpe6FVExXJAg _Vwve0VM2EeCpe6FVExXJAg" activityType="GatewayParallel"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_oBjjwVM2EeCpe6FVExXJAg" iD="_oBjjwFM2EeCpe6FVExXJAg" outgoingEdges="_VcLuAVX9EeC_feqItmjNQQ _WcWKgVX9EeC_feqItmjNQQ" incomingEdges="_FKlS8VM4EeCpe6FVExXJAg _Kg-v4VM4EeCpe6FVExXJAg _CZ5UAVM4EeCpe6FVExXJAg _nbnbEVRoEeC_feqItmjNQQ _DPqcsVk-EeCMmYqLnSAXXA" activityType="GatewayDataBasedInclusive" looping="false"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_vb2LEVM2EeCpe6FVExXJAg" iD="_vb2LEFM2EeCpe6FVExXJAg" outgoingEdges="_7ZoWQVM3EeCpe6FVExXJAg" incomingEdges="_A2CUkVM4EeCpe6FVExXJAg" name="Board Pax" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_SL0UoVM4EeCpe6FVExXJAg" iD="_SL0UoFM4EeCpe6FVExXJAg" outgoingEdges="_X0hCgVM4EeCpe6FVExXJAg" incomingEdges="_ncfqEVOSEeCpe6FVExXJAg" name="Takeoff Clearance" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_XCd6gVM4EeCpe6FVExXJAg" iD="_XCd6gFM4EeCpe6FVExXJAg" incomingEdges="_X0hCgVM4EeCpe6FVExXJAg" activityType="EventEndEmpty"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_lhIwoVOSEeCpe6FVExXJAg" iD="_lhIwoFOSEeCpe6FVExXJAg" outgoingEdges="_ncfqEVOSEeCpe6FVExXJAg" incomingEdges="_WW-tgVM4EeCpe6FVExXJAg" name="Lineup Clearance" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_gf9X4VRlEeC_feqItmjNQQ" iD="_gf9X4FRlEeC_feqItmjNQQ" outgoingEdges="_Vwve0VM2EeCpe6FVExXJAg" incomingEdges="_h1EVMFk9EeCMmYqLnSAXXA" name="Refuel Aircraft" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_wU6B4VRmEeC_feqItmjNQQ" iD="_wU6B4FRmEeC_feqItmjNQQ" outgoingEdges="_YKxj4VSMEeC_feqItmjNQQ" incomingEdges="_mOvF0VM3EeCpe6FVExXJAg" name="Flight Preparation" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_zXJq4VRmEeC_feqItmjNQQ" iD="_zXJq4FRmEeC_feqItmjNQQ" outgoingEdges="_Kg-v4VM4EeCpe6FVExXJAg" incomingEdges="_4Hje0VRmEeC_feqItmjNQQ" name="Aircraft&#xA;Maintenance" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_IXkJoVRnEeC_feqItmjNQQ" iD="_IXkJoFRnEeC_feqItmjNQQ" outgoingEdges="_wAy9oVRnEeC_feqItmjNQQ _nIQu0VM3EeCpe6FVExXJAg" incomingEdges="_N0iIoVRnEeC_feqItmjNQQ" activityType="GatewayDataBasedExclusive"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_qPY_sVRnEeC_feqItmjNQQ" iD="_qPY_sFRnEeC_feqItmjNQQ" outgoingEdges="_WW-tgVM4EeCpe6FVExXJAg" incomingEdges="_GLbr8VM4EeCpe6FVExXJAg _wAy9oVRnEeC_feqItmjNQQ" activityType="GatewayDataBasedExclusive"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_WV9XUFSMEeC_feqItmjNQQ" iD="_WV8wQFSMEeC_feqItmjNQQ" outgoingEdges="_FKlS8VM4EeCpe6FVExXJAg" incomingEdges="_YKxj4VSMEeC_feqItmjNQQ" name="Airways Clearance" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_ZY2-8VX9EeC_feqItmjNQQ" iD="_ZY2-8FX9EeC_feqItmjNQQ" outgoingEdges="_jZ8CUVX9EeC_feqItmjNQQ" incomingEdges="_WB2yEVM4EeCpe6FVExXJAg _VvKfkVM4EeCpe6FVExXJAg" activityType="GatewayDataBasedInclusive"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_XrYvcFk9EeCMmYqLnSAXXA" iD="_XrYIYFk9EeCMmYqLnSAXXA" outgoingEdges="_fESPoVk9EeCMmYqLnSAXXA _fs0PQVk9EeCMmYqLnSAXXA" incomingEdges="_xAX3MVk8EeCMmYqLnSAXXA" activityType="GatewayDataBasedExclusive"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_dVbhIVk9EeCMmYqLnSAXXA" iD="_dVbhIFk9EeCMmYqLnSAXXA" outgoingEdges="_zgsCYVk9EeCMmYqLnSAXXA" incomingEdges="_fESPoVk9EeCMmYqLnSAXXA" name="Refuel Aircraft" activityType="Task"/>
+    <vertices xmi:type="bpmn:Activity" xmi:id="_yk5IgFk9EeCMmYqLnSAXXA" iD="_yk4hcFk9EeCMmYqLnSAXXA" outgoingEdges="_DPqcsVk-EeCMmYqLnSAXXA" incomingEdges="_zgsCYVk9EeCMmYqLnSAXXA _pMDd8VRoEeC_feqItmjNQQ" activityType="GatewayDataBasedExclusive"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_9F0E4FMvEeCpe6FVExXJAg" iD="_9Fzd0FMvEeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_AOcCsVMwEeCpe6FVExXJAg" iD="_AOcCsFMwEeCpe6FVExXJAg" name="Aircraft in-block"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_DjD1IVMwEeCpe6FVExXJAg" iD="_DjD1IFMwEeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_t7uq4VMwEeCpe6FVExXJAg" iD="_t7uq4FMwEeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_1VPPEVMwEeCpe6FVExXJAg" iD="_1VPPEFMwEeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_5Tl7AVMwEeCpe6FVExXJAg" iD="_5Tl7AFMwEeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_SQwjMVMxEeCpe6FVExXJAg" iD="_SQwjMFMxEeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_XEAIYVM0EeCpe6FVExXJAg" iD="_XEAIYFM0EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_Vwve0VM2EeCpe6FVExXJAg" iD="_Vwve0FM2EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_erE8kVM2EeCpe6FVExXJAg" iD="_erE8kFM2EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_itiscVM2EeCpe6FVExXJAg" iD="_itiscFM2EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_jI2vcVM2EeCpe6FVExXJAg" iD="_jI2vcFM2EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_mOvF0VM3EeCpe6FVExXJAg" iD="_mOvF0FM3EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_mpquUVM3EeCpe6FVExXJAg" iD="_mpquUFM3EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_nIQu0VM3EeCpe6FVExXJAg" iD="_nIQu0FM3EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_7ZoWQVM3EeCpe6FVExXJAg" iD="_7ZoWQFM3EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_A2CUkVM4EeCpe6FVExXJAg" iD="_A2CUkFM4EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_CZ5UAVM4EeCpe6FVExXJAg" iD="_CZ5UAFM4EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_FKlS8VM4EeCpe6FVExXJAg" iD="_FKlS8FM4EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_GLbr8VM4EeCpe6FVExXJAg" iD="_GLbr8FM4EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_Kg-v4VM4EeCpe6FVExXJAg" iD="_Kg-v4FM4EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_VvKfkVM4EeCpe6FVExXJAg" iD="_VvKfkFM4EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_WB2yEVM4EeCpe6FVExXJAg" iD="_WB2yEFM4EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_WW-tgVM4EeCpe6FVExXJAg" iD="_WW-tgFM4EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_X0hCgVM4EeCpe6FVExXJAg" iD="_X0hCgFM4EeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_ncfqEVOSEeCpe6FVExXJAg" iD="_ncfqEFOSEeCpe6FVExXJAg"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_4Hje0VRmEeC_feqItmjNQQ" iD="_4Hje0FRmEeC_feqItmjNQQ" conditionType="Default" isDefault="true"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_4hawUVRmEeC_feqItmjNQQ" iD="_4hawUFRmEeC_feqItmjNQQ"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_N0iIoVRnEeC_feqItmjNQQ" iD="_N0iIoFRnEeC_feqItmjNQQ"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_wAy9oVRnEeC_feqItmjNQQ" iD="_wAy9oFRnEeC_feqItmjNQQ" conditionType="Default" isDefault="true"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_nbnbEVRoEeC_feqItmjNQQ" iD="_nbnbEFRoEeC_feqItmjNQQ"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_pMDd8VRoEeC_feqItmjNQQ" iD="_pMDd8FRoEeC_feqItmjNQQ"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_YKxj4VSMEeC_feqItmjNQQ" iD="_YKxj4FSMEeC_feqItmjNQQ"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_VcLuAVX9EeC_feqItmjNQQ" iD="_VcLuAFX9EeC_feqItmjNQQ" conditionType="Default" isDefault="true"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_WcWKgVX9EeC_feqItmjNQQ" iD="_WcWKgFX9EeC_feqItmjNQQ"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_jZ8CUVX9EeC_feqItmjNQQ" iD="_jZ8CUFX9EeC_feqItmjNQQ"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_xAX3MVk8EeCMmYqLnSAXXA" iD="_xAX3MFk8EeCMmYqLnSAXXA"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_fESPoVk9EeCMmYqLnSAXXA" iD="_fESPoFk9EeCMmYqLnSAXXA" conditionType="Default" isDefault="true"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_fs0PQVk9EeCMmYqLnSAXXA" iD="_fs0PQFk9EeCMmYqLnSAXXA"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_h1EVMFk9EeCMmYqLnSAXXA" iD="_h1DuIFk9EeCMmYqLnSAXXA"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_zgsCYVk9EeCMmYqLnSAXXA" iD="_zgsCYFk9EeCMmYqLnSAXXA"/>
+    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_DPqcsVk-EeCMmYqLnSAXXA" iD="_DPqcsFk-EeCMmYqLnSAXXA"/>
+  </pools>
+</bpmn:BpmnDiagram>

@@ -1,0 +1,3 @@
+ukuflow-engine_src = ukuflow-engine.c workflow.c ukuflow-messaging.o ukuflow-cmd-runner.o
+
+APPS += scopes
