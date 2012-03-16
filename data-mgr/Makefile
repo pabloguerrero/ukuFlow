@@ -10,10 +10,10 @@ ifndef TARGET
 endif
 
 
-SRCS += data-repository.c expression-eval.c
+SRCS += data-mgr.c expression-eval.c
 
-PROJECT_OBJECTFILES += base64.o data-repository.o expression-eval.o
-PROJECT_LIBRARIES += base64.o data-repository.o expression-eval.o
+PROJECT_OBJECTFILES += base64.o data-mgr.o expression-eval.o
+PROJECT_LIBRARIES += base64.o data-mgr.o expression-eval.o
 
 ifndef CONTIKI
   CONTIKI = ../..

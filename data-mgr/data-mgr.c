@@ -181,7 +181,7 @@ static void adjust_ttl_common_repository() {
 		if ((repo->id != COMMON_REPOSITORY_ID) && (repo->ttl != 0)
 				&& (repo->ttl < ttl))
 			ttl = repo->ttl;
-	repo = data_repository_lookup(COMMON_REPOSITORY_ID);
+	repo = data_mgr_lookup(COMMON_REPOSITORY_ID);
 	if (repo != NULL) {
 		repo->ttl = ttl;
 	}
@@ -293,7 +293,7 @@ static void data_mgr_init() {
  */
 data_repository_id_t data_mgr_create(clock_time_t max_ttl) {
 	if (!initialized)
-		data_repository_init();
+		data_mgr_init();
 
 	if (list_length(repository_list) == MAX_REPOSITORIES)
 		/* No space left for more repositories! */
@@ -307,7 +307,7 @@ data_repository_id_t data_mgr_create(clock_time_t max_ttl) {
 
 	/* Lowest repository id for users is 2 */
 	data_repository_id_t id = 2;
-	while (data_repository_lookup(id) != NULL)
+	while (data_mgr_lookup(id) != NULL)
 		id++;
 
 	repo->id = id;
@@ -330,7 +330,7 @@ data_repository_id_t data_mgr_create(clock_time_t max_ttl) {
 bool data_mgr_remove(data_repository_id_t id) {
 
 	if (initialized && (id != COMMON_REPOSITORY_ID)) {
-		struct repository *repo = data_repository_lookup(id);
+		struct repository *repo = data_mgr_lookup(id);
 		if (repo != NULL) {
 			// repository exists, so it must be removed now
 
@@ -421,7 +421,7 @@ void data_mgr_set_data(//
 		// we are being asked for a user-specific entry (entry_id > NODE_ID), hence take it from the specific repository
 		repo_id = repo_id_param;
 
-	struct repository *repo = data_repository_lookup(repo_id);
+	struct repository *repo = data_mgr_lookup(repo_id);
 
 	if (repo == NULL)
 		return;
@@ -482,7 +482,7 @@ void data_mgr_set_updater(data_repository_id_t id, entry_id_t entry_id,
 		// we are being asked for a user-specific entry (entry_id > NODE_ID), hence take it from the specific repository
 		repo_id = id;
 
-	repo = data_repository_lookup(repo_id);
+	repo = data_mgr_lookup(repo_id);
 
 	if (repo != NULL) {
 		// ok, repository exists (whether it is the common repository or a user-specific one)
@@ -526,7 +526,7 @@ uint8_t *data_mgr_get_data(data_repository_id_t repo_id_param,
 		// we are being asked for a user-specific entry (entry_id > NODE_ID), hence take it from the specific repository
 		repo_id = repo_id_param;
 
-	struct repository *repo = data_repository_lookup(repo_id);
+	struct repository *repo = data_mgr_lookup(repo_id);
 
 	if (repo == NULL)
 		return NULL;

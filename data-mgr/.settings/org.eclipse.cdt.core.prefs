@@ -1,0 +1,10 @@
+eclipse.preferences.version=1
+environment/project/0.1602547013=
+environment/project/0.1602547013/CONTIKI/delimiter=;
+environment/project/0.1602547013/CONTIKI/operation=replace
+environment/project/0.1602547013/CONTIKI/value=/Users/guerrero/workspace/contiki
+environment/project/0.1602547013/PATH/delimiter=;
+environment/project/0.1602547013/PATH/operation=replace
+environment/project/0.1602547013/PATH/value=/Users/guerrero/workspace/local/msp430/bin\:/bin\:/sbin\:/usr/bin\:/usr/sbin\:/opt/local/bin\:${PATH}\:/Users/guerrero/workspace/msp430-gcc-4.4.5/bin
+environment/project/0.1602547013/append=true
+environment/project/0.1602547013/appendContributed=true

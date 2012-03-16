@@ -1,0 +1,14 @@
+/**
+
+\mainpage Sensor and Actuator Network Data Management
+
+Sensor networks are composed of nodes uniquely characterized by properties beyond their beyond network address and physical
+position. Ever more deployments consist of heterogeneous sensor and actuator nodes, which requires them to manage different
+data structures and items.  
+
+centralized approach doesn't scale, inconsistency. But distribution is hindered by storage constrains (small RAM, energy-costly flash access) 
+bottom up data management
+
+This service aims at providing a simple API to data repository which takes
+
+*/
