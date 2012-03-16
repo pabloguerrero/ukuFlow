@@ -7,7 +7,7 @@
 #include "dev/serial-line.h"
 #include "sys/etimer.h"
 
-#include "data-repository.h"
+#include "data-mgr.h"
 #include "expression-eval.h"
 
 PROCESS(tester_process, "data-repository tester");
@@ -54,7 +54,7 @@ PROCESS_THREAD(tester_process, ev, data) {
 				printf("wow\n");
 				s_input++;
 				clock_time_t ttl = atol(s_input);
-				repo_id = data_repository_create(ttl);
+				repo_id = data_mgr_create(ttl);
 
 				if (repo_id != 0) 
 					printf("creation ok!, ttl=[%lu], repo_id=[%u]\n", ttl, repo_id);
@@ -65,7 +65,7 @@ PROCESS_THREAD(tester_process, ev, data) {
 			} // ------------------------------------------
 			else if (s_input[0] == '1') {
 				repo_id = atoi(++s_input);
-				if (data_repository_remove(repo_id))
+				if (data_mgr_remove(repo_id))
 					printf("removal ok!, repo_id=[%u]\n", repo_id);
 				else
 					printf("fail, repo_id=[%u]!\n", repo_id);
@@ -84,7 +84,7 @@ PROCESS_THREAD(tester_process, ev, data) {
 				s_input = strchr(s_input, ' ')+1;
 				entry_id = atoi(++s_input);
 //				printf("test ok! repo_id=[%u] entry_id=[%u] dr_data=[__] dr_data_len=[__]\n", repo_id, entry_id);
-				dr_data = data_repository_get_data(repo_id, entry_id, &data_len);
+				dr_data = data_mgr_get_data(repo_id, entry_id, &data_len);
 				
 				if (dr_data) {
 					temp = *((uint16_t*)dr_data);
@@ -104,7 +104,7 @@ PROCESS_THREAD(tester_process, ev, data) {
 				s_input = strchr(s_input, ' ')+1;
 				temp = atol(++s_input);
 //				printf("test ok! repo_id=[%u] entry_id=[%u] dr_data=[__] dr_data_len=[__]\n", repo_id, entry_id);
-				data_repository_set_data(repo_id, entry_id, entry_type, data_len, (uint8_t*)(&temp));
+				data_mgr_set_data(repo_id, entry_id, entry_type, data_len, (uint8_t*)(&temp));
 				
 				printf("set data ok! repo_id=[%u] entry_id=[%u] entry_type=[%d] dr_data_len=[%u] dr_data=[%d] \n", repo_id, entry_id, entry_type, data_len, temp);
 			 }

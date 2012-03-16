@@ -1,6 +1,6 @@
 /**
- * \defgroup datarepository Data Repository
- * \brief Data Repository files
+ * \defgroup datamanager Data Manager
+ * \brief Data Manager files
  * @{
  */
 
@@ -35,8 +35,8 @@
  */
 
 /**
- * \file	data-repository.h
- * \brief	Header file for the data repository module
+ * \file	data-mgr.h
+ * \brief	Header file for the data manager module
  * \author	Pablo Guerrero <guerrero@dvs.tu-darmstadt.de>
  */
 
@@ -154,15 +154,15 @@ enum repository_fields {
 /**							 8*/
 };
 
-data_repository_id_t data_repository_create(clock_time_t max_ttl);
-bool data_repository_remove(data_repository_id_t id);
+data_repository_id_t data_mgr_create(clock_time_t max_ttl);
+bool data_mgr_remove(data_repository_id_t id);
 
-void data_repository_set_data(data_repository_id_t repo_id_param,
+void data_mgr_set_data(data_repository_id_t repo_id_param,
 		entry_id_t entry_id, entry_type_t entry_type, data_len_t data_len,
 		uint8_t *data);
-void data_repository_set_updater(data_repository_id_t id, entry_id_t entry_id,
+void data_mgr_set_updater(data_repository_id_t id, entry_id_t entry_id,
 		entry_update_function *updater_function);
-uint8_t *data_repository_get_data(data_repository_id_t repo_id_param,
+uint8_t *data_mgr_get_data(data_repository_id_t repo_id_param,
 		entry_id_t entry_id, data_len_t *data_len);
 
 #endif //__DATA_REPOSITORY_H__

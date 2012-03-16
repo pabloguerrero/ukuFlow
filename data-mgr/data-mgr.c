@@ -1,5 +1,5 @@
 /**
- * \addtogroup datarepository
+ * \addtogroup datamanager
  * @{
  */
 
@@ -34,13 +34,13 @@
  */
 
 /**
- * \file	data-repository.c
- * \brief	Data repository module
+ * \file	data-mgr.c
+ * \brief	Data manager module
  * \author	Pablo Guerrero <guerrero@dvs.tu-darmstadt.de>
  */
 
 
-#include "data-repository.h"
+#include "data-mgr.h"
 
 #include "lib/list.h"
 #include "stdlib.h"
@@ -152,7 +152,7 @@ static uint16_t sensor_voltage_raw(void) {
  *
  * \param id the id of the repository being searched for
  */
-static struct repository *data_repository_lookup(data_repository_id_t id) {
+static struct repository *data_mgr_lookup(data_repository_id_t id) {
 	struct repository *repo = list_head(repository_list);
 	while ((repo != NULL) && (repo->id != id))
 		repo = repo->next;
@@ -190,7 +190,7 @@ static void adjust_ttl_common_repository() {
 /**
  * \brief		Initializes the data repository module (should be invoked only once)
  */
-static void data_repository_init() {
+static void data_mgr_init() {
 
 	if (!initialized) {
 		struct repository *common_repo = malloc(sizeof(struct repository));
@@ -291,7 +291,7 @@ static void data_repository_init() {
  * \param max_ttl	the maximum time to live that attributes in this data repository can have.
  * \return			id of the repository created, or 0 otherwise.
  */
-data_repository_id_t data_repository_create(clock_time_t max_ttl) {
+data_repository_id_t data_mgr_create(clock_time_t max_ttl) {
 	if (!initialized)
 		data_repository_init();
 
@@ -327,7 +327,7 @@ data_repository_id_t data_repository_create(clock_time_t max_ttl) {
  *
  * \return 		TRUE if the repository could be removed, FALSE otherwise
  */
-bool data_repository_remove(data_repository_id_t id) {
+bool data_mgr_remove(data_repository_id_t id) {
 
 	if (initialized && (id != COMMON_REPOSITORY_ID)) {
 		struct repository *repo = data_repository_lookup(id);
@@ -404,7 +404,7 @@ static struct repository_entry *repository_entry_create(
  * \param data_len length of the value to be stored
  * \param data the actual data to use when setting a value
  */
-void data_repository_set_data(//
+void data_mgr_set_data(//
 		data_repository_id_t repo_id_param, //
 		entry_id_t entry_id, //
 		entry_type_t entry_type, //
@@ -468,7 +468,7 @@ void data_repository_set_data(//
 /**
  * \brief		Associates an updater function to a data repository entry
  */
-void data_repository_set_updater(data_repository_id_t id, entry_id_t entry_id,
+void data_mgr_set_updater(data_repository_id_t id, entry_id_t entry_id,
 		entry_update_function *updater_function) {
 	struct repository *repo;
 	data_repository_id_t repo_id;
@@ -513,7 +513,7 @@ void data_repository_set_updater(data_repository_id_t id, entry_id_t entry_id,
  *
  * \return 				a pointer to the byte-array of the requested field, or NULL if the entry doesn't exist
  * */
-uint8_t *data_repository_get_data(data_repository_id_t repo_id_param,
+uint8_t *data_mgr_get_data(data_repository_id_t repo_id_param,
 		entry_id_t entry_id, data_len_t *data_len) {
 
 	data_repository_id_t repo_id;

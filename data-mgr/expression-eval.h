@@ -1,5 +1,5 @@
 /**
- * \addtogroup datarepository
+ * \addtogroup datamanager
  * @{
  */
 
@@ -43,7 +43,7 @@
 #ifndef __EXPRESSION_EVAL_H__
 #define __EXPRESSION_EVAL_H__
 
-#include "data-repository.h"
+#include "data-mgr.h"
 
 /** \brief Constant used for signaling that there was no more input found */
 #define NO_MORE_INPUT -1

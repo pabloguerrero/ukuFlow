@@ -1,4 +1,4 @@
-CONTIKI_PROJECT = tester
+CONTIKI_PROJECT = tester/tester
 DOX = doxygen
 DOXYGEN_CONF = doc/data-repository.doxyfile
 

@@ -1,5 +1,5 @@
 /**
- * \addtogroup datarepository
+ * \addtogroup datamanager
  * @{
  */
 
@@ -411,7 +411,7 @@ static long int eval_repository_value(void) {
 		data_len_t data_len;
 
 		/* read value from repository */
-		uint8_t *data = data_repository_get_data(repo_id, (entry_id_t) index,
+		uint8_t *data = data_mgr_get_data(repo_id, (entry_id_t) index,
 				&data_len);
 
 		if (data != NULL) {
