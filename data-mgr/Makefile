@@ -1,6 +1,6 @@
 CONTIKI_PROJECT = tester/tester
 DOX = doxygen
-DOXYGEN_CONF = doc/data-repository.doxyfile
+DOXYGEN_CONF = doc/data-mgr.doxyfile
 
 all: $(CONTIKI_PROJECT)
 	$(DOX) $(DOXYGEN_CONF)
