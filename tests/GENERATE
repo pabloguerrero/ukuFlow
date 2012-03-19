@@ -1,0 +1,141 @@
+#!/bin/bash
+
+UKUFLOW_PATH="/home/guerrero/workspace/proj/ukuFlow"
+LOG=$UKUFLOW_PATH/tests/"BUILD-`date '+%F-%T'`.log"
+DO_CLEAN=0
+DO_PULL=0
+DO_GENERATE_IF_UPDATES=0
+DO_MAIL=0
+DO_COPY_DOCS=0
+PROGNAME=`basename $0`
+UPDATE_CMD=`git pull`
+
+Usage() {
+  echo >&2 "$PROGNAME:" "$@"
+  echo >&2 "Usage: $PROGNAME [-clean] [-update_ukuFlow [-generate_if_updates]] [-send_mail] [-copy_docs]"
+  exit 10
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+  -clean) DO_CLEAN=1 ;;
+  -update_ukuflow) DO_PULL=1 ;;
+  -send_mail) DO_MAIL=1 ;;
+  -copy_docs) DO_COPY_DOCS=1 ;;
+  -generate_if_updates) DO_GENERATE_IF_UPDATES=1 ;;
+  *) Usage "Unknown option \"$1\"" ;;
+  esac
+  shift
+done
+
+if [ -z "$CONTIKI" ]; then
+  if [ -z "$CONTIKI_HOME" ]; then
+  	CONTIKI_HOME=../../..
+    echo Undefined variable: CONTIKI_HOME. Using default: ${CONTIKI_HOME}
+  fi
+  CONTIKI=$CONTIKI_HOME
+fi
+
+if [ $DO_MAIL -eq 1 ]; then
+  if [ -z "$MAILTO" ]; then
+    echo Undefined variable: MAILTO
+    exit 1
+  fi
+fi
+
+function mail_report() {
+  if [ $DO_MAIL -eq 1 ]; then
+    echo ">>>>>>> Sending mail <<<<<<<<"
+    echo "[`date '+%F %T'`] Mailing test report" >> $LOG
+    cat $LOG | mail -s "ukuFlow generation results" $MAILTO
+    if [ "$?" -ne 0 ]; then
+      echo "Failed to send mail"
+      echo "[`date '+%F %T'`] MAIL FAILED" >> $LOG
+    else
+      echo "[`date '+%F %T'`] test report sent" >> $LOG
+    fi
+  else
+    echo
+    echo
+    echo ">>>>>>> Test Report <<<<<<<<"
+    cat $LOG
+  fi
+  cp $LOG BUILD-LAST.log
+}
+
+if [ $DO_PULL -eq 1 ]; then
+	echo ">>>>>>> Updating ukuFlow from GIT <<<<<<<<"
+	echo -n "[`date '+%F %T'`] Updating GIT: " >> $LOG
+	cd $UKUFLOW_PATH
+	if [ "$UPDATE_CMD" == "Already up-to-date." ]; then
+		echo "There were no updates"
+		if [ $DO_GENERATE_IF_UPDATES -eq 1 ]; then
+			echo "(no files were updated, so interrupting as requested)" >> $LOG
+			exit 1
+		else
+			echo "(files were updated, so continuing)" >> $LOG
+		fi
+	else
+		echo "There were updates"
+	fi
+	echo "OK" >> $LOG
+	cd $UKUFLOW_PATH/tests
+fi
+
+
+echo ">>>>>>> Creating test log <<<<<<<<"
+touch $LOG
+
+if [ $DO_CLEAN -eq 1 ]; then
+	echo ">>>>>>> Cleaning ukuFlow <<<<<<<<"
+	echo -n "[`date '+%F %T'`] Cleaning: " >> $LOG
+	(cd $UKUFLOW_PATH/data-mgr/ && make clean)
+        (cd $UKUFLOW_PATH/scopes/ && make clean)
+        (cd $UKUFLOW_PATH/ukuFlow-engine/ && make clean)
+	echo "OK" >> $LOG
+fi
+
+echo ">>>>>>> Building ukuFlow <<<<<<<<"
+echo -n "[`date '+%F %T'`] Building data-manager: " >> $LOG
+(cd $UKUFLOW_PATH/data-mgr/ && make)
+if [ "$?" != "0" ]; then
+  echo "Compilation of data-manager failed"
+  echo "FAIL" >> $LOG
+  mail_report
+  exit 1
+else
+  echo "OK" >> $LOG
+  if [ $DO_COPY_DOCS -eq 1 ]; then
+    (cd $UKUFLOW_PATH/data-mgr/ && scp -r doc/html hanau:/web/www/staff/guerrero/docs/data-mgr)
+  fi
+fi
+echo -n "[`date '+%F %T'`] Building scopes: " >> $LOG
+(cd $UKUFLOW_PATH/scopes/ && make)
+if [ "$?" != "0" ]; then
+  echo "Compilation of scopes failed"
+  echo "FAIL" >> $LOG
+  mail_report
+  exit 1
+else
+  echo "OK" >> $LOG
+  if [ $DO_COPY_DOCS -eq 1 ]; then
+    (cd $UKUFLOW_PATH/scopes/ && scp -r doc/html hanau:/web/www/staff/guerrero/docs/scopes)
+  fi
+fi
+echo -n "[`date '+%F %T'`] Building ukuFlow-engine: " >> $LOG
+(cd $UKUFLOW_PATH/ukuFlow-engine/ && make)
+if [ "$?" != "0" ]; then
+  echo "Compilation of ukuFlow-engine failed"
+  echo "FAIL" >> $LOG
+  mail_report
+  exit 1
+else
+  echo "OK" >> $LOG
+  if [ $DO_COPY_DOCS -eq 1 ]; then
+    (cd $UKUFLOW_PATH/ukuFlow-engine/ && scp -r doc/html hanau:/web/www/staff/guerrero/docs/ukuFlow-engine)
+  fi
+fi
+
+echo >> $LOG
+
+mail_report

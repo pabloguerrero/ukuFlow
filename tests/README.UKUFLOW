@@ -1,0 +1,10 @@
+This is a set of automation scritps for the generation and test of ukuFlow software.
+These scripts can be invoked from a cron job.
+Simply run:
+> crontab -e
+
+and then add the following 3 lines at the end of the cron table:
+  0 4  *   *   *     source ~/.bashrc && cd /home/guerrero/workspace/proj/ukuFlow/tests/ && CONTIKI=~/workspace/contiki-2.5   MAILTO=guerrero ./GENERATE -clean -update_ukuflow -generate_if_updates -send_mail -copy_docs >~/cronlogs/generation_output.log
+  0 5  *   *   *     source ~/.bashrc && cd /home/guerrero/workspace/proj/ukuFlow/tests/ && CONTIKI=/import/tools/wsn/contiki MAILTO=guerrero ./RUN_ALL -clean_cooja -update_ukuflow -send_mail >~/cronlogs/output.log
+MAILTO=""
+

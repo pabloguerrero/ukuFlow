@@ -1,0 +1,8 @@
+/tester.ihex
+/tester.sky
+/contiki-sky.a
+/contiki-sky.map
+/symbols.c
+/symbols.h
+/obj_*
+/doc/html
