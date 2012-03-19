@@ -1,16 +1,18 @@
- #!/bin/bash
+#!/bin/bash
 
-LOG="TEST-`date '+%F'`.log"
 UKUFLOW_PATH="/home/guerrero/workspace/proj/ukuFlow"
+LOG=$UKUFLOW_PATH/tests/"BUILD-`date '+%F-%T'`.log"
 DO_CLEAN=0
 DO_PULL=0
+DO_GENERATE_IF_UPDATES=0
 DO_MAIL=0
 DO_COPY_DOCS=0
 PROGNAME=`basename $0`
+UPDATE_CMD=`git pull`
 
 Usage() {
   echo >&2 "$PROGNAME:" "$@"
-  echo >&2 "Usage: $PROGNAME [-clean] [-update_ukuFlow] [-send_mail] [-copy_docs]"
+  echo >&2 "Usage: $PROGNAME [-clean] [-update_ukuFlow [-generate_if_updates]] [-send_mail] [-copy_docs]"
   exit 10
 }
 
@@ -20,6 +22,7 @@ while [ $# -gt 0 ]; do
   -update_ukuflow) DO_PULL=1 ;;
   -send_mail) DO_MAIL=1 ;;
   -copy_docs) DO_COPY_DOCS=1 ;;
+  -generate_if_updates) DO_GENERATE_IF_UPDATES=1 ;;
   *) Usage "Unknown option \"$1\"" ;;
   esac
   shift
@@ -41,7 +44,7 @@ if [ $DO_MAIL -eq 1 ]; then
 fi
 
 function mail_report() {
-  if [ $MAIL -eq 1 ]; then
+  if [ $DO_MAIL -eq 1 ]; then
     echo ">>>>>>> Sending mail <<<<<<<<"
     echo "[`date '+%F %T'`] Mailing test report" >> $LOG
     cat $LOG | mail -s "ukuFlow generation results" $MAILTO
@@ -57,26 +60,28 @@ function mail_report() {
     echo ">>>>>>> Test Report <<<<<<<<"
     cat $LOG
   fi
-  cp $LOG RUN_ALL_LAST.log
+  cp $LOG BUILD-LAST.log
 }
 
 if [ $DO_PULL -eq 1 ]; then
-  echo ">>>>>>> Updating ukuFlow from GIT <<<<<<<<"
-  echo -n "[`date '+%F %T'`] Updating GIT: " >> $LOG
-  (cd .. && git pull)
-  if [ "$?" != "0" ]; then
-    echo "FAIL" >> $LOG
-    mail_report
-    exit 1
-  fi
-  echo "OK" >> $LOG
+	echo ">>>>>>> Updating ukuFlow from GIT <<<<<<<<"
+	echo -n "[`date '+%F %T'`] Updating GIT: " >> $LOG
+	cd $UKUFLOW_PATH
+	if [ "$UPDATE_CMD" == "Already up-to-date." ]; then
+		echo "There were no updates"
+		if [ $DO_GENERATE_IF_UPDATES -eq 1 ]; then
+			echo "(no files were updated, so interrupting as requested)" >> $LOG
+			exit 1
+		else
+			echo "(files were updated, so continuing)" >> $LOG
+		fi
+	else
+		echo "There were updates"
+	fi
+	echo "OK" >> $LOG
+	cd $UKUFLOW_PATH/tests
 fi
 
-
-#echo ">>>>>>> Cleaning up previous tests <<<<<<<<"
-#rm -f *.log *.cooja_log
-#rm -fr se obj_cooja
-#rm -f symbols.c symbols.h
 
 echo ">>>>>>> Creating test log <<<<<<<<"
 touch $LOG
@@ -100,7 +105,7 @@ if [ "$?" != "0" ]; then
   exit 1
 else
   echo "OK" >> $LOG
-  if [ $COPY_DOCS -eq 1 ]; then
+  if [ $DO_COPY_DOCS -eq 1 ]; then
     (cd $UKUFLOW_PATH/data-mgr/ && scp -r doc/html hanau:/web/www/staff/guerrero/docs/data-mgr)
   fi
 fi
@@ -113,7 +118,7 @@ if [ "$?" != "0" ]; then
   exit 1
 else
   echo "OK" >> $LOG
-  if [ $COPY_DOCS -eq 1 ]; then
+  if [ $DO_COPY_DOCS -eq 1 ]; then
     (cd $UKUFLOW_PATH/scopes/ && scp -r doc/html hanau:/web/www/staff/guerrero/docs/scopes)
   fi
 fi
@@ -126,7 +131,7 @@ if [ "$?" != "0" ]; then
   exit 1
 else
   echo "OK" >> $LOG
-  if [ $COPY_DOCS -eq 1 ]; then
+  if [ $DO_COPY_DOCS -eq 1 ]; then
     (cd $UKUFLOW_PATH/ukuFlow-engine/ && scp -r doc/html hanau:/web/www/staff/guerrero/docs/ukuFlow-engine)
   fi
 fi
