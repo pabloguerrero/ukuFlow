@@ -1,3 +1,4 @@
 # git rule to ignore the log files generated with the tests #
 #############################################################
-build-*
+BUILD-*
+TEST-*
