@@ -1,0 +1,8 @@
+This test automation script is invoked from a cron job.
+Simply run:
+> crontab -e
+
+and then add the following 2 lines at the end of the cron table:
+  0 5  *   *   *     source ~/.bashrc && cd /home/guerrero/workspace/proj/ukuFlow/tests/ && CONTIKI=/import/tools/wsn/contiki ./RUN_ALL >~/cronlogs/output.log
+MAILTO=""
+
