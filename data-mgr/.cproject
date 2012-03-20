@@ -18,7 +18,7 @@
 			<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
 			<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="ukuFlow-data-repository" buildProperties="" description="" id="0.1602547013" name="Default" parent="org.eclipse.cdt.build.core.prefbase.cfg">
+				<configuration artifactName="ukuFlow-data-manager" buildProperties="" description="" id="0.1602547013" name="Default" parent="org.eclipse.cdt.build.core.prefbase.cfg">
 					<folderInfo id="0.1602547013." name="/" resourcePath="">
 						<toolChain id="org.eclipse.cdt.build.core.prefbase.toolchain.813619967" name="No ToolChain" resourceTypeBasedDiscovery="false" superClass="org.eclipse.cdt.build.core.prefbase.toolchain">
 							<targetPlatform id="org.eclipse.cdt.build.core.prefbase.toolchain.813619967.832848607" name=""/>
@@ -52,7 +52,7 @@
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-		<project id="ukuFlow - data-repository.null.667770734" name="ukuFlow - data-repository"/>
+		<project id="ukuFlow - data-manager.null.667770734" name="ukuFlow - data-manager"/>
 	</storageModule>
 	<storageModule moduleId="refreshScope" versionNumber="1">
 		<resource resourceType="PROJECT" workspacePath="/ukuFlow - data-mgr"/>
