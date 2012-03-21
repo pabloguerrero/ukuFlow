@@ -2,7 +2,7 @@ CONTIKI_PROJECT = tester/tester
 SIZE = msp430-size
 CLOC = cloc
 DOX = doxygen
-DOXYGEN_CONF = doc/ukuflow.doxyfile
+DOXYGEN_CONF = doc/ukuFlow.doxyfile
 
 all: $(CONTIKI_PROJECT)	 
 	$(DOX) $(DOXYGEN_CONF)
