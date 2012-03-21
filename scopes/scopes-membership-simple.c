@@ -49,7 +49,7 @@
 #include "net/rime.h"
 
 #include "expression-eval.h"
-#include "data-repository.h"
+#include "data-mgr.h"
 
 static data_repository_id_t scopes_repository_id = 0;
 
@@ -81,7 +81,7 @@ static bool check(void *specs, data_len_t spec_len) {
  * \brief		Initializes the simple scope membership checker module
  */
 static void init() {
-	scopes_repository_id = data_repository_create(CLOCK_SECOND * 5);
+	scopes_repository_id = data_mgr_create(CLOCK_SECOND * 5);
 }
 
 /**

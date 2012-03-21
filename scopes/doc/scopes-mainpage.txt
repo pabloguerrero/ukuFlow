@@ -3,18 +3,18 @@
 \mainpage Scopes for Wireless Sensor Networks
 
 Wireless sensor networks (WSNs) consist of hundreds or thousands of low-power nodes that form dynamic 
-ad-hoc multi-hop networks. The desired behavior of WSNs have to be achieved by local algorithms running 
-on each sensor node with very limited knowledge about the whole sensor network. A central theme of past 
+ad-hoc multi-hop networks. The desired behavior of WSNs should thus be achieved by local algorithms running 
+on each sensor node, with no or very limited knowledge about the whole sensor network. A central theme of past 
 and current research is the improvement of the robustness and resource utilization of such algorithms. 
 Both robustness and efficiency are important and often conflicting optimization goals under the dynamic 
 behavior and resource constraints of the proposed WSNs.
 
-We look at WSNs from a slightly different angle. In many commercial deployments of WSNs the energy 
+We look at WSNs from a slightly different angle. In many commercial deployments, the energy 
 consumption and thus the unattended lifetime of sensor nodes may not be the dominating cost, but only 
 one aspect contributing to the total cost of a WSN. Other cost factors include the development of WSN 
 applications, maintenance and the return-of-investment (ROI). ROI does not only depends on the lifetime 
 of sensor nodes, but also on the usefulness of a WSN. Considering this, the focus shifts from energy 
-efficient special-purposeWSN solutions towards cost efficient flexible and modular multi-purpose WSN 
+efficient special-purpose WSN solutions towards cost efficient flexible and modular multi-purpose WSN 
 infrastructures. A similar transition can be found in the area of wired sensor and actuator networks 
 such as field busses in cars, buildings or plants, where multiple independent applications are using 
 the same infrastructure today.
@@ -25,14 +25,14 @@ at node level, e.g., query engines capable of executing multiple concurrent quer
 machine developed at Berkeley, or the SOS operating system.
 
 In order to avoid resource conflicts between concurrent applications and to use large scale WSN 
-installations efficiently it is necessary to delimit the scope of each application to the subset 
+installations efficiently, it is necessary to delimit the scope of each application to the subset 
 of relevant nodes. Mechanisms are required for the selection and discovery of these groups of nodes. 
 Changes of group membership and connectivity due to various changes in the WSN have to be handled. 
 We have introduced scoping as a middleware building block and abstraction layer for these tasks. 
 This builds on earlier work (for large scale publish/subscribe systems) where similar problems arise. 
-Here we describe a modular architecture that utilizes scoping in order to meet the requirements of 
-multi-purpose WSNs.
-Scopes are created declaratively using a special syntax. The language constructs are described in detail in the page \ref syntax.
+Here we present a modular architecture that utilizes scoping in order to meet the requirements of 
+multi-purpose WSNs. Scopes are created declaratively using a special syntax. The language constructs
+are described in detail in the page \ref syntax.
 
 
 */

@@ -13,7 +13,7 @@ endif
 CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
 CFLAGS += -DDEBUG_DEPTH=1
 
-APPS = data-repository
+APPS = data-mgr
 
 SRCS                += bitvector.c frag-unicast.c scopes.c scopes-selfur.c scopes-membership-simple.c # scopes-flooding.c 
 

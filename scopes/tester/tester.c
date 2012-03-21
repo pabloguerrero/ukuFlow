@@ -6,6 +6,7 @@
 #include "dev/leds.h"
 #include "lib/random.h"
 #include "node-id.h"
+#include "net/rime/rimeaddr.h"
 
 /* init */
 #include "scopes-selfur.h"

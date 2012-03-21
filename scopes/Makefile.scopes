@@ -3,4 +3,4 @@
 #Version with scopes-selfur:
 scopes_src = bitvector.c frag-unicast.c scopes.c scopes-selfur.c scopes-membership-simple.c
 
-APPS += data-repository
+APPS += data-mgr

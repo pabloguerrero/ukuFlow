@@ -48,7 +48,7 @@
 #define __SCOPES_TYPES_H__
 
 #include "contiki.h"
-#include "data-repository.h"
+#include "data-mgr.h"
 
 /* type definitions */
 /** \brief Id of a scope */

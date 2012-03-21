@@ -229,7 +229,10 @@ void scopes_unregister(subscriber_id_t subscriber_id) {
  * @param[in] super_scope_id	the id of the scope that will be parent of the scope being opened
  * @param[in] scope_id 			the id of the scope to open
  * @param[in] specs				the byte array with the membership specification to be passed to the membership module
- * \return					TRUE, if the scope was opened successfully, or FALSE otherwise
+ * @param[in] spec_len			the length of the byte array with the membership specification
+ * @param[in] flags				flags to be used with the scope
+ * @param[in] ttl				the time to live for this scope
+ * \return						TRUE, if the scope was opened successfully, or FALSE otherwise
  **/
 bool scopes_open(subscriber_id_t subscriber_id, scope_id_t super_scope_id,
 		scope_id_t scope_id, void *specs, data_len_t spec_len,
@@ -569,6 +572,7 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 		PRINTF(3,"[%u.%u:%10lu] %s::%s() : Unknown message type received: %u\n",
 				rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
 				__FILE__, __FUNCTION__, gmsg->type);
+		break;
 	}
 }
 
