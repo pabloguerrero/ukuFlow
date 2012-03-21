@@ -2,12 +2,21 @@
 
 \mainpage Sensor and Actuator Network Data Management
 
-Sensor networks are composed of nodes uniquely characterized by properties beyond their beyond network address and physical
+Sensor networks are composed of nodes uniquely characterized by properties beyond their network address and physical
 position. Ever more deployments consist of heterogeneous sensor and actuator nodes, which requires them to manage different
-data structures and items. In large scale networks, a centralized approach to manage this information leads to high data 
-inconsistencies. We employ a bottom up approach where each node is responsible for managing its own set of data repositories.      
-This service aims at providing a simple API to data repository which takes into consideration the storage constrains (small
-RAM, energy-costly flash access)
+data structures and items. In large scale networks, a centralized approach to the management of this information leads to frequent
+data inconsistencies. 
 
+We employ a bottom up approach where each node is responsible for managing its own set of data repositories.      
+This service aims at providing a simple API to a data repository which takes into consideration the storage constrains (small
+RAM and energy-costly flash access). Variable length data items can be stored and associated with an input function, e.g. a
+sensor input. Instead of assuming a polling strategy which typically incurs into high energy costs, entries are given a time-to-live
+value, whose expiration signals the need for an update.  Input functions are provided for built-in sensors, but can be any 
+arbitrary C functions providing a data item to be stored into the data repository.
+
+The data management service running on a node enables the creation of multiple repositories. Each application could open a repository,
+or allocate multiple for different uses. Input from data items that is common between repositories, such as sensor data, isn't 
+requested multiple times, but shared by means of a hidden internal repository. The input frequency is thus that of the repository
+with lowest ttl.
 
 */
