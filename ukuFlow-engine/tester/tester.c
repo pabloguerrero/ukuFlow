@@ -10,7 +10,7 @@
 
 #include "net/rime.h"
 
-#include "data-repository.h"
+#include "data-mgr.h"
 #include "expression-eval.h"
 //#include "scopes-logger.h"
 

@@ -17,7 +17,7 @@ endif
 CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
 CFLAGS += -DDEBUG_DEPTH=0
 
-APPS = serial-shell data-repository scopes 
+APPS = serial-shell data-mgr scopes 
 
 SRCS				+= workflow.c event.c ukuflow-mgr.c ukuflow-engine.c ukuflow-net-mgr.c ukuflow-cmd-runner.c ukuflow-event-mgr.c  
 

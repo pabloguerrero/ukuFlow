@@ -22,8 +22,17 @@
 							<option id="cdt.managedbuild.option.gnu.cross.prefix.1108989384" name="Prefix" superClass="cdt.managedbuild.option.gnu.cross.prefix"/>
 							<option id="cdt.managedbuild.option.gnu.cross.path.1142633345" name="Path" superClass="cdt.managedbuild.option.gnu.cross.path"/>
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.targetPlatform.gnu.cross.445438242" isAbstract="false" osList="all" superClass="cdt.managedbuild.targetPlatform.gnu.cross"/>
-							<builder id="cdt.managedbuild.builder.gnu.cross.1515339556" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="cdt.managedbuild.builder.gnu.cross"/>
+							<builder command="make" enableAutoBuild="true" id="cdt.managedbuild.builder.gnu.cross.1515339556" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="cdt.managedbuild.builder.gnu.cross"/>
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.compiler.508711628" name="Cross GCC Compiler" superClass="cdt.managedbuild.tool.gnu.cross.c.compiler">
+								<option id="gnu.c.compiler.option.include.paths.1519927957" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="/Users/guerrero/workspace/contiki/"/>
+									<listOptionValue builtIn="false" value="/Users/guerrero/workspace/contiki/core/"/>
+									<listOptionValue builtIn="false" value="/Users/guerrero/workspace/contiki/cpu/msp430/"/>
+									<listOptionValue builtIn="false" value="/Users/guerrero/workspace/contiki/platform/sky/"/>
+									<listOptionValue builtIn="false" value="/Users/guerrero/workspace/msp430-gcc-4.4.5/msp430/include"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ukuFlow - scopes}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ukuFlow - data-mgr}&quot;"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1710459201" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cross.cpp.compiler.1019828816" name="Cross G++ Compiler" superClass="cdt.managedbuild.tool.gnu.cross.cpp.compiler"/>
@@ -48,8 +57,14 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="ukuFlow.null.2133853776" name="ukuFlow"/>
 	</storageModule>
+	<storageModule moduleId="refreshScope" versionNumber="1">
+		<resource resourceType="PROJECT" workspacePath="/ukuFlow - ukuFlow-engine"/>
+	</storageModule>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.cross.base.1811158543;cdt.managedbuild.toolchain.gnu.cross.base.1811158543.1427839056;cdt.managedbuild.tool.gnu.cross.c.compiler.508711628;cdt.managedbuild.tool.gnu.c.compiler.input.1710459201">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
+		</scannerConfigBuildInfo>
 	</storageModule>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

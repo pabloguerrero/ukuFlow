@@ -260,7 +260,7 @@ void event_populate(struct event *event, struct generic_egen *g_egen) {
 	uint16_t temp;
 
 	temp
-			= *((uint16_t*) data_repository_get_data(0, g_egen->sensor,
+			= *((uint16_t*) data_mgr_get_data(0, g_egen->sensor,
 					&data_len));
 
 	//	event_print(event, 0);
@@ -381,7 +381,7 @@ uint8_t *event_get_value(struct event *event, uint8_t searched_field) {
  */
 data_repository_id_t event_into_repo(struct event *event) {
 
-	data_repository_id_t repo_id = data_repository_create(0);
+	data_repository_id_t repo_id = data_mgr_create(0);
 	uint8_t *fvp = ((uint8_t*) event) + sizeof(struct event);
 	if (repo_id != 0) {
 		uint8_t field_nr;
@@ -391,7 +391,7 @@ data_repository_id_t event_into_repo(struct event *event) {
 			// get pointer to value:
 			uint8_t *data = fvp + 1;
 
-			data_repository_set_data(repo_id, field, MANUAL_UPDATE_ENTRY,
+			data_mgr_set_data(repo_id, field, MANUAL_UPDATE_ENTRY,
 					event_field_width[field], data);
 
 			// advance fvp pointer to next f-v-p

@@ -46,7 +46,7 @@
 #include "contiki.h"
 
 #include "scopes-types.h"
-#include "data-repository.h"
+#include "data-mgr.h"
 #include "event-types.h"
 
 /** \brief Type definition for workflow element id */

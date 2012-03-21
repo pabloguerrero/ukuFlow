@@ -73,7 +73,7 @@ if [ $DO_PULL -eq 1 ]; then
 			echo "(no files were updated, so interrupting as requested)" >> $LOG
 			exit 1
 		else
-			echo "(files were updated, so continuing)" >> $LOG
+			echo -n "(files were updated, so continuing)" >> $LOG
 		fi
 	else
 		echo "There were updates"

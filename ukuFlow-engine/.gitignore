@@ -5,3 +5,5 @@
 /symbols.c
 /symbols.h
 /obj_*
+/doc/html/*
+/.bpmn/*

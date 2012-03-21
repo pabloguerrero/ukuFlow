@@ -388,7 +388,7 @@ static void processor_end_event(struct workflow_token *token,
 		list_add(wf_spawn_queue, wfn);
 
 		/** Remove data repository: */
-		data_repository_remove(wfi->repository_id);
+		data_mgr_remove(wfi->repository_id);
 
 		/** Remove workflow_instance */
 		/** 1: Release memory */
@@ -475,7 +475,7 @@ static void processor_execute_task(struct workflow_token *token,
 					 cst->var_id, result);
 
 			if (cst->var_id != 0) {
-				data_repository_set_data(token->wf_instance->repository_id,
+				data_mgr_set_data(token->wf_instance->repository_id,
 						cst->var_id, MANUAL_UPDATE_ENTRY, sizeof(long int),
 						(uint8_t*) &result);
 			}
@@ -1210,7 +1210,7 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 				if (wfi != NULL) {
 					wfi->wfn = wfn;
 					wfi->instance_id = find_free_instance_id();
-					wfi->repository_id = data_repository_create(CLOCK_SECOND
+					wfi->repository_id = data_mgr_create(CLOCK_SECOND
 							* 10);
 					wfi->num_tokens = 0;
 
