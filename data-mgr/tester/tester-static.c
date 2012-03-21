@@ -1,15 +1,13 @@
 #include <stdio.h>
-//#include <stdlib.h>
-//#include <string.h>
 
 #include "contiki.h"
 #include "dev/leds.h"
 #include "sys/etimer.h"
 
-#include "data-repository.h"
+#include "data-mgr.h"
 #include "expression-eval.h"
 
-PROCESS(tester_process, "data-repository static tester")
+PROCESS(tester_process, "data-manager static tester")
 ;
 AUTOSTART_PROCESSES(&tester_process);
 

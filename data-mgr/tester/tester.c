@@ -10,7 +10,7 @@
 #include "data-mgr.h"
 #include "expression-eval.h"
 
-PROCESS(tester_process, "data-repository tester");
+PROCESS(tester_process, "data-manager tester");
 AUTOSTART_PROCESSES(&tester_process);
 
 PROCESS_THREAD(tester_process, ev, data) {
