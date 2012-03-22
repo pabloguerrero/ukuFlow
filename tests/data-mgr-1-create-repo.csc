@@ -26,14 +26,14 @@
 		se.sics.cooja.mspmote.SkyMoteType
 		<identifier>DataRepositorySkyNode</identifier>
 		<description>Data Repository Node</description>
-		<source>../data-repository/tester.c</source>
-		<commands>make TARGET=sky tester.sky
+		<source>../data-mgr/tester/tester.c</source>
+		<commands>make TARGET=sky tester/tester.sky
 		</commands>
 <!--		<commands>make TARGET=sky clean
 make TARGET=sky tester.sky
 		</commands>
 -->
-		<firmware>../data-repository/tester.sky</firmware>
+		<firmware>../data-mgr/tester/tester.sky</firmware>
 
 		<moteinterface>se.sics.cooja.interfaces.Position</moteinterface>
 		<moteinterface>se.sics.cooja.interfaces.RimeAddress</moteinterface>
