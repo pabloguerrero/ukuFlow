@@ -4,7 +4,7 @@ Simply run:
 > crontab -e
 
 and then add the following 3 lines at the end of the cron table:
-  0 4  *   *   *     source ~/.bashrc && cd /home/guerrero/workspace/proj/ukuFlow/tests/ && CONTIKI=~/workspace/contiki-2.5   MAILTO=guerrero ./GENERATE -clean -update_ukuflow -generate_if_updates -send_mail -copy_docs >~/cronlogs/generation_output.log
-  0 5  *   *   *     source ~/.bashrc && cd /home/guerrero/workspace/proj/ukuFlow/tests/ && CONTIKI=/import/tools/wsn/contiki MAILTO=guerrero ./RUN_ALL -clean_cooja -update_ukuflow -send_mail >~/cronlogs/output.log
+  0 4  *   *   *     source ~/.bashrc && cd /home/guerrero/workspace/proj/ukuFlow/tests/ && CONTIKI=~/workspace/contiki MAILTO=guerrero ./GENERATE -clean -update_ukuflow -generate_if_updates -send_mail -copy_docs >~/cronlogs/generation_output.log
+  0 5  *   *   *     source ~/.bashrc && cd /home/guerrero/workspace/proj/ukuFlow/tests/ && CONTIKI=~/workspace/contiki MAILTO=guerrero ./RUN_ALL -clean_cooja -update_ukuflow -send_mail >~/cronlogs/output.log
 MAILTO=""
 

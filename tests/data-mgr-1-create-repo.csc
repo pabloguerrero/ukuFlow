@@ -6,7 +6,7 @@
 	<project EXPORT="discard">[CONTIKI_DIR]/tools/cooja/apps/serial_socket</project>
 	<project EXPORT="discard">[CONTIKI_DIR]/tools/cooja/apps/collect-view</project>
 	<simulation>
-	<title>Data Repository</title>
+	<title>Data Manager</title>
 	<delaytime>0</delaytime>
 	<randomseed>123456</randomseed>
 	<randomseed>123456</randomseed>
@@ -18,23 +18,15 @@
 		<interference_range>100.0</interference_range>
 		<success_ratio_tx>1.0</success_ratio_tx>
 		<success_ratio_rx>1.0</success_ratio_rx>
-    </radiomedium>
-    <events>
+	</radiomedium>
+	<events>
 		<logoutput>40000</logoutput>
-    </events>
-    <motetype>
+	</events>
+	<motetype>
 		se.sics.cooja.mspmote.SkyMoteType
-		<identifier>DataRepositorySkyNode</identifier>
-		<description>Data Repository Node</description>
-		<source>../data-mgr/tester/tester.c</source>
-		<commands>make TARGET=sky tester/tester.sky
-		</commands>
-<!--		<commands>make TARGET=sky clean
-make TARGET=sky tester.sky
-		</commands>
--->
+		<identifier>DataMgrSkyNode</identifier>
+		<description>Data Manager Node</description>
 		<firmware>../data-mgr/tester/tester.sky</firmware>
-
 		<moteinterface>se.sics.cooja.interfaces.Position</moteinterface>
 		<moteinterface>se.sics.cooja.interfaces.RimeAddress</moteinterface>
 		<moteinterface>se.sics.cooja.interfaces.IPAddress</moteinterface>
@@ -63,7 +55,7 @@ make TARGET=sky tester.sky
 			se.sics.cooja.mspmote.interfaces.MspMoteID
 			<id>1</id>
 		</interface_config>
-		<motetype_identifier>DataRepositorySkyNode</motetype_identifier>
+		<motetype_identifier>DataMgrSkyNode</motetype_identifier>
 	</mote>
 	</simulation>
 	<plugin>

@@ -1,5 +1,5 @@
-/tester.ihex
-/tester.sky
+/tester/tester.ihex
+/tester/tester.sky
 /contiki-sky.a
 /contiki-sky.map
 /symbols.c
