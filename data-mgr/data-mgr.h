@@ -57,7 +57,7 @@
 #define COMMON_REPOSITORY_ID 1
 
 /**  \brief Type definition for updater functions */
-typedef uint16_t ( entry_update_function)(void);
+typedef uint16_t (entry_update_function)(void);
 
 /**  \brief Type definition for data repository ids */
 typedef uint8_t data_repository_id_t;
@@ -85,7 +85,7 @@ struct repository {
 	/**  \brief General time to live value to use with this repository */
 	clock_time_t ttl;
 	/**  \brief List of data entries */
-	LIST_STRUCT( entry_list);
+	LIST_STRUCT (entry_list);
 };
 
 /**  \brief Type definition for entry types */
@@ -97,42 +97,31 @@ enum entry_type {
 //
 };
 
-
-/**  \brief TODO */
-struct repository_entry {
-	/**  \brief Pointer to next repository entry in the list */
-	struct repository_entry *next;
-	/**  \brief Type of the repository entry */
-	entry_type_t entry_type;
-	/**  \brief Id of the repository entry */
-	entry_id_t entry_id;
-	/**  \brief Length of the data array */
+/** \brief		TODO				*/
+#define GENERIC_REPOSITORY_ENTRY_FIELDS								\
+	/**  \brief Pointer to next repository entry in the list */		\
+	struct repository_entry *next;									\
+	/**  \brief Type of the repository entry */						\
+	entry_type_t entry_type;										\
+	/**  \brief Id of the repository entry */						\
+	entry_id_t entry_id;											\
+	/**  \brief Length of the data array */							\
 	data_len_t data_len;
+
+/**  \brief Generic fields */
+struct repository_entry {
+	GENERIC_REPOSITORY_ENTRY_FIELDS
 };
 
-/**  \brief TODO */
+/**  \brief Fields for a repository entry which is updated manually */
 struct manual_repository_entry {
-	/**  \brief Pointer to next repository entry in the list */
-	struct repository_entry *next;
-	/**  \brief Type of the repository entry */
-	entry_type_t entry_type;
-	/**  \brief Id of the repository entry */
-	entry_id_t entry_id;
-	/**  \brief Length of the data array */
-	data_len_t data_len;
+	GENERIC_REPOSITORY_ENTRY_FIELDS
 	// followed by data array
 };
 
-/**  \brief TODO */
+/**  \brief Fields for a repository entry which is updated automatically (note the pointer to the updater function) */
 struct auto_repository_entry {
-	/**  \brief Pointer to next repository entry in the list */
-	struct repository_entry *next;
-	/**  \brief Type of the repository entry */
-	entry_type_t entry_type;
-	/**  \brief Id of the repository entry */
-	entry_id_t entry_id;
-	/**  \brief Length of the data array */
-	data_len_t data_len;
+	GENERIC_REPOSITORY_ENTRY_FIELDS
 	/**  \brief Timestamp for last update of the entry */
 	clock_time_t timestamp;
 	/**  \brief Pointer to updater function for this repository entry */
@@ -157,9 +146,8 @@ enum repository_fields {
 data_repository_id_t data_mgr_create(clock_time_t max_ttl);
 bool data_mgr_remove(data_repository_id_t id);
 
-void data_mgr_set_data(data_repository_id_t repo_id_param,
-		entry_id_t entry_id, entry_type_t entry_type, data_len_t data_len,
-		uint8_t *data);
+void data_mgr_set_data(data_repository_id_t repo_id_param, entry_id_t entry_id,
+		entry_type_t entry_type, data_len_t data_len, uint8_t *data);
 void data_mgr_set_updater(data_repository_id_t id, entry_id_t entry_id,
 		entry_update_function *updater_function);
 uint8_t *data_mgr_get_data(data_repository_id_t repo_id_param,
