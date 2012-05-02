@@ -108,7 +108,7 @@ enum entry_type {
 	/**  \brief Length of the data array */							\
 	data_len_t data_len;
 
-/**  \brief Generic fields */
+/**  \brief Generic repository entry*/
 struct repository_entry {
 	GENERIC_REPOSITORY_ENTRY_FIELDS
 };
@@ -138,9 +138,11 @@ enum repository_fields {
 	SENSOR_TEMPERATURE_FAHRENHEIT, /*		 4*/
 	SENSOR_HUMIDITY_RAW, /*					 5*/
 	SENSOR_HUMIDITY_PERCENT, /*				 6*/
-	SENSOR_VOLTAGE_RAW, /*					 7*/
-	NODE_ID,
-/**							 8*/
+	SENSOR_ACCM_X_AXIS, /*					 7*/
+	SENSOR_ACCM_Y_AXIS, /*					 8*/
+	SENSOR_ACCM_Z_AXIS, /*					 9*/
+	SENSOR_VOLTAGE_RAW, /*					10*/
+	NODE_ID, /**							11*/
 };
 
 data_repository_id_t data_mgr_create(clock_time_t max_ttl);
