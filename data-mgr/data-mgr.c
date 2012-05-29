@@ -2,7 +2,6 @@
  * \addtogroup datamanager
  * @{
  */
-
 /*
  * Copyright (c) 2011, Pablo Guerrero, TU Darmstadt, guerrero@dvs.tu-darmstadt.de
  * All rights reserved.
@@ -32,41 +31,47 @@
  * SUCH DAMAGE.
  *
  */
-
 /**
  * \file	data-mgr.c
  * \brief	Data manager module
  * \author	Pablo Guerrero <guerrero@dvs.tu-darmstadt.de>
  */
-
-
 #include "data-mgr.h"
-
 #include "lib/list.h"
 #include "stdlib.h"
-
+#include "net/rime/rimeaddr.h"
+#ifdef CONTIKI_TARGET_SKY
 #include "dev/sht11-sensor.h"
 #include "dev/light-sensor.h"
 #include "dev/battery-sensor.h"
-#include "net/rime/rimeaddr.h"
+#else
+#ifdef CONTIKI_TARGET_Z1
+#include "dev/tmp102.h"
+#include "dev/adxl345.h"
+#include "dev/i2cmaster.h"
+#endif
+#endif
 
 /**
- * \brief something like a list
+ * \brief 		List of repositories
  */
-LIST(repository_list)
-;
+LIST(repository_list);
 
 static uint8_t initialized = 0;
-
 
 /**
  * \brief		TODO
  */
 static uint16_t sensor_light_par_raw(void) {
-	int result;
+#ifdef CONTIKI_TARGET_SKY
 	SENSORS_ACTIVATE(light_sensor);
-	result = light_sensor.value(LIGHT_SENSOR_PHOTOSYNTHETIC);
+	int result = light_sensor.value(LIGHT_SENSOR_PHOTOSYNTHETIC);
 	SENSORS_DEACTIVATE(light_sensor);
+#else
+#ifdef CONTIKI_TARGET_Z1
+	int result = 0;
+#endif
+#endif
 	return result;
 }
 
@@ -74,21 +79,36 @@ static uint16_t sensor_light_par_raw(void) {
  * \brief		TODO
  */
 static uint16_t sensor_light_tsr_raw(void) {
-	int result;
+#ifdef CONTIKI_TARGET_SKY
 	SENSORS_ACTIVATE(light_sensor);
-	result = light_sensor.value(LIGHT_SENSOR_TOTAL_SOLAR);
+	int result = light_sensor.value(LIGHT_SENSOR_TOTAL_SOLAR);
 	SENSORS_DEACTIVATE(light_sensor);
+#else
+#ifdef CONTIKI_TARGET_Z1
+	int result = 0;
+#endif
+#endif
 	return result;
 }
 
+#ifdef CONTIKI_TARGET_SKY
+#else
+#ifdef CONTIKI_TARGET_Z1
+#endif
+#endif
 /**
  * \brief		TODO
  */
 static uint16_t sensor_temperature_raw(void) {
-	int result;
+#ifdef CONTIKI_TARGET_SKY
 	SENSORS_ACTIVATE(sht11_sensor);
-	result = sht11_sensor.value(SHT11_SENSOR_TEMP);
+	int result = sht11_sensor.value(SHT11_SENSOR_TEMP);
 	SENSORS_DEACTIVATE(sht11_sensor);
+#else
+#ifdef CONTIKI_TARGET_Z1
+	int result = tmp102_read_temp_raw();
+#endif
+#endif
 	return result;
 }
 
@@ -96,32 +116,63 @@ static uint16_t sensor_temperature_raw(void) {
  * \brief		TODO
  */
 static uint16_t sensor_temperature_celsius(void) {
-	int result;
+#ifdef CONTIKI_TARGET_SKY
 	SENSORS_ACTIVATE(sht11_sensor);
-	result = sht11_sensor.value(SHT11_SENSOR_TEMP);
+	int result = sht11_sensor.value(SHT11_SENSOR_TEMP);
 	SENSORS_DEACTIVATE(sht11_sensor);
 	return (-39.60 + 0.01 * result);
+#else
+#ifdef CONTIKI_TARGET_Z1
+	int16_t raw = tmp102_read_temp_raw();
+	//printf("RAW is %d\n", raw);
+	uint16_t absraw;
+	int16_t sign = 1;
+    if(raw < 0) {		// Perform 2C's if sensor returned negative data
+      absraw = (raw ^ 0xFFFF) + 1;
+      sign = -1;
+    }
+    else absraw=raw;
+    int16_t temp_integer_part = (absraw >> 8) * sign;
+    //uint16_t temp_fractional_part = ((absraw >> 4) % 16) * 625;	// Info in 1/10000 of degree
+	//printf("INT.FRAC is %d,%u \n", temp_integer_part, temp_fractional_part);
+
+	uint16_t result = temp_integer_part;
+	return result;
+#endif
+#endif
 }
 
 /**
  * \brief		TODO
  */
 static uint16_t sensor_temperature_fahrenheit(void) {
-	int result;
+#ifdef CONTIKI_TARGET_SKY
 	SENSORS_ACTIVATE(sht11_sensor);
-	result = sht11_sensor.value(SHT11_SENSOR_TEMP);
+	int result = sht11_sensor.value(SHT11_SENSOR_TEMP);
 	SENSORS_DEACTIVATE(sht11_sensor);
 	return (-39.60 + 0.01 * result) * 9 / 5 + 32;
+#else
+#ifdef CONTIKI_TARGET_Z1
+	uint16_t temp_celsius = sensor_temperature_celsius(), result;
+	result = temp_celsius * 9 / 5 + 32;
+	return result;
+#endif
+#endif
 }
 
 /**
  * \brief		TODO
  */
 static uint16_t sensor_humidity_raw(void) {
-	int result;
+#ifdef CONTIKI_TARGET_SKY
 	SENSORS_ACTIVATE(sht11_sensor);
-	result = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
+	int result = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
 	SENSORS_DEACTIVATE(sht11_sensor);
+#else
+#ifdef CONTIKI_TARGET_Z1
+	uint16_t result = 0;
+#endif
+#endif
 	return result;
 }
 
@@ -129,30 +180,86 @@ static uint16_t sensor_humidity_raw(void) {
  * \brief		TODO
  */
 static uint16_t sensor_humidity_percent(void) {
-	int result;
+#ifdef CONTIKI_TARGET_SKY
 	SENSORS_ACTIVATE(sht11_sensor);
-	result = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
+	int result = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
 	SENSORS_DEACTIVATE(sht11_sensor);
 	return -4 + 0.0405 * result - 2.8e-6 * (result * result);
+#else
+#ifdef CONTIKI_TARGET_Z1
+	uint16_t result = 0;
+	return result;
+#endif
+#endif
+}
+
+/**
+ * \brief		TODO
+ */
+static uint16_t sensor_accm_x_axis(void) {
+#ifdef CONTIKI_TARGET_SKY
+	return 0;
+#else
+#ifdef CONTIKI_TARGET_Z1
+	int result = 0;
+	return result;
+#endif
+#endif
+}
+
+/**
+ * \brief		TODO
+ */
+static uint16_t sensor_accm_y_axis(void) {
+#ifdef CONTIKI_TARGET_SKY
+	return 0;
+#else
+#ifdef CONTIKI_TARGET_Z1
+	uint16_t result = 0;
+	return result;
+#endif
+#endif
+}
+
+/**
+ * \brief		TODO
+ */
+static uint16_t sensor_accm_z_axis(void) {
+#ifdef CONTIKI_TARGET_SKY
+	return 0;
+#else
+#ifdef CONTIKI_TARGET_Z1
+	uint16_t result = 0;
+	return result;
+#endif
+#endif
 }
 
 /**
  * \brief		TODO
  */
 static uint16_t sensor_voltage_raw(void) {
-	int result;
+#ifdef CONTIKI_TARGET_SKY
 	SENSORS_ACTIVATE(battery_sensor);
-	result = battery_sensor.value(0);
+	int result = battery_sensor.value(0);
 	SENSORS_DEACTIVATE(battery_sensor);
+#else
+#ifdef CONTIKI_TARGET_Z1
+	uint16_t result = 0;
+#endif
+#endif
 	return result;
 }
+
+
 
 /**
  * \brief		Searches for a repository with a given id
  *
  * \param id the id of the repository being searched for
  */
-static struct repository *data_mgr_lookup(data_repository_id_t id) {
+static struct repository *
+data_mgr_lookup(data_repository_id_t id) {
 	struct repository *repo = list_head(repository_list);
 	while ((repo != NULL) && (repo->id != id))
 		repo = repo->next;
@@ -162,8 +269,8 @@ static struct repository *data_mgr_lookup(data_repository_id_t id) {
 /**
  * \brief		TODO
  */
-static struct repository_entry *repository_entry_lookup(
-		struct repository* repo, entry_id_t entry_id) {
+static struct repository_entry *
+repository_entry_lookup(struct repository* repo, entry_id_t entry_id) {
 	struct repository_entry *entry = list_head(repo->entry_list);
 	while ((entry != NULL) && (entry->entry_id != entry_id))
 		entry = entry->next;
@@ -177,7 +284,7 @@ static void adjust_ttl_common_repository() {
 	// initialize value to maximum signed integer value
 	clock_time_t ttl = -1;
 	struct repository *repo;
-	for (repo = list_head(repository_list); repo != NULL; repo = repo-> next)
+	for (repo = list_head(repository_list); repo != NULL; repo = repo->next)
 		if ((repo->id != COMMON_REPOSITORY_ID) && (repo->ttl != 0)
 				&& (repo->ttl < ttl))
 			ttl = repo->ttl;
@@ -210,8 +317,8 @@ static void data_mgr_init() {
 			entry_id_t entry_id;
 			// now create entries for sensors, and add them into common repository:
 			for (entry_id = 0; entry_id <= SENSOR_VOLTAGE_RAW; entry_id++) {
-				struct auto_repository_entry *entry =
-						malloc(sizeof(struct auto_repository_entry)
+				struct auto_repository_entry *entry = malloc(
+						sizeof(struct auto_repository_entry)
 								+ sizeof(uint16_t));
 				if (entry != NULL) {
 					// set entry type
@@ -235,7 +342,11 @@ static void data_mgr_init() {
 						entry->updater = sensor_light_tsr_raw;
 						break;
 					case SENSOR_TEMPERATURE_RAW:
+#ifdef CONTIKI_TARGET_Z1
+					  tmp102_init();
+#endif
 						entry->updater = sensor_temperature_raw;
+
 						break;
 					case SENSOR_TEMPERATURE_CELSIUS:
 						entry->updater = sensor_temperature_celsius;
@@ -248,6 +359,15 @@ static void data_mgr_init() {
 						break;
 					case SENSOR_HUMIDITY_PERCENT:
 						entry->updater = sensor_humidity_percent;
+						break;
+					case SENSOR_ACCM_X_AXIS:
+						entry->updater = sensor_accm_x_axis;
+						break;
+					case SENSOR_ACCM_Y_AXIS:
+						entry->updater = sensor_accm_y_axis;
+						break;
+					case SENSOR_ACCM_Z_AXIS:
+						entry->updater = sensor_accm_z_axis;
 						break;
 					case SENSOR_VOLTAGE_RAW:
 						entry->updater = sensor_voltage_raw;
@@ -363,9 +483,9 @@ static void repository_entry_clear(struct repository *repo, entry_id_t entry_id)
 
 }
 /*---------------------------------------------------------------------------*/
-static struct repository_entry *repository_entry_create(
-		struct repository *repo, entry_id_t entry_id, entry_type_t entry_type,
-		data_len_t data_len) {
+static struct repository_entry *
+repository_entry_create(struct repository *repo, entry_id_t entry_id,
+		entry_type_t entry_type, data_len_t data_len) {
 
 	struct repository_entry *entry = NULL;
 	switch (entry_type) {
@@ -404,7 +524,7 @@ static struct repository_entry *repository_entry_create(
  * \param data_len length of the value to be stored
  * \param data the actual data to use when setting a value
  */
-void data_mgr_set_data(//
+void data_mgr_set_data( //
 		data_repository_id_t repo_id_param, //
 		entry_id_t entry_id, //
 		entry_type_t entry_type, //
@@ -431,8 +551,9 @@ void data_mgr_set_data(//
 	struct repository_entry *entry = repository_entry_lookup(repo, entry_id);
 
 	// check if entry exists with different type or data length:
-	if ((entry != NULL) && ((entry->entry_type != entry_type)
-			|| (entry->data_len != data_len))) {
+	if ((entry != NULL)
+			&& ((entry->entry_type != entry_type)
+					|| (entry->data_len != data_len))) {
 		repository_entry_clear(repo, entry_id);
 		entry = NULL;
 	}
@@ -513,8 +634,9 @@ void data_mgr_set_updater(data_repository_id_t id, entry_id_t entry_id,
  *
  * \return 				a pointer to the byte-array of the requested field, or NULL if the entry doesn't exist
  * */
-uint8_t *data_mgr_get_data(data_repository_id_t repo_id_param,
-		entry_id_t entry_id, data_len_t *data_len) {
+uint8_t *
+data_mgr_get_data(data_repository_id_t repo_id_param, entry_id_t entry_id,
+		data_len_t *data_len) {
 
 	data_repository_id_t repo_id;
 
@@ -536,7 +658,6 @@ uint8_t *data_mgr_get_data(data_repository_id_t repo_id_param,
 
 	if (entry == NULL)
 		return NULL;
-
 
 	// ok, entry exists
 	uint8_t *result = NULL;
