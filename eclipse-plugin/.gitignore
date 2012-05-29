@@ -1,7 +1,5 @@
 target/
 local/
-original.git/*
-original.git/
 *.class
 bin/
 .settings/
