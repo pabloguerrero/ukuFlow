@@ -1,15 +1,7 @@
-bpmn2/.git/*
-bpmn2/.settings/*
-bpmn2/.gitattributes
-bpmn2/.gitignore
-
-org.eclipse.bpmn2-modeler/.git/*
-org.eclipse.bpmn2-modeler/.settings/*
-org.eclipse.bpmn2-modeler/.gitattributes
-org.eclipse.bpmn2-modeler/.gitignore
-
 target/
 local/
 .git/
 *.class
 bin/
+.settings/
+.settings
