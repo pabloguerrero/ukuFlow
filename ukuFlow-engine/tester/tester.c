@@ -148,6 +148,7 @@
 	3, 4, 5, /* ids of the wf_elems from which this join potentially waits tokens */ \
 	\
 	7, END_EVENT /* eighth task, end event */
+
 /* This workflow tests an inclusive decision gateway (and its respective inclusive join gateway)
  * Depending on the conditions (the expressions) of the outgoing flows of the inclusive decision gateway,
  * tokens flow into them, or into the default outflow, if the evaluation of the other two returns false. */
