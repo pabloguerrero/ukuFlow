@@ -11,14 +11,14 @@
     <bpmn2:scriptTask id="ScriptTask_1" name="Script Task" scriptFormat="http://www.mvel.org/2.0">
       <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
-      <bpmn2:script>var1 = 1 + 2
-var2 = 1 + var1</bpmn2:script>
+      <bpmn2:script>var1 = 1 + 2;
+var2 = 1 + var1;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="ScriptTask_1" targetRef="ParallelGateway_2"/>
     <bpmn2:scriptTask id="ScriptTask_2" name="Script Task" scriptFormat="http://www.mvel.org/2.0">
       <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
-      <bpmn2:script>local blink 5</bpmn2:script>
+      <bpmn2:script>local blink 5;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_7" tns:priority="1" name="" sourceRef="ScriptTask_2" targetRef="ParallelGateway_2"/>
     <bpmn2:parallelGateway id="ParallelGateway_1">

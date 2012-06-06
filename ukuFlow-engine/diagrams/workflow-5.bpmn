@@ -58,6 +58,14 @@ var5 = 1 + var5;</bpmn2:script>
       <bpmn2:incoming>SequenceFlow_17</bpmn2:incoming>
     </bpmn2:endEvent>
   </bpmn2:process>
+  <bpmn2:process id="Process_1" tns:version="1" tns:packageName="defaultPackage">
+    <bpmn2:textAnnotation id="TextAnnotation_1">
+      <bpmn2:text>SCOPE 222 (NODE_ID > 3)</bpmn2:text>
+    </bpmn2:textAnnotation>
+  </bpmn2:process>
+  <bpmn2:process id="Process_2" tns:version="1" tns:packageName="defaultPackage">
+    <bpmn2:association id="Association_1" sourceRef="TextAnnotation_1" targetRef="ScriptTask_4"/>
+  </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram" name="ukuFlow Test Diagram 5">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="workflow-5">
       <bpmndi:BPMNShape id="BPMNShape_1" bpmnElement="StartEvent_1">
@@ -83,6 +91,9 @@ var5 = 1 + var5;</bpmn2:script>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_InclusiveGateway_3" bpmnElement="InclusiveGateway_3">
         <dc:Bounds height="50.0" width="50.0" x="280.0" y="126.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_1" bpmnElement="TextAnnotation_1">
+        <dc:Bounds height="50.0" width="181.0" x="364.0" y="280.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="SequenceFlow_11" sourceElement="BPMNShape_1" targetElement="BPMNShape_ScriptTask_1">
         <di:waypoint xsi:type="dc:Point" x="56.0" y="152.0"/>
@@ -119,6 +130,10 @@ var5 = 1 + var5;</bpmn2:script>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_25" bpmnElement="SequenceFlow_25" sourceElement="BPMNShape_InclusiveGateway_3" targetElement="BPMNShape_ScriptTask_4">
         <di:waypoint xsi:type="dc:Point" x="331.0" y="151.0"/>
         <di:waypoint xsi:type="dc:Point" x="400.0" y="225.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Association_1" bpmnElement="Association_1" sourceElement="BPMNShape_TextAnnotation_1" targetElement="BPMNShape_ScriptTask_4">
+        <di:waypoint xsi:type="dc:Point" x="454.0" y="280.0"/>
+        <di:waypoint xsi:type="dc:Point" x="455.0" y="250.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
