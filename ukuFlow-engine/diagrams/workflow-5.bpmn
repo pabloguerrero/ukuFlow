@@ -5,7 +5,7 @@
       <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_11" tns:priority="1" name="" sourceRef="StartEvent_1" targetRef="ScriptTask_1"/>
-    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task" scriptFormat="http://www.mvel.org/2.0">
+    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task" scriptFormat="http://www.dvs.tu-darmstadt.de/research/ukuFlow">
       <bpmn2:incoming>SequenceFlow_11</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_22</bpmn2:outgoing>
       <bpmn2:script>var1 = 30
@@ -33,7 +33,7 @@ var3 = 50</bpmn2:script>
 var5 = 1 + var4;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_19" tns:priority="1" name="" sourceRef="ScriptTask_2" targetRef="InclusiveGateway_2"/>
-    <bpmn2:scriptTask id="ScriptTask_4" name="Script Task" scriptFormat="http://www.mvel.org/2.0">
+    <bpmn2:scriptTask id="ScriptTask_4" name="Script Task" scriptFormat="http://www.dvs.tu-darmstadt.de/research/ukuFlow">
       <bpmn2:incoming>SequenceFlow_25</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_20</bpmn2:outgoing>
       <bpmn2:script>local blink 5;
@@ -60,7 +60,8 @@ var5 = 1 + var5;</bpmn2:script>
   </bpmn2:process>
   <bpmn2:process id="Process_1" tns:version="1" tns:packageName="defaultPackage">
     <bpmn2:textAnnotation id="TextAnnotation_1">
-      <bpmn2:text>SCOPE 222 (NODE_ID > 3)</bpmn2:text>
+      <bpmn2:text>SCOPE 222 (NODE_ID > 3)&#xD;
+abc</bpmn2:text>
     </bpmn2:textAnnotation>
   </bpmn2:process>
   <bpmn2:process id="Process_2" tns:version="1" tns:packageName="defaultPackage">

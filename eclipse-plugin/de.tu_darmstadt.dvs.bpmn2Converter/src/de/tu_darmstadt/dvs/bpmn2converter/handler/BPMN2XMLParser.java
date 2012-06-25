@@ -15,7 +15,6 @@ import org.jdom2.input.SAXBuilder;
 
 public class BPMN2XMLParser {
 
-
 	public Element loadFile(String configFile) {
 		File file = new File(configFile);
 		if (!file.isFile()) {

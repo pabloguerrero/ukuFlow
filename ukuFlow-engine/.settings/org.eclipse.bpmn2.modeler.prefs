@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+expand.properties=true
+override.model.enablements=true
+show.advanced.properties=true
+target.runtime=org.jboss.runtime.jbpm5
