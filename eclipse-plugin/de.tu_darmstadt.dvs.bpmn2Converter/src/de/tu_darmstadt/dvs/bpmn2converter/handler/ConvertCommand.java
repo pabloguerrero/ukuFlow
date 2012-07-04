@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IFile;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import de.tu_darmstadt.dvs.bpmn2Deployment.DeviceFinder;
 import de.tu_darmstadt.dvs.bpmn2converter.util.TypeClassifier;
 import de.tu_darmstadt.dvs.bpmn2converter.util.XMLNode;
 
@@ -34,6 +35,8 @@ public class ConvertCommand extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		System.out.println("testing get devices");
+		System.out.println(DeviceFinder.getInstance().getDevices());
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 				.getActiveMenuSelection(event);
 		

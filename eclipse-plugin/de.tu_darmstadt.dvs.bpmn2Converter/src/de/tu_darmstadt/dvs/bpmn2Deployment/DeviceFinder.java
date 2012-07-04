@@ -28,7 +28,7 @@ public class DeviceFinder {
 			os = 2;
 		}
 		//test TODO:remove
-		os = 1;
+		//os = 1;
 	}
 
 	public static DeviceFinder getInstance() {
@@ -68,7 +68,7 @@ public class DeviceFinder {
 	}
 
 	private HashMap<String, String> getDevices_windows() {
-		HashMap<String, String> staticDevice = WinRegistry.getFTDIDevices();
+		HashMap<String, String> staticDevice = WindowsRegistry.getFTDIDevices();
 		HashMap<String, String> result = new HashMap<String, String>();
 		List<String> portName = portList();
 		
