@@ -2,6 +2,10 @@ package de.tu_darmstadt.dvs.bpmn2Deployment;
 
 import gnu.io.CommPortIdentifier;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +19,6 @@ public class DeviceFinder {
 	private static DeviceFinder INSTANCE = null;
 
 	private DeviceFinder() {
-		// TODO find out which os is that;
 		String os_name = System.getProperty("os.name").toLowerCase();
 		if (os_name.contains("win"))
 			os = 0;
@@ -24,6 +27,8 @@ public class DeviceFinder {
 		} else if (os_name.contains("mac")) {
 			os = 2;
 		}
+		//test TODO:remove
+		os = 1;
 	}
 
 	public static DeviceFinder getInstance() {
@@ -50,8 +55,7 @@ public class DeviceFinder {
 
 	private List<String> portList() {
 		LinkedList<String> portName = new LinkedList<String>();
-		java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier
-				.getPortIdentifiers();
+		java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
 		while (portEnum.hasMoreElements()) {
 
 			CommPortIdentifier portIdentifier = portEnum.nextElement();
@@ -78,13 +82,55 @@ public class DeviceFinder {
 	}
 
 	private HashMap<String, String> getDevices_linux() {
-		// TODO:
-		return null;
+		Process p = null;
+		try {
+			p = Runtime.getRuntime().exec("perl lib/motelist/motelist-linux -c");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		HashMap<String,String> result = new HashMap<String, String>();		
+		BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		String line;
+		try {
+			while((line = br.readLine())!= null){
+				String s[] = line.split("[,]");
+				if(s.length != 3){
+					System.out.println(line);
+					continue;
+				}
+				result.put(s[1], s[0]);
+				
+			}
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	private HashMap<String, String> getDevices_mac() {
-		// TODO:
-		return null;
+		Process p = null;
+		try {
+			p = Runtime.getRuntime().exec("perl lib/motelist/motelist-mac -c");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		HashMap<String,String> result = new HashMap<String, String>();		
+		BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		String line;
+		try {
+			while((line = br.readLine())!= null){
+				String s[] = line.split("[,]");
+				if(s.length != 3){
+					System.out.println(line);
+					continue;
+				}
+				result.put(s[1], s[0]);
+				
+			}
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	/**
