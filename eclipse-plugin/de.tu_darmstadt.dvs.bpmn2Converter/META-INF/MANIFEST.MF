@@ -7,9 +7,12 @@ Bundle-Activator: de.tu_darmstadt.dvs.bpmn2converter.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jdt.core;bundle-version="3.7.3",
- org.eclipse.core.resources;bundle-version="3.7.101"
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ de.tu.darmstadt.dvs.ukuflow.script;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/jdom-2.0.1.jar,
- .
-Export-Package: org.jdom2
+ .,
+ lib/rxtx/RXTXcomm.jar
+Export-Package: gnu.io,
+ org.jdom2

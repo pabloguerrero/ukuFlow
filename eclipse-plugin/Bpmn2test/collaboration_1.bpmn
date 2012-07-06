@@ -25,6 +25,9 @@
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_3" name="" sourceRef="StartEvent_1" targetRef="ScriptTask_1"/>
     <bpmn2:sequenceFlow id="SequenceFlow_4" name="" sourceRef="ScriptTask_1" targetRef="EndEvent_1"/>
+    <bpmn2:textAnnotation id="TextAnnotation_1">
+      <bpmn2:text>Enter your comment here</bpmn2:text>
+    </bpmn2:textAnnotation>
   </bpmn2:process>
   <bpmn2:process id="Process_2" name="Default Non-initiating Process"/>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Collaboration Diagram">
@@ -46,6 +49,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
         <dc:Bounds height="50.0" width="110.0" x="465.0" y="225.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_1" bpmnElement="TextAnnotation_1">
+        <dc:Bounds height="50.0" width="100.0" x="540.0" y="40.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_Task_1">
         <di:waypoint xsi:type="dc:Point" x="228.0" y="170.0"/>

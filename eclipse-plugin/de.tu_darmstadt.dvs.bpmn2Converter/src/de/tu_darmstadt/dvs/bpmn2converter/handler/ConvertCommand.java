@@ -7,6 +7,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingDeque;
 
 //import org.jdom2.
 
@@ -21,17 +27,23 @@ import org.eclipse.core.resources.IFile;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
+import de.tu_darmstadt.dvs.bpmn2Deployment.DeviceFinder;
+import de.tu_darmstadt.dvs.bpmn2converter.util.TypeClassifier;
+import de.tu_darmstadt.dvs.bpmn2converter.util.XMLNode;
+
 public class ConvertCommand extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		System.out.println("testing get devices");
+		System.out.println(DeviceFinder.getInstance().getDevices());
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 				.getActiveMenuSelection(event);
 		
 		Object firstElement = selection.getFirstElement();
 		System.out.println(selection.size() + " elements");
 		if(selection.size() != 1) {
-			//TODO : warning, just choose 1 file.
+			MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Information",	"Please choose just one BPMN2 file");
 			return null;
 		}
 		if (firstElement instanceof IFile) {
@@ -50,12 +62,13 @@ public class ConvertCommand extends AbstractHandler {
 				System.out.println("converting..");			
 				BPMN2XMLParser parser = new BPMN2XMLParser();
 				Element e = parser.loadFile(oFileLocation);
-				
-				printElement(e, "");
+				XMLNode root = new XMLNode(e);
+				//printElement(e, "");
+				printProcesses(e);
 				//new Converter(input,null).execute();
 				//Converter.execute(input);
 				//new Converter(input, "").execute();
-				/*
+				/*	
 				File f = new File(oFileLocation);				
 				FileWriter fwrite = null;
 				try {
@@ -164,6 +177,78 @@ public class ConvertCommand extends AbstractHandler {
 		System.out.println(")");
 		for(Element child : e.getChildren()){
 			printElement(child, prefix + "   ");
+		}
+	}
+	private void printProcesses(Element e){
+		if(e.getName().equals("definitions")){
+			for(Element ex : e.getChildren()){
+				if(ex.getName().equals("process")){
+					printProcesses(ex);
+				}
+			}
+		}
+		if(e.getName().equals("process")){
+			Map<String, Element> connector = new HashMap<String, Element>();
+			Map<String,Element> elements = new HashMap<String, Element>();
+			List<String> connector_Id = new ArrayList<String>();
+			
+			TypeClassifier a = TypeClassifier.getInstance();
+			for (Element child : e.getChildren()) {
+				switch (a.getType(child.getName())) {
+				case 1:
+					connector.put(child.getAttributeValue("id"), child);
+					connector_Id.add(child.getAttributeValue("id"));
+					System.out.println("connector added :" + child.getAttributeValue("id"));
+					break;
+				case 2:
+				case 3:
+				case 4:
+					elements.put(child.getAttributeValue("id"), child);
+					System.out.println("Element added" +child.getAttributeValue("id"));
+					break;
+				default:
+					System.out.println("warning: element with name "
+									+ child.getName() + ", id: "
+									+ child.getAttributeValue("id")
+									+ " is not defined");
+				}
+			}
+			StringBuilder sb = new StringBuilder();
+			for(Element ex : elements.values()){
+				if(ex.getName().equals("startEvent")){
+					sb.append("0, START_EVENT, ");
+					for(Element exx : ex.getChildren()){
+						if(!exx.getName().equals("outgoing")) continue;
+						sb.append((connector_Id.indexOf(exx.getTextTrim())+1) + ", ");
+						System.out.println(ex.getTextTrim());
+					}					
+					sb.deleteCharAt(sb.lastIndexOf(","));
+					sb.append("\n");
+				} else if (ex.getName().equals("endEvent")){
+					for(Element exx : ex.getChildren()){
+						if(!exx.getName().equals("incoming")) continue;
+						sb.append((connector_Id.indexOf(exx.getTextTrim())+1) + ", ");
+						System.out.println(ex.getTextTrim());
+					}					
+					sb.append("END_EVENT");
+					sb.append("\n");
+				} else {
+					for(Element exx : ex.getChildren()){
+						if(!exx.getName().equals("incoming")) continue;
+						sb.append((connector_Id.indexOf(exx.getTextTrim())+1) + ", ");
+						System.out.println(ex.getTextTrim());
+					}
+					sb.append(ex.getName() + ", ");
+					for(Element exx : ex.getChildren()){
+						if(!exx.getName().equals("outgoing")) continue;
+						sb.append((connector_Id.indexOf(exx.getTextTrim())+1) + ", ");
+						System.out.println(ex.getTextTrim());
+					}					
+					sb.deleteCharAt(sb.lastIndexOf(","));
+					sb.append("\n");
+				}
+			}
+			System.out.println(sb.toString());
 		}
 	}
 }
