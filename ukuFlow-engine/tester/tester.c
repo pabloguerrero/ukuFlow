@@ -18,7 +18,7 @@
 /* This workflow tests an event-based exclusive decision gateway (and its respective exclusive join gateway)
  * Depending on the events expressions of the outgoing flows of the e-b exclusive decision gateway,
  * tokens flow into them, or into the default outflow, if the evaluation of the other two returns false. */
-#define WORKFLOW_SPEC_9 9, /* 1 = workflow id */ \
+#define WORKFLOW_SPEC_10 10, /* 1 = workflow id */ \
 	7,  /* 7 = number of wf_elems (0..6)*/ \
 	2,  /* 2 = number of scopes*/ \
 	0, START_EVENT, 1, /* 0 = 1st wf_elem, start event, goes to wf_elem id 1*/ \
@@ -48,16 +48,17 @@
 	6, END_EVENT, /* 7h wf_elem, end event */ \
 	111, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3, /* scope id 111, ttl 60 secs, length 5 bytes, spec */ \
 	222, 60, 0, 5, PREDICATE_GT, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3 /* scope id 222, ttl 60 secs, length 5 bytes, spec */
+
 /* This workflow tests an event-based exclusive decision gateway (and its respective exclusive join gateway)
  * Depending on the events' expressions of the outgoing flows of the e-b exclusive decision gateway,
  * tokens flow into them. The event operators are simple, periodical event generators,  */
-#define WORKFLOW_SPEC_8 8, /* 1 = workflow id */ \
+#define WORKFLOW_SPEC_9 9, /* 1 = workflow id */ \
 	7,  /* 7 = number of wf_elems (0..6)*/ \
 	2,  /* 2 = number of scopes*/ \
 	0, START_EVENT, 1, /* 0 = 1st wf_elem, start event, goes to wf_elem id 1*/ \
 	\
 	1, EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY, 2, /* 1 = 2nd wf_elem, event based decision gateway with 3 out flows */ \
-		2 /* event operator goes to wf_elem id 2 */, 15 /*total outflow len*/, \
+		2 /* event operator goes to wf_elem id 2 */, 16 /*total outflow len*/, \
 		   SIMPLE_FILTER /*type*/, 2/*channel_id*/, 1/*num_expressions*/, 5/*expression_len*/, PREDICATE_LT, UINT16_VALUE, 237, 24, REPOSITORY_VALUE, SENSOR_TEMPERATURE_RAW, \
 		   PERIODIC_E_GEN/*type*/, 1/*channel id*/, SENSOR_TEMPERATURE_RAW/*sensor*/,	11/*scope_id*/, 60, 0/*period (60 seconds) [4 byte]*/, \
 		3 /* event operator goes to wf_elem id 3 */, 6 /*total outflow len*/, \
@@ -75,13 +76,47 @@
 	5, END_EVENT, /* 5 = 6h wf_elem, end event */ \
 	11, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3, /* scope id 11, ttl 60 secs, length 5 bytes, spec */ \
 	22, 60, 0, 5, PREDICATE_GT, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3 /* scope id 22, ttl 60 secs, length 5 bytes, spec */
+
 /**
- * \brief	This workflow tests an event-based exclusive decision gateway (and its respective exclusive join gateway).
+ * \brief		This workflow tests an event-based exclusive decision gateway (and its respective
+ * 				exclusive join gateway). Depending on the events' expressions of the outgoing
+ * 				flows of the e-b exclusive decision gateway, tokens flow into them. The event
+ * 				operators are simple, periodical event generators,
+ * */
+#define WORKFLOW_SPEC_8 8, /* 1 = workflow id */ \
+	7,  /* 7 = number of wf_elems (0..6)*/ \
+	2,  /* 2 = number of scopes*/ \
+	0, START_EVENT, 1, /* 0 = 1st wf_elem, start event, goes to wf_elem id 1*/ \
+	\
+	1, EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY, 2, /* 1 = 2nd wf_elem, event based decision gateway with 3 out flows */ \
+		2 /* event operator goes to wf_elem id 2 */, 16 /*total outflow len*/, \
+		   SIMPLE_FILTER /*type*/, 2/*channel_id*/, 1/*num_expressions*/, 6/*expression_len*/, PREDICATE_LT, UINT16_VALUE, 237, 24, REPOSITORY_VALUE, SENSOR_TEMPERATURE_RAW, \
+		   PERIODIC_E_GEN/*type*/, 1/*channel id*/, SENSOR_TEMPERATURE_RAW/*sensor*/,	11/*scope_id*/, 60, 0/*period (60 seconds) [4 byte]*/, \
+		3 /* event operator goes to wf_elem id 3 */, 6 /*total outflow len*/, \
+		   PERIODIC_E_GEN/*type*/, 3/*channel id*/, NODE_ID/*sensor*/, 					22/*scope_id*/, 60, 0/*period (60 seconds) [4 byte]*/, \
+		\
+	2, EXECUTE_TASK, 4, 1, /* 2 = 3rd wf_elem, execute task, with 1 local function statement, goes to wf_elem id 4 */ \
+	LOCAL_FUNCTION_STATEMENT, 0, 7, 98, 108, 105, 110, 107, 32, 50, \
+	\
+	3, EXECUTE_TASK, 4, 1, /* 3 = 4th wf_elem, execute task, with 1 local function statement, goes to wf_elem id 4 */ \
+	LOCAL_FUNCTION_STATEMENT, 0, 7, 98, 108, 105, 110, 107, 32, 52, \
+	\
+	4, EXCLUSIVE_MERGE_GATEWAY, 5, 3, /* 4 = 5th wf_elem, goes to wf_elem id 5, exclusive merge with 2 incoming flows */ \
+	2, 3, /* ids of the wf_elems from which this merge potentially waits tokens */ \
+	\
+	5, END_EVENT, /* 5 = 6h wf_elem, end event */ \
+	11, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3, /* scope id 11, ttl 60 secs, length 5 bytes, spec */ \
+	22, 60, 0, 5, PREDICATE_GT, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3 /* scope id 22, ttl 60 secs, length 5 bytes, spec */
+
+/**
+ * \brief		This workflow tests an event-based exclusive decision gateway (and its
+ * 				respective exclusive join gateway).
  *
- * An event-based exclusive decision gateway evaluates the expressions of the event operators on each outgoing
- * flow. In this test case, the event operators are simple, periodical event generators.
+ * 				An event-based exclusive decision gateway evaluates the expressions of the
+ * 				event operators on each outgoing flow. In this test case, the event operators
+ * 				are simple, periodical event generators.
  */
-#define WORKFLOW_SPEC 7, /* 1 = workflow id */ \
+#define WORKFLOW_SPEC_7 7, /* 1 = workflow id */ \
 	7,  /* 7 = number of wf_elems (0..6)*/ \
 	3,  /* 3 = number of scopes*/ \
 	0, START_EVENT, 1, /* 0 = 1st wf_elem, start event, goes to wf_elem id 1*/ \
@@ -110,6 +145,7 @@
 	22, 60, 0, 5, PREDICATE_EQ, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 2, /* scope id 111, ttl 60 secs, length 5 bytes, spec */ \
 	33, 60, 0, 5, PREDICATE_EQ, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3, /* scope id 222, ttl 60 secs, length 5 bytes, spec */ \
 	44, 60, 0, 5, PREDICATE_EQ, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 4  /* scope id 333, ttl 60 secs, length 5 bytes, spec */
+
 /**
  * \brief	This workflow tests an exclusive decision gateway (and its respective exclusive join gateway).
  *
@@ -129,7 +165,7 @@
 	\
 	2, EXCLUSIVE_DECISION_GATEWAY, 3, /* third task, inclusive decision gateway (OR-split) w. 3 outgoing flows */ \
 		3, 5, PREDICATE_GT, REPOSITORY_VALUE, NODE_ID + 1, UINT8_VALUE, 35, \ 
-		4, 5, PREDICATE_GT, REPOSITORY_VALUE, NODE_ID + 2, UINT8_VALUE, 45, \
+4, 5, PREDICATE_GT, REPOSITORY_VALUE, NODE_ID + 2, UINT8_VALUE, 45, \
 		5, 0, \
 	\
 	3, EXECUTE_TASK, 6, 2, /* fourth task, execute w. 2 computation statements */ \
@@ -149,9 +185,11 @@
 	\
 	7, END_EVENT /* eighth task, end event */
 
-/* This workflow tests an inclusive decision gateway (and its respective inclusive join gateway)
- * Depending on the conditions (the expressions) of the outgoing flows of the inclusive decision gateway,
- * tokens flow into them, or into the default outflow, if the evaluation of the other two returns false. */
+/* \brief		This workflow tests an inclusive decision gateway (and its respective inclusive
+ * 				join gateway). Depending on the conditions (the expressions) of the outgoing flows
+ * 				of the inclusive decision gateway, tokens flow into them, or into the default
+ * 				outflow, if the evaluation of the other two returns false.
+ **/
 #define WORKFLOW_SPEC_5 5, /* workflow id */ \
 	8,  /* 8 = number of wf_elems (0..7) */ \
 	1,  /* number of scopes*/ \
@@ -185,8 +223,10 @@
 	7, END_EVENT, /* eighth task, end event */ \
 	\
 	222, 60, 0, 5, PREDICATE_LT, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3 /* scope id 222, ttl 60, length 5, spec */
+
 /**
- * \brief		This workflow tests nested fork gateways (and respective join gateways) */
+ * \brief		This workflow tests nested fork gateways (and respective join gateways)
+ **/
 #define WORKFLOW_SPEC_4 4, /* workflow id */ \
 	9,  /* 9 = number of wf_elems (0..8) */ \
 	0,  /* number of scopes*/ \
@@ -214,9 +254,12 @@
 	7, JOIN_GATEWAY, 8, 2, /* eighth task, join gateway w. 2 incoming flows, next wf_elem_id is 8*/\
 	2, 6, /* ids of the wf_elems from which this join is expecting tokens */\
 	\
-	8, END_EVENT /* ninth task */
-/* This workflow tests the fork gateway and the join gateway. */
-/* Also the correct creation and removal of a data repository per workflow instance is stress-tested */
+	8, END_EVENT /* ninth workflow element */
+
+/**
+ * \brief		This workflow tests the fork gateway and the join gateway.
+ * 				Also the correct creation and removal of a data repository
+per workflow instance is stress-tested */
 #define WORKFLOW_SPEC_3 3, /* workflow id */ \
 	6,  /* 6 = number of wf_elems (0..6) */ \
 	0,  /* number of scopes*/ \
@@ -235,8 +278,12 @@
 	4, JOIN_GATEWAY, 5, 2, /* fifth task, join gateway w. 2 incoming flows, next wf_elem_id is 6*/\
 	2, 3, /* ids of the wf_elems from which this join is expecting tokens */\
 	5, END_EVENT
-/* This workflow tests all the statements types: computation statements, local function statements, and scoped function statements */
-#define WORKFLOW_SPEC_2 2, /* workflow id */ \
+
+/**
+ * \brief		This workflow tests all the statements types: computation statements,
+ * 				local function statements, and scoped function statements
+ **/
+#define WORKFLOW_SPEC 2, /* workflow id */ \
 	5,  /* number of wf_elems*/ \
 	2,  /* number of scopes*/ \
 	0, START_EVENT, 1, /* first task, start event */ \
@@ -245,11 +292,13 @@
 	COMPUTATION_STATEMENT, NODE_ID + 1, 5, OPERATOR_ADD, UINT8_VALUE, 1, UINT8_VALUE, 2, \
 	COMPUTATION_STATEMENT, NODE_ID + 2, 5, OPERATOR_ADD, UINT8_VALUE, 1, REPOSITORY_VALUE, NODE_ID + 1,  \
 	\
-	2, EXECUTE_TASK, 3, 1,  /* third task, execute w. local function statement */ \
-	LOCAL_FUNCTION_STATEMENT, 0, 7, 98, 108, 105, 110, 107, 32, 53, \
+	2, EXECUTE_TASK, 3, 3,  /* third task, execute with 2 local function statements:*/ \
+		LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, STRING_VALUE, 2, 49, 49, /*  'local blink 1' */ \
+		LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, REPOSITORY_VALUE, NODE_ID + 2, /*  'local blink $var2'  (equals 'local blink 4')*/ \
+		LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, STRING_VALUE, 2, 49, 49, /*  'local blink 1' */ \
 	\
-	3, EXECUTE_TASK, 4, 1,  /* fourth task, execute w. scoped function statement, scope id 111, cmd length 7 */ \
-	SCOPED_FUNCTION_STATEMENT, 222, 7, 98, 108, 105, 110, 107, 32, 53, \
+	3, EXECUTE_TASK, 4, 1,  /* fourth task, execute w. scoped function statement 'blink $var2', scope id 111*/ \
+		SCOPED_FUNCTION_STATEMENT, 222, 5, 1, 98, 108, 105, 110, 107, REPOSITORY_VALUE, NODE_ID + 2, \
 	\
 	4, END_EVENT, \
 	\
@@ -278,7 +327,7 @@ PROCESS_THREAD( tester_process, ev, data) {
 		leds_off(LEDS_ALL);
 
 		PRINTF(1,
-				"[%u.%u:%10lu] tester::main() : Starting\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time());
+				"(TESTER) Starting\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time());
 
 		/*	LOG("[%u.%u:%10lu] tester::main() : size of a 'struct wf_elem' is %u, size of a 'struct wf_start_event' is %u\n",
 		 rimeaddr_node_addr.u8[0],rimeaddr_node_addr.u8[1], clock_time(), sizeof(struct wf_elem), sizeof(struct wf_start_event));
@@ -325,7 +374,7 @@ PROCESS_THREAD( tester_process, ev, data) {
 			}
 
 			PRINTF(1,
-					"[%u.%u:%10lu] tester::main() : About to register a workflow\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time());
+					"(TESTER) About to register a workflow\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time());
 			ukuflow_mgr_register(wf);
 
 			/* wait a while*/
@@ -333,7 +382,7 @@ PROCESS_THREAD( tester_process, ev, data) {
 			etimer_set(&control_timer, ww);
 			PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&control_timer));
 			PRINTF(1,
-					"[%u.%u:%10lu] tester::main() : After %ul second timer\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), ww);
+					"(TESTER) After %ul second timer\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), ww);
 //		ukuflow_mgr_unregister(wf);
 
 		}

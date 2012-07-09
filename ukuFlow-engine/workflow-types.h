@@ -117,9 +117,13 @@ struct __attribute__((__packed__)) wf_end_event {
 /*---------------------------------------------------------------------------*/
 /** \brief Enumeration for the types of statements */
 enum statement_type {
-	COMPUTATION_STATEMENT = 0, //
-	LOCAL_FUNCTION_STATEMENT, //
-	SCOPED_FUNCTION_STATEMENT
+	COMPUTATION_STATEMENT, /*		 0*/
+	LOCAL_FUNCTION_STATEMENT, /*	 1*/
+	SCOPED_FUNCTION_STATEMENT /*	 2*/
+};
+
+struct __attribute__((__packed__)) statement {
+	statement_type_t statement_type;
 };
 
 struct __attribute__((__packed__)) computation_statement {
@@ -132,19 +136,19 @@ struct __attribute__((__packed__)) computation_statement {
 struct __attribute__((__packed__)) local_function_statement {
 	statement_type_t statement_type;
 	variable_id_t var_id;
-	data_len_t cmd_len;
-// followed by char array with shell command and parameters
+// followed by statement_command
 };
 
 struct __attribute__((__packed__)) scoped_function_statement {
 	statement_type_t statement_type;
 	scope_id_t scope_id;
-	data_len_t cmd_len;
-// followed by char array with shell command and parameters
+// followed by statement_command
 };
 
-struct __attribute__((__packed__)) statement {
-	statement_type_t statement_type;
+struct __attribute__((__packed__)) statement_command {
+	data_len_t cmd_len;
+	uint8_t num_params;
+// followed by char array with shell command name and list of parameters
 };
 
 struct __attribute__((__packed__)) wf_ex_task {
@@ -220,7 +224,7 @@ struct __attribute__((__packed__)) wf_x_merge_gw {
 struct __attribute__((__packed__)) event_operator_flow {
 	wf_elem_id_t next_id;
 	data_len_t total_event_operator_length; // in bytes
-	// followed by array with the event operator
+// followed by array with the event operator
 };
 /*---------------------------------------------------------------------------*/
 struct __attribute__((__packed__)) wf_eb_x_dec_gw {

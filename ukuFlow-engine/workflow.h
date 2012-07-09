@@ -44,6 +44,7 @@
 #define __WORKFLOW_H__
 
 #include "workflow-types.h"
+#include "expression-eval.h"
 
 struct wf_generic_elem *workflow_get_wf_elem(struct workflow *wf,
 		wf_elem_id_t wf_elem_id);
