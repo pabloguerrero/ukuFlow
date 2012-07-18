@@ -3,6 +3,7 @@ package de.tu_darmstadt.dvs.bpmn2Deployment;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ public class WindowsRegistry {
 	}
 
 	private WindowsRegistry() {
-		
+
 	}
 
 	/**
@@ -278,6 +279,7 @@ public class WindowsRegistry {
 		if (handles[1] != REG_SUCCESS) {
 			return null;
 		}
+		// TODO markd
 		byte[] valb = (byte[]) regQueryValueEx.invoke(root, new Object[] {
 				new Integer(handles[0]), toCstr(value) });
 		regCloseKey.invoke(root, new Object[] { new Integer(handles[0]) });
@@ -295,40 +297,41 @@ public class WindowsRegistry {
 		}
 		int[] info = (int[]) regQueryInfoKey.invoke(root,
 				new Object[] { new Integer(handles[0]) });
-		int i = 0;
-		for(int x : info){
-			System.out.println((i++)+":"+x);
-		}
+		/*
+		 * int i = 0; for(int x : info){ System.out.println((i++)+":"+x); }
+		 */
 		int count = info[2]; // count TODO
 		int maxlen = info[4]; // value length max
-		
+
 		for (int index = 0; index < count; index++) {
 			byte[] name = (byte[]) regEnumValue.invoke(root, new Object[] {
 					new Integer(handles[0]), new Integer(index),
 					new Integer(maxlen + 1) });
-			System.out.println(index + ":"+new String(name));
-			String value = readString(hkey, key, new String(name));		
+			String value = readString(hkey, key, new String(name));
+			//System.out.println(index + ":" + new String(name) + "->" + value);
 			results.put(new String(name).trim(), value);
 		}
 		regCloseKey.invoke(root, new Object[] { new Integer(handles[0]) });
 		return results;
 	}
 
-	private static List<String> readStringSubKeys(Preferences root, int hkey,String key) throws IllegalArgumentException,IllegalAccessException, InvocationTargetException {
+	private static List<String> readStringSubKeys(Preferences root, int hkey,
+			String key) throws IllegalArgumentException,
+			IllegalAccessException, InvocationTargetException {
 		List<String> results = new ArrayList<String>();
-		
+
 		int[] handles = (int[]) regOpenKey.invoke(root, new Object[] {
 				new Integer(hkey), toCstr(key), new Integer(KEY_READ) });
 		if (handles[1] != REG_SUCCESS) {
 			return null;
 		}
-		
+
 		int[] info = (int[]) regQueryInfoKey.invoke(root,
 				new Object[] { new Integer(handles[0]) });
 
 		int count = info[0]; // count//TODO original info[2];
 		int maxlen = info[3]; // value length max
-		//TODO
+		// TODO
 		for (int index = 0; index < count; index++) {
 			byte[] name = (byte[]) regEnumKeyEx.invoke(root, new Object[] {
 					new Integer(handles[0]), new Integer(index),
@@ -336,7 +339,7 @@ public class WindowsRegistry {
 			results.add(new String(name).trim());
 		}
 		regCloseKey.invoke(root, new Object[] { new Integer(handles[0]) });
-		//System.out.println("here1");
+		// System.out.println("here1");
 		return results;
 	}
 
@@ -369,32 +372,65 @@ public class WindowsRegistry {
 		result[str.length()] = 0;
 		return result;
 	}
-	public static void searchFor(int hkey, String value, String location){
-		
+
+	public static void searchFor(int hkey, String value, String location) {
+
 	}
-	public static HashMap<String, String> getFTDIDevices(){
-		HashMap<String,String> result = new HashMap<String, String>();
+	public static HashMap<String,String> getZ1Devices(){
+		HashMap<String, String> result = new HashMap<String, String>();
+		String keySet1 = "SYSTEM\\ControlSet001\\Enum\\USB\\VID_10C4&PID_EA60";
+		String keySet2 = "SYSTEM\\ControlSet002\\Enum\\USB\\VID_10C4&PID_EA60";
+		String postfixKey = "\\Device Parameters";
+		List<String> controlSet;
+		try {
+			controlSet = readStringSubKeys(HKEY_LOCAL_MACHINE, keySet1);
+			for(String dev : controlSet){
+				String comport = readString(HKEY_LOCAL_MACHINE, keySet1 + "\\"+dev+"\\"+postfixKey,"PortName");
+				result.put(comport, dev);
+			}
+			controlSet = readStringSubKeys(HKEY_LOCAL_MACHINE, keySet2);
+			for(String dev : controlSet){
+				String comport = readString(HKEY_LOCAL_MACHINE, keySet2 + "\\"+dev+"\\"+postfixKey,"PortName");
+				result.put(comport, dev);
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public static HashMap<String, String> getFTDIDevices() {
+		HashMap<String, String> result = new HashMap<String, String>();
 		String key1 = "SYSTEM\\ControlSet001\\Enum\\FTDIBUS";
 		String key2 = "SYSTEM\\ControlSet002\\Enum\\FTDIBUS";
 		String postfixKey = "\\0000\\Device Parameters";
 		try {
-			
+
 			List<String> controlSet001 = readStringSubKeys(HKEY_LOCAL_MACHINE,key1);
-			for(String device: controlSet001){
-				String comport= readString(HKEY_LOCAL_MACHINE, key1+"\\"+ device+postfixKey, "PortName");
+			for (String device : controlSet001) {
+				String comport = readString(HKEY_LOCAL_MACHINE, key1 + "\\"
+						+ device + postfixKey, "PortName");
 				String[] deviceName = device.split("[+]");
-				if(comport != null && deviceName.length == 3){					
-					result.put(comport,deviceName[2].substring(0, deviceName[2].length()-1));
-				} else 
+				if (comport != null && deviceName.length == 3) {
+					result.put(comport, deviceName[2].substring(0,
+							deviceName[2].length() - 1));
+				} else
 					System.out.println("warning: null comport");
 			}
-			List<String> controlSet002 = readStringSubKeys(HKEY_LOCAL_MACHINE,"SYSTEM\\ControlSet002\\Enum\\FTDIBUS");
-			for(String device: controlSet002){
-				String comport= readString(HKEY_LOCAL_MACHINE, key2+"\\"+ device+postfixKey, "PortName");
+			List<String> controlSet002 = readStringSubKeys(HKEY_LOCAL_MACHINE,
+					"SYSTEM\\ControlSet002\\Enum\\FTDIBUS");
+			for (String device : controlSet002) {
+				String comport = readString(HKEY_LOCAL_MACHINE, key2 + "\\"
+						+ device + postfixKey, "PortName");
 				String[] deviceName = device.split("[+]");
-				if(comport != null && deviceName.length == 3){					
-					result.put(comport,deviceName[2].substring(0, deviceName[2].length()-1));
-				} else 
+				if (comport != null && deviceName.length == 3) {
+					result.put(comport, deviceName[2].substring(0,
+							deviceName[2].length() - 1));
+				} else
 					System.out.println("warning: null comport");
 			}
 		} catch (IllegalArgumentException e) {
@@ -406,6 +442,28 @@ public class WindowsRegistry {
 		}
 		return result;
 	}
+
+	public static List<String> searchFor(String key, String folder)
+			throws IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
+		List<String> result = new LinkedList<String>();
+		List<String> nextFolder = readStringSubKeys(HKEY_LOCAL_MACHINE, folder);
+		if (nextFolder != null && nextFolder.size() > 0)
+			for (String nkey : nextFolder) {
+				if(folder.equals(""))
+					result.addAll(searchFor(key, nkey));
+				else
+				result.addAll(searchFor(key, folder + "\\"+nkey));
+			}		
+		Map<String,String> m = readStringValues(HKEY_LOCAL_MACHINE, folder);
+		if(m!= null)
+		for (String s : m.keySet()) {
+			if(m.get(s)!= null && m.get(s).equals(key))
+				result.add(folder + "//"+key);
+		}
+		return result;
+	}
+
 	/**
 	 * test
 	 * 
@@ -416,9 +474,11 @@ public class WindowsRegistry {
 	 */
 	public static void main(String[] args) throws IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
-		HashMap<String, String> hm  = WindowsRegistry.getFTDIDevices();
-		for(String x : hm.keySet()){
-			System.out.println(x + " -> " + hm.get(x));
-		}		
+		HashMap<String, String> hm = WindowsRegistry.getZ1Devices();//WindowsRegistry.getFTDIDevices();
+		System.out.println(hm);
+		//List<String> l = searchFor("COM34", "");
+		//for(String s : l){
+		//	System.out.println(s);
+		//}
 	}
 }

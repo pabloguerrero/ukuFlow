@@ -15,6 +15,8 @@ public class WorkflowTypes {
 	public static final int EXCLUSIVE_DECISION_GATEWAY = 10;
 	public static final int EXCLUSIVE_MERGE_GATEWAY = 11;
 	public static final int EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY = 12;
+	
+	/* statement types */
 	public static final int COMPUTATION_STATEMENT = 0;
 	public static final int LOCAL_FUNCTION_STATEMENT = 1;
 	public static final int SCOPED_FUNCTION_STATEMENT = 2;

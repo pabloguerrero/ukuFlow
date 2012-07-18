@@ -38,7 +38,7 @@ public class BPMN2XMLParser {
 	}
 	
 	private Element loadXML(InputStream in){
-		SAXBuilder builder = new SAXBuilder();
+		SAXBuilder builder = new SAXBuilder();		
 		//builder.setValidation(false);
 		builder.setIgnoringElementContentWhitespace(true);		
 		try {

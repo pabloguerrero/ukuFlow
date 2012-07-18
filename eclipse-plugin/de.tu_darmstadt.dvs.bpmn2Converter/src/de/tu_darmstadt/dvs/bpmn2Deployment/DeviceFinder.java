@@ -69,6 +69,7 @@ public class DeviceFinder {
 
 	private HashMap<String, String> getDevices_windows() {
 		HashMap<String, String> staticDevice = WindowsRegistry.getFTDIDevices();
+		staticDevice.putAll(WindowsRegistry.getZ1Devices());
 		HashMap<String, String> result = new HashMap<String, String>();
 		List<String> portName = portList();
 		
