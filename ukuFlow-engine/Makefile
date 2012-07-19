@@ -15,7 +15,7 @@ endif
 
 # Contiki's flags:
 CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
-CFLAGS += -DDEBUG_DEPTH=0
+CFLAGS += -DDEBUG_DEPTH=1
 
 APPS = serial-shell data-mgr scopes 
 

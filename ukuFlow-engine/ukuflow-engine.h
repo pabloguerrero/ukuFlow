@@ -48,34 +48,34 @@
 
 #include "workflow.h"
 
-/** \brief Delay to use after invoking a scope operation (open a scope / close a scope / send data through a scope)*/
+/** \brief Delay to use after invoking a scope operation (open a scope / close a scope / send data through a scope) */
 #define SCOPE_OPERATION_DELAY 5
 
 
 /*---------------------------------------------------------------------------*/
 /** \brief		TODO */
 struct workflow_node {
-	/** \brief */
+	/** \brief TODO */
 	struct workflow_node *next;
-	/** \brief */
+	/** \brief TODO */
 	struct workflow *wf;
 };
 /*---------------------------------------------------------------------------*/
 /** \brief		TODO */
 struct workflow_instance {
-	/** \brief */
+	/** \brief TODO */
 	struct workflow_instance *next;
 
-	/** \brief */
+	/** \brief TODO */
 	struct workflow_node *wfn;
 
-	/** \brief */
+	/** \brief TODO */
 	uint8_t instance_id;
 
-	/** \brief */
+	/** \brief TODO */
 	data_repository_id_t repository_id;
 
-	/** \brief */
+	/** \brief TODO */
 	uint8_t num_tokens;
 };
 /*---------------------------------------------------------------------------*/
@@ -102,32 +102,39 @@ struct workflow_token {
 /*---------------------------------------------------------------------------*/
 /** \brief Token state for a computation statement */
 struct comp_ex_task_token_state {
-	/** \brief */
+	/** \brief TODO */
 	uint8_t statement_nr;
 };
 /** \brief Token state for a local function statement */
 struct lfs_ex_task_token_state {
-	/** \brief */
+	/** \brief TODO */
 	uint8_t statement_nr;
-	/** \brief */
+	/** \brief TODO */
 	struct process *child_command_process;
 };
 /** \brief Token state for a scoped function statement */
 struct sfs_ex_task_token_state {
-	/** \brief */
+	/** \brief TODO */
 	uint8_t statement_nr;
+	/** \brief TODO */
+	char *cmd_line;
+	/** \brief TODO */
+	data_len_t cmd_line_len;
 };
 
 /** \brief Token state union for any statement */
 union ex_task_token_state {
+	/** \brief TODO */
 	struct comp_ex_task_token_state comp_ex_task_token_state;
+	/** \brief TODO */
 	struct lfs_ex_task_token_state lfs_ex_task_token_state;
+	/** \brief TODO */
 	struct sfs_ex_task_token_state sfs_ex_task_token_state;
 };
 /*---------------------------------------------------------------------------*/
 /** \brief Token state for a gateway */
 struct gw_token_state {
-	/** \brief */
+	/** \brief TODO */
 	uint8_t num_children_tokens;
 };
 /*---------------------------------------------------------------------------*/
@@ -148,6 +155,7 @@ struct eb_gw_token_state {
 /*---------------------------------------------------------------------------*/
 void ukuflow_engine_init();
 void ukuflow_engine_register(struct workflow *wf);
+void ukuflow_engine_deregister(uint8_t workflow_id);
 void ukuflow_notify_unsubscription_ready(struct workflow_token *token);
 /*---------------------------------------------------------------------------*/
 

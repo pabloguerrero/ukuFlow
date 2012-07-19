@@ -40,22 +40,32 @@
  * \date	May 18, 2011
  */
 
-
 #include "workflow.h"
 #include <stdio.h>
+#include "logger.h"
 
+#ifdef WITH_WF_NAMES
+#undef WITH_WF_NAMES
+#endif
+//#define WITH_WF_NAMES 0
 /*---------------------------------------------------------------------------*/
-//char *wf_elem_names[] = { "start event", "end event", "execute task",
-//		"publish task", "subscribe task", "subworkflow task", "fork gateway",
-//		"join gateway", "inclusive decision gateway", "inclusive join gateway",
-//		"exclusive decision gateway", "exclusive merge gateway",
-//		"event based exclusive decision gateway" };
+#ifdef WITH_WF_NAMES
+/*---------------------------------------------------------------------------*/
+/**
+ * \brief		Collection of names for the different workflow elements
+ */
+char *wf_elem_names[] = {"start event", "end event", "execute task",
+	"publish task", "subscribe task", "subworkflow task", "fork gateway",
+	"join gateway", "inclusive decision gateway", "inclusive join gateway",
+	"exclusive decision gateway", "exclusive merge gateway",
+	"event based exclusive decision gateway"};
 /*---------------------------------------------------------------------------*/
 /**
  * \brief		Collection of names for the different statement types
  */
-char *wf_statement_names[] = { "computation statement",
-		"local function statement", "scoped function statement" };
+char *wf_statement_names[] = {"computation statement",
+	"local function statement", "scoped function statement"};
+#endif
 /*---------------------------------------------------------------------------*/
 /**
  * \brief		Returns the wf_elem with the requested id, or NULL otherwise
@@ -75,9 +85,8 @@ struct wf_generic_elem *workflow_get_wf_elem(struct workflow *wf,
 //	printf("searched: %u\n", wf_elem_id);
 	if (wf_elem_id < wf->num_wf_elems) {
 		wf_elem_id_t wf_elem_nr = 0;
-		struct wf_generic_elem *wfe =
-				(struct wf_generic_elem*) ((uint8_t*) (wf)
-						+ sizeof(struct workflow));
+		struct wf_generic_elem *wfe = (struct wf_generic_elem*) ((uint8_t*) (wf)
+				+ sizeof(struct workflow));
 
 		while ((wf_elem_nr < wf->num_wf_elems) && (wfe->id != wf_elem_id)) {
 //			printf("found %u\n", wfe->id);
@@ -99,9 +108,9 @@ struct wf_generic_elem *workflow_get_wf_elem(struct workflow *wf,
 }
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		Searches within an execute task for a statement with the given id.
+ * \brief		Searches within an execute task for a statement with the given number.
  *
- *				Searches and returns the statement with the specified id
+ *				Searches and returns the statement with the specified number
  *				within the execute task passed as parameter, if it exists, or
  *				NULL otherwise.
  *
@@ -116,7 +125,8 @@ struct statement *workflow_get_statement(struct wf_ex_task *wf_ex,
 		struct statement *st = (struct statement*) ((uint8_t*) wf_ex)
 				+ sizeof(struct wf_ex_task);
 		uint8_t st_nr;
-		for (st_nr = 0; st_nr < wf_ex->num_statements && st_nr != statement_nr; st_nr++)
+		for (st_nr = 0; st_nr < wf_ex->num_statements && st_nr != statement_nr;
+				st_nr++)
 			st = (struct statement*) (((uint8_t*) st)
 					+ workflow_statement_size(st));
 		if (st_nr < wf_ex->num_statements)
@@ -128,18 +138,18 @@ struct statement *workflow_get_statement(struct wf_ex_task *wf_ex,
 }
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		@todo
+ * \brief		TODO
  *
- * 				@todo
+ * 				TODO
  */
 uint8_t *workflow_get_data_expression(struct computation_statement *cst) {
 	return ((uint8_t*) cst) + sizeof(struct computation_statement);
 }
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		@todo
+ * \brief		TODO
  *
- * 				@todo
+ * 				TODO
  */
 char *workflow_get_function_statement(struct statement *st) {
 	if (st->statement_type == LOCAL_FUNCTION_STATEMENT)
@@ -151,9 +161,9 @@ char *workflow_get_function_statement(struct statement *st) {
 }
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		@todo
+ * \brief		TODO
  *
- * 				@todo
+ * 				TODO
  */
 data_len_t workflow_wf_elem_size(struct wf_generic_elem *wfe) {
 	data_len_t size = 0;
@@ -177,7 +187,8 @@ data_len_t workflow_wf_elem_size(struct wf_generic_elem *wfe) {
 
 		uint8_t statement_nr, statement_size;
 
-		for (statement_nr = 0; statement_nr < wf_ex->num_statements; statement_nr++) {
+		for (statement_nr = 0; statement_nr < wf_ex->num_statements;
+				statement_nr++) {
 			statement_size = workflow_statement_size(st);
 			//			printf("statement size %u\n", statement_size);
 			size += statement_size;
@@ -186,15 +197,15 @@ data_len_t workflow_wf_elem_size(struct wf_generic_elem *wfe) {
 		break;
 	}
 	case PUBLISH_TASK: {
-		/* @todo: calculate here */
+		/* TODO: calculate here */
 		break;
 	}
 	case SUBSCRIBE_TASK: {
-		/* @todo: calculate here */
+		/* TODO: calculate here */
 		break;
 	}
 	case SUBWORKFLOW_TASK: {
-		/* @todo: calculate here */
+		/* TODO: calculate here */
 		break;
 	}
 	case FORK_GATEWAY: {
@@ -224,8 +235,8 @@ data_len_t workflow_wf_elem_size(struct wf_generic_elem *wfe) {
 		for (i = 0; i < idgw->out_flows; i++) {
 			size += sizeof(struct conditional_flow) + flow->expression_length;
 
-			flow
-					= (struct conditional_flow*) ((uint8_t*) flow
+			flow =
+					(struct conditional_flow*) ((uint8_t*) flow
 							+ sizeof(struct conditional_flow)
 							+ flow->expression_length);
 
@@ -258,33 +269,59 @@ data_len_t workflow_wf_elem_size(struct wf_generic_elem *wfe) {
 }
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		@todo
+ * \brief		Calculates and returns the size of a statement (in bytes)
  *
- * 				@todo
+ * 				TODO
  */
 data_len_t workflow_statement_size(struct statement *st) {
-	switch (st->statement_type) {
-	case COMPUTATION_STATEMENT: {
-		return sizeof(struct computation_statement)
-				+ ((struct computation_statement*) st)->data_expression_length;
-		break;
-	}
-	case LOCAL_FUNCTION_STATEMENT: {
-		return sizeof(struct local_function_statement)
-				+ ((struct local_function_statement*) st)->cmd_len;
-		break;
-	}
-	case SCOPED_FUNCTION_STATEMENT: {
-		return sizeof(struct scoped_function_statement)
-				+ ((struct scoped_function_statement*) st)->cmd_len;
-		break;
-	}
-	default: {
-		return 0;
-	}
+	data_len_t statement_len = 0;
 
-	} // switch
+	/* Treat a computation statement differently from the other (local function statement and scoped function statement) */
+	if (st->statement_type == COMPUTATION_STATEMENT) {
+		/* size is the sum of fixed-width structure plus variable-width expression  */
+		statement_len = sizeof(struct computation_statement)
+				+ ((struct computation_statement*) st)->data_expression_length;
+
+	} else { // LOCAL_FUNCTION_STATEMENT or SCOPED_FUNCTION_STATEMENT
+
+		struct statement_command *st_cmd;
+		/* size equals the sum of: fixed-width structure + */
+		if (st->statement_type == LOCAL_FUNCTION_STATEMENT)
+			statement_len = sizeof(struct local_function_statement);
+		else
+			statement_len = sizeof(struct scoped_function_statement);
+
+		st_cmd = (struct statement_command *) (((uint8_t*) st) + sizeof(struct local_function_statement));
+
+		/* + size of fixed-width statement command structure + length of variable-width command name + */
+		statement_len += sizeof(struct statement_command) + st_cmd->cmd_len;
+		uint8_t param_num;
+		data_len_t cmd_index = 0;
+		uint8_t *st_cmd_arr = ((uint8_t*) st_cmd)
+				+ sizeof(struct statement_command) + st_cmd->cmd_len;
+
+		for (param_num = 0; param_num < st_cmd->num_params; param_num++) {
+				printf("param: %d %d %d st len %d \n", st_cmd_arr[cmd_index], st_cmd_arr[cmd_index+1], st_cmd_arr[cmd_index+2], statement_len);
+
+			switch (st_cmd_arr[cmd_index]) {
+			case (STRING_VALUE): {
+				statement_len += 2 + st_cmd_arr[cmd_index + 1];
+				cmd_index += 2 + st_cmd_arr[cmd_index + 1];
+				break;
+			} /* case */
+			case (REPOSITORY_VALUE): {
+				statement_len += 2;
+				cmd_index += 2;
+				break;
+			} /* case */
+			} /* switch */
+		} /* for */
+		printf("for lfs|sfs %d, size: %d\n", param_num, statement_len);
+	} /* else */
+
+	return statement_len;
 }
+
 /*---------------------------------------------------------------------------*/
 /**
  * \brief		Return the event operator information contained in a workflow
@@ -324,24 +361,18 @@ struct event_operator_flow *workflow_get_event_operator_flow(
  **/
 struct scope_info *workflow_get_scope_info(struct workflow *wf,
 		scope_id_t searched_scope_id) {
-	// first advance to last wf_elem
-//	printf("wf %u\n", wf->num_wf_elems);
+	/* first advance to last wf_elem */
 	uint8_t *ptr = (uint8_t*) workflow_get_wf_elem(wf, wf->num_wf_elems - 1);
 
-	if (!ptr) {
-//		printf("s\n");
+	if (!ptr)
 		return NULL;
-	}
-	// now advance past the last wf_elem (should be an end event)
-	ptr += workflow_wf_elem_size((struct wf_generic_elem*) ptr);
 
-//	printf("ASd %u, %u, %u, %u\n", (ptr)[0], (ptr)[1], (ptr)[2], (ptr)[3]);
+	/* now advance past the last wf_elem (should be an end event) */
+	ptr += workflow_wf_elem_size((struct wf_generic_elem*) ptr);
 
 	uint8_t scope_nr = 0;
 	struct scope_info *s_i = (struct scope_info*) ptr;
 	while (scope_nr < wf->num_scopes) {
-
-		//		printf("workflow_get_scope_info(): first four bytes: %u, %u, %u, %u\n", ((uint8_t*)s_i)[0], ((uint8_t*)s_i)[1], ((uint8_t*)s_i)[2], ((uint8_t*)s_i)[3]);
 
 		if (s_i->scope_id == searched_scope_id)
 			return s_i;
@@ -353,26 +384,32 @@ struct scope_info *workflow_get_scope_info(struct workflow *wf,
 	}
 	return NULL;
 }
+
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		@todo
+ * \brief		TODO
  *
- * 				@todo
+ * 				TODO
  */
 char *get_wf_elem_type_name(struct wf_generic_elem *wfe) {
-	//	printf("type is %u\n", wfe->elem_type);
-	//	return wf_elem_names[wfe->elem_type];
+#ifdef WITH_WF_NAMES
+	return wf_elem_names[wfe->elem_type];
+#else
 	return "";
+#endif
 }
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		@todo
+ * \brief		TODO
  *
- * 				@todo
+ * 				TODO
  */
 char *get_wf_statement_name(statement_type_t st) {
-	//	printf("type is %u\n", wfe->elem_type);
+#ifdef WITH_WF_NAMES
 	return wf_statement_names[st];
+#else
+	return "";
+#endif
 }
 
 /** @} */

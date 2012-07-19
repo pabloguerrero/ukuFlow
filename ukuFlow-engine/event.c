@@ -46,9 +46,9 @@
 #include "logger.h"
 /*---------------------------------------------------------------------------*/
 /** \brief		Size of event fields. These correspond to the enumeration 'event_field' in event-types.h */
-data_len_t event_field_width[] = {//
-		/** \brief EVENT_TYPE */
-		sizeof(event_type_t),
+data_len_t event_field_width[] = { //
+//		/** \brief EVENT_TYPE */
+//		sizeof(event_type_t),
 		/** \brief SENSOR */
 		sizeof(uint8_t),
 		/** \brief MAGNITUDE */
@@ -63,8 +63,13 @@ data_len_t event_field_width[] = {//
 
 /*---------------------------------------------------------------------------*/
 /** \brief		Names of event fields. These correspond to the enumeration 'event_field' */
-char *event_field_names[] = { "event type", "sensor", "magnitude", "timestamp",
-		"source node", "source scope" };
+char *event_field_names[] = { //
+		//"event type",
+				"sensor",//
+				"magnitude", //
+				"timestamp", //
+				"source node", //
+				"source scope" };
 /*---------------------------------------------------------------------------*/
 /**
  * \brief		TODO
@@ -249,32 +254,35 @@ struct event *event_clone(struct event *source_event,
 /**
  * \brief		Populates an event's fields with primitive information.
  *
- * 				TODO
+ * 				Populates an event's fields with primitive information.
+ * 				The fields are filled with information from the common data
+ * 				repository. Depending on the actual event generator's information
+ * 				(which is passed as parameter), the respective data item from the
+ * 				repository is fetched.
  *
- * @param[in] event
+ * @param[in] event	the event to populate
  * @param[in] g_egen
  */
 void event_populate(struct event *event, struct generic_egen *g_egen) {
 
 	data_len_t data_len;
-	uint16_t temp;
+	uint16_t *temp_data_ptr, temp_data;
 
-	temp
-			= *((uint16_t*) data_mgr_get_data(0, g_egen->sensor,
-					&data_len));
+	temp_data_ptr = (uint16_t*) data_mgr_get_data(0, g_egen->sensor, &data_len);
 
-	//	event_print(event, 0);
+	if (temp_data_ptr == NULL)
+		return;
+	temp_data = *temp_data_ptr;
 
 	clock_time_t time = clock_time();
-	PRINTF(3,"(EVENT) time %lu, sensor %u, value %u\n", time, g_egen->sensor, temp);
+	PRINTF(3,
+			"(EVENT) time %lu, sensor %u, value %u\n", time, g_egen->sensor, temp_data);
 	event->channel_id = g_egen->channel_id;
 	event_set_value(event, SENSOR, &g_egen->sensor);
-	event_set_value(event, MAGNITUDE, (uint8_t*) &temp);
+	event_set_value(event, MAGNITUDE, (uint8_t*) &temp_data);
 	event_set_value(event, TIMESTAMP, (uint8_t*) &time);
 	event_set_value(event, SOURCE_NODE, (uint8_t*) &rimeaddr_node_addr);
 	event_set_value(event, SOURCE_SCOPE, &g_egen->scope_id);
-
-	//	event_print(event, 0);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -308,8 +316,8 @@ data_len_t event_get_size(struct event *event) {
  *  @param[in]	event_payload_len Length, in bytes, of the event's payload
  */
 void event_print(struct event *event, data_len_t event_payload_len) {
-	PRINTF(1, "Event - channel id %u, number of fields: %u, payload len: %u\n",
-			event->channel_id, event->num_fields, event_payload_len);
+	PRINTF(1,
+			"Event - channel id %u, number of fields: %u, payload len: %u\n", event->channel_id, event->num_fields, event_payload_len);
 
 	uint8_t field_nr, field;
 
