@@ -1,4 +1,4 @@
-package de.tu_darmstadt.dvs.bpmn2converter.handler;
+package de.tudarmstadt.dvs.ukuflow.handler;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -27,9 +27,9 @@ import org.eclipse.core.resources.IFile;
 import org.jdom2.Attribute;
 import org.jdom2.Element;
 
-import de.tu_darmstadt.dvs.bpmn2Deployment.DeviceFinder;
-import de.tu_darmstadt.dvs.bpmn2converter.util.TypeClassifier;
-import de.tu_darmstadt.dvs.bpmn2converter.util.XMLNode;
+import de.tudarmstadt.dvs.ukuflow.deployment.DeviceFinder;
+import de.tudarmstadt.dvs.ukuflow.util.TypeClassifier;
+import de.tudarmstadt.dvs.ukuflow.util.XMLNode;
 
 public class ConvertCommand extends AbstractHandler {
 

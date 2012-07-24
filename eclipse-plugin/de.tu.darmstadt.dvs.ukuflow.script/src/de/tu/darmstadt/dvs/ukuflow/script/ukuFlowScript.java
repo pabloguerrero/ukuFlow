@@ -170,8 +170,9 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
           tmp = NumberOrVariable();
         params.add((PrimaryExpression) tmp);
         } else if (jj_2_18(2)) {
-          jj_consume_token(IDENTIFIER);
-        params.add(new UkuString(token.image.trim()));
+          jj_consume_token(VARIABLE);
+        //params.add(new UkuString(token.image.trim()));
+        params.add(new Variable(token.image.trim()));
         } else if (jj_2_19(2)) {
           jj_consume_token(STRING);
         params.add(new UkuString(token.image.trim()));
@@ -883,7 +884,7 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
   }
 
   private boolean jj_3_18() {
-    if (jj_scan_token(IDENTIFIER)) return true;
+    if (jj_scan_token(VARIABLE)) return true;
     return false;
   }
 
@@ -914,13 +915,13 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     return false;
   }
 
-  private boolean jj_3_17() {
-    if (jj_3R_14()) return true;
+  private boolean jj_3_36() {
+    if (jj_scan_token(30)) return true;
     return false;
   }
 
-  private boolean jj_3_36() {
-    if (jj_scan_token(30)) return true;
+  private boolean jj_3_17() {
+    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -1042,6 +1043,11 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     return false;
   }
 
+  private boolean jj_3_43() {
+    if (jj_scan_token(31)) return true;
+    return false;
+  }
+
   private boolean jj_3_12() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1052,11 +1058,6 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     if (jj_3_15()) return true;
     }
     }
-    return false;
-  }
-
-  private boolean jj_3_43() {
-    if (jj_scan_token(31)) return true;
     return false;
   }
 
@@ -1195,11 +1196,6 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     { if (!jj_rescan) trace_return("ConditionalOrFunction(LOOKAHEAD SUCCEEDED)"); return false; }
   }
 
-  private boolean jj_3_10() {
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
   private boolean jj_3_28() {
     if (jj_scan_token(35)) return true;
     if (jj_3R_19()) return true;
@@ -1211,13 +1207,23 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     return false;
   }
 
-  private boolean jj_3_9() {
-    if (jj_3R_11()) return true;
+  private boolean jj_3_10() {
+    if (jj_3R_12()) return true;
     return false;
   }
 
   private boolean jj_3_40() {
     if (jj_scan_token(33)) return true;
+    return false;
+  }
+
+  private boolean jj_3_9() {
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
+  private boolean jj_3_39() {
+    if (jj_scan_token(32)) return true;
     return false;
   }
 
@@ -1236,11 +1242,6 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
 
   private boolean jj_3_8() {
     if (jj_3R_10()) return true;
-    return false;
-  }
-
-  private boolean jj_3_39() {
-    if (jj_scan_token(32)) return true;
     return false;
   }
 

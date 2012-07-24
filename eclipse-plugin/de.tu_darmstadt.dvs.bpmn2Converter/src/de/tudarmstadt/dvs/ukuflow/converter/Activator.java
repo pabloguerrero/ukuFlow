@@ -1,4 +1,4 @@
-package de.tu_darmstadt.dvs.bpmn2converter;
+package de.tudarmstadt.dvs.ukuflow.converter;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "de.tu_darmstadt.dvs.bpmn2Converter"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "de.tudarmstadt.dvs.ukuflow.converter"; 
 
 	// The shared instance
 	private static Activator plugin;

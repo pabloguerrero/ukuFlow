@@ -1,4 +1,4 @@
-package de.tu_darmstadt.dvs.bpmn2converter.constant;
+package de.tudarmstadt.dvs.ukuflow.converter.constant;
 
 public class EventTypes {
 	/* event-types.h */

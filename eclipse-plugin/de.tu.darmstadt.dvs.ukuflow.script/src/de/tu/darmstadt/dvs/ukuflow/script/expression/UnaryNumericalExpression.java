@@ -1,5 +1,11 @@
 package de.tu.darmstadt.dvs.ukuflow.script.expression;
 
+/**
+ * represent an unary numerical expression
+ * 
+ * @author Hien Quoc Dang
+ * 
+ */
 public class UnaryNumericalExpression extends NumericalExpression {
 	public UnaryNumericalExpression(int operator) {
 		super(operator);
@@ -7,14 +13,21 @@ public class UnaryNumericalExpression extends NumericalExpression {
 	}
 
 	protected UkuExpression operand;
-	public void setOperand(UkuExpression n){
+
+	public void setOperand(UkuExpression n) {
 		this.operand = n;
 	}
-	
-	public UkuExpression getOperand(){
+
+	public UkuExpression getOperand() {
 		return operand;
 	}
-	public String toString(){
-		return "("+operator+" "+operand+")";
+
+	public String toString() {
+		return "(" + operator + " " + operand + ")";
+	}
+
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
 	}
 }

@@ -1,4 +1,4 @@
-package de.tu_darmstadt.dvs.debuger;
+package de.tudarmstadt.dvs.ukuflow.debugger;
 
 public class BpmnLog {
 	public static boolean debug = true;

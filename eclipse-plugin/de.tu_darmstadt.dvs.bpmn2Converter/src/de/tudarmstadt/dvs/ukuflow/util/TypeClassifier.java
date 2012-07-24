@@ -1,4 +1,4 @@
-package de.tu_darmstadt.dvs.bpmn2converter.util;
+package de.tudarmstadt.dvs.ukuflow.util;
 
 import java.util.HashSet;
 import java.util.Set;

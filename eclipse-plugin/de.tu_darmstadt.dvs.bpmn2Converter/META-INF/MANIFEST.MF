@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Bpmn2Converter
-Bundle-SymbolicName: de.tu_darmstadt.dvs.bpmn2Converter;singleton:=true
+Bundle-SymbolicName: de.tudarmstadt.dvs.ukuflow.converter;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: de.tu_darmstadt.dvs.bpmn2converter.Activator
+Bundle-Activator: de.tudarmstadt.dvs.ukuflow.converter.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jdt.core;bundle-version="3.7.3",

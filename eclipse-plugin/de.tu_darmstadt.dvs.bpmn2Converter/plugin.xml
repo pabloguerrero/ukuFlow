@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="de.tu_darmstadt.dvs.bpmn2converter.handler.ConvertCommand"
+            defaultHandler="de.tudarmstadt.dvs.ukuflow.handler.ConvertCommand"
             id="de.tu_darmstadt.dvs.bpmn2Converter.convertcommand"
             name="convertcmd">
       </command>

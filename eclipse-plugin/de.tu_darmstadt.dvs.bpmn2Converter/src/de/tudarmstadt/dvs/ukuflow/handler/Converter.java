@@ -1,4 +1,4 @@
-package de.tu_darmstadt.dvs.bpmn2converter.handler;
+package de.tudarmstadt.dvs.ukuflow.handler;
 
 import java.io.IOException;
 import java.io.InputStream;

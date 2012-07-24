@@ -1,5 +1,10 @@
 package de.tu.darmstadt.dvs.ukuflow.script.expression;
 
-public abstract class UkuExpression{
+/**
+ * Super class of an ukuFlow expression. Every ukuFlow primitives must extends this class direct or indirectly.
+ * @author Hien Quoc Dang
+ *
+ */
+public abstract class UkuExpression implements Visitable{
 	
 }
