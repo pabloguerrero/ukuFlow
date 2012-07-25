@@ -5,6 +5,7 @@ Bundle-SymbolicName: de.tu.darmstadt.dvs.ukuflow.script
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: de.tu.darmstadt.dvs.ukuflow.script.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ de.tudarmstadt.dvs.ukuflow.converter;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

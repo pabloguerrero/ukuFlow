@@ -28,8 +28,8 @@ import org.jdom2.Attribute;
 import org.jdom2.Element;
 
 import de.tudarmstadt.dvs.ukuflow.deployment.DeviceFinder;
-import de.tudarmstadt.dvs.ukuflow.util.TypeClassifier;
-import de.tudarmstadt.dvs.ukuflow.util.XMLNode;
+import de.tudarmstadt.dvs.ukuflow.xml.util.TypeClassifier;
+import de.tudarmstadt.dvs.ukuflow.xml.util.XMLNode;
 
 public class ConvertCommand extends AbstractHandler {
 

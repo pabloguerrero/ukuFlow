@@ -1,8 +1,8 @@
 package de.tu.darmstadt.dvs.ukuflow.script.expression;
 
-import de.tu.darmstadt.dvs.ukuflow.script.function.ComputationalFunction;
-import de.tu.darmstadt.dvs.ukuflow.script.function.LocalFunction;
-import de.tu.darmstadt.dvs.ukuflow.script.function.ScopeFunction;
+import de.tudarmstadt.dvs.ukuflow.script.function.ComputationalFunction;
+import de.tudarmstadt.dvs.ukuflow.script.function.LocalFunction;
+import de.tudarmstadt.dvs.ukuflow.script.function.ScopeFunction;
 
 public interface Visitor {
 	public void visit(Constant uConstant);

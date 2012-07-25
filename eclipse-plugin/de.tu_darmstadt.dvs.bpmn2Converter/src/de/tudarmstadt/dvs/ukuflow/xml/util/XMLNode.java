@@ -1,4 +1,4 @@
-package de.tudarmstadt.dvs.ukuflow.util;
+package de.tudarmstadt.dvs.ukuflow.xml.util;
 
 import java.util.LinkedList;
 import java.util.List;

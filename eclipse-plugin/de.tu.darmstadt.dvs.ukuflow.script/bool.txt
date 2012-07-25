@@ -1,1 +1,2 @@
 local t = open -windows $now 30;
+local t = 10;
