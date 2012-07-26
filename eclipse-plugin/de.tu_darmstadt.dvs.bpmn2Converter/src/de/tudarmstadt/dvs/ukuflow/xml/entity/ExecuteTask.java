@@ -12,10 +12,12 @@ public class ExecuteTask extends Entity{
 	public void setNextEntity(Entity nextEntity){
 		this.nextEntity = nextEntity;
 	}
+	
 	public void setNextEntityID(String id){
 		this.nextEntityID = id;
 	}
 	public void setScript(String script){
 		this.script = script;
 	}
+	
 }

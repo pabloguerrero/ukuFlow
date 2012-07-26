@@ -22,6 +22,11 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.core.resources.IFile;
 import org.jdom2.Attribute;
@@ -39,10 +44,23 @@ import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuflowEvent;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.ukuProcess;
 
 public class ConvertCommand extends AbstractHandler {
+	/**
+	 * Console name
+	 */
+	public static final String CONSOLE_NAME = "bpmn2 converter";
+
 	TypeClassifier classifier = TypeClassifier.getInstance();
+
+	MessageConsole myConsole = null;
+	MessageConsoleStream out = null;
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+
+		myConsole = findConsole(CONSOLE_NAME);
+		out = myConsole.newMessageStream();
+		out.setActivateOnWrite(true);
+
 		System.out.println(DeviceFinder.getInstance().getDevices());
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 				.getActiveMenuSelection(event);
@@ -62,14 +80,14 @@ public class ConvertCommand extends AbstractHandler {
 			nfileLocation = nfileLocation.replace(extension + "\n", "ukuf");
 			if (extension.equals("bpmn") || extension.equals("bpmn2")) {
 				// TODO: check, convert bpmn code to Ukuflow byte code
-				System.out.println("checking..");
-				System.out.println("converting..");
-				
+				out.println("checking..");
+				out.println("converting..");
+
 				BPMN2XMLParser parser = new BPMN2XMLParser();
 				Element e = parser.loadFile(oFileLocation);
 				XMLNode root = new XMLNode(e);
-				System.out.println("number of processes\t"+fetchProcesses(e).size());
-				//printProcesses(e);
+				out.println("number of processes\t" + fetchProcesses(e).size());
+				// printProcesses(e);
 				// new Converter(input,null).execute();
 				// Converter.execute(input);
 				// new Converter(input, "").execute();
@@ -121,39 +139,43 @@ public class ConvertCommand extends AbstractHandler {
 	 * String value) { try { res.setPersistentProperty(qn, value); } catch
 	 * (CoreException e) { e.printStackTrace(); } }
 	 */
-	
-	private List<ukuProcess> fetchProcesses(Element e){
+
+	private List<ukuProcess> fetchProcesses(Element e) {
 		List<ukuProcess> result = new LinkedList<ukuProcess>();
-		if(e.getName().equals("definitions")){
-			for(Element child : e.getChildren()){
+		if (e.getName().equals("definitions")) {
+			for (Element child : e.getChildren()) {
 				ukuProcess tmp = fetchUkuProcess(child);
-				if(tmp != null)
+				if (tmp != null)
 					result.add(tmp);
 			}
 		} else {
-			System.out.println(e.getName() + " is not a 'definitions' of bpmn2 file -> ignored");
+			out.println(e.getName()
+					+ " is not a 'definitions' of bpmn2 file -> ignored");
 		}
 		return result;
 	}
+
 	private ukuProcess fetchUkuProcess(Element e) {
 		ukuProcess result = null;
-		if(e.getName().equals("process")){
+		if (e.getName().equals("process")) {
 			result = new ukuProcess(e.getAttributeValue("id"));
 			result.setEntities(fetchEntities(e));
 		} else {
-			System.out.println("element '"+e.getName()+"' is not a process -> ignored");
+			out.println("element '" + e.getName()
+					+ "' is not a process -> ignored");
 		}
 		return result;
 	}
+
 	private List<Entity> fetchEntities(Element e) {
 		List<Entity> result = new LinkedList<Entity>();
-		if(e.getName().equals("process")) {
-			for(Element child : e.getChildren()){
+		if (e.getName().equals("process")) {
+			for (Element child : e.getChildren()) {
 				Entity tmp = fetchEntity(child);
-				if(tmp != null)
+				if (tmp != null)
 					result.add(tmp);
 				else {
-					//System.out.println("not a process");
+					// System.out.println("not a process");
 				}
 			}
 		}
@@ -212,7 +234,7 @@ public class ConvertCommand extends AbstractHandler {
 				} else if (n.equals("outgoing")) {
 					gway.addOutgoing(n_id);
 				} else {
-					System.out.println("WARNING!! unknown child : " +child.getName());
+					out.println("WARNING!! unknown child : " + child.getName());
 					// TODO
 
 				}
@@ -220,12 +242,28 @@ public class ConvertCommand extends AbstractHandler {
 			return gway;
 
 		default:
-			System.out.println("WARNING, unknown element: "+type+"/" + e.getName());
+			out.println("WARNING, unknown element: " + type + "/" + e.getName());
 			// TODO:
 			return null;
 		}
 	}
-/********************************************************************************************/
+
+	/*******************************************************************************************/
+	// create a console
+	private MessageConsole findConsole(String name) {
+		ConsolePlugin plugin = ConsolePlugin.getDefault();
+		IConsoleManager conMan = plugin.getConsoleManager();
+		IConsole[] existing = conMan.getConsoles();
+		for (int i = 0; i < existing.length; i++)
+			if (name.equals(existing[i].getName()))
+				return (MessageConsole) existing[i];
+		// no console found, so create a new one
+		MessageConsole myConsole = new MessageConsole(name, null);
+		conMan.addConsoles(new IConsole[] { myConsole });
+		return myConsole;
+	}
+
+	/********************************************************************************************/
 	private void printProcesses(Element e) {
 		if (e.getName().equals("definitions")) {
 			for (Element ex : e.getChildren()) {
@@ -253,22 +291,20 @@ public class ConvertCommand extends AbstractHandler {
 				case 1:
 					connector.put(child.getAttributeValue("id"), child);
 					connector_Id.add(child.getAttributeValue("id"));
-					System.out.println("connector added :"
+					
+					out.println("connector added :"
 							+ child.getAttributeValue("id"));
 					break;
 				case 2:
 				case 3:
 				case 4:
 					elements.put(child.getAttributeValue("id"), child);
-					System.out.println("Element added"
-							+ child.getAttributeValue("id"));
+					out.println("Element added" + child.getAttributeValue("id"));
 					break;
 				default:
-					System.out
-							.println("warning: element with name "
-									+ child.getName() + ", id: "
-									+ child.getAttributeValue("id")
-									+ " is not defined");
+					out.println("warning: element with name " + child.getName()
+							+ ", id: " + child.getAttributeValue("id")
+							+ " is not defined");
 				}
 			}
 			StringBuilder sb = new StringBuilder();
@@ -331,7 +367,7 @@ public class ConvertCommand extends AbstractHandler {
 			printElement(child, prefix + "   ");
 		}
 	}
-	
+
 	private String readFile(InputStream is) {
 		final char[] buffer = new char[0x10000];
 		StringBuilder out = new StringBuilder();
