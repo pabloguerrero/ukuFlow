@@ -1,5 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.expression;
 
+import de.tudarmstadt.dvs.ukuflow.converter.constant.ExpressionTypes;
+
 /**
  * 
  * @author Hien Quoc Dang
@@ -7,11 +9,13 @@ package de.tudarmstadt.dvs.ukuflow.script.expression;
  */
 public abstract class LogicalExpression extends BoolExpression{
 	
-	public static final int AND  = 0;
-	public static final int OR = 1;
-	@Deprecated //this should not be supported
+	public static final int AND  = ExpressionTypes.OPERATOR_AND;
+	public static final int OR = ExpressionTypes.OPERATOR_OR;
+	
+	@Deprecated //still not supported
 	public static final int XOR  = 1;
-	public static final int NOT = 2;
+	
+	public static final int NOT = ExpressionTypes.OPERATOR_NOT;
 	
 	protected int operator = 0;
 	

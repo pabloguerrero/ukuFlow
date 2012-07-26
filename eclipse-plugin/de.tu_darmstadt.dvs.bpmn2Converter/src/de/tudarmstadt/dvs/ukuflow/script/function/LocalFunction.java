@@ -6,18 +6,21 @@ import de.tudarmstadt.dvs.ukuflow.script.expression.PrimaryExpression;
 import de.tudarmstadt.dvs.ukuflow.script.expression.Visitable;
 import de.tudarmstadt.dvs.ukuflow.script.expression.Visitor;
 
-public class LocalFunction implements Visitable{
+public class LocalFunction implements Visitable {
 
-	String variable;
 	String function_name;
-	boolean saveResult2Variable = false;
 	List<PrimaryExpression> params;
 
-	public LocalFunction(String variable, String name,
-			List<PrimaryExpression> params) {
-		if(params != null)
+	/**
+	 * indicate if the result will be stored into a variable
+	 */
+	boolean saveResult2Variable = false;
+	String variable;
+
+	public LocalFunction(String variable, String name, List<PrimaryExpression> params) {
+		if (params != null)
 			this.params = params;
-			
+
 		function_name = name;
 
 		if (variable != null) {
@@ -29,22 +32,24 @@ public class LocalFunction implements Visitable{
 	public LocalFunction(String name, List<PrimaryExpression> params) {
 		this(null, name, params);
 	}
-	
-	public LocalFunction(String function_name){
-		this(function_name,null);		
+
+	public LocalFunction(String function_name) {
+		this(function_name, null);
 	}
-	
-	public void setVariable(String s){
+
+	public void setVariable(String s) {
 		variable = s;
-		saveResult2Variable= true;
+		saveResult2Variable = true;
 	}
-	public String getVariable(){
+
+	public String getVariable() {
 		return variable;
 	}
 
-	public List<PrimaryExpression> getParams(){
+	public List<PrimaryExpression> getParams() {
 		return params;
 	}
+
 	public void setParams(List<PrimaryExpression> pr) {
 		this.params = pr;
 	}
@@ -60,12 +65,12 @@ public class LocalFunction implements Visitable{
 			r += pe.toString();
 			coma = true;
 		}
-		return r+")";
+		return r + ")";
 	}
 
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
-		
+
 	}
 }

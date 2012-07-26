@@ -28,227 +28,335 @@ import org.jdom2.Attribute;
 import org.jdom2.Element;
 
 import de.tudarmstadt.dvs.ukuflow.deployment.DeviceFinder;
-import de.tudarmstadt.dvs.ukuflow.xml.util.TypeClassifier;
-import de.tudarmstadt.dvs.ukuflow.xml.util.XMLNode;
+import de.tudarmstadt.dvs.ukuflow.exception.UnsupportedElementException;
+import de.tudarmstadt.dvs.ukuflow.xml.TypeClassifier;
+import de.tudarmstadt.dvs.ukuflow.xml.XMLNode;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.Entity;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.ExecuteTask;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.Gateway;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.SequenceFlow;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuflowEvent;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.ukuProcess;
 
 public class ConvertCommand extends AbstractHandler {
+	TypeClassifier classifier = TypeClassifier.getInstance();
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		System.out.println("testing get devices");
 		System.out.println(DeviceFinder.getInstance().getDevices());
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 				.getActiveMenuSelection(event);
-		
+
 		Object firstElement = selection.getFirstElement();
-		System.out.println(selection.size() + " elements");
-		if(selection.size() != 1) {
-			MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Information",	"Please choose just one BPMN2 file");
+		if (selection.size() != 1) {
+			MessageDialog.openInformation(HandlerUtil.getActiveShell(event),
+					"Information", "Please choose just one BPMN2 file");
 			return null;
 		}
 		if (firstElement instanceof IFile) {
 			IFile file = (IFile) firstElement;
-			String extension =file.getFileExtension();
-			System.out.println("location:" +file.getLocation());
+			String extension = file.getFileExtension();
 			String oFileLocation = file.getLocation().toOSString();
-			System.out.println(extension);
-			
+
 			String nfileLocation = oFileLocation + "\n";
-			nfileLocation = nfileLocation.replace(extension+"\n", "ukuf");
+			nfileLocation = nfileLocation.replace(extension + "\n", "ukuf");
 			if (extension.equals("bpmn") || extension.equals("bpmn2")) {
-				//TODO: check, convert bpmn code to Ukuflow byte code
-				
+				// TODO: check, convert bpmn code to Ukuflow byte code
 				System.out.println("checking..");
-				System.out.println("converting..");			
+				System.out.println("converting..");
+				
 				BPMN2XMLParser parser = new BPMN2XMLParser();
 				Element e = parser.loadFile(oFileLocation);
 				XMLNode root = new XMLNode(e);
-				//printElement(e, "");
-				printProcesses(e);
-				//new Converter(input,null).execute();
-				//Converter.execute(input);
-				//new Converter(input, "").execute();
-				/*	
-				File f = new File(oFileLocation);				
-				FileWriter fwrite = null;
-				try {
-					fwrite = new FileWriter(f);
-					fwrite.write(content);
-					fwrite.flush();
-					fwrite.close();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-				*/
+				System.out.println("number of processes\t"+fetchProcesses(e).size());
+				//printProcesses(e);
+				// new Converter(input,null).execute();
+				// Converter.execute(input);
+				// new Converter(input, "").execute();
+				/*
+				 * File f = new File(oFileLocation); FileWriter fwrite = null;
+				 * try { fwrite = new FileWriter(f); fwrite.write(content);
+				 * fwrite.flush(); fwrite.close(); } catch (IOException ex) {
+				 * ex.printStackTrace(); }
+				 */
 			} else {
-				MessageDialog.openInformation(HandlerUtil.getActiveShell(event), "Information",	"Please select a BPMN or BPMN2 source file");
-			}
-
-		} else {
-			MessageDialog.openInformation(HandlerUtil.getActiveShell(event),"Information", "Please select a BPMN or BPMN2 source file");
-		}
-		/*
-		if (firstElement instanceof ICompilationUnit) {
-			ICompilationUnit cu = (ICompilationUnit) firstElement;
-			IResource res = cu.getResource();
-			boolean newDirectory = true;
-			directory = getPersistentProperty(res, path);
-			System.out.println("directory: " + directory);
-			if (directory != null && directory.length() > 0) {
-				newDirectory = !(MessageDialog.openQuestion(
-						HandlerUtil.getActiveShell(event), "Question",
-						"Use the previous output directory?"));
-			}
-			if (newDirectory) {
-				DirectoryDialog fileDialog = new DirectoryDialog(
-						HandlerUtil.getActiveShell(event));
-				directory = fileDialog.open();
-
-			}
-			if (directory != null && directory.length() > 0) {
-				analyze(cu);
-				setPersistentProperty(res, path, directory);
-				write(directory, cu);
+				MessageDialog.openInformation(
+						HandlerUtil.getActiveShell(event), "Information",
+						"Please select a BPMN or BPMN2 source file");
 			}
 
 		} else {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event),
-					"Information", "Please select a Java source file");
-		}*/
+					"Information", "Please select a BPMN or BPMN2 source file");
+		}
+		/*
+		 * if (firstElement instanceof ICompilationUnit) { ICompilationUnit cu =
+		 * (ICompilationUnit) firstElement; IResource res = cu.getResource();
+		 * boolean newDirectory = true; directory = getPersistentProperty(res,
+		 * path); System.out.println("directory: " + directory); if (directory
+		 * != null && directory.length() > 0) { newDirectory =
+		 * !(MessageDialog.openQuestion( HandlerUtil.getActiveShell(event),
+		 * "Question", "Use the previous output directory?")); } if
+		 * (newDirectory) { DirectoryDialog fileDialog = new DirectoryDialog(
+		 * HandlerUtil.getActiveShell(event)); directory = fileDialog.open();
+		 * 
+		 * } if (directory != null && directory.length() > 0) { analyze(cu);
+		 * setPersistentProperty(res, path, directory); write(directory, cu); }
+		 * 
+		 * } else {
+		 * MessageDialog.openInformation(HandlerUtil.getActiveShell(event),
+		 * "Information", "Please select a Java source file"); }
+		 */
 		return null;
 	}
-/*
-	protected String getPersistentProperty(IResource res, QualifiedName qn) {
-		try {
-			return res.getPersistentProperty(qn);
-		} catch (CoreException e) {
-			return "";
-		}
-	}
-*/
-	// TODO: Include this in the HTML output
 
+	/*
+	 * protected String getPersistentProperty(IResource res, QualifiedName qn) {
+	 * try { return res.getPersistentProperty(qn); } catch (CoreException e) {
+	 * return ""; } }
+	 */
+
+	/*
+	 * protected void setPersistentProperty(IResource res, QualifiedName qn,
+	 * String value) { try { res.setPersistentProperty(qn, value); } catch
+	 * (CoreException e) { e.printStackTrace(); } }
+	 */
 	
-/*
-	protected void setPersistentProperty(IResource res, QualifiedName qn,
-			String value) {
-		try {
-			res.setPersistentProperty(qn, value);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-	}
-*/
-	private String readFile(InputStream is){
-		final char[] buffer = new char[0x10000];
-		StringBuilder out = new StringBuilder();
-		Reader in = null;
-		
-		try {
-			in = new InputStreamReader(is, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		int read = -1;
-		do {
-			try{
-				read = in.read(buffer, 0, buffer.length);
-			} catch (IOException e) {
-				// TODO: handle exception
+	private List<ukuProcess> fetchProcesses(Element e){
+		List<ukuProcess> result = new LinkedList<ukuProcess>();
+		if(e.getName().equals("definitions")){
+			for(Element child : e.getChildren()){
+				ukuProcess tmp = fetchUkuProcess(child);
+				if(tmp != null)
+					result.add(tmp);
 			}
-		  if (read>0) {
-		    out.append(buffer, 0, read);
-		  }
-		} while (read>=0);
-		
-		String result = out.toString();
+		} else {
+			System.out.println(e.getName() + " is not a 'definitions' of bpmn2 file -> ignored");
+		}
 		return result;
 	}
-	private void printElement(Element e, String prefix){
-		System.out.print(prefix);
-		
-		System.out.print(e.getName()+":"+e.getTextTrim());
-		System.out.print(" -> (");
-		for(Attribute attrb : e.getAttributes()){
-			System.out.print(attrb.getName() + ":" + attrb.getValue() + "; ");
+	private ukuProcess fetchUkuProcess(Element e) {
+		ukuProcess result = null;
+		if(e.getName().equals("process")){
+			result = new ukuProcess(e.getAttributeValue("id"));
+			result.setEntities(fetchEntities(e));
+		} else {
+			System.out.println("element '"+e.getName()+"' is not a process -> ignored");
 		}
-		System.out.println(")");
-		for(Element child : e.getChildren()){
-			printElement(child, prefix + "   ");
+		return result;
+	}
+	private List<Entity> fetchEntities(Element e) {
+		List<Entity> result = new LinkedList<Entity>();
+		if(e.getName().equals("process")) {
+			for(Element child : e.getChildren()){
+				Entity tmp = fetchEntity(child);
+				if(tmp != null)
+					result.add(tmp);
+				else {
+					//System.out.println("not a process");
+				}
+			}
+		}
+		return result;
+	}
+
+	private Entity fetchEntity(Element e) {
+		String name = e.getName();
+		int type = 0;
+		try {
+			type = classifier.getType(name);
+		} catch (UnsupportedElementException e1) {
+			e1.printStackTrace();
+			// TODO warning!
+			return null;
+		}
+		String id = e.getAttributeValue("id");
+		switch (type) {
+		case 1:
+			String sourceRef = e.getAttributeValue("sourceRef");
+			String targetRef = e.getAttributeValue("targetRef");
+			SequenceFlow result = new SequenceFlow(id, sourceRef, targetRef);
+
+			for (Element child : e.getChildren()) {
+				if (child.getName().equals("conditionExpression"))
+					;
+				String condition = child.getTextTrim();
+				((SequenceFlow) result).setCondition(condition);
+				break;
+			}
+			return result;
+		case 2:
+			ExecuteTask et = new ExecuteTask(id);
+			for (Element child : e.getChildren()) {
+				if (child.getName().equals("incoming"))
+					continue;
+				if (child.getName().equals("outgoing")) {
+					et.setNextEntityID(child.getTextTrim());
+					continue;
+				}
+				if (child.getName().equals("script")) {
+					et.setScript(child.getTextTrim());
+				}
+			}
+			return et;
+		case 3:
+			UkuflowEvent event = new UkuflowEvent(id);
+			return event;
+		case 4: // gateways
+			Gateway gway = new Gateway(id);
+			for (Element child : e.getChildren()) {
+				String n = child.getName();
+				String n_id = child.getTextTrim();
+				if (n.equals("incoming")) {
+					gway.addIncoming(n_id);
+				} else if (n.equals("outgoing")) {
+					gway.addOutgoing(n_id);
+				} else {
+					System.out.println("WARNING!! unknown child : " +child.getName());
+					// TODO
+
+				}
+			}
+			return gway;
+
+		default:
+			System.out.println("WARNING, unknown element: "+type+"/" + e.getName());
+			// TODO:
+			return null;
 		}
 	}
-	private void printProcesses(Element e){
-		if(e.getName().equals("definitions")){
-			for(Element ex : e.getChildren()){
-				if(ex.getName().equals("process")){
+/********************************************************************************************/
+	private void printProcesses(Element e) {
+		if (e.getName().equals("definitions")) {
+			for (Element ex : e.getChildren()) {
+				if (ex.getName().equals("process")) {
 					printProcesses(ex);
 				}
 			}
 		}
-		if(e.getName().equals("process")){
+		if (e.getName().equals("process")) {
 			Map<String, Element> connector = new HashMap<String, Element>();
-			Map<String,Element> elements = new HashMap<String, Element>();
+			Map<String, Element> elements = new HashMap<String, Element>();
 			List<String> connector_Id = new ArrayList<String>();
-			
+
 			TypeClassifier a = TypeClassifier.getInstance();
 			for (Element child : e.getChildren()) {
-				switch (a.getType(child.getName())) {
+				int x = 0;
+				try {
+					x = a.getType(child.getName());
+				} catch (Exception e1) {
+					e1.printStackTrace();
+					// TODO:
+					continue;
+				}
+				switch (x) {
 				case 1:
 					connector.put(child.getAttributeValue("id"), child);
 					connector_Id.add(child.getAttributeValue("id"));
-					System.out.println("connector added :" + child.getAttributeValue("id"));
+					System.out.println("connector added :"
+							+ child.getAttributeValue("id"));
 					break;
 				case 2:
 				case 3:
 				case 4:
 					elements.put(child.getAttributeValue("id"), child);
-					System.out.println("Element added" +child.getAttributeValue("id"));
+					System.out.println("Element added"
+							+ child.getAttributeValue("id"));
 					break;
 				default:
-					System.out.println("warning: element with name "
+					System.out
+							.println("warning: element with name "
 									+ child.getName() + ", id: "
 									+ child.getAttributeValue("id")
 									+ " is not defined");
 				}
 			}
 			StringBuilder sb = new StringBuilder();
-			for(Element ex : elements.values()){
-				if(ex.getName().equals("startEvent")){
+			for (Element ex : elements.values()) {
+				if (ex.getName().equals("startEvent")) {
 					sb.append("0, START_EVENT, ");
-					for(Element exx : ex.getChildren()){
-						if(!exx.getName().equals("outgoing")) continue;
-						sb.append((connector_Id.indexOf(exx.getTextTrim())+1) + ", ");
+					for (Element exx : ex.getChildren()) {
+						if (!exx.getName().equals("outgoing"))
+							continue;
+						sb.append((connector_Id.indexOf(exx.getTextTrim()) + 1)
+								+ ", ");
 						System.out.println(ex.getTextTrim());
-					}					
+					}
 					sb.deleteCharAt(sb.lastIndexOf(","));
 					sb.append("\n");
-				} else if (ex.getName().equals("endEvent")){
-					for(Element exx : ex.getChildren()){
-						if(!exx.getName().equals("incoming")) continue;
-						sb.append((connector_Id.indexOf(exx.getTextTrim())+1) + ", ");
+				} else if (ex.getName().equals("endEvent")) {
+					for (Element exx : ex.getChildren()) {
+						if (!exx.getName().equals("incoming"))
+							continue;
+						sb.append((connector_Id.indexOf(exx.getTextTrim()) + 1)
+								+ ", ");
 						System.out.println(ex.getTextTrim());
-					}					
+					}
 					sb.append("END_EVENT");
 					sb.append("\n");
 				} else {
-					for(Element exx : ex.getChildren()){
-						if(!exx.getName().equals("incoming")) continue;
-						sb.append((connector_Id.indexOf(exx.getTextTrim())+1) + ", ");
+					for (Element exx : ex.getChildren()) {
+						if (!exx.getName().equals("incoming"))
+							continue;
+						sb.append((connector_Id.indexOf(exx.getTextTrim()) + 1)
+								+ ", ");
 						System.out.println(ex.getTextTrim());
 					}
 					sb.append(ex.getName() + ", ");
-					for(Element exx : ex.getChildren()){
-						if(!exx.getName().equals("outgoing")) continue;
-						sb.append((connector_Id.indexOf(exx.getTextTrim())+1) + ", ");
+					for (Element exx : ex.getChildren()) {
+						if (!exx.getName().equals("outgoing"))
+							continue;
+						sb.append((connector_Id.indexOf(exx.getTextTrim()) + 1)
+								+ ", ");
 						System.out.println(ex.getTextTrim());
-					}					
+					}
 					sb.deleteCharAt(sb.lastIndexOf(","));
 					sb.append("\n");
 				}
 			}
 			System.out.println(sb.toString());
 		}
+	}
+
+	private void printElement(Element e, String prefix) {
+		System.out.print(prefix);
+
+		System.out.print(e.getName() + ":" + e.getTextTrim());
+		System.out.print(" -> (");
+		for (Attribute attrb : e.getAttributes()) {
+			System.out.print(attrb.getName() + ":" + attrb.getValue() + "; ");
+		}
+		System.out.println(")");
+		for (Element child : e.getChildren()) {
+			printElement(child, prefix + "   ");
+		}
+	}
+	
+	private String readFile(InputStream is) {
+		final char[] buffer = new char[0x10000];
+		StringBuilder out = new StringBuilder();
+		Reader in = null;
+
+		try {
+			in = new InputStreamReader(is, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		int read = -1;
+		do {
+			try {
+				read = in.read(buffer, 0, buffer.length);
+			} catch (IOException e) {
+				// TODO: handle exception
+			}
+			if (read > 0) {
+				out.append(buffer, 0, read);
+			}
+		} while (read >= 0);
+
+		String result = out.toString();
+		return result;
 	}
 }

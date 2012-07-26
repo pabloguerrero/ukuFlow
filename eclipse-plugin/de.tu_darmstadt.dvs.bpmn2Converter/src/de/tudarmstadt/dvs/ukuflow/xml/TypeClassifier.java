@@ -1,7 +1,9 @@
-package de.tudarmstadt.dvs.ukuflow.xml.util;
+package de.tudarmstadt.dvs.ukuflow.xml;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import de.tudarmstadt.dvs.ukuflow.exception.UnsupportedElementException;
 
 public class TypeClassifier {
 	private Set<String> connectors = new HashSet<String>();
@@ -17,6 +19,14 @@ public class TypeClassifier {
 		
 		events.add("endEvent");
 		events.add("startEvent");
+		events.add("intermediateThrowEvent");
+		events.add("intermediateCatchEvent");
+		
+		gateways.add("parallelGateway");
+		gateways.add("exclusiveGateway");
+		gateways.add("complexGateway");
+		gateways.add("eventBasedGateway");
+		gateways.add("inclusiveGateway");
 		
 	}
 	public static TypeClassifier getInstance(){
@@ -33,13 +43,15 @@ public class TypeClassifier {
 	 * 2 : task
 	 * 3 : event
 	 * 4 : gateway
+	 * @throws UnsupportedElementException
 	 */
-	public int getType(String name){
-		if(name.endsWith("Event")) return 3;
-		if(name.endsWith("Flow") || name.equals("association")) return 1;
-		if(name.endsWith("Task") || name.endsWith("task")) return 2;
-		if(name.endsWith("Gateway")) return 4;
-		return 0;
+	public int getType(String name) throws UnsupportedElementException{		
+		if(connectors.contains(name)) return 1;
+		if(tasks.contains(name)) return 2;
+		if(events.contains(name)) return 3;
+		if(gateways.contains(name)) return 4;
+		
+		throw new UnsupportedElementException(name);
 	}
 	
 }

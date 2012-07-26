@@ -21,9 +21,7 @@ public class ScopeFunction implements Visitable{
 	
 	@Override
 	public void accept(Visitor visitor) {
-		//visitor.visit(this);
-		// TODO Auto-generated method stub
-		
+		visitor.visit(this);		
 	}
 	
 }

@@ -1,9 +1,11 @@
-package de.tudarmstadt.dvs.ukuflow.xml.util;
+package de.tudarmstadt.dvs.ukuflow.xml;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.jdom2.Element;
+
+import de.tudarmstadt.dvs.ukuflow.exception.UnsupportedElementException;
 
 
 public class XMLNode {
@@ -51,7 +53,7 @@ public class XMLNode {
 		}
 		return r;
 	}
-	public int getType(){
+	public int getType() throws UnsupportedElementException{
 		return TypeClassifier.getInstance().getType(root.getName());
 	}
 	public boolean isAtom(){
