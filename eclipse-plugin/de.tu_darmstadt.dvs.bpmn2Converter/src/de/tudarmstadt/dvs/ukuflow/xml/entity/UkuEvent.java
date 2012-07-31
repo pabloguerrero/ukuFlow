@@ -1,8 +1,8 @@
 package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
-public class UkuflowEvent extends Entity {
+public class UkuEvent extends UkuEntity {
 	
-	public UkuflowEvent(String id) {
+	public UkuEvent(String id) {
 		super(id);
 		syntax = true;
 	}

@@ -10,7 +10,10 @@ public class Variable extends PrimaryExpression {
 	protected String name;
 	
 	public Variable(String name) {		
-		this.name = name.trim();		
+		if(name.startsWith("$"))
+			this.name = name.substring(1);
+		else 
+			this.name = name.trim();
 	}
 	
 	@Override
@@ -19,6 +22,6 @@ public class Variable extends PrimaryExpression {
 	}
 	
 	public String toString(){
-		return name;
+		return "$"+name;
 	}
 }

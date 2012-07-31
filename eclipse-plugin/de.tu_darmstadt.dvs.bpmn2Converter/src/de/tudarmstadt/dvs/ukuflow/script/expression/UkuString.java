@@ -23,6 +23,6 @@ public class UkuString extends PrimaryExpression {
 	}
 
 	public String toString() {
-		return s;
+		return "'"+s+"'";
 	}
 }

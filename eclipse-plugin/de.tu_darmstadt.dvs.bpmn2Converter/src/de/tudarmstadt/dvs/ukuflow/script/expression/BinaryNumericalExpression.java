@@ -32,7 +32,7 @@ public class BinaryNumericalExpression extends NumericalExpression {
 	}
 
 	public String toString() {
-		return ("(" + operand1.toString() + " " + operator + " "
+		return ("(" + operand1.toString() + " " + getStringOperator() + " "
 				+ operand2.toString() + ")");
 	}
 

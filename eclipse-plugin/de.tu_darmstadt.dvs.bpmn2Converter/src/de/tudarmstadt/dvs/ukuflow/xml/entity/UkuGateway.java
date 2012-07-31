@@ -3,11 +3,11 @@ package de.tudarmstadt.dvs.ukuflow.xml.entity;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Gateway extends Entity{
+public class UkuGateway extends UkuEntity{
 	public List<String> incomming = new LinkedList<String>();
 	public List<String> outgoing = new LinkedList<String>();
 	
-	public Gateway(String id){
+	public UkuGateway(String id){
 		super(id);
 	}
 	

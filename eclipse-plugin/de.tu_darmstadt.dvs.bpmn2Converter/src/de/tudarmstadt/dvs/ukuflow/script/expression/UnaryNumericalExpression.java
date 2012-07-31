@@ -23,7 +23,7 @@ public class UnaryNumericalExpression extends NumericalExpression {
 	}
 
 	public String toString() {
-		return "(" + operator + " " + operand + ")";
+		return "(" + getStringOperator() + " " + operand + ")";
 	}
 
 	@Override

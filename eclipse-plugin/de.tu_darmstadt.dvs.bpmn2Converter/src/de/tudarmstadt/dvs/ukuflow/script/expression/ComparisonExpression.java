@@ -57,26 +57,35 @@ public class ComparisonExpression extends BoolExpression {
 	public String toString() {
 		String operator = "";
 		switch (this.operator) {
-		case 1:
+		case EQUAL:
 			operator = "==";
 			break;
-		case 2:
+		case UNEQUAL:
 			operator = "!=";
 			break;
-		case 3:
+		case GREATERTHAN:
 			operator = ">";
 			break;
-		case 4:
+		case LESSTHAN:
 			operator = "<";
 			break;
-		case 5:
+		case GREATEROREQUAL:
 			operator = ">=";
 			break;
-		case 6:
+		case LESSOREQUAL:
 			operator = "<=";
 			break;
 		}
-		return ("(" + operand1.toString() + operator + operand2.toString() + ")");
+		String result = "(";
+		if(operand1 != null)
+			result += operand1 + " ";
+		
+		result +=operator + " ";
+		if(operand2 != null)
+			result += operand2;
+		result += ")";
+		return result;
+		
 	}
 
 }

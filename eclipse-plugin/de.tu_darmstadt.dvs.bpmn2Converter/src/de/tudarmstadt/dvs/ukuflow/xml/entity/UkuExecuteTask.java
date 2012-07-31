@@ -1,15 +1,15 @@
 package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
-public class ExecuteTask extends Entity{
-	public Entity nextEntity;
+public class UkuExecuteTask extends UkuEntity{
+	public UkuEntity nextEntity;
 	public String nextEntityID;
 	public String script;
-	public ExecuteTask(String id) {
+	public UkuExecuteTask(String id) {
 		super(id);
 		script ="";
 	}
 	
-	public void setNextEntity(Entity nextEntity){
+	public void setNextEntity(UkuEntity nextEntity){
 		this.nextEntity = nextEntity;
 	}
 	

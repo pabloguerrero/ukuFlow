@@ -3,13 +3,14 @@ package de.tudarmstadt.dvs.ukuflow.script.function;
 import java.util.List;
 
 import de.tudarmstadt.dvs.ukuflow.script.expression.PrimaryExpression;
+import de.tudarmstadt.dvs.ukuflow.script.expression.UkuExpression;
 import de.tudarmstadt.dvs.ukuflow.script.expression.Visitable;
 import de.tudarmstadt.dvs.ukuflow.script.expression.Visitor;
 
-public class LocalFunction implements Visitable {
+public class LocalFunction extends TaskScriptFunction implements Visitable {
 
 	String function_name;
-	List<PrimaryExpression> params;
+	List<UkuExpression> params;
 
 	/**
 	 * indicate if the result will be stored into a variable
@@ -17,7 +18,7 @@ public class LocalFunction implements Visitable {
 	boolean saveResult2Variable = false;
 	String variable;
 
-	public LocalFunction(String variable, String name, List<PrimaryExpression> params) {
+	public LocalFunction(String variable, String name, List<UkuExpression> params) {
 		if (params != null)
 			this.params = params;
 
@@ -29,7 +30,7 @@ public class LocalFunction implements Visitable {
 		}
 	}
 
-	public LocalFunction(String name, List<PrimaryExpression> params) {
+	public LocalFunction(String name, List<UkuExpression> params) {
 		this(null, name, params);
 	}
 
@@ -46,11 +47,11 @@ public class LocalFunction implements Visitable {
 		return variable;
 	}
 
-	public List<PrimaryExpression> getParams() {
+	public List<UkuExpression> getParams() {
 		return params;
 	}
 
-	public void setParams(List<PrimaryExpression> pr) {
+	public void setParams(List<UkuExpression> pr) {
 		this.params = pr;
 	}
 
@@ -59,7 +60,7 @@ public class LocalFunction implements Visitable {
 		r += variable + " = ";
 		r += function_name + "(";
 		boolean coma = false;
-		for (PrimaryExpression pe : params) {
+		for (UkuExpression pe : params) {
 			if (coma)
 				r += ", ";
 			r += pe.toString();

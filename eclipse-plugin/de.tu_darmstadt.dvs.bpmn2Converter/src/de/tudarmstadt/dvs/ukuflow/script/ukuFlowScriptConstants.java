@@ -19,43 +19,47 @@ public interface ukuFlowScriptConstants {
   /** RegularExpression Id. */
   int NOT = 8;
   /** RegularExpression Id. */
-  int BOOLEAN = 9;
+  int ADDITIVE = 9;
   /** RegularExpression Id. */
-  int TRUE = 10;
+  int BOOLEAN = 10;
   /** RegularExpression Id. */
-  int FALSE = 11;
+  int TRUE = 11;
   /** RegularExpression Id. */
-  int LOCAL = 12;
+  int FALSE = 12;
   /** RegularExpression Id. */
-  int SCOPE = 13;
+  int AT_ = 13;
   /** RegularExpression Id. */
-  int VARIABLE = 14;
+  int LOCAL = 14;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 15;
+  int SCOPE = 15;
   /** RegularExpression Id. */
-  int DECIMAL_LITERAL = 16;
+  int VARIABLE = 16;
   /** RegularExpression Id. */
-  int HEX_LITERAL = 17;
+  int INTEGER_LITERAL = 17;
   /** RegularExpression Id. */
-  int IDENTIFIER = 18;
+  int DECIMAL_LITERAL = 18;
   /** RegularExpression Id. */
-  int LETTER = 19;
+  int HEX_LITERAL = 19;
   /** RegularExpression Id. */
-  int DIGIT = 20;
+  int IDENTIFIER = 20;
   /** RegularExpression Id. */
-  int EQUAL = 21;
+  int LETTER = 21;
   /** RegularExpression Id. */
-  int UNEQUAL = 22;
+  int DIGIT = 22;
   /** RegularExpression Id. */
-  int GREATERTHAN = 23;
+  int EQUAL = 23;
   /** RegularExpression Id. */
-  int LESSTHAN = 24;
+  int UNEQUAL = 24;
   /** RegularExpression Id. */
-  int GREATEROREQUAL = 25;
+  int GREATERTHAN = 25;
   /** RegularExpression Id. */
-  int LESSOREQUAL = 26;
+  int LESSTHAN = 26;
   /** RegularExpression Id. */
-  int STRING = 27;
+  int GREATEROREQUAL = 27;
+  /** RegularExpression Id. */
+  int LESSOREQUAL = 28;
+  /** RegularExpression Id. */
+  int STRING = 29;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -71,9 +75,11 @@ public interface ukuFlowScriptConstants {
     "<OR>",
     "<XOR>",
     "<NOT>",
+    "<ADDITIVE>",
     "<BOOLEAN>",
     "<TRUE>",
     "<FALSE>",
+    "\"@\"",
     "\"local\"",
     "<SCOPE>",
     "<VARIABLE>",
@@ -94,8 +100,6 @@ public interface ukuFlowScriptConstants {
     "\";\"",
     "\"(\"",
     "\")\"",
-    "\"+\"",
-    "\"-\"",
     "\"*\"",
     "\"/\"",
     "\"%\"",

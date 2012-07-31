@@ -27,4 +27,8 @@ public class UnaryLogicalExpression extends LogicalExpression {
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
 	}
+	@Override
+	public String toString(){
+		return "(NOT "+operand + ")";
+	}
 }

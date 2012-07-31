@@ -13,7 +13,7 @@ public class BinaryLogicalExpression extends LogicalExpression {
 	public BinaryLogicalExpression(int operator) {
 		super(operator);
 	}
-
+	
 	public BinaryLogicalExpression(int operator, UkuExpression operand1,
 			UkuExpression operand2) {
 		super(operator);
@@ -37,9 +37,24 @@ public class BinaryLogicalExpression extends LogicalExpression {
 	public UkuExpression getOperand2() {
 		return operand2;
 	}
-
+	public String getStringOperator() {
+		switch(operator){
+		case AND : return "&&";
+		case OR : return "||";		
+		case XOR : return "^";
+		default: return "?";
+		}
+	}
 	@Override
 	public void accept(Visitor visitor) {
 		visitor.visit(this);
+	}
+	@Override
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("("+operand1 + " ");
+		sb.append(getStringOperator());
+		sb.append(operand2+")");
+		return sb.toString();
 	}
 }

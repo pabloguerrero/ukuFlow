@@ -7,7 +7,7 @@ import java.util.List;
  * @author Hien Quoc Dang
  *
  */
-public abstract class Entity {
+public abstract class UkuEntity {
 	
 	protected boolean syntax = false;
 	protected List<String> errors = new LinkedList<String>();
@@ -18,7 +18,7 @@ public abstract class Entity {
 	 */
 	public String id;
 	
-	public Entity(String id){
+	public UkuEntity(String id){
 		this.id = id;
 	}
 	

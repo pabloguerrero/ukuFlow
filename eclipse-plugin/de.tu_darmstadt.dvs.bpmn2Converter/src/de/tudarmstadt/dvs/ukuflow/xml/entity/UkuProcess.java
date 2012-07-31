@@ -9,9 +9,9 @@ import java.util.List;
  *
  */
 
-public class ukuProcess {
+public class UkuProcess {
 	
-	public List<Entity> entities = new LinkedList<Entity>();
+	public List<UkuEntity> entities = new LinkedList<UkuEntity>();
 	
 	public String name;
 	private boolean correctness = false; 
@@ -21,16 +21,19 @@ public class ukuProcess {
 	 */
 	public String id;
 	
-	public ukuProcess(String id) {
+	public UkuProcess(String id) {
 		this.id = id;
 	}
 
-	public void setEntities(List<Entity> entities) {
+	public void setEntities(List<UkuEntity> entities) {
 		this.entities = entities;
 		
-		for(Entity e : entities){
+		for(UkuEntity e : entities){
 			correctness &= e.isCorrect();
 		}
 	}
 	
+	public boolean isCorrect(){
+		return correctness;
+	}
 }

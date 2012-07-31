@@ -7,7 +7,11 @@ import org.jdom2.Element;
 
 import de.tudarmstadt.dvs.ukuflow.exception.UnsupportedElementException;
 
-
+/**
+ * @author Hien Quoc Dang
+ * @deprecated : not use anymore
+ */
+@Deprecated
 public class XMLNode {
 	private final Element root;
 	

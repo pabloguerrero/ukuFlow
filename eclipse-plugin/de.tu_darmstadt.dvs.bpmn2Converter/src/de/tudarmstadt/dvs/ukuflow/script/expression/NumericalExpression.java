@@ -12,7 +12,7 @@ public abstract class NumericalExpression extends UkuExpression {
 	public static final int MUL = ExpressionTypes.OPERATOR_MULT;
 	public static final int DIV = ExpressionTypes.OPERATOR_DIV;
 	public static final int MOD = ExpressionTypes.OPERATOR_MOD;
-
+	
 	public static final int MINUS = 0;//TODO: mapping negative & positive number
 	public static final int PLUS = 0;//TODO:
 
@@ -24,5 +24,16 @@ public abstract class NumericalExpression extends UkuExpression {
 
 	public void setOperator(int operator) {
 		this.operator = operator;
+	}
+	public String getStringOperator(){
+		switch(operator) {
+		case ADD: return "+";
+		case SUB: return "-";
+		case MUL: return "*";
+		case DIV: return "/";
+		case MOD: return "%";
+		default : return "?";
+		//case MINUS: 
+		}
 	}
 }
