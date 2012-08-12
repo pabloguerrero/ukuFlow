@@ -1,34 +1,52 @@
 package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.util.Map;
 
+import de.tudarmstadt.dvs.ukuflow.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.script.ukuFlowScript;
 
 public class UkuSequenceFlow extends UkuEntity{
+	private BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	public String source;
 	public String target;
-	public String condition;
-	public UkuSequenceFlow(String id) {
-		super(id);
-	}
+	private UkuEntity sourceEntity;
+	private UkuEntity targetEntity;
+	public String condition = null;
 	
 	public UkuSequenceFlow(String id, String source, String target){
-		this(id);
+		super(id);		
 		this.source = source;
 		this.target = target;
 	}
+	public void setReference(Map<String, UkuEntity> ref){
+		if(ref.containsKey(source)){
+			sourceEntity = ref.get(source);
+		} else {
+			addErrorMessage(" no source entity");
+		}
+		if(ref.containsKey(target)){
+			targetEntity = ref.get(target);
+		} else {
+			addErrorMessage(" no target entity");
+		}
+	}
 	
-	public void setCondition(String condition){
+	public UkuEntity getSource(){
+		return sourceEntity;
+	}
+	
+	public UkuEntity getTarget(){
+		return targetEntity;
+	}
+	public void setCondition (String condition){
 		this.condition = condition;
-		System.out.println(condition);
-		InputStream is = new ByteArrayInputStream(condition.getBytes());
-		ukuFlowScript parser = new ukuFlowScript(is);
+		ukuFlowScript parser = ukuFlowScript.getInstance(condition);
 		try{
-			System.out.println(parser.taskScript());
-			//TODO
+			log.debug(parser.parseCondition());
+			//TODO: check syntax
 		} catch (Exception e) {
-			e.printStackTrace();
+			String msg = "Error found at element "+id+" : "+e.getMessage().replace("\n", " ");
+			addErrorMessage(msg);
 		}
 		
 	}

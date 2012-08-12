@@ -2,6 +2,7 @@ package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Hien Quoc Dang
@@ -16,12 +17,15 @@ public abstract class UkuEntity {
 	/**
 	 * an unique id of for each entity
 	 */
-	public String id;
+	protected String id;
 	
 	public UkuEntity(String id){
 		this.id = id;
 	}
 	
+	public String getID(){
+		return id;
+	}
 	/**
 	 * get the error messages
 	 * @return
@@ -40,11 +44,11 @@ public abstract class UkuEntity {
 	}
 	
 	public void addErrorMessage(String msg){
-		errors.add("ERROR:  \t"+id + "\t"+msg);
+		errors.add("ERROR:\t at element '"+id+"' -> " + msg);
 	}
 	
 	public void addWarningMessage(String msg){
-		warnings.add("WARNING:\t"+id+"\t"+msg);
+		warnings.add("WARNING:\t at element '"+id+"' -> "+msg);
 	}
 	
 	/**
@@ -53,5 +57,10 @@ public abstract class UkuEntity {
 	 */
 	public  boolean isCorrect(){
 		return syntax;
+	}
+	public abstract void setReference(Map<String, UkuEntity> ref);
+	@Override
+	public String toString(){
+		return id;
 	}
 }

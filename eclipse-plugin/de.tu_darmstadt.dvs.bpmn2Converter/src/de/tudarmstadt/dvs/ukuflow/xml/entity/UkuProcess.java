@@ -12,9 +12,9 @@ import java.util.List;
 public class UkuProcess {
 	
 	public List<UkuEntity> entities = new LinkedList<UkuEntity>();
-	
+	List<String> errors = new LinkedList<String>();
 	public String name;
-	private boolean correctness = false; 
+	private boolean correctness = true; 
 	
 	/**
 	 * unique id
@@ -30,10 +30,14 @@ public class UkuProcess {
 		
 		for(UkuEntity e : entities){
 			correctness &= e.isCorrect();
+			errors.addAll(e.getError());
 		}
 	}
 	
 	public boolean isCorrect(){
 		return correctness;
+	}
+	public List<String> getErrorMessages(){
+		return errors;		
 	}
 }

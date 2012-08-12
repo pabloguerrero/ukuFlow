@@ -4,6 +4,7 @@ import java.util.List;
 
 import de.tudarmstadt.dvs.ukuflow.script.expression.PrimaryExpression;
 import de.tudarmstadt.dvs.ukuflow.script.expression.UkuExpression;
+import de.tudarmstadt.dvs.ukuflow.script.expression.Variable;
 import de.tudarmstadt.dvs.ukuflow.script.expression.Visitable;
 import de.tudarmstadt.dvs.ukuflow.script.expression.Visitor;
 
@@ -16,9 +17,9 @@ public class LocalFunction extends TaskScriptFunction implements Visitable {
 	 * indicate if the result will be stored into a variable
 	 */
 	boolean saveResult2Variable = false;
-	String variable;
+	Variable variable;
 
-	public LocalFunction(String variable, String name, List<UkuExpression> params) {
+	public LocalFunction(Variable variable, String name, List<UkuExpression> params) {
 		if (params != null)
 			this.params = params;
 
@@ -38,12 +39,12 @@ public class LocalFunction extends TaskScriptFunction implements Visitable {
 		this(function_name, null);
 	}
 
-	public void setVariable(String s) {
+	public void setVariable(Variable s) {
 		variable = s;
 		saveResult2Variable = true;
 	}
 
-	public String getVariable() {
+	public Variable getVariable() {
 		return variable;
 	}
 

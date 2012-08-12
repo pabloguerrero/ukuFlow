@@ -1,2 +1,3 @@
 eclipse.preferences.version=1
 override.model.enablements=true
+target.runtime=org.jboss.runtime.jbpm5

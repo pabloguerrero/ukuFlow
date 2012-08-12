@@ -2,6 +2,7 @@
 package de.tudarmstadt.dvs.ukuflow.script;
 import de.tudarmstadt.dvs.ukuflow.script.expression.*;
 import de.tudarmstadt.dvs.ukuflow.script.function.*;
+import de.tudarmstadt.dvs.ukuflow.debugger.BpmnLog;
 import java.util.LinkedList;
 import java.util.List;
 import java.io.FileInputStream;
