@@ -1,1 +1,1 @@
-data-mgr_src = data-mgr.c expression-eval.c
+data-mgr_src = data-mgr.c expression-eval.c base64.c
