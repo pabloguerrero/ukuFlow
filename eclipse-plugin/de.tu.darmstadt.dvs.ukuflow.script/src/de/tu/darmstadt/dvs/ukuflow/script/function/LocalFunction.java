@@ -3,8 +3,10 @@ package de.tu.darmstadt.dvs.ukuflow.script.function;
 import java.util.List;
 
 import de.tu.darmstadt.dvs.ukuflow.script.expression.PrimaryExpression;
+import de.tu.darmstadt.dvs.ukuflow.script.expression.Visitable;
+import de.tu.darmstadt.dvs.ukuflow.script.expression.Visitor;
 
-public class LocalFunction {
+public class LocalFunction implements Visitable{
 
 	String variable;
 	String function_name;
@@ -59,5 +61,11 @@ public class LocalFunction {
 			coma = true;
 		}
 		return r+")";
+	}
+
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+		
 	}
 }

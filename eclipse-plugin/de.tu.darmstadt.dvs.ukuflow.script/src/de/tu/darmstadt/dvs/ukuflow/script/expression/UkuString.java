@@ -1,5 +1,11 @@
 package de.tu.darmstadt.dvs.ukuflow.script.expression;
 
+/**
+ * represents a ukuFlow String
+ * 
+ * @author Hien Quoc Dang
+ * 
+ */
 public class UkuString extends PrimaryExpression {
 	String s;
 
@@ -10,8 +16,13 @@ public class UkuString extends PrimaryExpression {
 	public String getString() {
 		return s.trim();
 	}
-	
-	public String toString(){
+
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
+
+	public String toString() {
 		return s;
 	}
 }

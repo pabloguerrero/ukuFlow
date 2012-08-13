@@ -34,7 +34,7 @@ var5 = 1 + var4;</bpmn2:script>
 var5 = 1 + var5;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_18" tns:priority="1" name="" sourceRef="ScriptTask_3" targetRef="ExclusiveGateway_2"/>
-    <bpmn2:exclusiveGateway id="ExclusiveGateway_1">
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_1" default="SequenceFlow_25">
       <bpmn2:incoming>SequenceFlow_22</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_23</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_24</bpmn2:outgoing>
@@ -82,27 +82,27 @@ var5 = 1 + var5;</bpmn2:script>
         <dc:Bounds height="50.0" width="50.0" x="270.0" y="126.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_2" bpmnElement="ExclusiveGateway_2" isMarkerVisible="true">
-        <dc:Bounds height="50.0" width="50.0" x="555.0" y="126.0"/>
+        <dc:Bounds height="50.0" width="50.0" x="588.0" y="126.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="SequenceFlow_11" sourceElement="BPMNShape_1" targetElement="BPMNShape_ScriptTask_1">
         <di:waypoint xsi:type="dc:Point" x="56.0" y="152.0"/>
         <di:waypoint xsi:type="dc:Point" x="120.0" y="151.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_17" bpmnElement="SequenceFlow_17" sourceElement="BPMNShape_ExclusiveGateway_2" targetElement="BPMNShape_2">
-        <di:waypoint xsi:type="dc:Point" x="606.0" y="151.0"/>
+        <di:waypoint xsi:type="dc:Point" x="639.0" y="151.0"/>
         <di:waypoint xsi:type="dc:Point" x="670.0" y="152.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_18" bpmnElement="SequenceFlow_18" sourceElement="BPMNShape_ScriptTask_3" targetElement="BPMNShape_ExclusiveGateway_2">
         <di:waypoint xsi:type="dc:Point" x="510.0" y="151.0"/>
-        <di:waypoint xsi:type="dc:Point" x="555.0" y="151.0"/>
+        <di:waypoint xsi:type="dc:Point" x="588.0" y="151.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_19" bpmnElement="SequenceFlow_19" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_ExclusiveGateway_2">
         <di:waypoint xsi:type="dc:Point" x="510.0" y="75.0"/>
-        <di:waypoint xsi:type="dc:Point" x="580.0" y="126.0"/>
+        <di:waypoint xsi:type="dc:Point" x="588.0" y="151.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_20" bpmnElement="SequenceFlow_20" sourceElement="BPMNShape_ScriptTask_4" targetElement="BPMNShape_ExclusiveGateway_2">
         <di:waypoint xsi:type="dc:Point" x="510.0" y="225.0"/>
-        <di:waypoint xsi:type="dc:Point" x="580.0" y="177.0"/>
+        <di:waypoint xsi:type="dc:Point" x="588.0" y="151.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_22" bpmnElement="SequenceFlow_22" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_ExclusiveGateway_1">
         <di:waypoint xsi:type="dc:Point" x="230.0" y="151.0"/>

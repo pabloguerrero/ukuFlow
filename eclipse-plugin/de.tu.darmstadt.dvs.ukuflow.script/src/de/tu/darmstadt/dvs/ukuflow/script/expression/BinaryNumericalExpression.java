@@ -1,5 +1,11 @@
 package de.tu.darmstadt.dvs.ukuflow.script.expression;
 
+/**
+ * represent a binary numerical expression
+ * 
+ * @author Hien Quoc Dang
+ * 
+ */
 public class BinaryNumericalExpression extends NumericalExpression {
 	public BinaryNumericalExpression(int operator) {
 		super(operator);
@@ -24,7 +30,14 @@ public class BinaryNumericalExpression extends NumericalExpression {
 	public UkuExpression getOperand2() {
 		return operand2;
 	}
-	public String toString(){
-		return ("("+ operand1.toString() + " "+ operator + " "+operand2.toString()+")");
+
+	public String toString() {
+		return ("(" + operand1.toString() + " " + operator + " "
+				+ operand2.toString() + ")");
+	}
+
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
 	}
 }
