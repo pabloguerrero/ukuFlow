@@ -71,6 +71,7 @@ static long int eval_uint8_value(void);
 static long int eval_uint16_value(void);
 static long int eval_int8_value(void);
 static long int eval_int16_value(void);
+static long int eval_string_value(void);
 static long int eval_repository_value(void);
 static long int eval_custom_input_value(void);
 
@@ -96,6 +97,7 @@ static eval_func evaluator[] = {
 		eval_uint16_value, //
 		eval_int8_value, //
 		eval_int16_value, //
+		eval_string_value, //
 		eval_repository_value, //
 		eval_custom_input_value //
 		};
@@ -403,6 +405,21 @@ static long int eval_int16_value(void) {
 }
 
 /*---------------------------------------------------------------------------*/
+/**
+ * \brief		String operations are not supported yet, we only return the length
+ */
+static long int eval_string_value(void) {
+	uint8_t length = read_byte();
+
+	// now 'consume' all the bytes of the string
+	uint8_t i;
+	for (i = 0; i < length; i++)
+		read_byte();
+
+	return length;
+}
+
+/*---------------------------------------------------------------------------*/
 static long int eval_repository_value(void) {
 	int index;
 
@@ -435,7 +452,8 @@ static long int eval_custom_input_value(void) {
 		data_len_t data_len;
 
 		/* read value from repository */
-		uint8_t *data = (*custom_input_function)(&data_len, /*requested_field:*/index, custom_input);
+		uint8_t *data = (*custom_input_function)(&data_len, /*requested_field:*/
+				index, custom_input);
 
 		if (data != NULL) {
 			uint16_t result = *((uint16_t*) data);
@@ -450,7 +468,7 @@ static long int eval_custom_input_value(void) {
 }
 
 /**
- * \brief		TODO
+ * \brief		Sets the repository from which data will be extracted
  */
 void expression_eval_set_repository(data_repository_id_t id) {
 	repo_id = id;
@@ -459,7 +477,8 @@ void expression_eval_set_repository(data_repository_id_t id) {
 /**
  * \brief		Sets a custom input function
  */
-void expression_eval_set_custom_input(custom_input_function_t *function, void *input){
+void expression_eval_set_custom_input(custom_input_function_t *function,
+		void *input) {
 	custom_input_function = function;
 	custom_input = input;
 }
