@@ -45,9 +45,10 @@
 #define __BASE64_H__
 
 #include "contiki.h"
+#include "data-mgr.h"
 
 
-uint8_t base64_decode(char *input, uint8_t *output, uint8_t output_len);
+data_len_t base64_decode(char *input, uint8_t *output, data_len_t output_max_len);
 
 #endif /* __BASE64_H__ */
 /** @} */
