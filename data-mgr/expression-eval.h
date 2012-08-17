@@ -39,7 +39,6 @@
  * \author	Pablo Guerrero <guerrero@dvs.tu-darmstadt.de>
  */
 
-
 #ifndef __EXPRESSION_EVAL_H__
 #define __EXPRESSION_EVAL_H__
 
@@ -53,40 +52,42 @@
   ((code) >= 0 && (code) < sizeof(evaluator)/sizeof(eval_func))
 
 /** \brief Type definition for pointer to functions of the parser */
-typedef long int (* eval_func)(void);
+typedef long int (*eval_func)(void);
 
 /** \brief Operation codes */
 enum opcodes {
-	OPERATOR_AND,
-	OPERATOR_OR,
-	OPERATOR_NOT,
-	PREDICATE_EQ,
-	PREDICATE_NEQ,
-	PREDICATE_LT,
-	PREDICATE_GT,
-	PREDICATE_LET,
-	PREDICATE_GET,
-	OPERATOR_ADD,
-	OPERATOR_SUB,
-	OPERATOR_DIV,
-	OPERATOR_MULT,
-	OPERATOR_MOD,
-	UINT8_VALUE,
-	UINT16_VALUE,
-	INT8_VALUE,
-	INT16_VALUE,
-	REPOSITORY_VALUE,
-	CUSTOM_INPUT_VALUE
+	OPERATOR_AND, /*		 0*/
+	OPERATOR_OR, /*			 1*/
+	OPERATOR_NOT, /*		 2*/
+	PREDICATE_EQ, /*		 3*/
+	PREDICATE_NEQ, /*		 4*/
+	PREDICATE_LT, /*		 5*/
+	PREDICATE_GT, /*		 6*/
+	PREDICATE_LET, /*		 7*/
+	PREDICATE_GET, /*		 8*/
+	OPERATOR_ADD, /*		 9*/
+	OPERATOR_SUB, /*		10*/
+	OPERATOR_DIV, /*		11*/
+	OPERATOR_MULT, /*		12*/
+	OPERATOR_MOD, /*		13*/
+	UINT8_VALUE, /*			14*/
+	UINT16_VALUE, /*		15*/
+	INT8_VALUE, /*			16*/
+	INT16_VALUE, /*			17*/
+	STRING_VALUE, /*		18*/
+	REPOSITORY_VALUE, /*	19*/
+	CUSTOM_INPUT_VALUE /*	20*/
 };
 
-
 /** \brief Type definition for pointer to functions of custom input */
-typedef uint8_t* (*custom_input_function_t)(data_len_t *data_len, uint8_t requested_field, void *custom_input);
+typedef uint8_t* (*custom_input_function_t)(data_len_t *data_len,
+		uint8_t requested_field, void *custom_input);
 
 void expression_eval_set_repository(data_repository_id_t id);
-void expression_eval_set_custom_input(custom_input_function_t *custom_input_function, void *input);
-long int expression_eval_evaluate(uint8_t *expression_spec, data_len_t spec_len);
+void expression_eval_set_custom_input(
+		custom_input_function_t *custom_input_function, void *input);
+long int expression_eval_evaluate(uint8_t *expression_spec,
+		data_len_t spec_len);
 
 #endif // __EXPRESSION_EVAL_H__
-
 /** @} */

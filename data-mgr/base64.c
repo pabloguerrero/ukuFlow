@@ -126,18 +126,18 @@ static int base64_add_char(struct base64_decoder_state *s, char c,
  *                  will calculate the potential output length for the string passed as parameter,
  *                  and will return if the provided output space is not sufficient.
  *
- * @param[in] input			A pointer to the input to be decoded
- * @param[out] output		A pointer to the memory space where output will be placed
- * @param[out] output_len	The maximum length that the output can occupy
- * \return					The size of the decoded output, in bytes, or 0 if nothing was decoded.
+ * @param[in] input				A pointer to the input to be decoded
+ * @param[out] output			A pointer to the memory space where output will be placed
+ * @param[out] output_max_len	The maximum length that the output can occupy
+ * \return						The size of the decoded output, in bytes, or 0 if nothing was decoded
  *
  */
-uint8_t base64_decode(char *input, uint8_t *output, uint8_t output_len) {
+data_len_t base64_decode(char *input, uint8_t *output, data_len_t output_max_len) {
 
 	// Check whether the specified output length suffices:
-	if (output_len >= strlen(input) * 3 / 4) {
-		int i;
-		int decoded_len = 0;
+	if (output_max_len >= strlen(input) * 3 / 4) {
+		data_len_t i;
+		data_len_t decoded_len = 0;
 
 		// Initialize state
 		s.sextets = s.dataptr = s.padding = 0;
