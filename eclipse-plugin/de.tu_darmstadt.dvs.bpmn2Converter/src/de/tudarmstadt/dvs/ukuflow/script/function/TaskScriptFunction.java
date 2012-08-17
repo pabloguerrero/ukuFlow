@@ -1,5 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.function;
 
-public abstract class TaskScriptFunction {
+import de.tudarmstadt.dvs.ukuflow.script.expression.Visitable;
+
+public abstract class TaskScriptFunction implements Visitable {
 	
 }

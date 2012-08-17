@@ -20,7 +20,7 @@ public class ComparisonExpression extends BoolExpression {
 
 	protected int operator = 0;
 	protected UkuExpression operand1, operand2;
-
+	
 	public ComparisonExpression(int operator) {
 		this.operator = operator;
 	}
@@ -31,7 +31,9 @@ public class ComparisonExpression extends BoolExpression {
 		this.operand1 = exp1;
 		this.operand2 = exp2;
 	}
-
+	public int getLength(){
+		return 1 + operand1.getLength() + operand2.getLength();
+	}
 	public UkuExpression getOperand2() {
 		return operand2;
 	}
@@ -49,7 +51,7 @@ public class ComparisonExpression extends BoolExpression {
 	}
 	
 	@Override
-	public void accept(Visitor visitor){
+	public void accept(ScriptVisitor visitor){
 		visitor.visit(this);
 	}
 	

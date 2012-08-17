@@ -5,10 +5,17 @@ import java.util.Date;
 import java.util.Locale;
 
 
+/**
+ * for debugging
+ * 
+ * @author Hien Quoc Dang
+ *
+ */
 public class BpmnLog {
 	public static boolean debug = true;
 	public static boolean info = true;
 	public static boolean warn = true;
+	public static boolean error = true;
 	private String className = "unknown";
 	public static final int SIZE = 20;
 	public static final String pattern = "                    ";
@@ -35,6 +42,10 @@ public class BpmnLog {
 	public void warn(Object message){
 		if(warn)
 			System.out.println(generateMessage(timeNow(), "INFO:", className, message));
+	}
+	public void error(Object message){
+		if(error)
+			System.out.println(generateMessage(timeNow(), "ERROR:", className, message));
 	}
 	private String generateMessage(String time,String type, String clazz, Object msg){
 		StringBuilder sb = new StringBuilder();

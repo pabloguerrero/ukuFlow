@@ -46,7 +46,7 @@ public class BinaryLogicalExpression extends LogicalExpression {
 		}
 	}
 	@Override
-	public void accept(Visitor visitor) {
+	public void accept(ScriptVisitor visitor) {
 		visitor.visit(this);
 	}
 	@Override
@@ -56,5 +56,9 @@ public class BinaryLogicalExpression extends LogicalExpression {
 		sb.append(getStringOperator());
 		sb.append(operand2+")");
 		return sb.toString();
+	}
+	
+	public int getLength(){
+		return 1 + operand1.getLength() + operand2.getLength();
 	}
 }

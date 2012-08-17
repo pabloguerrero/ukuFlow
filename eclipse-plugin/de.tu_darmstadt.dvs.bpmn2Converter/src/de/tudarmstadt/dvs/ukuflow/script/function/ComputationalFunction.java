@@ -6,9 +6,9 @@ import java.util.List;
 import de.tudarmstadt.dvs.ukuflow.script.expression.PrimaryExpression;
 import de.tudarmstadt.dvs.ukuflow.script.expression.UkuExpression;
 import de.tudarmstadt.dvs.ukuflow.script.expression.Visitable;
-import de.tudarmstadt.dvs.ukuflow.script.expression.Visitor;
+import de.tudarmstadt.dvs.ukuflow.script.expression.ScriptVisitor;
 
-public class ComputationalFunction extends TaskScriptFunction implements Visitable {
+public class ComputationalFunction extends TaskScriptFunction {
 	private String variable = "";
 	public UkuExpression expression;
 	public ComputationalFunction() {
@@ -24,7 +24,7 @@ public class ComputationalFunction extends TaskScriptFunction implements Visitab
 		return variable;
 	}
 
-	public UkuExpression getParams() {
+	public UkuExpression getParam() {
 		return expression;
 	}
 
@@ -43,8 +43,7 @@ public class ComputationalFunction extends TaskScriptFunction implements Visitab
 		return result;
 	}
 	@Override
-	public void accept(Visitor visitor) {
+	public void accept(ScriptVisitor visitor) {
 		visitor.visit(this);
-	}
-
+	}	
 }

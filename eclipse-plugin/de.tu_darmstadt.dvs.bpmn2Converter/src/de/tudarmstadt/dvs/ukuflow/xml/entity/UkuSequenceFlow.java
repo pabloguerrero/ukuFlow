@@ -9,8 +9,8 @@ public class UkuSequenceFlow extends UkuEntity{
 	private BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	public String source;
 	public String target;
-	private UkuEntity sourceEntity;
-	private UkuEntity targetEntity;
+	private UkuElement sourceEntity;
+	private UkuElement targetEntity;
 	public String condition = null;
 	
 	public UkuSequenceFlow(String id, String source, String target){
@@ -20,22 +20,22 @@ public class UkuSequenceFlow extends UkuEntity{
 	}
 	public void setReference(Map<String, UkuEntity> ref){
 		if(ref.containsKey(source)){
-			sourceEntity = ref.get(source);
+			sourceEntity = (UkuElement)ref.get(source);
 		} else {
 			addErrorMessage(" no source entity");
 		}
 		if(ref.containsKey(target)){
-			targetEntity = ref.get(target);
+			targetEntity = (UkuElement)ref.get(target);
 		} else {
 			addErrorMessage(" no target entity");
 		}
 	}
 	
-	public UkuEntity getSource(){
+	public UkuElement getSource(){
 		return sourceEntity;
 	}
 	
-	public UkuEntity getTarget(){
+	public UkuElement getTarget(){
 		return targetEntity;
 	}
 	public void setCondition (String condition){
@@ -50,5 +50,8 @@ public class UkuSequenceFlow extends UkuEntity{
 		}
 		
 	}
-	
+	@Override
+	public void accept(ElementVisitor visitor) {
+		visitor.visit(this);		
+	}
 }

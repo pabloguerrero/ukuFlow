@@ -1,5 +1,6 @@
 package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class UkuProcess {
 	List<String> errors = new LinkedList<String>();
 	public String name;
 	private boolean correctness = true; 
-	
+	private HashMap<String,UkuEntity> ref = new HashMap<String, UkuEntity>();
 	/**
 	 * unique id
 	 */
@@ -31,9 +32,12 @@ public class UkuProcess {
 		for(UkuEntity e : entities){
 			correctness &= e.isCorrect();
 			errors.addAll(e.getError());
+			ref.put(e.getID(), e);
 		}
 	}
-	
+	public HashMap<String,UkuEntity> getReference(){
+		return ref;
+	}
 	public boolean isCorrect(){
 		return correctness;
 	}

@@ -21,7 +21,7 @@ public class Variable extends PrimaryExpression {
 	}
 
 	@Override
-	public void accept(Visitor visitor) {
+	public void accept(ScriptVisitor visitor) {
 		visitor.visit(this);
 	}
 
@@ -42,9 +42,6 @@ public class Variable extends PrimaryExpression {
 		return name.equals(ov.name);
 	}
 
-	public boolean equals(Variable v) {
-		return equals(v);
-	}
 
 	/**
 	 * indicate whether the variable receives a value at least one time. For
@@ -59,5 +56,13 @@ public class Variable extends PrimaryExpression {
 	 */
 	public boolean isDeclared() {
 		return declaration;
+	}
+	
+	/**
+	 * @return 2 <br/>
+	 *  variable = REPOSITORY_VALUE | ID
+	 */
+	public int getLength(){
+		return 2;
 	}
 }

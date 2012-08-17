@@ -1,26 +1,22 @@
 package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import de.tudarmstadt.dvs.ukuflow.script.ukuFlowScript;
+import de.tudarmstadt.dvs.ukuflow.script.function.TaskScriptFunction;
 
 public class UkuExecuteTask extends UkuElement{
-	public UkuEntity nextEntity;
-	public String nextEntityID;
-	
-	public String script;
+	private List<TaskScriptFunction> statements; 
+	private String script;
 	public UkuExecuteTask(String id) {
 		super(id);
 		script ="";
 	}
 	
-	public void setNextEntity(UkuEntity nextEntity){
-		this.nextEntity = nextEntity;
-	}
 	
-	public void setNextEntityID(String id){
-		this.nextEntityID = id;
-	}
+	
 	@Override
 	public void setReference(Map<String, UkuEntity> ref){
 		super.setReference(ref);
@@ -40,11 +36,20 @@ public class UkuExecuteTask extends UkuElement{
 		this.script = script;
 		ukuFlowScript parser = ukuFlowScript.getInstance(script);
 		try{
-			System.out.println(parser.parseTaskScript());
+			statements = parser.parseTaskScript();			
 		} catch (Exception e) {
 			String msg = e.getMessage().replace('\n', ' ');
 			addErrorMessage(msg);
 		}
+	}
+	
+	public List<TaskScriptFunction> getStatements(){
+		return statements;
+	}
+	
+	@Override
+	public void accept(ElementVisitor visitor) {
+		visitor.visit(this);		
 	}
 	
 }

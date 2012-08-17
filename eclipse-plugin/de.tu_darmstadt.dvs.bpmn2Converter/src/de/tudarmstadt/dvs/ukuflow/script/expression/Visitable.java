@@ -6,5 +6,6 @@ package de.tudarmstadt.dvs.ukuflow.script.expression;
  *
  */
 public interface Visitable {
-	public void accept(Visitor visitor);
+	public void accept(ScriptVisitor visitor);
+	
 }

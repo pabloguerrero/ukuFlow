@@ -4,11 +4,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import de.tudarmstadt.dvs.ukuflow.script.expression.Visitable;
+
 /**
  * @author Hien Quoc Dang
  *
  */
-public abstract class UkuEntity {
+public abstract class UkuEntity implements VisitableElement{
 	
 	protected boolean syntax = false;
 	protected List<String> errors = new LinkedList<String>();
