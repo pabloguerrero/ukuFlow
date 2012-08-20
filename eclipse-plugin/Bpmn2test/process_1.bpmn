@@ -13,32 +13,38 @@
     <bpmn2:sequenceFlow id="SequenceFlow_16" tns:priority="1" name="" sourceRef="StartEvent_3" targetRef="EventBasedGateway_2"/>
     <bpmn2:intermediateCatchEvent id="IntermediateCatchEvent_3" name="Catch">
       <bpmn2:incoming>SequenceFlow_17</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
       <bpmn2:messageEventDefinition id="MessageEventDefinition_2"/>
     </bpmn2:intermediateCatchEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_17" tns:priority="1" name="test" sourceRef="EventBasedGateway_2" targetRef="IntermediateCatchEvent_3"/>
     <bpmn2:intermediateCatchEvent id="IntermediateCatchEvent_4" name="Catch">
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
       <bpmn2:timerEventDefinition id="TimerEventDefinition_2">
         <bpmn2:timeDate xsi:type="bpmn2:tFormalExpression" id="_FormalExpression_7"/>
       </bpmn2:timerEventDefinition>
     </bpmn2:intermediateCatchEvent>
     <bpmn2:intermediateCatchEvent id="IntermediateCatchEvent_5" name="Catch">
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
     </bpmn2:intermediateCatchEvent>
     <bpmn2:receiveTask id="ReceiveTask_1" name="Receive Task" implementation="##unspecified">
-      <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
-      <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
     </bpmn2:receiveTask>
     <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" name="" sourceRef="EventBasedGateway_2" targetRef="IntermediateCatchEvent_4"/>
     <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="EventBasedGateway_2" targetRef="IntermediateCatchEvent_5"/>
-    <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" name="" sourceRef="IntermediateCatchEvent_5" targetRef="ReceiveTask_1"/>
-    <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" name="" sourceRef="IntermediateCatchEvent_4" targetRef="ReceiveTask_1"/>
-    <bpmn2:sequenceFlow id="SequenceFlow_5" tns:priority="1" name="" sourceRef="IntermediateCatchEvent_3" targetRef="ReceiveTask_1"/>
-    <bpmn2:exclusiveGateway id="ExclusiveGateway_1"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" name="" sourceRef="EventBasedGateway_1" targetRef="ReceiveTask_1"/>
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_1" gatewayDirection="Converging"/>
+    <bpmn2:eventBasedGateway id="EventBasedGateway_1" gatewayDirection="Converging">
+      <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+    </bpmn2:eventBasedGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" name="" sourceRef="IntermediateCatchEvent_4" targetRef="EventBasedGateway_1"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_8" tns:priority="1" name="" sourceRef="IntermediateCatchEvent_3" targetRef="EventBasedGateway_1"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_9" tns:priority="1" name="" sourceRef="IntermediateCatchEvent_5" targetRef="EventBasedGateway_1"/>
+    <bpmn2:parallelGateway id="heoham" gatewayDirection="Diverging"/>
   </bpmn2:process>
   <bpmn2:message id="Message_1" itemRef="ItemDefinition_1"/>
   <bpmn2:itemDefinition id="ItemDefinition_1"/>
@@ -60,7 +66,7 @@
         <dc:Bounds height="36.0" width="36.0" x="282.0" y="291.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ReceiveTask_1" bpmnElement="ReceiveTask_1">
-        <dc:Bounds height="50.0" width="110.0" x="470.0" y="228.0"/>
+        <dc:Bounds height="50.0" width="110.0" x="490.0" y="228.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_16" bpmnElement="SequenceFlow_16" sourceElement="BPMNShape_StartEvent_2" targetElement="BPMNShape_EventBasedGateway_2">
         <di:waypoint xsi:type="dc:Point" x="76.0" y="253.0"/>
@@ -78,20 +84,30 @@
         <di:waypoint xsi:type="dc:Point" x="171.0" y="253.0"/>
         <di:waypoint xsi:type="dc:Point" x="282.0" y="309.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_3" sourceElement="BPMNShape_IntermediateCatchEvent_5" targetElement="BPMNShape_ReceiveTask_1">
-        <di:waypoint xsi:type="dc:Point" x="318.0" y="309.0"/>
-        <di:waypoint xsi:type="dc:Point" x="470.0" y="253.0"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_IntermediateCatchEvent_4" targetElement="BPMNShape_ReceiveTask_1">
-        <di:waypoint xsi:type="dc:Point" x="318.0" y="253.0"/>
-        <di:waypoint xsi:type="dc:Point" x="470.0" y="253.0"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_5" sourceElement="BPMNShape_IntermediateCatchEvent_3" targetElement="BPMNShape_ReceiveTask_1">
-        <di:waypoint xsi:type="dc:Point" x="318.0" y="188.0"/>
-        <di:waypoint xsi:type="dc:Point" x="470.0" y="253.0"/>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_EventBasedGateway_1" targetElement="BPMNShape_ReceiveTask_1">
+        <di:waypoint xsi:type="dc:Point" x="449.0" y="254.0"/>
+        <di:waypoint xsi:type="dc:Point" x="490.0" y="253.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_1" bpmnElement="ExclusiveGateway_1" isMarkerVisible="true">
         <dc:Bounds height="50.0" width="50.0" x="140.0" y="370.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EventBasedGateway_1" bpmnElement="EventBasedGateway_1">
+        <dc:Bounds height="50.0" width="50.0" x="398.0" y="229.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_6" sourceElement="BPMNShape_IntermediateCatchEvent_4" targetElement="BPMNShape_EventBasedGateway_1">
+        <di:waypoint xsi:type="dc:Point" x="318.0" y="253.0"/>
+        <di:waypoint xsi:type="dc:Point" x="398.0" y="254.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="BPMNShape_IntermediateCatchEvent_3" targetElement="BPMNShape_EventBasedGateway_1">
+        <di:waypoint xsi:type="dc:Point" x="318.0" y="188.0"/>
+        <di:waypoint xsi:type="dc:Point" x="398.0" y="254.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_9" sourceElement="BPMNShape_IntermediateCatchEvent_5" targetElement="BPMNShape_EventBasedGateway_1">
+        <di:waypoint xsi:type="dc:Point" x="318.0" y="309.0"/>
+        <di:waypoint xsi:type="dc:Point" x="398.0" y="254.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_ParallelGateway_1" bpmnElement="heoham">
+        <dc:Bounds height="50.0" width="50.0" x="435.0" y="125.0"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

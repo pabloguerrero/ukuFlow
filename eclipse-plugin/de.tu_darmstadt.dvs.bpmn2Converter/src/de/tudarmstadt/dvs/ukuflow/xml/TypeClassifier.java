@@ -3,7 +3,9 @@ package de.tudarmstadt.dvs.ukuflow.xml;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.tudarmstadt.dvs.ukuflow.converter.constant.WorkflowTypes;
 import de.tudarmstadt.dvs.ukuflow.exception.UnsupportedElementException;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuGateway;
 
 public class TypeClassifier {
 	private Set<String> connectors = new HashSet<String>();
@@ -34,6 +36,26 @@ public class TypeClassifier {
 			INSTANCE = new TypeClassifier();
 		}
 		return INSTANCE;
+	}
+	public int getGatewayType(UkuGateway gway){
+		String name = gway.getElementType();
+		switch (gway.getType()){
+		case 1://Converging
+			if(name.equals("parallelGateway")) return WorkflowTypes.JOIN_GATEWAY;
+			else if(name.equals("inclusiveGateway")) return WorkflowTypes.INCLUSIVE_JOIN_GATEWAY;
+			else if(name.equals("exclusiveGateway")) return WorkflowTypes.EXCLUSIVE_MERGE_GATEWAY;
+			else if(name.equals("eventBasedGateway")) return WorkflowTypes.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY;//TODO
+			break;
+		case 2://Deverging
+			if(name.equals("parallelGateway")) return WorkflowTypes.FORK_GATEWAY;
+			else if(name.equals("inclusiveGateway")) return WorkflowTypes.INCLUSIVE_DECISION_GATEWAY;
+			else if(name.equals("exclusiveGateway")) return WorkflowTypes.EXCLUSIVE_DECISION_GATEWAY;
+			else if(name.equals("eventBasedGateway")) return WorkflowTypes.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY;//TODO
+			break;
+		default: return 0;
+		}
+		return 0;//TODO
+		
 	}
 	/**
 	 * 

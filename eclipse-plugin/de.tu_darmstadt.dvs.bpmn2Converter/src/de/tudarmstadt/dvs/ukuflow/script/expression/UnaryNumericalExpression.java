@@ -4,8 +4,10 @@ package de.tudarmstadt.dvs.ukuflow.script.expression;
  * represent an unary numerical expression
  * 
  * @author Hien Quoc Dang
- * 
+ * @suppresswarnings restrict
  */
+
+@SuppressWarnings("restricted")
 public class UnaryNumericalExpression extends NumericalExpression {
 	public UnaryNumericalExpression(int operator) {
 		super(operator);
@@ -13,7 +15,11 @@ public class UnaryNumericalExpression extends NumericalExpression {
 	}
 
 	protected UkuExpression operand;
-
+	
+	public int getOperator(){
+		return operator;
+	}
+	
 	public void setOperand(UkuExpression n) {
 		this.operand = n;
 	}
@@ -27,7 +33,10 @@ public class UnaryNumericalExpression extends NumericalExpression {
 	}
 
 	@Override
-	public void accept(Visitor visitor) {
+	public void accept(ScriptVisitor visitor) {
 		visitor.visit(this);
+	}
+	public int getLength(){
+		return 1 + operand.getLength();
 	}
 }

@@ -2,6 +2,8 @@ package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
 import java.util.Map;
 
+
+
 public class UkuEvent extends UkuElement {
 
 	public UkuEvent(String id) {
@@ -13,4 +15,11 @@ public class UkuEvent extends UkuElement {
 	public void setReference(Map<String, UkuEntity> ref) {
 		super.setReference(ref);
 	}
+
+	@Override
+	public void accept(ElementVisitor visitor) {
+		visitor.visit(this);
+		
+	}
+	
 }

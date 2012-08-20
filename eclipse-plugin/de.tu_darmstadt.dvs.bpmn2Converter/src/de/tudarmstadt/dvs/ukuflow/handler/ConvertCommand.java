@@ -26,6 +26,7 @@ import de.tudarmstadt.dvs.ukuflow.deployment.DeviceFinder;
 import de.tudarmstadt.dvs.ukuflow.exception.UnsupportedElementException;
 import de.tudarmstadt.dvs.ukuflow.xml.TypeClassifier;
 import de.tudarmstadt.dvs.ukuflow.xml.XMLNode;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.BinaryElementVisitor;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuElement;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuEntity;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuExecuteTask;
@@ -82,6 +83,7 @@ public class ConvertCommand extends AbstractHandler {
 				//XMLNode root = new XMLNode(e);
 				List<UkuProcess> processes = parser.getProcesses();
 				log.info("got "+processes.size() + " processes");
+				
 				for(UkuProcess up : processes){
 					log.info(up);
 					for(String errs:up.getErrorMessages()){
@@ -106,7 +108,24 @@ public class ConvertCommand extends AbstractHandler {
 						
 					}
 				}
-				
+				for(UkuProcess up : processes){
+					byte id = 0;					
+					for(UkuEntity ue:up.entities){
+						if(ue instanceof UkuElement){
+							((UkuElement)ue).setElementID(id);
+							id++;
+						}
+					}
+				}
+				BinaryElementVisitor visitor = new BinaryElementVisitor();
+				visitor.reset();
+				for(UkuEntity ue : processes.get(0).entities){
+					ue.accept(visitor);
+				}
+				out.println("***");
+				for(byte b : visitor.getOutput())
+					out.print(b + " ");
+				out.println("\n***");
 				out.println(processes.size()+"");
 				/*
 				 * File f = new File(oFileLocation); FileWriter fwrite = null;

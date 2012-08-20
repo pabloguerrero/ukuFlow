@@ -6,5 +6,5 @@ package de.tudarmstadt.dvs.ukuflow.script.expression;
  *
  */
 public abstract class UkuExpression implements Visitable{
-	
+	public abstract int getLength();
 }

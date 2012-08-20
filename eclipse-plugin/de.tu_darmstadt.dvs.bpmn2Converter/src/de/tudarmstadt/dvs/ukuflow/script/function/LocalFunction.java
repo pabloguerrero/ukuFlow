@@ -6,9 +6,9 @@ import de.tudarmstadt.dvs.ukuflow.script.expression.PrimaryExpression;
 import de.tudarmstadt.dvs.ukuflow.script.expression.UkuExpression;
 import de.tudarmstadt.dvs.ukuflow.script.expression.Variable;
 import de.tudarmstadt.dvs.ukuflow.script.expression.Visitable;
-import de.tudarmstadt.dvs.ukuflow.script.expression.Visitor;
+import de.tudarmstadt.dvs.ukuflow.script.expression.ScriptVisitor;
 
-public class LocalFunction extends TaskScriptFunction implements Visitable {
+public class LocalFunction extends TaskScriptFunction  {
 
 	String function_name;
 	List<UkuExpression> params;
@@ -19,15 +19,14 @@ public class LocalFunction extends TaskScriptFunction implements Visitable {
 	boolean saveResult2Variable = false;
 	Variable variable;
 
-	public LocalFunction(Variable variable, String name, List<UkuExpression> params) {
+	public LocalFunction(Variable variable, String fname, List<UkuExpression> params) {
 		if (params != null)
 			this.params = params;
 
-		function_name = name;
+		function_name = fname;
 
 		if (variable != null) {
-			saveResult2Variable = true;
-			this.variable = variable;
+			setVariable(variable);
 		}
 	}
 
@@ -38,10 +37,15 @@ public class LocalFunction extends TaskScriptFunction implements Visitable {
 	public LocalFunction(String function_name) {
 		this(function_name, null);
 	}
-
+	public String getFunctionName(){
+		return function_name;
+	}
 	public void setVariable(Variable s) {
 		variable = s;
 		saveResult2Variable = true;
+	}
+	public boolean hasVariable(){
+		return saveResult2Variable;
 	}
 
 	public Variable getVariable() {
@@ -71,7 +75,7 @@ public class LocalFunction extends TaskScriptFunction implements Visitable {
 	}
 
 	@Override
-	public void accept(Visitor visitor) {
+	public void accept(ScriptVisitor visitor) {
 		visitor.visit(this);
 
 	}

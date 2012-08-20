@@ -18,11 +18,15 @@ public class UkuString extends PrimaryExpression {
 	}
 
 	@Override
-	public void accept(Visitor visitor) {
+	public void accept(ScriptVisitor visitor) {
 		visitor.visit(this);
 	}
 
 	public String toString() {
-		return "'"+s+"'";
+		return "'" + s + "'";
+	}
+
+	public int getLength() {
+		return s.getBytes().length;
 	}
 }

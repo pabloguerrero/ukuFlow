@@ -54,11 +54,15 @@ public class Constant extends PrimaryExpression {
 	}
 
 	@Override
-	public void accept(Visitor visitor) {
+	public void accept(ScriptVisitor visitor) {
 		visitor.visit(this);
 	}
 
 	public String toString() {
 		return "" + (isBool ? boolValue : intValue);
+	}
+	public int getLength(){
+		return 1;
+		//TODO
 	}
 }

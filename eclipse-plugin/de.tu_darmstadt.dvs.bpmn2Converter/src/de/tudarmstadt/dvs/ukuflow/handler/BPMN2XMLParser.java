@@ -15,6 +15,7 @@ import org.eclipse.ui.console.MessageConsoleStream;
 import org.jdom2.*;
 import org.jdom2.input.SAXBuilder;
 
+import de.tudarmstadt.dvs.ukuflow.converter.constant.WorkflowTypes;
 import de.tudarmstadt.dvs.ukuflow.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.exception.UnsupportedElementException;
 import de.tudarmstadt.dvs.ukuflow.xml.TypeClassifier;
@@ -200,6 +201,11 @@ public class BPMN2XMLParser {
 			return event;
 		case 4: // gateways
 			UkuGateway gway = new UkuGateway(id);
+			gway.setElementType(name);
+			String direction = e.getAttributeValue("gatewayDirection");
+			if(direction != null){
+				gway.setDirection(direction);
+			}
 			for (Element child : e.getChildren()) {
 				String n = child.getName();
 				String n_id = child.getTextTrim();

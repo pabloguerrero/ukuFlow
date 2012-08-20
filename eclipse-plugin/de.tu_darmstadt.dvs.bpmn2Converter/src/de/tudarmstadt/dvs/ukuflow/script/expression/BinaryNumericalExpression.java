@@ -14,7 +14,13 @@ public class BinaryNumericalExpression extends NumericalExpression {
 
 	protected UkuExpression operand1;
 	protected UkuExpression operand2;
-
+	public int getOperator(){
+		return operator;
+	}
+	public int getLength(){
+		return 1 + operand1.getLength() + operand2.getLength();
+	}
+	
 	public void setOperand1(UkuExpression op1) {
 		operand1 = op1;
 	}
@@ -37,7 +43,7 @@ public class BinaryNumericalExpression extends NumericalExpression {
 	}
 
 	@Override
-	public void accept(Visitor visitor) {
+	public void accept(ScriptVisitor visitor) {
 		visitor.visit(this);
 	}
 }

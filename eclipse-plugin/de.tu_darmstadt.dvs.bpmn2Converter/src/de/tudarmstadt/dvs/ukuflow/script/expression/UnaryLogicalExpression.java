@@ -24,11 +24,15 @@ public class UnaryLogicalExpression extends LogicalExpression {
 	}
 
 	@Override
-	public void accept(Visitor visitor) {
+	public void accept(ScriptVisitor visitor) {
 		visitor.visit(this);
 	}
 	@Override
 	public String toString(){
 		return "(NOT "+operand + ")";
+	}
+	
+	public int getLength(){
+		return 1 + operand.getLength();
 	}
 }
