@@ -142,7 +142,9 @@ enum repository_fields {
 	SENSOR_ACCM_Y_AXIS, /*					 8*/
 	SENSOR_ACCM_Z_AXIS, /*					 9*/
 	SENSOR_VOLTAGE_RAW, /*					10*/
-	NODE_ID, /**							11*/
+	SENSOR_CO2_RAW, /*						11*/
+	SENSOR_CO_RAW, /*						12*/
+	NODE_ID, /**							13*/
 };
 
 data_repository_id_t data_mgr_create(clock_time_t max_ttl);

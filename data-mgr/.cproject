@@ -5,6 +5,9 @@
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="0.1602547013">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="0.1602547013" moduleId="org.eclipse.cdt.core.settings" name="Default">
+				<macros>
+					<stringMacro name="CONTIKI_TARGET_Z1" type="VALUE_TEXT" value="1"/>
+				</macros>
 				<externalSettings/>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.VCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
@@ -39,8 +42,11 @@
 									<listOptionValue builtIn="false" value="/Users/guerrero/workspace/contiki/"/>
 									<listOptionValue builtIn="false" value="/Users/guerrero/workspace/contiki/core/"/>
 									<listOptionValue builtIn="false" value="/Users/guerrero/workspace/contiki/cpu/msp430/"/>
-									<listOptionValue builtIn="false" value="/Users/guerrero/workspace/contiki/platform/sky/"/>
-									<listOptionValue builtIn="false" value="/Users/guerrero/workspace/msp430-gcc-4.4.5/msp430/include"/>
+									<listOptionValue builtIn="false" value="/Users/guerrero/workspace/contiki/platform/z1/"/>
+									<listOptionValue builtIn="false" value="/opt/local/msp430/include/"/>
+								</option>
+								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.2031626194" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="CONTIKI_TARGET_Z1=1"/>
 								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1362056063" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
@@ -163,4 +169,5 @@
 			</profile>
 		</scannerConfigBuildInfo>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

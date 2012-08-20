@@ -6,3 +6,5 @@
 /symbols.h
 /obj_*
 /doc/html
+/contiki-z1.a
+/contiki-z1.map

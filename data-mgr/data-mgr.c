@@ -40,6 +40,7 @@
 #include "lib/list.h"
 #include "stdlib.h"
 #include "net/rime/rimeaddr.h"
+#include "logger.h"
 #ifdef CONTIKI_TARGET_SKY
 #include "dev/sht11-sensor.h"
 #include "dev/light-sensor.h"
@@ -251,6 +252,34 @@ static uint16_t sensor_voltage_raw(void) {
 	return result;
 }
 
+/**
+ * \brief		TODO
+ */
+static uint16_t sensor_co2_raw(void) {
+#ifdef CONTIKI_TARGET_SKY
+	// TODO
+#else
+#ifdef CONTIKI_TARGET_Z1
+	// TODO
+#endif
+#endif
+	return 0;
+}
+
+/**
+ * \brief		TODO
+ */
+static uint16_t sensor_co_raw(void) {
+#ifdef CONTIKI_TARGET_SKY
+	// TODO
+#else
+#ifdef CONTIKI_TARGET_Z1
+	// TODO
+#endif
+#endif
+	return 0;
+}
+
 
 
 /**
@@ -271,9 +300,13 @@ data_mgr_lookup(data_repository_id_t id) {
  */
 static struct repository_entry *
 repository_entry_lookup(struct repository* repo, entry_id_t entry_id) {
+	PRINTF(3,"searching %d\n", entry_id);
 	struct repository_entry *entry = list_head(repo->entry_list);
-	while ((entry != NULL) && (entry->entry_id != entry_id))
+	while ((entry != NULL) && (entry->entry_id != entry_id)) {
 		entry = entry->next;
+		PRINTF(3,"entry %d\n", entry->entry_id);
+	}
+	PRINTF(3,"-*-*- %d\n", entry->entry_id);
 	return entry;
 }
 
@@ -316,7 +349,7 @@ static void data_mgr_init() {
 
 			entry_id_t entry_id;
 			// now create entries for sensors, and add them into common repository:
-			for (entry_id = 0; entry_id <= SENSOR_VOLTAGE_RAW; entry_id++) {
+			for (entry_id = 0; entry_id < NODE_ID; entry_id++) {
 				struct auto_repository_entry *entry = malloc(
 						sizeof(struct auto_repository_entry)
 								+ sizeof(uint16_t));
@@ -333,7 +366,7 @@ static void data_mgr_init() {
 					// set a timestamp to the future, such that the entry is automatically updated if data is requested right after initialization:
 					entry->timestamp = now + 60 * CLOCK_SECOND;
 
-					// now set pointer to updater function (if applies, e.g., for NODE_ID it doesn't)
+					// now set pointer to updater function, if applies (e.g., for NODE_ID it doesn't)
 					switch (entry_id) {
 					case SENSOR_LIGHT_PAR_RAW:
 						entry->updater = sensor_light_par_raw;
@@ -372,6 +405,12 @@ static void data_mgr_init() {
 					case SENSOR_VOLTAGE_RAW:
 						entry->updater = sensor_voltage_raw;
 						break;
+					case SENSOR_CO2_RAW:
+						entry->updater = sensor_co2_raw;
+						break;
+					case SENSOR_CO_RAW:
+						entry->updater = sensor_co_raw;
+						break;
 					} // switch
 
 					list_add(common_repo->entry_list, entry);
@@ -391,6 +430,7 @@ static void data_mgr_init() {
 
 				// set entry data length
 				entry->data_len = sizeof(uint16_t);
+
 
 				// set value
 				uint16_t *value = (uint16_t*) (((uint8_t*) entry)
@@ -595,7 +635,7 @@ void data_mgr_set_updater(data_repository_id_t id, entry_id_t entry_id,
 	data_repository_id_t repo_id;
 	struct repository_entry *entry;
 
-	// Are we being asked for a system-wide entry (entry_id <= NODE_ID) or a user-specific  one?
+	// Are we being asked for a system-wide entry (entry_id <= NODE_ID) or a user-specific one?
 	if (entry_id <= NODE_ID)
 		// we are being asked for a system-wide entry (entry_id <= NODE_ID), hence take it from the common repository
 		repo_id = COMMON_REPOSITORY_ID;
@@ -655,6 +695,8 @@ data_mgr_get_data(data_repository_id_t repo_id_param, entry_id_t entry_id,
 
 	// ok, repository exists (whether it is the common repository or a user-specific one)
 	struct repository_entry *entry = repository_entry_lookup(repo, entry_id);
+
+	PRINTF(3,"getting field %d, entry %p\n", entry_id, entry);
 
 	if (entry == NULL)
 		return NULL;

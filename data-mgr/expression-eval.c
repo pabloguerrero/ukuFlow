@@ -431,6 +431,9 @@ static long int eval_repository_value(void) {
 		uint8_t *data = data_mgr_get_data(repo_id, (entry_id_t) index,
 				&data_len);
 
+		if (index == NODE_ID)
+			printf("***, data %p, val %d\n", data, *((uint16_t*) data));
+
 		if (data != NULL) {
 			uint16_t result = *((uint16_t*) data);
 
