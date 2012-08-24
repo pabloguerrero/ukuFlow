@@ -500,7 +500,7 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 		/* cast the message to the correct type */
 		struct scopes_msg_close *msg = (struct scopes_msg_close *) gmsg;
 
-		PRINTF(1,
+		PRINTF(3,
 				"(SCOPES) SCOPES_MSG_CLOSE, scope-id=%u, subscope-id=%u\n", msg->scope_id, msg->sub_scope_id);
 
 		struct scope *super_scope = lookup_scope_id(msg->scope_id);
