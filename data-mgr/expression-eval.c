@@ -40,6 +40,7 @@
  */
 
 #include "expression-eval.h"
+#include "logger.h"
 
 /*---------------------------------------------------------------------------*/
 /* Internal variables for processing an expression */
@@ -431,17 +432,14 @@ static long int eval_repository_value(void) {
 		uint8_t *data = data_mgr_get_data(repo_id, (entry_id_t) index,
 				&data_len);
 
-		if (index == NODE_ID)
-			printf("***, data %p, val %d\n", data, *((uint16_t*) data));
-
 		if (data != NULL) {
 			uint16_t result = *((uint16_t*) data);
 
-			//		printf("repo value: %u\n", result);
+			PRINTF(5,"(EXPRESSION-EVAL) repo value: %u\n", result);
 
 			return result;
 		}
-		//	printf("repo entry not found!\n");
+		PRINTF(5,"(EXPRESSION-EVAL) Repository entry not found!\n");
 	}
 	return 0;
 }
