@@ -39,7 +39,7 @@
 #define SUB_SCOPE_SPEC PREDICATE_GET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 8
 
 /* \brief number of iterations this test will run */
-#define NUM_ITERATIONS 10
+#define NUM_ITERATIONS 1
 
 PROCESS(tester_process, "tester");
 AUTOSTART_PROCESSES(&tester_process);
@@ -170,7 +170,7 @@ PROCESS_THREAD(tester_process, ev, data) {
 		if (node_id == ROOT_NODE_ID) {
 			while (++test_iteration <= NUM_ITERATIONS) {
 
-				PRINTF(1, "(SCOPES TESTER) root node starting iteration %d.\n", test_iteration);
+				PRINTF(1, "(SCOPES TESTER) start test iteration %d\n", test_iteration);
 				static uint8_t super_spec[] = { SUPER_SCOPE_SPEC };
 				static uint8_t sub_spec[] = { SUB_SCOPE_SPEC };
 
@@ -278,7 +278,7 @@ PROCESS_THREAD(tester_process, ev, data) {
 						"(SCOPES TESTER) Waiting %d seconds for nodes who didn't hear close message.\n", SUPER_SCOPE_TTL);
 				etimer_set(&control_timer, CLOCK_SECOND * SUPER_SCOPE_TTL);
 				PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&control_timer));
-				PRINTF(1, "(SCOPES TESTER) test iteration %d finished.\n", test_iteration);
+				PRINTF(1, "(SCOPES TESTER) finish test iteration %d\n", test_iteration);
 //			//			while (1) {
 //			//				/* simulation end,  blink green led */
 //			//				etimer_set(&control_timer, CLOCK_SECOND / 2);
