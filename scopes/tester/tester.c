@@ -165,7 +165,7 @@ PROCESS_THREAD(tester_process, ev, data) {
 
 		static uint8_t test_iteration = 0;
 
-		PRINTF(1, "(SCOPES TESTER) ready to handle commands\n");
+		PRINTF(1, "(SCOPES TESTER) Ready to handle commands\n");
 
 		if (node_id == ROOT_NODE_ID) {
 			while (++test_iteration <= NUM_ITERATIONS) {
