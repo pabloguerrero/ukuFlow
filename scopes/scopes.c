@@ -511,9 +511,9 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 				&& ARE_LINKED(super_scope, sub_scope)
 				&& !HAS_STATUS(sub_scope, SCOPES_STATUS_CREATOR)) {
 			/* remove the scope */
-			printf("had %d scopes\n", list_length(scopes));
+			PRINTF(3,"(SCOPES) had %d scopes\n", list_length(scopes));
 			remove_scope(sub_scope);
-			printf("removed %d, now only %d scopes!\n", sub_scope->scope_id,
+			PRINTF(3,"(SCOPES) removed %d, now only %d scopes!\n", sub_scope->scope_id,
 					list_length(scopes));
 		}
 		break;
