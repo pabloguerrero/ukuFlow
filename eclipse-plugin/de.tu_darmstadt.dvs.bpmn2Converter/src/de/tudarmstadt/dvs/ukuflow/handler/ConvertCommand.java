@@ -118,15 +118,17 @@ public class ConvertCommand extends AbstractHandler {
 					}
 				}
 				BinaryElementVisitor visitor = new BinaryElementVisitor();
-				visitor.reset();
-				for(UkuEntity ue : processes.get(0).entities){
+				
+				for(UkuProcess ue : processes){
+					visitor.reset();
 					ue.accept(visitor);
+					out.println("***");
+					for(byte b : visitor.getOutput())
+						out.print(b + " ");
+					out.println("\n***");
+					out.println(processes.size()+"");
 				}
-				out.println("***");
-				for(byte b : visitor.getOutput())
-					out.print(b + " ");
-				out.println("\n***");
-				out.println(processes.size()+"");
+				
 				/*
 				 * File f = new File(oFileLocation); FileWriter fwrite = null;
 				 * try { fwrite = new FileWriter(f); fwrite.write(content);

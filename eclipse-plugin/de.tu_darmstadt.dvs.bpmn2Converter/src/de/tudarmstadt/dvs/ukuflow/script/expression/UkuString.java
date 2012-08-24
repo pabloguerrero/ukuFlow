@@ -27,6 +27,6 @@ public class UkuString extends PrimaryExpression {
 	}
 
 	public int getLength() {
-		return s.getBytes().length;
+		return s.getBytes().length +2; //STRING_VALUE + LENGTH + s
 	}
 }

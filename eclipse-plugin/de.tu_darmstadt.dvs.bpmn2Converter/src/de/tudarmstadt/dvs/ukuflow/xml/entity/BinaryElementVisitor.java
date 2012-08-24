@@ -118,5 +118,22 @@ public class BinaryElementVisitor extends ukuFlowBinaryVisitor implements Elemen
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public void visit(UkuProcess p){
+		out.add(p.getWorkflowID());
+		out.add((byte)p.getElements().size());
+		out.add(p.getNumberOfScope());
+		for(UkuElement e : p.getElements()){
+			e.accept(this);
+		}
+		for(UkuScope s : p.getScope()){
+			s.accept(this);
+		}
+	}
+	
+	public void visit(UkuScope us){
+		//TODO: implemetation
+	}
 
 }

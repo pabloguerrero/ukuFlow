@@ -31,7 +31,9 @@ import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuSequenceFlow;
  * 
  */
 public class BPMN2XMLParser {
+	
 	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
+	
 	Map<String, UkuEntity> reference;
 	Element root;
 	MessageConsoleStream out = null;

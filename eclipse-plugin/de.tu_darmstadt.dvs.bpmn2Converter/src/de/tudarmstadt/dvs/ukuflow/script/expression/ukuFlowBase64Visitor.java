@@ -14,7 +14,7 @@ public class ukuFlowBase64Visitor implements ScriptVisitor{
 	}
 	
 	@Override
-	public void visit(Constant uConstant) {
+	public void visit(ukuConstant uConstant) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -74,6 +74,12 @@ public class ukuFlowBase64Visitor implements ScriptVisitor{
 
 	@Override
 	public void visit(ComputationalFunction computationalF) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void visit(UkuTaskScript ukuTaskScript) {
 		// TODO Auto-generated method stub
 		
 	}

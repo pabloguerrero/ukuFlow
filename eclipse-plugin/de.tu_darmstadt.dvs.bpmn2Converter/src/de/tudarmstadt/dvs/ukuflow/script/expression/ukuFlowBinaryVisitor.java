@@ -27,14 +27,21 @@ public class ukuFlowBinaryVisitor implements ScriptVisitor{
 	}
 	
 	@Override
-	public void visit(Constant uConstant) {
+	public void visit(ukuConstant uConstant) {
 		if(uConstant.isBoolValue()){
+			//TODO boolean value
 			boolean v = (Boolean)uConstant.getValue();
 			log.error("boolean is not supported yet");
-			//TODO boolean value
 		} else {
 			int v = (Integer)uConstant.getValue();
-			out.add(toByte(ExpressionTypes.REPOSITORY_VALUE));
+			//out.add(toByte(ExpressionTypes.REPOSITORY_VALUE));
+			out.add(uConstant.getType());
+			if(uConstant.getLength() == 2){
+				out.add(toByte(v));
+			} else if (uConstant.getLength() == 3){
+				out.add(toByte(v/256));
+				out.add(toByte(v%256));
+			}
 			out.add(toByte(v));
 		}
 		
@@ -44,7 +51,10 @@ public class ukuFlowBinaryVisitor implements ScriptVisitor{
 	@Override
 	public void visit(UkuString uString) {
 		out.add(toByte(ExpressionTypes.STRING_VALUE));
-		log.debug("string :" + uString.getString());		
+		log.debug("string :" + uString.getString());
+		
+		out.add((byte)(uString.getLength()-2));
+		
 		for(byte b : uString.getString().getBytes()){
 			out.add(b);
 		}
@@ -52,7 +62,6 @@ public class ukuFlowBinaryVisitor implements ScriptVisitor{
 
 	@Override
 	public void visit(Variable uVariable) {
-		
 		
 	}
 
@@ -160,6 +169,12 @@ public class ukuFlowBinaryVisitor implements ScriptVisitor{
 		char c = 256;
 		for(int i = 0; i < 20; i++)
 			sb.append((char)(c+i));		
+		
+	}
+
+	@Override
+	public void visit(UkuTaskScript ukuTaskScript) {
+		// TODO Auto-generated method stub
 		
 	}
 }
