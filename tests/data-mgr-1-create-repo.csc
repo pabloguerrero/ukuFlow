@@ -23,10 +23,10 @@
 		<logoutput>40000</logoutput>
 	</events>
 	<motetype>
-		se.sics.cooja.mspmote.SkyMoteType
-		<identifier>DataMgrSkyNode</identifier>
+		se.sics.cooja.mspmote.Z1MoteType
+		<identifier>DataMgrZ1Node</identifier>
 		<description>Data Manager Node</description>
-		<firmware>../data-mgr/tester/tester.sky</firmware>
+		<firmware>../data-mgr/tester/tester.z1</firmware>
 		<moteinterface>se.sics.cooja.interfaces.Position</moteinterface>
 		<moteinterface>se.sics.cooja.interfaces.RimeAddress</moteinterface>
 		<moteinterface>se.sics.cooja.interfaces.IPAddress</moteinterface>
@@ -34,14 +34,11 @@
 		<moteinterface>se.sics.cooja.interfaces.MoteAttributes</moteinterface>
 		<moteinterface>se.sics.cooja.mspmote.interfaces.MspClock</moteinterface>
 		<moteinterface>se.sics.cooja.mspmote.interfaces.MspMoteID</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.SkyButton</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.SkyFlash</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.SkyByteRadio</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.MspSerial</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.SkyLED</moteinterface>
+		<moteinterface>se.sics.cooja.mspmote.interfaces.MspButton</moteinterface>
+		<moteinterface>se.sics.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
+		<moteinterface>se.sics.cooja.mspmote.interfaces.MspDefaultSerial</moteinterface>
+		<moteinterface>se.sics.cooja.mspmote.interfaces.MspLED</moteinterface>
 		<moteinterface>se.sics.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
 	</motetype>
 	<mote>
 		<breakpoints />
@@ -55,7 +52,7 @@
 			se.sics.cooja.mspmote.interfaces.MspMoteID
 			<id>1</id>
 		</interface_config>
-		<motetype_identifier>DataMgrSkyNode</motetype_identifier>
+		<motetype_identifier>DataMgrZ1Node</motetype_identifier>
 	</mote>
 	</simulation>
 	<plugin>

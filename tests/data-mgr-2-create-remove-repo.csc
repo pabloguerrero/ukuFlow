@@ -18,15 +18,15 @@
 		<interference_range>100.0</interference_range>
 		<success_ratio_tx>1.0</success_ratio_tx>
 		<success_ratio_rx>1.0</success_ratio_rx>
-    </radiomedium>
-    <events>
+	</radiomedium>
+	<events>
 		<logoutput>40000</logoutput>
-    </events>
-    <motetype>
-		se.sics.cooja.mspmote.SkyMoteType
-		<identifier>DataManagerSkyNode</identifier>
+	</events>
+	<motetype>
+		se.sics.cooja.mspmote.Z1MoteType
+		<identifier>DataMgrZ1Node</identifier>
 		<description>Data Manager Node</description>
-		<firmware>../data-mgr/tester/tester.sky</firmware>
+		<firmware>../data-mgr/tester/tester.z1</firmware>
 		<moteinterface>se.sics.cooja.interfaces.Position</moteinterface>
 		<moteinterface>se.sics.cooja.interfaces.RimeAddress</moteinterface>
 		<moteinterface>se.sics.cooja.interfaces.IPAddress</moteinterface>
@@ -34,14 +34,11 @@
 		<moteinterface>se.sics.cooja.interfaces.MoteAttributes</moteinterface>
 		<moteinterface>se.sics.cooja.mspmote.interfaces.MspClock</moteinterface>
 		<moteinterface>se.sics.cooja.mspmote.interfaces.MspMoteID</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.SkyButton</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.SkyFlash</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.SkyCoffeeFilesystem</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.SkyByteRadio</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.MspSerial</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.SkyLED</moteinterface>
+		<moteinterface>se.sics.cooja.mspmote.interfaces.MspButton</moteinterface>
+		<moteinterface>se.sics.cooja.mspmote.interfaces.Msp802154Radio</moteinterface>
+		<moteinterface>se.sics.cooja.mspmote.interfaces.MspDefaultSerial</moteinterface>
+		<moteinterface>se.sics.cooja.mspmote.interfaces.MspLED</moteinterface>
 		<moteinterface>se.sics.cooja.mspmote.interfaces.MspDebugOutput</moteinterface>
-		<moteinterface>se.sics.cooja.mspmote.interfaces.SkyTemperature</moteinterface>
 	</motetype>
 	<mote>
 		<breakpoints />
@@ -55,26 +52,28 @@
 			se.sics.cooja.mspmote.interfaces.MspMoteID
 			<id>1</id>
 		</interface_config>
-		<motetype_identifier>DataManagerSkyNode</motetype_identifier>
+		<motetype_identifier>DataMgrZ1Node</motetype_identifier>
 	</mote>
 	</simulation>
 	<plugin>
     	se.sics.cooja.plugins.ScriptRunner
 	    <plugin_config>
 		<script>
-TIMEOUT(100000);
+TIMEOUT(100000, log.log("last msg: " + msg + "\n")); /* print last msg at timeout */
 
 var ttl, repo_id;
 
 /* Wait for node to boot */
 mote1 = null;
+node1 = null;
 while (mote1 == null) {
   if (id == 1) {
     mote1 = mote;
+    node1 = node;
   }
   YIELD();
 }
-// log.log(time + " - node booted!\n");
+log.log(time + " - node booted!\n");
 
 //----------------------------------
 // 1st: Create repo
@@ -103,7 +102,6 @@ YIELD_THEN_WAIT_UNTIL(id == 1 &amp;&amp; msg.contains("ok!"));
 repo_id = msg.substring(msg.indexOf("repo_id=[",0)+9,msg.indexOf("]",msg.indexOf("repo_id=[",0)+9));
 log.log("Repo removal ok, repo_id='"+repo_id+"'\n");
 //----------------------------------
-
 
 log.testOK(); /* Report test success and quit */
 		</script>
