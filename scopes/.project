@@ -4,6 +4,7 @@
 	<comment></comment>
 	<projects>
 		<project>ukuFlow - data-repository</project>
+		<project>ukuFlow - data-mgr</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -68,10 +69,16 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.stp.bpmn.validation.BatchValidationBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.cdt.core.cnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
+		<nature>org.eclipse.stp.bpmn.validation.BatchValidationBuildAbleNature</nature>
 	</natures>
 </projectDescription>

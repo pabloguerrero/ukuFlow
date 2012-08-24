@@ -79,50 +79,49 @@
 #define SELFUR_STATUS_CREATOR 0x10
 
 /* other definitions */
-/** \brief	Time interval within which downstream messages are reforwarded by nodes
+/** \brief		Time interval within which downstream messages are reforwarded by nodes
  *
- * 			The Scopes selfur protocol uses two flooding channels for sending
- * 			data downstream (i.e. from the root to the members): one for tree
- * 			construction and one for data messages. Nodes forward these messages using
- * 			the ipolite primitive, which takes a time interval as parameter. Nodes
- * 			choose a random point in time within this interval to perform its
- * 			transmission. This constant specifies exactly this time interval.
+ * 				The Scopes selfur protocol uses two flooding channels for sending
+ * 				data downstream (i.e. from the root to the members): one for tree
+ * 				construction and one for data messages. Nodes forward these messages using
+ * 				the ipolite primitive, which takes a time interval as parameter. Nodes
+ * 				choose a random point in time within this interval to perform its
+ *	 			transmission. This constant specifies exactly this time interval.
  *
- * 			During this time, the message is queued in the channel. Shorter values lead
- * 			to faster message dissemination, but also higher collision rates. Lower values
- * 			are more energy efficient, but decrease throughput.
+ * 				During this time, the message is queued in the channel. Shorter values lead
+ * 				to faster message dissemination, but also higher collision rates. Lower values
+ * 				are more energy efficient, but decrease throughput.
  **/
 #define SELFUR_FLOODING_QUEUE_TIME 50 // CLOCK_SECOND/2
-
-/** \brief	Amount of retries for sending an activation message to the parent node
+/** \brief		Amount of retries for sending an activation message to the parent node
  *
- * 			Whenever a node joins a routing tree, it informs its parent that it has a
- * 			child. This is signaled with an 'activation' message (via runicast). The parent
- * 			node then replies with a 'suppression' message (via broadcast) so that other
- * 			children don't have to send their activation messages.
- * 			The activation messages are sent via runicast (reliable unicast), which means
- * 			that the sender node waits for an acknowledgment. If no acknowledgment is
- * 			received, the sender node retries a number of times. The maximum number of
- * 			times a node retries is specified with this constant.
+ * 				Whenever a node joins a routing tree, it informs its parent that it has a
+ * 				child. This is signaled with an 'activation' message (via runicast). The parent
+ * 				node then replies with a 'suppression' message (via broadcast) so that other
+ * 				children don't have to send their activation messages.
+ * 				The activation messages are sent via runicast (reliable unicast), which means
+ * 				that the sender node waits for an acknowledgment. If no acknowledgment is
+ * 				received, the sender node retries a number of times. The maximum number of
+ * 				times a node retries is specified with this constant.
  **/
 #define SELFUR_ACTIVATION_RETRANSMISSIONS 10
 
-/** \brief	Maximum amount of routing entries that a node can store */
+/** \brief		Maximum amount of routing entries that a node can store */
 #define SELFUR_MAX_ROUTING_ENTRIES 10
 
-/** \brief	Maximum amount of routing entries that a node can store */
+/** \brief		Maximum amount of routing entries that a node can store */
 #define SELFUR_MAX_SCOPE_ENTRIES 10
 
 /**
- * \brief	Time to live of a routing entry.
+ * \brief		Time to live of a routing entry.
  *
- *  		Routing entries are created with this value. If an entry
- *  		doesn't get updated during this interval, it is automatically deleted.
- *  		This constant's value should be (e.g. 3x) higher than the value of
- *  		the constant SELFUR_ROUTING_REFRESH_INTERVAL, so that entries have
- *  		a chance to be updated before they are automatically deleted.
+ *  			Routing entries are set this value on creation. If an entry
+ *  			doesn't get updated during this interval, it is automatically deleted.
+ *  			This constant's value should be (e.g. 3x) higher than the value of
+ *  			the constant SELFUR_ROUTING_REFRESH_INTERVAL, so that entries have
+ *  			a chance to be updated before they are automatically deleted.
  *
- *  		The value is expressed in seconds.
+ * 		 		The value is expressed in seconds.
  **/
 #define SELFUR_ROUTING_ENTRY_TTL 300
 
@@ -143,63 +142,62 @@
  **/
 #define SELFUR_ACTIVATION_MAX_DELAY 1
 
-/** \brief TODO */
+/** \brief		TODO */
 #define SELFUR_LOCK_TIMER_DURATION 1
 
-/** \brief TODO */
+/** \brief		TODO */
 #define SELFUR_INFO_TIMER_DURATION 10
 
-/** \brief TODO */
+/** \brief		TODO */
 #define SELFUR_HAS_STATUS(r, s)                  \
   ((r)->status & s)
 
-/** \brief TODO */
+/** \brief		TODO */
 #define SELFUR_SET_STATUS(r, s)                  \
   ((r)->status |= s)
 
-/** \brief TODO */
+/** \brief		TODO */
 #define SELFUR_UNSET_STATUS(r, s)                \
   ((r)->status &= ~s)
 
-/** \brief TODO */
+/** \brief		TODO */
 struct routing_entry {
-	/** \brief TODO */
-  struct routing_entry *next;
-	/** \brief TODO */
-  rimeaddr_t root;
-	/** \brief TODO */
-  rimeaddr_t next_hop;
-	/** \brief TODO */
-  struct ctimer ttl_timer;
+	/** \brief	TODO */
+	struct routing_entry *next;
+	/** \brief	TODO */
+	rimeaddr_t root;
+	/** \brief	TODO */
+	rimeaddr_t next_hop;
+	/** \brief	TODO */
+	struct ctimer ttl_timer;
 };
 
-/** \brief TODO */
+/** \brief		TODO */
 struct scope_entry {
-	/** \brief TODO */
-  struct scope_entry *next;
-	/** \brief TODO */
-  scope_id_t scope_id;
-	/** \brief TODO */
-  uint8_t status;
-	/** \brief TODO */
-  struct routing_entry *tree;
+	/** \brief	TODO */
+	struct scope_entry *next;
+	/** \brief	TODO */
+	scope_id_t scope_id;
+	/** \brief	TODO */
+	uint8_t status;
+	/** \brief	TODO */
+	struct routing_entry *tree;
 };
 
-/** \brief TODO */
+/** \brief		TODO */
 struct route_activation_msg {
-	/** \brief TODO */
-  scope_id_t scope_id;
+	/** \brief	TODO */
+	scope_id_t scope_id;
 };
 
-/** \brief TODO */
+/** \brief		TODO */
 struct route_suppress_msg {
-	/** \brief TODO */
-  scope_id_t scope_id;
+	/** \brief	TODO */
+	scope_id_t scope_id;
 };
 
-/** \brief TODO */
+/** \brief		TODO */
 extern struct scopes_routing scopes_selfur;
 
 #endif // __SCOPES_SELFUR_H__
-
 /** @} */

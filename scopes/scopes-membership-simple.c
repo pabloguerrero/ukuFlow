@@ -50,6 +50,7 @@
 
 #include "expression-eval.h"
 #include "data-mgr.h"
+#include "logger.h"
 
 static data_repository_id_t scopes_repository_id = 0;
 
@@ -58,21 +59,14 @@ static data_repository_id_t scopes_repository_id = 0;
  * \return		the result of the evaluation of the membership expression compared to the node's properties
  */
 static bool check(void *specs, data_len_t spec_len) {
-	//	LOG("[%u.%u:%10lu] %s::%s() : About to check expression: [",
-	//			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-	//			__FILE__, __FUNCTION__);
-	//	int i;
-	//	for (i = 0; i < spec_len; i++)
-	//		LOG("%u,",((uint8_t*)specs)[i]);
-	//	LOG("]\n");
+		PRINTF(5,"(SCOPES-MEMBER) : About to check expression: ");
+		PRINT_ARR(5, specs, spec_len);
 
 	if (scopes_repository_id != 0) {
 		expression_eval_set_repository(scopes_repository_id);
 		return expression_eval_evaluate(specs, spec_len);
 	} else {
-		//		LOG("[%u.%u:%10lu] %s::%s() : No data repository to use for checking expression, canceling!\n",
-		//				rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-		//				__FILE__, __FUNCTION__);
+		PRINTF(5,"(SCOPES-MEMBER) No data repository to use for checking expression, canceling!\n");
 		return FALSE;
 	}
 }

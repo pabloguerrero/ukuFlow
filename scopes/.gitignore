@@ -1,8 +1,14 @@
 /tester/tester.ihex
 /tester/tester.sky
+/tester/tester_parallel.ihex
+/tester/tester_parallel.sky
 /contiki-sky.a
 /contiki-sky.map
 /symbols.c
 /symbols.h
 /obj_*
 /doc/html
+/contiki-jcreate.a
+/contiki-jcreate.map
+/contiki-z1.a
+/contiki-z1.map

@@ -1,12 +1,16 @@
 CONTIKI_PROJECT = tester/tester tester/tester_parallel
+SIZE = msp430-size
+CLOC = cloc
 DOX = doxygen
 DOXYGEN_CONF = doc/scopes.doxyfile
 
 all: $(CONTIKI_PROJECT)
 	$(DOX) $(DOXYGEN_CONF)
+	$(CLOC) *.c *.h tester/*.c
+	$(SIZE) tester/tester.z1 tester/tester_parallel.z1
 
 ifndef TARGET
-  TARGET = sky
+  TARGET = z1
 endif
 
 # Contiki's flags:
