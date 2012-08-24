@@ -53,7 +53,7 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
 
   }
 
-  public static void main(String args []) throws ParseException
+  public static void main(String args[]) throws ParseException
   {
     String fileName = "bool.txt";
     try
@@ -305,7 +305,7 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
   UkuExpression result = null;
     if (jj_2_18(2)) {
       jj_consume_token(BOOLEAN);
-    {if (true) return new Constant(token.image);}
+    {if (true) return new ukuConstant(token.image);}
     } else if (jj_2_19(2)) {
       result = ConditionalRelationalFunction();
     {if (true) return result;}
@@ -491,9 +491,9 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
   }
 
   final public UkuExpression ConstantExpression() throws ParseException {
-  Constant c = null;
+  ukuConstant c = null;
     jj_consume_token(INTEGER_LITERAL);
-    c = new Constant(Integer.parseInt(token.image));
+    c = new ukuConstant(Integer.parseInt(token.image));
     {if (true) return c;}
     throw new Error("Missing return statement in function");
   }

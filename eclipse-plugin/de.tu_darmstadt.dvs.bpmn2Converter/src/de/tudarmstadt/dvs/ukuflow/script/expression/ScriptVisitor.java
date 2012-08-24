@@ -6,7 +6,7 @@ import de.tudarmstadt.dvs.ukuflow.script.function.ScopeFunction;
 
 public interface ScriptVisitor {
 	// visit primaryexpression
-	public void visit(Constant uConstant);
+	public void visit(ukuConstant uConstant);
 	public void visit(UkuString uString);
 	public void visit(Variable uVariable);
 	//visit numericalexpression
@@ -20,4 +20,7 @@ public interface ScriptVisitor {
 	public void visit(LocalFunction localF);
 	public void visit(ScopeFunction scopeF);
 	public void visit(ComputationalFunction computationalF);
+	
+	// visit taskScript
+	public void visit(UkuTaskScript ukuTaskScript);
 }

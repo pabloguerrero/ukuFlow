@@ -2,6 +2,8 @@ package de.tudarmstadt.dvs.ukuflow.script.expression;
 
 import java.io.Serializable;
 
+import de.tudarmstadt.dvs.ukuflow.converter.constant.ExpressionTypes;
+
 /**
  * represents a ukuFlow Constant. It could be either an integer constant or
  * boolean constant
@@ -9,22 +11,22 @@ import java.io.Serializable;
  * @author Hien Quoc Dang
  * 
  */
-public class Constant extends PrimaryExpression {
+public class ukuConstant extends PrimaryExpression {
 	int intValue;
 	boolean boolValue;
 	boolean isBool;
 
-	public Constant(int value) {
+	public ukuConstant(int value) {
 		intValue = value;
 		isBool = false;
 	}
 
-	public Constant(boolean value) {
+	public ukuConstant(boolean value) {
 		boolValue = value;
 		isBool = true;
 	}
 
-	public Constant(String s) {
+	public ukuConstant(String s) {
 		boolean tmp = false;
 		try {
 			tmp = Boolean.parseBoolean(s);
@@ -58,11 +60,38 @@ public class Constant extends PrimaryExpression {
 		visitor.visit(this);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	public byte getType() {
+		if (intValue >= 0 && intValue < 256)
+			return (byte) ExpressionTypes.UINT8_VALUE;
+		else if (intValue >= 0 && intValue < 65536)
+			return (byte) ExpressionTypes.UINT16_VALUE;
+		else if (intValue >= -128 && intValue < 128)
+			return (byte) ExpressionTypes.INT8_VALUE;
+		else if (intValue >= -32768 && intValue < 32768)
+			return (byte) ExpressionTypes.INT16_VALUE;
+		// TODO throw an exeception
+		return -1;
+	}
+
 	public String toString() {
 		return "" + (isBool ? boolValue : intValue);
 	}
-	public int getLength(){
-		return 1;
-		//TODO
+
+	public int getLength() {
+		
+		switch (getType()) {
+		case ExpressionTypes.UINT8_VALUE:
+		case ExpressionTypes.INT8_VALUE:
+			return 2;
+		case ExpressionTypes.UINT16_VALUE:
+		case ExpressionTypes.INT16_VALUE:
+			return 3;
+		}
+		
+		return 0;
 	}
 }
