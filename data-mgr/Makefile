@@ -7,7 +7,7 @@ DOXYGEN_CONF = doc/data-mgr.doxyfile
 all: $(CONTIKI_PROJECT)
 	$(DOX) $(DOXYGEN_CONF)
 	$(CLOC) *.c *.h tester/*.c
-	$(SIZE) tester/tester.sky
+	$(SIZE) tester/tester.z1
 
 ifndef TARGET
   TARGET = z1
