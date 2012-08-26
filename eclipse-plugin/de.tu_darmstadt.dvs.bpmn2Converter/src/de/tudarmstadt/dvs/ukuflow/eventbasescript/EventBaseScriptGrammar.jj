@@ -1,188 +1,13 @@
-/**
- * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
- */options
-{
-  LOOKAHEAD= 2;
-  CHOICE_AMBIGUITY_CHECK = 2;
-  OTHER_AMBIGUITY_CHECK = 1;
-
-  STATIC = false;
-  DEBUG_PARSER = false;
-  DEBUG_LOOKAHEAD = false;
-  DEBUG_TOKEN_MANAGER = false;
-  ERROR_REPORTING = true;
-  JAVA_UNICODE_ESCAPE = false;
-  UNICODE_INPUT = true;
-  IGNORE_CASE = true;
-  USER_TOKEN_MANAGER = false;
-  USER_CHAR_STREAM = false;
-  BUILD_PARSER = true;
-  BUILD_TOKEN_MANAGER = true;
-  SANITY_CHECK = true;
-  FORCE_LA_CHECK = true;
-}PARSER_BEGIN(EventBaseScript)package de.tudarmstadt.dvs.ukuflow.eventbasescript;
-import java.io.FileNotFoundException;
-import java.io.FileInputStream;
-public class EventBaseScript{
-  public static void main(String args[]) throws ParseException
-  {
-    String fileName = "eventbasescript.txt";
-    EventBaseScript INSTANCE = null;
-    try
-    {
-      INSTANCE = new EventBaseScript(new FileInputStream(fileName));
-    }
-    catch (FileNotFoundException e1)
-    {
-      e1.printStackTrace();
-    }
-    System.out.println("testbegin");
-    INSTANCE.validate();
-    System.out.println("testdone");
-  }}PARSER_END(EventBaseScript)SKIP :{
-  " "| "\r"| "\t"| "\n"}TOKEN : /* binary logical operators */
-{
-  < AND :
-    (
-      "AND"
-    | "&"
-    | "&&"
-    ) >
-| < OR :
-    (
-      "OR"
-    | "|"
-    | "||"
-    ) >
-| < NOT :
-    (
-      "NOT"
-    | "~"
-    ) >
-}
-TOKEN:{   < COMPOSITION_POLICY :("CP1"|"CP2")> 
-|  < EVICTION : ("EV1"|"EV2")>
-}
-//< EVENT_OUTPUT_TYPE > <COMPARISON > <EVENT_OUTPUT_VALUE >
-TOKEN :
-{
-  < EVENT_OUTPUT_TYPE:
-  ("TYPE"|"NODE"|"SENSOR"|"MAGNITUDE"|"TIME"|"SCOPE") >}
-TOKEN:
-{
-  < COMPARISON :
-  ("<"|">"|"<="|">="|"==") >}
-
-
-TOKEN : /* BOOLEAN */
-{
-  < BOOLEAN :
-    (
-      < TRUE >
-    | < FALSE >
-    ) >
-| < #TRUE :
-    (
-      "TRUE"
-    | "true"
-    ) >
-| < #FALSE :
-    (
-      "FALSE"
-    | "false"
-    ) >
-}
-
-TOKEN :/** KEYWORD*/
-{
-  < PEG : "PERIODIC_EG" >
-| < APEG : "PATTERNED_EG" >
-| < ADEG : "DISTRIBUTION_EG" >
-| < SEF : "SIMPLE_EF" >
-| < CEF : "COMPLEX_EF" >
-| < TOP : "TOP" >
-}
-TOKEN : /* SENSOR TYPE */
-{
-  <SENSOR_TYPE:(
-  "SENSOR_LIGHT_PAR_RAW" 
-|   "SENSOR_LIGHT_TSR_RAW"
-|   "SENSOR_TEMPERATURE_RAW"
-|   "SENSOR_TEMPERATURE_CELSIUS"
-|   "SENSOR_TEMPERATURE_FAHRENHEIT"
-|   "SENSOR_HUMIDITY_RAW"
-|   "SENSOR_HUMIDITY_PERCENT"
-|   "SENSOR_ACCM_X_AXIS"
-|   "SENSOR_ACCM_Y_AXIS" 
-|   "SENSOR_ACCM_Z_AXIS"
-|   "SENSOR_VOLTAGE_RAW"
-|   "SENSOR_CO2"
-|   "SENSOR_CO"
-|   "NODE_ID" ) >
-}
-TOKEN:
-{
-  < BINARY : (["0","1"])+ >
-}
-TOKEN : /* Numeric CONSTANTS */
-{
-    < NUMBER: (["-","+"])? ( ["0"-"9"] )+ >
-}
-/*
+options{  LOOKAHEAD= 2;  CHOICE_AMBIGUITY_CHECK = 2;  OTHER_AMBIGUITY_CHECK = 1;  STATIC = false;  DEBUG_PARSER = false;  DEBUG_LOOKAHEAD = false;  DEBUG_TOKEN_MANAGER = false;  ERROR_REPORTING = true;  JAVA_UNICODE_ESCAPE = false;  UNICODE_INPUT = true;  IGNORE_CASE = true;  USER_TOKEN_MANAGER = false;  USER_CHAR_STREAM = false;  BUILD_PARSER = true;  BUILD_TOKEN_MANAGER = true;  SANITY_CHECK = true;  FORCE_LA_CHECK = true;}PARSER_BEGIN(EventBaseScript)package de.tudarmstadt.dvs.ukuflow.eventbasescript;import java.io.FileNotFoundException;import java.io.FileInputStream;import java.util.List;import java.util.ArrayList;import de.tudarmstadt.dvs.ukuflow.eventbasescript.expression.*;public class EventBaseScript{  public static void main(String args []) throws ParseException  {    String fileName = "eventbasescript.txt";    EventBaseScript INSTANCE = null;    try    {      INSTANCE = new EventBaseScript(new FileInputStream(fileName));    }    catch (FileNotFoundException e1)    {      e1.printStackTrace();    }    System.out.println("testbegin");    INSTANCE.validate();    System.out.println("testdone");  }}PARSER_END(EventBaseScript)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* binary logical operators */{  < AND :    (      "AND"    | "&"    | "&&"    ) >| < OR :    (      "OR"    | "|"    | "||"    ) >| < NOT :    (      "NOT"    | "~"    ) >}TOKEN :{  < COMPOSITION_POLICY :    (      "CP1"    | "CP2"    ) >  //TODO FIXME enter policy
+| < EVICTION :    (      "EV1"    | "EV2"    ) >}//< EVENT_OUTPUT_TYPE > <COMPARISON > <EVENT_OUTPUT_VALUE >
+TOKEN :{  < EVENT_OUTPUT_TYPE :    (      "TYPE"    | "NODE"    | "SENSOR"    | "MAGNITUDE"    | "TIME"    | "SCOPE"    ) >}TOKEN :{  < COMPARISON :    (      "<"    | ">"    | "<="    | ">="    | "=="    | "!="    ) >}TOKEN : /* BOOLEAN */{  < BOOLEAN :    (      < TRUE >    | < FALSE >    ) >| < #TRUE :    (      "TRUE"    | "true"    ) >| < #FALSE :    (      "FALSE"    | "false"    ) >}TOKEN : /** KEYWORD*/{  < PEG : "PERIODIC_EG" >| < APEG : "PATTERNED_EG" >| < ADEG : "DISTRIBUTION_EG" >| < SEF : "SIMPLE_EF" >| < CEF : "COMPLEX_EF" >| < TOP : "TOP" >}TOKEN : /* SENSOR TYPE */{  < SENSOR_TYPE :    (      "SENSOR_LIGHT_PAR_RAW"    | "SENSOR_LIGHT_TSR_RAW"    | "SENSOR_TEMPERATURE_RAW"    | "SENSOR_TEMPERATURE_CELSIUS"    | "SENSOR_TEMPERATURE_FAHRENHEIT"    | "SENSOR_HUMIDITY_RAW"    | "SENSOR_HUMIDITY_PERCENT"    | "SENSOR_ACCM_X_AXIS"    | "SENSOR_ACCM_Y_AXIS"    | "SENSOR_ACCM_Z_AXIS"    | "SENSOR_VOLTAGE_RAW"    | "SENSOR_CO2"    | "SENSOR_CO"    | "NODE_ID"    ) >}TOKEN :{  < BINARY : ([ "0", "1" ])+ >}TOKEN : /* Numeric CONSTANTS */{  < NUMBER : ([ "-", "+" ])? ([ "0"-"9" ])+ >}/*
 TOKEN :
 {
   < PERIODIC:"PERIODIC_EG" >
 | < PATTERNED:"PATTERNED_EG" >
 | < DISTRIBUTION:"DISTRIBUTION_EG" >
 }
-*/
-TOKEN : /* IDENTIFIERS */
-{
-  < IDENTIFIER :
-    (
-      < LETTER >
-    | "_"
-    )
-    (
-      < LETTER >
-    | < DIGIT >
-    | "_"
-    )* >
-| < #LETTER : [ "\u0024", "\u0041"-"\u005a", "\u005f", "\u0061"-"\u007a", "\u00c0"-"\u00d6", "\u00d8"-"\u00f6", "\u00f8"-"\u00ff", "\u0100"-"\u1fff", "\u3040"-"\u318f", "\u3300"-"\u337f", "\u3400"-"\u3d2d", "\u4e00"-"\u9fff", "\uf900"-"\ufaff" ] >
-| < #DIGIT : [ "\u0030"-"\u0039", "\u0660"-"\u0669", "\u06f0"-"\u06f9", "\u0966"-"\u096f", "\u09e6"-"\u09ef", "\u0a66"-"\u0a6f", "\u0ae6"-"\u0aef", "\u0b66"-"\u0b6f", "\u0be7"-"\u0bef", "\u0c66"-"\u0c6f", "\u0ce6"-"\u0cef", "\u0d66"-"\u0d6f", "\u0e50"-"\u0e59", "\u0ed0"-"\u0ed9", "\u1040"-"\u1049" ] >
-}
-
-  
-void validate():{
-  boolean top = false;}{
-(any_function())*
-TOP()
-(any_function())*
-  < EOF >}
-
-void any_function():{}{
- < IDENTIFIER > "="
- (
-    PEG()
-   |APEG()
-   |ADEG()
-   |SEF()
-   |CEF() )
- }
-void TOP():
-{}
-{
-  < TOP > "="
-  (     PEG()
- 	| APEG()
- 	| ADEG()
- 	| SEF()
- 	| CEF()
- 	| < IDENTIFIER > 	
-	)
-  
-}
-/*
+*/TOKEN : /* IDENTIFIERS */{  < IDENTIFIER :    (      < LETTER >    | "_"    )    (      < LETTER >    | < DIGIT >    | "_"    )* >| < #LETTER : [ "\u0024", "\u0041"-"\u005a", "\u005f", "\u0061"-"\u007a", "\u00c0"-"\u00d6", "\u00d8"-"\u00f6", "\u00f8"-"\u00ff", "\u0100"-"\u1fff", "\u3040"-"\u318f", "\u3300"-"\u337f", "\u3400"-"\u3d2d", "\u4e00"-"\u9fff", "\uf900"-"\ufaff" ] >| < #DIGIT : [ "\u0030"-"\u0039", "\u0660"-"\u0669", "\u06f0"-"\u06f9", "\u0966"-"\u096f", "\u09e6"-"\u09ef", "\u0a66"-"\u0a6f", "\u0ae6"-"\u0aef", "\u0b66"-"\u0b6f", "\u0be7"-"\u0bef", "\u0c66"-"\u0c6f", "\u0ce6"-"\u0cef", "\u0d66"-"\u0d6f", "\u0e50"-"\u0e59", "\u0ed0"-"\u0ed9", "\u1040"-"\u1049" ] >}void validate() :{  boolean top = false;}{  (    any_function()  )*  TOP()  (    any_function()  )*  < EOF >}void any_function() :{}{  < IDENTIFIER > "="  (    PEG()  | APEG()  | ADEG()  | SEF()  | CEF()  )}void TOP() :{}{  < TOP > "="  (    PEG()  | APEG()  | ADEG()  | SEF()  | CEF()  | < IDENTIFIER >  )}/*
 void assigment_PEG():{}{
   
   < IDENTIFIER > "=" PEG()}
@@ -196,94 +21,5 @@ void assigment_SEF():
 void assigment_CEF():
 {}{  < IDENTIFIER > "=" CEF()
 }
-*/
-void PEG(): /* PERIODIC */
-{}
-{
-  < PEG > <SENSOR_TYPE > "^" Number() "@s" < IDENTIFIER >
-  
-}
-void APEG(): /* APERIODIC PATTERNED*/
-{}
-{
-  <APEG > <SENSOR_TYPE > "^" < BINARY > Number() "@s" < IDENTIFIER >
-}
-void ADEG(): /*APERIODIC DISTRIBUTED */
-{}
-{
-  < ADEG > <SENSOR_TYPE > "^" < IDENTIFIER > (Number())* "@s" <IDENTIFIER >
-}
-void SEF(): /* SIMPLE EVENT FILTER*/
-{}
-{
-  < SEF >
-  "{"
-  Constraint()
-  ("," Constraint())*
-  "}"
-  "{"  (   < IDENTIFIER > 
-  | PEG()
-  | APEG()
-  | ADEG()
-  )+
-  "}"   
-}
-void Constraint():
-{}
-{
-  < EVENT_OUTPUT_TYPE > <COMPARISON >
-  (
-    < IDENTIFIER >
-  | Number()
-  | < SENSOR_TYPE >
-  )
-}
-void CEF(): /* COMPLEX EVENT FILTER */
-{}
-{
-  < CEF > AND_operator()// (policy())?
-}
-
-void policy():{}{
-  "/"< COMPOSITION_POLICY > "/"< EVICTION >}
-void AND_operator():
-{}
-{
-  OR_operator()
-  (
-  < AND >
-  OR_operator()
-  )?
-}
-void OR_operator():
-{}
-{
-  NOT_operator()
-  (    < OR >
-    NOT_operator()
-  )?
-}
-
-void NOT_operator():
-{}
-{
-  Terminate_Operand()
-| < NOT > "("AND_operator() ")"
-| "("AND_operator() ")"
-}
-void Terminate_Operand():
-{}
-{
-  < IDENTIFIER >
-| PEG()
-| APEG()
-| ADEG()
-| SEF()
-| CEF()
-}
-void Number():
-{}
-{
-  < BINARY >
-| < NUMBER >
-}
+*/EPeriodicEG PEG() : /* PERIODIC */{  EPeriodicEG result = new EPeriodicEG();  int periodic = 0;}{  < PEG > < SENSOR_TYPE >  {    result.setSensorType(token.image.trim());  }  "^" periodic = Number()  {    result.setTime(periodic);  }  "@s" < IDENTIFIER >  {    result.setScope(token.image.trim());    return result;  }}EAperiodicPatternedEG APEG() : /* APERIODIC PATTERNED*/{  EAperiodicPatternedEG result = new EAperiodicPatternedEG();  int time = 1;}{  < APEG > < SENSOR_TYPE >  {    result.setSensorType(token.image.trim());  }  "^" < BINARY >  {    result.setPattern(token.image.trim());  }  time = Number()  {    result.setTime(time);  }  "@s" < IDENTIFIER >  {    result.setScope(token.image.trim());    return result;  }}EAperiodicDistributionEG ADEG() : /*APERIODIC DISTRIBUTED */{  EAperiodicDistributionEG result = new EAperiodicDistributionEG();  String function = null;  List < Integer > params = new ArrayList < Integer > ();  int tmp = 0;}{  < ADEG > < SENSOR_TYPE >  {    result.setSensorType(token.image.trim());  }  "^" < IDENTIFIER >  {    function = token.image.trim();  }  (    tmp = Number()    {      params.add(tmp);    }  )*  {    result.setFunction(function, params);  }  "@s" < IDENTIFIER >  {    result.setScope(token.image.trim());    return result;  }}ESimpleEF SEF() : /* SIMPLE EVENT FILTER*/{  ESimpleEF result = new ESimpleEF();  List < ESimpleFilterConstraint > constraints = new ArrayList < ESimpleFilterConstraint > ();  ESimpleFilterConstraint constr = null;  EventGenerator eG;}{  < SEF > "{" constr = Constraint()  {    if (constr != null)    {      constraints.add(constr);    }    else    { //TODO error
+    }  }  (    "," constr = Constraint()    {      if (constr != null)      {        constraints.add(constr);      }      else      { //TODO error      }    }  )*  "}" "{"  (    < IDENTIFIER >    {      result.addSource(token.image.trim());    }    eG = event_generator()    {      result.addSource(eG);    }  )  (    ","    (      < IDENTIFIER >      {        result.addSource(token.image.trim());      }      eG = event_generator()      {        result.addSource(eG);      }    )  )*  "}"  {    return result;  }}EventGenerator event_generator() :{  EventGenerator result;}{  (    result = PEG()  | result = APEG()  | result = ADEG()  )  {    return result;  }}ESimpleFilterConstraint Constraint() :{  ESimpleFilterConstraint result = null;  String type = null, value = null, op = null;}{  (    (      < EVENT_OUTPUT_TYPE >      {        type = token.image.trim();      }      < COMPARISON >      {        op = token.image.trim();      }      Event_output_value()      {        value = token.image.trim();      }    )  |    (      Event_output_value()      {        value = token.image.trim();      }      < COMPARISON >      {        op = token.image.trim();      }      < EVENT_OUTPUT_TYPE >      {        type = token.image.trim();      }    )  )  {    result = new ESimpleFilterConstraint(type, op, value);    return result;  }}String Event_output_value() :{  String result = null;}{  (    < IDENTIFIER >  | Number()  | < SENSOR_TYPE >  )  {    result = token.image.trim();    return result;  }}EComplexEF CEF() : /* COMPLEX EVENT FILTER */{  EEvaluableExpression exp = null;  EComplexEF result = null;}{  < CEF > exp = AND_operator() // (policy())?  //HIEN  {    return result;  }}void policy() :{}{  "/" < COMPOSITION_POLICY > "/" < EVICTION >}EEvaluableExpression AND_operator() :{  EEvaluableExpression result = null;  EEvaluableExpression left = null;  EEvaluableExpression right = null;  String op = "AND";}{  left = OR_operator()  (    < AND > right = OR_operator()  )?  {    if (right == null) result = left;    else    {      result = new EComplexFilterBinaryExpression(op, left, right);    }    return result;  }}EEvaluableExpression OR_operator() :{  EEvaluableExpression result = null;  String op = "OR";  EEvaluableExpression left = null;  EEvaluableExpression right = null;}{  left = NOT_operator()  (    < OR > right = NOT_operator()  )?  {    if (right == null) result = left;    else    {      result = new EComplexFilterBinaryExpression(op, left, right);    }    return result;  }}EEvaluableExpression NOT_operator() :{  String op = "NOT";  EEvaluableExpression exp;}{  exp = Terminate_Operand()  {    return exp;  }| < NOT > "(" exp = AND_operator() ")"  {    return new EComplexFilterUnaryExpression(op, exp);  }| "(" exp = AND_operator() ")"  {    return exp;  }}EventBaseOperator Terminate_Operand() :{  EventBaseOperator result = null;}{  (    < IDENTIFIER >    {      result = new EVariable(token.image);    }  | result = PEG()  | result = APEG()  | result = ADEG()  | result = SEF()  | result = CEF()  )  {    return result;  }}int Number() :{}{  (    < BINARY >  | < NUMBER >  )  {    return Integer.parseInt(token.image.trim());  }}

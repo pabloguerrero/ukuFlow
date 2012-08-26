@@ -1,11 +1,23 @@
 package de.tudarmstadt.dvs.ukuflow.eventbasescript.expression;
 
-public class ESimpleEF extends EventBaseOperator{
+import java.util.ArrayList;
+import java.util.List;
 
-	@Override
-	public void accept(EventBaseVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+public class ESimpleEF extends EventBaseOperator{
+	List<ESimpleFilterConstraint> constraints = new ArrayList<ESimpleFilterConstraint>();
+	List<String> sourceVariable = new ArrayList<String>();
+	List<EventBaseOperator> sourceDirect = new ArrayList<EventBaseOperator>();
+	
+	public void addSource(String variable){
+		sourceVariable.add(variable);
 	}
 	
+	public void addSource(EventBaseOperator source){
+		sourceDirect.add(source);
+	}
+	
+	@Override
+	public void accept(EventBaseVisitor visitor) {
+		
+	}
 }
