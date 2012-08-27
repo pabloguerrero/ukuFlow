@@ -3,8 +3,8 @@ package de.tudarmstadt.dvs.ukuflow.xml;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.tudarmstadt.dvs.ukuflow.converter.constant.WorkflowTypes;
-import de.tudarmstadt.dvs.ukuflow.exception.UnsupportedElementException;
+import de.tudarmstadt.dvs.ukuflow.constant.WorkflowTypes;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.UnsupportedElementException;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuGateway;
 
 public class TypeClassifier {

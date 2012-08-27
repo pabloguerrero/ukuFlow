@@ -1,6 +1,6 @@
 package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
-import de.tudarmstadt.dvs.ukuflow.script.expression.ScriptVisitor;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ScriptVisitor;
 
 public interface ElementVisitor extends ScriptVisitor{
 	public abstract void visit(UkuEvent e);

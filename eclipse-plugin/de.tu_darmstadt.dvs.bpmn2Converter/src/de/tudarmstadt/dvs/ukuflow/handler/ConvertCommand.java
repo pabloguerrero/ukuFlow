@@ -1,12 +1,8 @@
 package de.tudarmstadt.dvs.ukuflow.handler;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 //import org.jdom2.
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -19,20 +15,14 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.core.resources.IFile;
-import org.jdom2.Element;
 
-import de.tudarmstadt.dvs.ukuflow.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.deployment.DeviceFinder;
-import de.tudarmstadt.dvs.ukuflow.exception.UnsupportedElementException;
-import de.tudarmstadt.dvs.ukuflow.xml.TypeClassifier;
-import de.tudarmstadt.dvs.ukuflow.xml.XMLNode;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
+import de.tudarmstadt.dvs.ukuflow.xml.BPMN2XMLParser;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.BinaryElementVisitor;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuElement;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuEntity;
-import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuExecuteTask;
-import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuGateway;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuSequenceFlow;
-import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuEvent;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuProcess;
 
 public class ConvertCommand extends AbstractHandler {
@@ -80,7 +70,6 @@ public class ConvertCommand extends AbstractHandler {
 
 				BPMN2XMLParser parser = new BPMN2XMLParser(oFileLocation,out);
 				
-				//XMLNode root = new XMLNode(e);
 				List<UkuProcess> processes = parser.getProcesses();
 				log.info("got "+processes.size() + " processes");
 				
@@ -108,15 +97,7 @@ public class ConvertCommand extends AbstractHandler {
 						
 					}
 				}
-				for(UkuProcess up : processes){
-					byte id = 0;					
-					for(UkuEntity ue:up.entities){
-						if(ue instanceof UkuElement){
-							((UkuElement)ue).setElementID(id);
-							id++;
-						}
-					}
-				}
+				
 				BinaryElementVisitor visitor = new BinaryElementVisitor();
 				
 				for(UkuProcess ue : processes){

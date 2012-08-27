@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import de.tudarmstadt.dvs.ukuflow.script.expression.Visitable;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.Visitable;
 
 /**
  * @author Hien Quoc Dang

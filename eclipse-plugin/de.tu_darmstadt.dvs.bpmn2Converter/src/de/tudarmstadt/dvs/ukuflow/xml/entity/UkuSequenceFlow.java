@@ -2,8 +2,8 @@ package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
 import java.util.Map;
 
-import de.tudarmstadt.dvs.ukuflow.debugger.BpmnLog;
-import de.tudarmstadt.dvs.ukuflow.script.ukuFlowScript;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.ukuFlowScript;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class UkuSequenceFlow extends UkuEntity{
 	private BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());

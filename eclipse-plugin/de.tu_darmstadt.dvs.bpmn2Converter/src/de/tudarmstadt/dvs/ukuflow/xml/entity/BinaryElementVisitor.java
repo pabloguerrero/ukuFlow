@@ -2,9 +2,9 @@ package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
 import java.util.Vector;
 
-import de.tudarmstadt.dvs.ukuflow.converter.constant.EventTypes;
-import de.tudarmstadt.dvs.ukuflow.converter.constant.WorkflowTypes;
-import de.tudarmstadt.dvs.ukuflow.script.expression.ukuFlowBinaryVisitor;
+import de.tudarmstadt.dvs.ukuflow.constant.EventTypes;
+import de.tudarmstadt.dvs.ukuflow.constant.WorkflowTypes;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ukuFlowBinaryVisitor;
 import de.tudarmstadt.dvs.ukuflow.xml.TypeClassifier;
 
 public class BinaryElementVisitor extends ukuFlowBinaryVisitor implements ElementVisitor {

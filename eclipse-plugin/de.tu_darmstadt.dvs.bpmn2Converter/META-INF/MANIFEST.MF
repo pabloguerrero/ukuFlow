@@ -14,6 +14,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/jdom-2.0.1.jar,
  .,
  lib/rxtx/RXTXcomm.jar
-Export-Package: de.tudarmstadt.dvs.ukuflow.script.function,
- gnu.io,
+Export-Package: gnu.io,
  org.jdom2

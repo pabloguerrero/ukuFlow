@@ -10,7 +10,8 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import de.tudarmstadt.dvs.ukuflow.script.*;
+
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;

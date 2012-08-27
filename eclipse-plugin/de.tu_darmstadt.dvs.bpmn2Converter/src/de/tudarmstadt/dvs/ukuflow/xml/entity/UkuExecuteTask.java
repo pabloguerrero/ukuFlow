@@ -4,8 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import de.tudarmstadt.dvs.ukuflow.script.ukuFlowScript;
-import de.tudarmstadt.dvs.ukuflow.script.function.TaskScriptFunction;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.ukuFlowScript;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.TaskScriptFunction;
 
 public class UkuExecuteTask extends UkuElement{
 	private List<TaskScriptFunction> statements; 
