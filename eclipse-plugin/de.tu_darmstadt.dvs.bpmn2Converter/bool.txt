@@ -1,0 +1,5 @@
+local t = run 100 variable 1;
+local open --windoww 20;
+@rom20 open --string  test 1;
+t = 1 + 2/3 -3*3;
+local open $t_eo;
