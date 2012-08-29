@@ -21,6 +21,29 @@
                   id="ID1"
                   label="Convert to Base64"
                   style="push">
+                  <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="activeMenuSelection">
+                  <iterate
+                        ifEmpty="false"
+                        operator="or">
+                     <adapt
+                           type="org.eclipse.core.resources.IResource">
+                        <or>
+                           <test
+                                 property="org.eclipse.core.resources.extension"
+                                 value="bpmn">
+                           </test>
+                           <test
+                                 property="org.eclipse.core.resources.extension"
+                                 value="bpmn2">
+                           </test>
+                        </or>
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
             </command>
             <menu
                   id="de.tudarmstadt.dvs.ukuflow.Deployment"
@@ -30,6 +53,37 @@
                      id="de.tudarmstadt.dvs.ukuflow.dynamic5">
                </dynamic>
             </menu>
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="activeMenuSelection">
+                  <iterate
+                        ifEmpty="false"
+                        operator="or">
+                     <adapt
+                           type="org.eclipse.core.resources.IResource">
+                        <or>
+                           <test
+                                 property="org.eclipse.core.resources.extension"
+                                 value="bpmn">
+                           </test>
+                           <test
+                                 property="org.eclipse.core.resources.extension"
+                                 value="bpmn2">
+                           </test>
+                           <test
+                                 property="org.eclipse.core.resources.extension"
+                                 value="uku">
+                           </test>
+                           <test
+                                 property="org.eclipse.core.resources.extension"
+                                 value="uku64">
+                           </test>
+                        </or>
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
          </menu>
       </menuContribution>
    </extension>

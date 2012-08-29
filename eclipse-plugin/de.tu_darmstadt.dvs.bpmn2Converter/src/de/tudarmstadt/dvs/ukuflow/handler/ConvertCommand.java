@@ -64,13 +64,15 @@ public class ConvertCommand extends AbstractHandler {
 		System.out.println(DeviceFinder.getInstance().getDevices());
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 				.getActiveMenuSelection(event);
-
+		
 		Object firstElement = selection.getFirstElement();
+		System.out.println(firstElement.getClass());
 		if (selection.size() != 1) {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event),
 					"Information", "Please choose just one BPMN2 file");
 			return null;
 		}
+		
 		if (firstElement instanceof IFile) {
 			IFile file = (IFile) firstElement;
 
