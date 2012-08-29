@@ -1,6 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EBConstant;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
 public class EAperiodicPatternedEG extends EventGenerator{
 	int sensor_type = -1;

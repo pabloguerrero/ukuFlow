@@ -16,6 +16,8 @@ public class UkuGateway extends UkuElement{
 	private int direction = 0;
 	private String directionName;
 	private String typeGateway;
+	private String defaultGway;
+	
 	public UkuGateway(String id){
 		super(id);
 	}
@@ -31,6 +33,9 @@ public class UkuGateway extends UkuElement{
 	public void setElementType(String s){
 		typeGateway = s;
 	}
+	public void setDefaultGway(String d){
+		defaultGway = d;
+	}
 	public String getElementType(){
 		return typeGateway;
 	}
@@ -38,6 +43,12 @@ public class UkuGateway extends UkuElement{
 	@Override
 	public void setReference(Map<String,UkuEntity> ref){
 		super.setReference(ref);
+		// getDefaultGateway
+		if(defaultGway != null){
+			System.out.println("setting default gateway");
+			UkuSequenceFlow defGateway = (UkuSequenceFlow) ref.get(defaultGway);
+			defGateway.setDefaultGateway();
+		}
 		String tmpName = "";
 		if(outgoing.size()>1 && incoming.size() >1){
 			addWarningMessage("a mixed gateway");

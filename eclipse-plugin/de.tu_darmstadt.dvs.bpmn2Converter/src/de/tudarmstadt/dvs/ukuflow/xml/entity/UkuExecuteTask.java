@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ukuFlowScript;
-import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.TaskScriptFunction;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.TaskScriptFunction;
 
 public class UkuExecuteTask extends UkuElement{
 	private List<TaskScriptFunction> statements; 

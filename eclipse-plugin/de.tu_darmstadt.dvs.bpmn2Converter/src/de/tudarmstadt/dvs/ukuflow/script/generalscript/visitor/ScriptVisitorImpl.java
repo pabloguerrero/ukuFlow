@@ -1,4 +1,4 @@
-package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
+package de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor;
 
 import java.util.Vector;
 
@@ -6,15 +6,29 @@ import de.tudarmstadt.dvs.ukuflow.constant.EventTypes;
 import de.tudarmstadt.dvs.ukuflow.constant.ExpressionTypes;
 import de.tudarmstadt.dvs.ukuflow.constant.RepositoryField;
 import de.tudarmstadt.dvs.ukuflow.constant.WorkflowTypes;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryLogicalExpression;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryNumericalExpression;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ComparisonExpression;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ScriptVisitor;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuString;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuTaskScript;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuVariable;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UnaryLogicalExpression;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UnaryNumericalExpression;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuConstant;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.ComputationalFunction;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.LocalFunction;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.ScopeFunction;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
-public class ukuFlowBinaryVisitor implements ScriptVisitor{
+public class ScriptVisitorImpl implements ScriptVisitor{
 	
 	private BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	
 	protected Vector<Byte> out = new Vector<Byte>();
 	
-	public ukuFlowBinaryVisitor(){		
+	public ScriptVisitorImpl(){		
 	}
 	
 	public byte toByte(int v){
@@ -24,9 +38,8 @@ public class ukuFlowBinaryVisitor implements ScriptVisitor{
 	}
 	
 	@Override
-	public void visit(ukuConstant uConstant) {
+	public void visit(UkuConstant uConstant) {
 		if(uConstant.isBoolValue()){
-			//TODO boolean value
 			boolean v = (Boolean)uConstant.getValue();
 			log.error("boolean is not supported yet");
 		} else {
@@ -35,11 +48,12 @@ public class ukuFlowBinaryVisitor implements ScriptVisitor{
 			out.add(uConstant.getType());
 			if(uConstant.getLength() == 2){
 				out.add(toByte(v));
+				log.debug("length  = 2");
 			} else if (uConstant.getLength() == 3){
 				out.add(toByte(v/256));
 				out.add(toByte(v%256));
 			}
-			out.add(toByte(v));
+			//out.add(toByte(v));
 		}
 		
 		
@@ -58,8 +72,9 @@ public class ukuFlowBinaryVisitor implements ScriptVisitor{
 	}
 
 	@Override
-	public void visit(Variable uVariable) {
-		
+	public void visit(UkuVariable uVariable) {
+		out.add(toByte(ExpressionTypes.REPOSITORY_VALUE));
+		out.add(toByte(uVariable.getID()));
 	}
 
 	@Override
@@ -104,7 +119,7 @@ public class ukuFlowBinaryVisitor implements ScriptVisitor{
 		// id of variable
 		if(localF.hasVariable()){
 			//TODO a variable manager
-			byte variable_id = 0;
+			byte variable_id = (byte)localF.getVariable().getID();
 			out.add(variable_id);
 		} else {
 			out.add((byte)0);
@@ -113,12 +128,12 @@ public class ukuFlowBinaryVisitor implements ScriptVisitor{
 		int length = fname.length();
 		// length of command
 		out.add(toByte(length));
+		// no of parameters
+		out.add(toByte(localF.getParams().size()));
 		//command
 		for(byte b : fname.getBytes()){
 			out.add(b);
-		}
-		// number of parameters
-		out.add(toByte(localF.getParams().size()));
+		}		
 		// parameters
 		for(UkuExpression pa : localF.getParams()){
 			pa.accept(this);
@@ -151,9 +166,10 @@ public class ukuFlowBinaryVisitor implements ScriptVisitor{
 	public void visit(ComputationalFunction computationalF) {
 		out.add(toByte(WorkflowTypes.COMPUTATION_STATEMENT));
 		
-		computationalF.getVariable();
+		
 		byte id = 0;
-		//TODO : variable management
+		id = toByte(computationalF.getVariable().getID());
+		out.add(id);
 		
 		int l = computationalF.getParam().getLength();
 		out.add(toByte(l));
@@ -173,5 +189,15 @@ public class ukuFlowBinaryVisitor implements ScriptVisitor{
 	public void visit(UkuTaskScript ukuTaskScript) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Vector<Byte> getOutput() {		
+		return out;
+	}
+
+	@Override
+	public void reset() {
+		out.clear();
 	}
 }

@@ -1,25 +1,43 @@
 package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
 
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.NotRegisteredVariableException;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyVariableException;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.VariableAlreadyExistException;
+
 /**
  * represents ukuFlow variable
  * 
  * @author Hien Quoc Dang
  * 
  */
-public class Variable extends PrimaryExpression {
+public class UkuVariable extends PrimaryExpression {
 	protected String name;
 	boolean declaration = false;
-
-	public Variable(String name) {
+	private int id = 0;
+	
+	private static final BpmnLog log = BpmnLog.getInstance(UkuVariable.class.getSimpleName());
+	
+	public UkuVariable(String name) {
 		if (name.startsWith("$")) {
 			this.name = name.substring(1);
 		} else {
 			this.name = name.trim();
 			declaration = true;
 		}
-		VariableManager.getInstance().addVariable(this);
+		VariableManager vm = VariableManager.getInstance();
+		try{
+			id = vm.registerVariable(this);
+		}catch (TooManyVariableException e) {
+			//HIEN TODO handle if there are too many variables are declared			
+		} catch (VariableAlreadyExistException e) {
+			id = vm.getVariableID(name);
+		}
 	}
-
+	public int getID(){
+		log.debug("return id = "  + id);
+		return id;
+	}
 	@Override
 	public void accept(ScriptVisitor visitor) {
 		visitor.visit(this);
@@ -36,12 +54,11 @@ public class Variable extends PrimaryExpression {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof Variable))
+		if (!(o instanceof UkuVariable))
 			return false;
-		Variable ov = (Variable) o;
+		UkuVariable ov = (UkuVariable) o;
 		return name.equals(ov.name);
 	}
-
 
 	/**
 	 * indicate whether the variable receives a value at least one time. For
@@ -54,15 +71,20 @@ public class Variable extends PrimaryExpression {
 	 *         left side of a local function statement or computation statement,
 	 *         otherwise {@code false}
 	 */
+
 	public boolean isDeclared() {
 		return declaration;
 	}
-	
+
 	/**
 	 * @return 2 <br/>
-	 *  variable = REPOSITORY_VALUE | ID
+	 *         variable = REPOSITORY_VALUE | ID
 	 */
-	public int getLength(){
+	public int getLength() {
 		return 2;
+	}
+
+	public void setID(int id) {
+		this.id = id;
 	}
 }

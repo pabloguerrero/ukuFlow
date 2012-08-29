@@ -7,8 +7,8 @@ package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
  */
 public class BinaryLogicalExpression extends LogicalExpression {
 
-	protected UkuExpression operand1;
-	protected UkuExpression operand2;
+	public UkuExpression operand1;
+	public UkuExpression operand2;
 
 	public BinaryLogicalExpression(int operator) {
 		super(operator);

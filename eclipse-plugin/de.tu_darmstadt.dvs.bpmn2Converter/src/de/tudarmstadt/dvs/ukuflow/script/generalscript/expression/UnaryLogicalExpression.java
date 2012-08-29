@@ -8,7 +8,7 @@ package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
  */
 public class UnaryLogicalExpression extends LogicalExpression {
 
-	protected UkuExpression operand;
+	public UkuExpression operand;
 
 	public UnaryLogicalExpression(int operator) {
 		super(operator);

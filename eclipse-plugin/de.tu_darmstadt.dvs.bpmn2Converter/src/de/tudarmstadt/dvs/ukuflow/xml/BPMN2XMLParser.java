@@ -229,6 +229,8 @@ public class BPMN2XMLParser {
 			UkuGateway gway = new UkuGateway(id);
 			gway.setElementType(name);
 			String direction = e.getAttributeValue("gatewayDirection");
+			String defaultGway =e.getAttributeValue("default");
+			gway.setDefaultGway(defaultGway);
 			if(direction != null){
 				gway.setDirection(direction);
 			}

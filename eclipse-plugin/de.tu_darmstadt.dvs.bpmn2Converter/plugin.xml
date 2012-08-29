@@ -13,12 +13,29 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
-         <command
-               commandId="de.tu_darmstadt.dvs.bpmn2Converter.convertcommand"
-               label="Convert to C code"
-               style="push">
-         </command>
+         <menu
+               id="ABC"
+               label="ukuFlow">
+            <command
+                  commandId="de.tu_darmstadt.dvs.bpmn2Converter.convertcommand"
+                  id="ID1"
+                  label="Convert to Base64"
+                  style="push">
+            </command>
+            <menu
+                  id="de.tudarmstadt.dvs.ukuflow.Deployment"
+                  label="Deployment">
+               <dynamic
+                     class="de.tudarmstadt.dvs.ukuflow.deployment.DefineCommands"
+                     id="de.tudarmstadt.dvs.ukuflow.dynamic5">
+               </dynamic>
+            </menu>
+         </menu>
       </menuContribution>
+   </extension>
+   <extension point="org.eclipse.core.expressions.definitions">
+   <definition id="org.eclipse.example.testExtension">
+   </definition>
    </extension>
 
 </plugin>

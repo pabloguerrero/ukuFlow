@@ -18,13 +18,13 @@ public class ComparisonExpression extends BoolExpression {
 	public static final int GREATEROREQUAL = ExpressionTypes.PREDICATE_GET;
 	public static final int LESSOREQUAL = ExpressionTypes.PREDICATE_LET;
 
-	protected int operator = 0;
-	protected UkuExpression operand1, operand2;
+	public int operator = 0;
+	public UkuExpression operand1, operand2;
 	
 	public ComparisonExpression(int operator) {
 		this.operator = operator;
 	}
-
+	
 	public ComparisonExpression(int operator, UkuExpression exp1,
 			UkuExpression exp2) {
 		this(operator);

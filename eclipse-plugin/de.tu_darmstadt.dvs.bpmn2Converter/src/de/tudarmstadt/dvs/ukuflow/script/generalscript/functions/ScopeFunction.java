@@ -1,6 +1,9 @@
-package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
+package de.tudarmstadt.dvs.ukuflow.script.generalscript.functions;
 
 import java.util.List;
+
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ScriptVisitor;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression;
 
 
 public class ScopeFunction extends TaskScriptFunction{

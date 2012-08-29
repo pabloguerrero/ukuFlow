@@ -3,6 +3,8 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
+
 public class ESimpleEF extends EventBaseOperator{
 	List<ESimpleFilterConstraint> constraints = new ArrayList<ESimpleFilterConstraint>();
 	List<String> sourceVariable = new ArrayList<String>();

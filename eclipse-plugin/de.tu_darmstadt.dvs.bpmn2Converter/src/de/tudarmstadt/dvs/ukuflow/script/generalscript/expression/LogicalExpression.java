@@ -18,7 +18,7 @@ public abstract class LogicalExpression extends BoolExpression {
 
 	public static final int NOT = ExpressionTypes.OPERATOR_NOT;
 
-	protected int operator = 0;
+	public int operator = 0;
 
 	public LogicalExpression(int operator) {
 		this.operator = operator;

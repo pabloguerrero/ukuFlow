@@ -13,6 +13,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/jdom-2.0.1.jar,
  .,
- lib/rxtx/RXTXcomm.jar
+ lib/rxtx/RXTXcomm.jar,
+ lib/commons-codec-1.6.jar
 Export-Package: gnu.io,
  org.jdom2

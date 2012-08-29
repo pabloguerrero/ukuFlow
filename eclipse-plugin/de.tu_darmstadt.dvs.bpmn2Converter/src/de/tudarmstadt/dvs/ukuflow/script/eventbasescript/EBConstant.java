@@ -36,6 +36,7 @@ public class EBConstant {
 	public static final int TIME = 14;
 	public static final int SCOPE = 15;
 	public static final int TOP = 16;
+	
 	/** SENSOR TYPE */
 	public static final int SENSOR_LIGHT_PAR_RAW = 1;
 	public static final int SENSOR_LIGHT_TSR_RAW = 2;

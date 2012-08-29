@@ -3,6 +3,9 @@ package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.Visitable;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.TaskScriptFunction;
+
 
 public class UkuTaskScript implements Visitable{
 	List<TaskScriptFunction> funs;

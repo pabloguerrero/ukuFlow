@@ -1,6 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EBConstant;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
 public class EComplexFilterUnaryExpression extends EComplexFilterExpression{
 	private int operator = -1;

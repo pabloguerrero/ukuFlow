@@ -1,6 +1,10 @@
-package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
+package de.tudarmstadt.dvs.ukuflow.script.generalscript.functions;
 
 import java.util.List;
+
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ScriptVisitor;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuVariable;
 
 
 public class LocalFunction extends TaskScriptFunction  {
@@ -12,9 +16,9 @@ public class LocalFunction extends TaskScriptFunction  {
 	 * indicate if the result will be stored into a variable
 	 */
 	boolean saveResult2Variable = false;
-	Variable variable;
+	UkuVariable variable;
 
-	public LocalFunction(Variable variable, String fname, List<UkuExpression> params) {
+	public LocalFunction(UkuVariable variable, String fname, List<UkuExpression> params) {
 		if (params != null)
 			this.params = params;
 
@@ -35,7 +39,7 @@ public class LocalFunction extends TaskScriptFunction  {
 	public String getFunctionName(){
 		return function_name;
 	}
-	public void setVariable(Variable s) {
+	public void setVariable(UkuVariable s) {
 		variable = s;
 		saveResult2Variable = true;
 	}
@@ -43,7 +47,7 @@ public class LocalFunction extends TaskScriptFunction  {
 		return saveResult2Variable;
 	}
 
-	public Variable getVariable() {
+	public UkuVariable getVariable() {
 		return variable;
 	}
 

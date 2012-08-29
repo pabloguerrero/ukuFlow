@@ -1,22 +1,29 @@
-package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
+package de.tudarmstadt.dvs.ukuflow.script.generalscript.functions;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ScriptVisitor;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuVariable;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.VariableManager;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyVariableException;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.VariableAlreadyExistException;
+
 
 public class ComputationalFunction extends TaskScriptFunction {
-	private String variable = "";
+	private UkuVariable variable = null;
 	public UkuExpression expression;
 	public ComputationalFunction() {
 
 	}
 
 	public ComputationalFunction(String variable, UkuExpression expression) {
-		this.variable = variable.trim();
+		setVariable(variable);
 		this.expression = expression;
 	}
 
-	public String getVariable() {
+	public UkuVariable getVariable() {
 		return variable;
 	}
 
@@ -25,7 +32,7 @@ public class ComputationalFunction extends TaskScriptFunction {
 	}
 
 	public void setVariable(String name) {
-		variable = name.trim();
+		variable = new UkuVariable(name);
 	}
 
 	public void setParameters(UkuExpression exp) {

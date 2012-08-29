@@ -11,22 +11,22 @@ import de.tudarmstadt.dvs.ukuflow.constant.ExpressionTypes;
  * @author Hien Quoc Dang
  * 
  */
-public class ukuConstant extends PrimaryExpression {
+public class UkuConstant extends PrimaryExpression {
 	int intValue;
 	boolean boolValue;
 	boolean isBool;
 
-	public ukuConstant(int value) {
+	public UkuConstant(int value) {
 		intValue = value;
 		isBool = false;
 	}
 
-	public ukuConstant(boolean value) {
+	public UkuConstant(boolean value) {
 		boolValue = value;
 		isBool = true;
 	}
 
-	public ukuConstant(String s) {
+	public UkuConstant(String s) {
 		boolean tmp = false;
 		try {
 			tmp = Boolean.parseBoolean(s);

@@ -1,5 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
+
 public class EComplexEF extends EventBaseOperator{
 
 	@Override

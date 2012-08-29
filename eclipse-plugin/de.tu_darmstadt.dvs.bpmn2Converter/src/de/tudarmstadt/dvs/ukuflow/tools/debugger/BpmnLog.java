@@ -60,8 +60,4 @@ public class BpmnLog {
 		sb.append(" - "+msg);
 		return sb.toString();
 	}
-	public static void main(String[] args) {
-		System.out.println(timeNow());
-	}
-	
 }
