@@ -1,8 +1,8 @@
 CONTIKI_PROJECT = tester/tester tester/tester_parallel
-SIZE = msp430-size
-CLOC = cloc
 DOX = doxygen
 DOXYGEN_CONF = doc/scopes.doxyfile
+CLOC = cloc
+SIZE = msp430-size
 
 all: $(CONTIKI_PROJECT)
 	$(DOX) $(DOXYGEN_CONF)
