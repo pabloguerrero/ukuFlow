@@ -291,7 +291,8 @@ data_len_t workflow_statement_size(struct statement *st) {
 		else
 			statement_len = sizeof(struct scoped_function_statement);
 
-		st_cmd = (struct statement_command *) (((uint8_t*) st) + sizeof(struct local_function_statement));
+		st_cmd = (struct statement_command *) (((uint8_t*) st)
+				+ sizeof(struct local_function_statement));
 
 		/* + size of fixed-width statement command structure + length of variable-width command name + */
 		statement_len += sizeof(struct statement_command) + st_cmd->cmd_len;
@@ -301,7 +302,9 @@ data_len_t workflow_statement_size(struct statement *st) {
 				+ sizeof(struct statement_command) + st_cmd->cmd_len;
 
 		for (param_num = 0; param_num < st_cmd->num_params; param_num++) {
-				printf("param: %d %d %d st len %d \n", st_cmd_arr[cmd_index], st_cmd_arr[cmd_index+1], st_cmd_arr[cmd_index+2], statement_len);
+			printf("param: %d %d %d st len %d \n", st_cmd_arr[cmd_index],
+					st_cmd_arr[cmd_index + 1], st_cmd_arr[cmd_index + 2],
+					statement_len);
 
 			switch (st_cmd_arr[cmd_index]) {
 			case (STRING_VALUE): {
@@ -312,6 +315,20 @@ data_len_t workflow_statement_size(struct statement *st) {
 			case (REPOSITORY_VALUE): {
 				statement_len += 2;
 				cmd_index += 2;
+				break;
+			} /* case */
+			case (UINT8_VALUE):
+				// intentionally left blank
+			case (INT8_VALUE): {
+				statement_len += 2;
+				cmd_index += 2;
+				break;
+			} /* case */
+			case (UINT16_VALUE):
+				// intentionally left blank
+			case (INT16_VALUE): {
+				statement_len += 3;
+				cmd_index += 3;
 				break;
 			} /* case */
 			} /* switch */
