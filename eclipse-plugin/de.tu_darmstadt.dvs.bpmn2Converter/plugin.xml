@@ -8,88 +8,23 @@
             id="de.tu_darmstadt.dvs.bpmn2Converter.convertcommand"
             name="convertcmd">
       </command>
+      <command
+            defaultHandler="de.tudarmstadt.dvs.ukuflow.deployment.DeployCommand"
+            id="de.tudarmstadt.dvs.ukuflow.deployment.deploycommand"
+            name="deploycommand">
+         <commandParameter
+               id="de.tudarmstadt.dvs.ukuflow.deployment.portID"
+               name="PortID"
+               optional="false">
+         </commandParameter>
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
+            class="de.tudarmstadt.dvs.ukuflow.deployment.DynamicCommandFactory"
             locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
-         <menu
-               id="ABC"
-               label="ukuFlow">
-            <command
-                  commandId="de.tu_darmstadt.dvs.bpmn2Converter.convertcommand"
-                  id="ID1"
-                  label="Convert to Base64"
-                  style="push">
-                  <visibleWhen
-                  checkEnabled="false">
-               <with
-                     variable="activeMenuSelection">
-                  <iterate
-                        ifEmpty="false"
-                        operator="or">
-                     <adapt
-                           type="org.eclipse.core.resources.IResource">
-                        <or>
-                           <test
-                                 property="org.eclipse.core.resources.extension"
-                                 value="bpmn">
-                           </test>
-                           <test
-                                 property="org.eclipse.core.resources.extension"
-                                 value="bpmn2">
-                           </test>
-                        </or>
-                     </adapt>
-                  </iterate>
-               </with>
-            </visibleWhen>
-            </command>
-            <menu
-                  id="de.tudarmstadt.dvs.ukuflow.Deployment"
-                  label="Deployment">
-               <dynamic
-                     class="de.tudarmstadt.dvs.ukuflow.deployment.DefineCommands"
-                     id="de.tudarmstadt.dvs.ukuflow.dynamic5">
-               </dynamic>
-            </menu>
-            <visibleWhen
-                  checkEnabled="false">
-               <with
-                     variable="activeMenuSelection">
-                  <iterate
-                        ifEmpty="false"
-                        operator="or">
-                     <adapt
-                           type="org.eclipse.core.resources.IResource">
-                        <or>
-                           <test
-                                 property="org.eclipse.core.resources.extension"
-                                 value="bpmn">
-                           </test>
-                           <test
-                                 property="org.eclipse.core.resources.extension"
-                                 value="bpmn2">
-                           </test>
-                           <test
-                                 property="org.eclipse.core.resources.extension"
-                                 value="uku">
-                           </test>
-                           <test
-                                 property="org.eclipse.core.resources.extension"
-                                 value="uku64">
-                           </test>
-                        </or>
-                     </adapt>
-                  </iterate>
-               </with>
-            </visibleWhen>
-         </menu>
       </menuContribution>
-   </extension>
-   <extension point="org.eclipse.core.expressions.definitions">
-   <definition id="org.eclipse.example.testExtension">
-   </definition>
-   </extension>
+   </extension> 
 
 </plugin>
