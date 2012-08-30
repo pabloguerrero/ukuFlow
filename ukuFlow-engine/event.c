@@ -42,6 +42,7 @@
 
 #include "event.h"
 #include "stdlib.h"
+#include "string.h"
 
 #include "logger.h"
 /*---------------------------------------------------------------------------*/
@@ -146,6 +147,7 @@ data_len_t event_operator_get_size(struct generic_event_operator *geo) {
 	}
 	default: {
 		size = 0;
+		break;
 	}
 	} // switch
 
