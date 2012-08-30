@@ -37,13 +37,12 @@ System users can register multiple processes, each of which can have multiple in
 ukuFlow's engine leverages Contiki's protothreads to parallelize the process execution, while ensuring that the network 
 doesn't get congested with event subscriptons, sensor events and action commands.
 
-\sa "Protothreads"
 
 \section ukuflow-mainpage-getting-started Getting started with ukuFlow
 
 ukuFlow ...
 
-See \ref testbed-getting-started Getting started with ukuFlow at TUD Contiki for the ESB platform
-
+See \ref testbed-getting-started Getting started with ukuFlow at TUDuNet
+ukuFlow is being constantly tested on a testbed deployed at the TUD. For more information on this, please visit http://www.tudunet.tu-darmstadt.de
 
 */
