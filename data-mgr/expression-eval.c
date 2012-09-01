@@ -44,10 +44,10 @@
 
 /*---------------------------------------------------------------------------*/
 /* Internal variables for processing an expression */
-static int pos;
-static int length;
+static int16_t pos;
+static int16_t length;
 static uint8_t *bytecode;
-static int invalid_input;
+static uint8_t invalid_input;
 static data_repository_id_t repo_id;
 
 static custom_input_function_t *custom_input_function;

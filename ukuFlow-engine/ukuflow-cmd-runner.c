@@ -45,10 +45,7 @@
  * \date	Jul 13, 2011
  */
 
-
-
 #include "ukuflow-cmd-runner.h"
-
 
 /** for access to STRING_VALUE and REPOSITORY_VALUE */
 #include "expression-eval.h"
@@ -109,7 +106,7 @@ char *ukuflow_cmd_runner_generate_command(struct statement_command *st_cmd,
 //			printf("string, iterating %d of %d\n", param_nr, st_cmd->num_params);
 			// it is a string, so simply copy it into resulting char array
 			data_len_t string_len = st_cmd_arr[st_cmd_index++];
-			memcpy(result+*result_len, st_cmd_arr+st_cmd_index, string_len);
+			memcpy(result + *result_len, st_cmd_arr + st_cmd_index, string_len);
 			*result_len += string_len;
 			st_cmd_index += string_len;
 //			for (i = 0; i < total; i++)
@@ -129,14 +126,35 @@ char *ukuflow_cmd_runner_generate_command(struct statement_command *st_cmd,
 				temp = *((uint16_t*) dr_data);
 				// now convert int to string:
 //				printf("about to put it at %d\n", *result_len);
-				*result_len += sprintf(result+*result_len,"%d", temp);
+				*result_len += sprintf(result + *result_len, "%d", temp);
 			} // else do nothing, thus fails
 //			printf("Result: '%s', st_cmd_index: %d, result_len: %d\n", result, st_cmd_index, *result_len);
 			break;
 		} // case
+		case (UINT8_VALUE): {
+			uint8_t number = st_cmd_arr[st_cmd_index++];
+			*result_len += sprintf(result + *result_len, "%u", number);
+			break;
+		}
+		case (UINT16_VALUE): {
+			uint16_t number = st_cmd_arr[st_cmd_index++];
+			number = (number << 8) | st_cmd_arr[st_cmd_index++];
+			*result_len += sprintf(result + *result_len, "%u", number);
+			break;
+		} // case
+		case (INT8_VALUE): {
+			int8_t number = st_cmd_arr[st_cmd_index++];
+			*result_len += sprintf(result + *result_len, "%d", number);
+			break;
+		} // case
+		case (INT16_VALUE): {
+			int16_t number = st_cmd_arr[st_cmd_index++];
+			number = number * 256 | st_cmd_arr[st_cmd_index++];
+			*result_len += sprintf(result + *result_len, "%d", number);
+			break;
+		}
 		} // switch
 	} // for
-
 
 //	result[(*result_len)++] = '\n';
 //	printf("len final: %d\n", *result_len);

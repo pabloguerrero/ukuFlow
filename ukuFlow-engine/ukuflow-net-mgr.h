@@ -54,6 +54,7 @@
 /*---------------------------------------------------------------------------*/
 /* Definitions for messaging in ukuFlow */
 
+/** \brief TODO */
 typedef uint8_t ukuflow_msg_type_t; // warning: there is an enum with name ukuflow_msg_type too!
 
 /** \brief		Message types */
@@ -89,7 +90,7 @@ struct __attribute__((__packed__)) sfs_msg {
 struct __attribute__((__packed__)) ukuflow_sub_msg {
 	/** \brief TODO */
 	ukuflow_msg_type_t msg_type;
-	// followed by byte array with entire event operator(s) expression
+// followed by byte array with entire event operator(s) expression
 };
 
 /**
@@ -106,7 +107,7 @@ struct __attribute__((__packed__)) ukuflow_unsub_msg {
 struct __attribute__((__packed__)) ukuflow_event_msg {
 	ukuflow_msg_type_t msg_type;
 	data_len_t event_payload_len;
-	// followed by byte array with entire event
+// followed by byte array with entire event
 };
 
 /*---------------------------------------------------------------------------*/

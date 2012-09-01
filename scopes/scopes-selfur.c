@@ -503,9 +503,17 @@ static void selfur_leave(scope_id_t scope_id) {
 	}
 }
 /** \brief Declares the scopes-selfur routing protocol */
-ROUTING(scopes_selfur, "selfur", selfur_init, selfur_send, selfur_add,
-		selfur_remove, selfur_join, selfur_leave, selfur_buffer_clear,
-		selfur_buffer_ptr, selfur_buffer_setlen);
+ROUTING(scopes_selfur, //
+		"selfur",//
+		selfur_init,//
+		selfur_send,//
+		selfur_add,//
+		selfur_remove,//
+		selfur_join,//
+		selfur_leave,//
+		selfur_buffer_clear,//
+		selfur_buffer_ptr,//
+		selfur_buffer_setlen);
 
 /* helper functions */
 /** \brief		TODO */
@@ -695,6 +703,7 @@ static void print_scope_entry(struct scope_entry *s, char *msg) {
 			"[%u.%u:%10lu] %s::%s() : %s: scope-id=%u, status=%u, root=%u.%u, next-hop=%u.%u, route-ttl=%u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, msg, s->scope_id, s->status, (s->tree->root).u8[0], (s->tree->root).u8[1], (s->tree->next_hop).u8[0], (s->tree->next_hop).u8[1], (unsigned int) (timer_remaining(&(s->tree->ttl_timer.etimer.timer)) / CLOCK_SECOND));
 }
 
+/** \brief		TODO */
 PROCESS_THREAD( tree_update_process, ev, data) {
 	PROCESS_BEGIN()
 		;
@@ -720,6 +729,7 @@ PROCESS_THREAD( tree_update_process, ev, data) {
 	PROCESS_END();
 }
 
+/** \brief		TODO */
 PROCESS_THREAD( activation_process, ev, data) {
 PROCESS_BEGIN()
 	;
@@ -749,7 +759,8 @@ PROCESS_END();
 }
 
 #ifndef SCOPES_NOINFO
-/** \brief TODO */PROCESS_THREAD( info_process, ev, data) {
+/** \brief		TODO */
+PROCESS_THREAD( info_process, ev, data) {
 PROCESS_BEGIN()
 ;
 

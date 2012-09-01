@@ -49,11 +49,14 @@
 #include "contiki.h"
 #include "contiki-net.h"
 
+/** \brief		Defines a debug level depth				*/
 #define DEBUG						3
 
 #if DEBUG
 #include <stdio.h>
+/** \brief		Macro to output a debug message				*/
 #define PRINTF(x, ...) 				if (x<=DEBUG) printf(__VA_ARGS__)
+/** \brief		Macro to output the contents of a memory section				*/
 #define PRINT_ARR(x, data, length)	\
 									uint8_t *data2 = data;						\
 									PRINTF(x,"[");								\

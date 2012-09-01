@@ -168,11 +168,12 @@ struct __attribute__((__packed__)) patterned_egen {
 
 /** \brief		TODO				*/
 typedef uint8_t probability_distribution_function_t;
+/** \brief		TODO				*/
 enum probability_distribution_function {
 	NORMAL_DISTRIBUTION = 0, // http://en.wikipedia.org/wiki/Normal_distribution
 	CHI_SQUARE_DISTRIBUTION = 1, // http://en.wikipedia.org/wiki/Chi-square_distribution
-	PARETO_DISTRIBUTION = 2,
-// http://en.wikipedia.org/wiki/Pareto_distribution
+	PARETO_DISTRIBUTION = 2 // http://en.wikipedia.org/wiki/Pareto_distribution
+	//
 };
 
 /** \brief		TODO				*/
