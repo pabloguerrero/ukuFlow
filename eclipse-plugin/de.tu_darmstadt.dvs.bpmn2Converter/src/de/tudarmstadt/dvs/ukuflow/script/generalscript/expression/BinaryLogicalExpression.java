@@ -41,7 +41,7 @@ public class BinaryLogicalExpression extends LogicalExpression {
 		switch(operator){
 		case AND : return "&&";
 		case OR : return "||";		
-		case XOR : return "^";
+		//case XOR : return "^";
 		default: return "?";
 		}
 	}

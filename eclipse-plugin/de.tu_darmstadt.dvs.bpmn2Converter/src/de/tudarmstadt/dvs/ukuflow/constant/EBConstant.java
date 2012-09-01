@@ -1,4 +1,4 @@
-package de.tudarmstadt.dvs.ukuflow.script.eventbasescript;
+package de.tudarmstadt.dvs.ukuflow.constant;
 
 import java.lang.reflect.Field;
 
@@ -38,52 +38,41 @@ public class EBConstant {
 	public static final int TOP = 16;
 	
 	/** SENSOR TYPE */
-	public static final int SENSOR_LIGHT_PAR_RAW = 1;
-	public static final int SENSOR_LIGHT_TSR_RAW = 2;
-	public static final int SENSOR_TEMPERATURE_RAW = 3;
-	public static final int SENSOR_TEMPERATURE_CELSIUS = 4;
-	public static final int SENSOR_TEMPERATURE_FAHRENHEIT = 5;
-	public static final int SENSOR_HUMIDITY_RAW = 6;
-	public static final int SENSOR_HUMIDITY_PERCENT = 7;
-	public static final int SENSOR_ACCM_X_AXIS = 8;
-	public static final int SENSOR_ACCM_Y_AXIS = 9;
-	public static final int SENSOR_ACCM_Z_AXIS = 10;
-	public static final int SENSOR_VOLTAGE_RAW = 11;
-	public static final int SENSOR_CO2 = 12;
-	public static final int SENSOR_CO = 13;
-	public static final int NODE_ID = 14;
+	public static final int SENSOR_LIGHT_PAR_RAW = 0;
+	public static final int SENSOR_LIGHT_TSR_RAW = 1;
+	public static final int SENSOR_TEMPERATURE_RAW = 2;
+	public static final int SENSOR_TEMPERATURE_CELSIUS = 3;
+	public static final int SENSOR_TEMPERATURE_FAHRENHEIT = 4;
+	public static final int SENSOR_HUMIDITY_RAW = 5;
+	public static final int SENSOR_HUMIDITY_PERCENT = 6;
+	public static final int SENSOR_ACCM_X_AXIS = 7;
+	public static final int SENSOR_ACCM_Y_AXIS = 8;
+	public static final int SENSOR_ACCM_Z_AXIS = 9;
+	public static final int SENSOR_VOLTAGE_RAW = 10;
+	public static final int SENSOR_CO2 = 11;
+	public static final int SENSOR_CO = 12;
+	public static final int NODE_ID = 13;
 
+	public static int getConstantWithNamex(String name, Class clazz){
+		int r = -1;
+		try {
+			Field f = clazz.getField(name);
+			if(f!=null){
+				r = f.getInt(clazz.newInstance());			
+			}
+		} catch (Exception e) {			
+		}
+		
+		return r;
+	}
 	/**
 	 * this method return the value of constant with name = '{@code name}'
 	 * 
 	 * @param name
 	 * @return constant's value if it exists, otherwise -1
 	 */
-	public static int getConstantWithName(String name) {
-		if(instance == null)
-			instance = new EBConstant();
-		
-		Field f = null;
-		
-		try {
-			f = instance.getClass().getField(name);
-		} catch (NoSuchFieldException e) {
-			return -1;
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (Exception e){			
-			return -1;
-		}
-		if(f!= null){
-			try {
-				return f.getInt(instance);
-			} catch (IllegalArgumentException e) {				
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
-		}
-		return -1;
+	public static int getConstantWithNamex(String name) {		
+		return getConstantWithNamex(name, EBConstant.class);
 	}
 
 	/**
@@ -93,8 +82,9 @@ public class EBConstant {
 	 */
 	public static void main(String[] args) throws IllegalArgumentException,
 			IllegalAccessException {
-		System.out.println(getConstantWithName("SENSOR"));
-		System.out.println(getConstantWithName("test"));
-		System.out.println(getConstantWithName("SENSOR_VOLTAGE_RAW"));
+		System.out.println(getConstantWithNamex("SENSOR"));
+		System.out.println(getConstantWithNamex("test"));
+		System.out.println(getConstantWithNamex("SENSOR_VOLTAGE_RAW"));
+		System.out.println(getConstantWithNamex("SENSOR_VOLTAGE_RAW",EBConstant.class));
 	}
 }

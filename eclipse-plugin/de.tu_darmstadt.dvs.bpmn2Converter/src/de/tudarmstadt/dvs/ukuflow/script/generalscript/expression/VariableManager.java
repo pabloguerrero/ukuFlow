@@ -7,6 +7,7 @@ import java.util.Map;
 
 import de.tudarmstadt.dvs.ukuflow.constant.EventTypes;
 import de.tudarmstadt.dvs.ukuflow.constant.RepositoryField;
+import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.constant.WorkflowTypes;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.NotRegisteredVariableException;
@@ -24,7 +25,7 @@ public class VariableManager {
 	
 	/** static declaration of VariableManage instance*/
 	private static VariableManager INSTANCE = null;
-	public static final int NODE_ID = RepositoryField.NODE_ID;
+	public static final int NODE_ID = UkuConstants.NODE_ID;
 	private int current_id;
 	private static BpmnLog log = BpmnLog.getInstance(VariableManager.class.getSimpleName());
 	public static final int MAX_ID = 255 - NODE_ID;

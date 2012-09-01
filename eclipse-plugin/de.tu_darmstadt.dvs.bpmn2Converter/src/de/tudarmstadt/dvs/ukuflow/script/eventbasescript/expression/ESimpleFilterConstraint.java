@@ -1,6 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EBConstant;
+import de.tudarmstadt.dvs.ukuflow.constant.EBConstant;
+import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
@@ -15,14 +16,14 @@ public class ESimpleFilterConstraint implements Visitable{
 	}
 	
 	public void setType(String type){
-		this.type = EBConstant.getConstantWithName(type);		
+		this.type = UkuConstants.getConstantWithName(type);		
 	}
 	public void setValue(String value){
 		
 	}
 	
 	public void setComparator(String op){
-		comparator = EBConstant.getConstantWithName(op);
+		comparator = UkuConstants.getConstantWithName(op);
 	}
 	
 	@Override

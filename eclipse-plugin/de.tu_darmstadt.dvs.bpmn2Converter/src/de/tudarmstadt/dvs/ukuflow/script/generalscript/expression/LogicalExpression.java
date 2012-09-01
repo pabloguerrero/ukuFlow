@@ -1,6 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
 
 import de.tudarmstadt.dvs.ukuflow.constant.ExpressionTypes;
+import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
 
 /**
  * 
@@ -9,14 +10,9 @@ import de.tudarmstadt.dvs.ukuflow.constant.ExpressionTypes;
  */
 public abstract class LogicalExpression extends BoolExpression {
 
-	public static final int AND = ExpressionTypes.OPERATOR_AND;
-	public static final int OR = ExpressionTypes.OPERATOR_OR;
-
-	@Deprecated
-	// still not supported
-	public static final int XOR = -1;// TODO: define or remove it!?
-
-	public static final int NOT = ExpressionTypes.OPERATOR_NOT;
+	public static final int AND = UkuConstants.OPERATOR_AND;
+	public static final int OR = UkuConstants.OPERATOR_OR;
+	public static final int NOT = UkuConstants.OPERATOR_NOT;
 
 	public int operator = 0;
 

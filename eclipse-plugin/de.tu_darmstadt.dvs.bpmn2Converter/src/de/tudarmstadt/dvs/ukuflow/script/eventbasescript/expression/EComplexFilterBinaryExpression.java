@@ -1,6 +1,6 @@
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EBConstant;
+import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
 public class EComplexFilterBinaryExpression extends EComplexFilterExpression{
@@ -11,7 +11,7 @@ public class EComplexFilterBinaryExpression extends EComplexFilterExpression{
 	public EComplexFilterBinaryExpression(String op, EEvaluableExpression left, EEvaluableExpression right){
 		this.left = left;
 		this.right = right;
-		operator = EBConstant.getConstantWithName(op);
+		operator = UkuConstants.getConstantWithName(op);
 	}
 	public EEvaluableExpression getLeft(){
 		return left;

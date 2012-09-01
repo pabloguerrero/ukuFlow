@@ -1,6 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EBConstant;
+import de.tudarmstadt.dvs.ukuflow.constant.EBConstant;
+import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
 
 public abstract class EventGenerator extends EventBaseOperator {
 	
@@ -17,7 +18,7 @@ public abstract class EventGenerator extends EventBaseOperator {
 		return sensorType;
 	}
 	public void setSensorType(String sensorType) {
-		this.sensorType = EBConstant.getConstantWithName(sensorType);
+		this.sensorType = UkuConstants.getConstantWithName(sensorType);
 	}
 	
 }

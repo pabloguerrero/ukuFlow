@@ -1,7 +1,5 @@
 package de.tudarmstadt.dvs.ukuflow.constant;
 
-import java.util.HashMap;
-
 public class ExpressionTypes {
 	/* expression-types.h */
 	public static final int OPERATOR_AND = 0;
@@ -31,33 +29,5 @@ public class ExpressionTypes {
 	public static final int REPOSITORY_VALUE = 19;
 	
 	public static final int CUSTOM_INPUT_VALUE = 20;
-	public static HashMap<String, Integer> mappingRules = new HashMap<String, Integer>();
 	
-	static{
-		mappingRules.put("+", OPERATOR_ADD);
-		mappingRules.put("-", OPERATOR_SUB);
-		mappingRules.put("/", OPERATOR_DIV);
-		mappingRules.put("%", OPERATOR_MOD);
-		mappingRules.put("*", OPERATOR_MULT);
-		
-		mappingRules.put("&&", OPERATOR_AND);
-		mappingRules.put("&", OPERATOR_AND);
-		mappingRules.put("AND", OPERATOR_AND);
-		//mappingRules.put("and", OPERATOR_AND);
-		
-		mappingRules.put("||", OPERATOR_OR);
-		mappingRules.put("|", OPERATOR_OR);
-		mappingRules.put("OR", OPERATOR_OR);
-		//mappingRules.put("||", OPERATOR_OR);
-		
-		mappingRules.put("~", OPERATOR_NOT);
-		mappingRules.put("NOT", OPERATOR_NOT);
-	}
-	/**
-	 * test
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		System.out.println(mappingRules.get("*"));
-	}
 }

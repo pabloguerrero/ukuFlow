@@ -1,6 +1,6 @@
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EBConstant;
+import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
 public class EAperiodicPatternedEG extends EventGenerator{
@@ -20,7 +20,7 @@ public class EAperiodicPatternedEG extends EventGenerator{
 		this.pattern = pattern;
 	}
 	public void setSensorType(String sensor){
-		sensor_type = EBConstant.getConstantWithName(sensor);
+		sensor_type = UkuConstants.getConstantWithName(sensor);
 		if(sensor_type == -1){
 			//TODO or not?
 		}

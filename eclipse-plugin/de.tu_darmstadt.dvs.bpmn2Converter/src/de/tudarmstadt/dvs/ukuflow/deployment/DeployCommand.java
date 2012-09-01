@@ -7,6 +7,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+/**
+ * 
+ * @author Hien Quoc Dang
+ * @deprecated this class won't be used anymore
+ */
 public class DeployCommand extends AbstractHandler{
 
 	@Override

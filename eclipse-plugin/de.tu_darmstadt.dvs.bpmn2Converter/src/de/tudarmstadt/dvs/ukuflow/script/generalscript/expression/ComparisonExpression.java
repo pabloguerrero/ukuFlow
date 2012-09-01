@@ -1,6 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
 
 import de.tudarmstadt.dvs.ukuflow.constant.ExpressionTypes;
+import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
 
 /**
  * A comparison expression, which can compare two {@link #UkuExpression}. <br />
@@ -11,12 +12,12 @@ import de.tudarmstadt.dvs.ukuflow.constant.ExpressionTypes;
  */
 public class ComparisonExpression extends BoolExpression {
 	
-	public static final int EQUAL = ExpressionTypes.PREDICATE_EQ;
-	public static final int UNEQUAL = ExpressionTypes.PREDICATE_NEQ;
-	public static final int GREATERTHAN = ExpressionTypes.PREDICATE_GT;
-	public static final int LESSTHAN = ExpressionTypes.PREDICATE_LT;
-	public static final int GREATEROREQUAL = ExpressionTypes.PREDICATE_GET;
-	public static final int LESSOREQUAL = ExpressionTypes.PREDICATE_LET;
+	public static final int EQUAL = UkuConstants.PREDICATE_EQ;
+	public static final int UNEQUAL = UkuConstants.PREDICATE_NEQ;
+	public static final int GREATERTHAN = UkuConstants.PREDICATE_GT;
+	public static final int LESSTHAN = UkuConstants.PREDICATE_LT;
+	public static final int GREATEROREQUAL = UkuConstants.PREDICATE_GET;
+	public static final int LESSOREQUAL = UkuConstants.PREDICATE_LET;
 
 	public int operator = 0;
 	public UkuExpression operand1, operand2;

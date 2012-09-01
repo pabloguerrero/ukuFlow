@@ -5,6 +5,7 @@ import java.util.Vector;
 import de.tudarmstadt.dvs.ukuflow.constant.EventTypes;
 import de.tudarmstadt.dvs.ukuflow.constant.ExpressionTypes;
 import de.tudarmstadt.dvs.ukuflow.constant.RepositoryField;
+import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.constant.WorkflowTypes;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryLogicalExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryNumericalExpression;
@@ -61,7 +62,7 @@ public class ScriptVisitorImpl implements ScriptVisitor{
 
 	@Override
 	public void visit(UkuString uString) {
-		out.add(toByte(ExpressionTypes.STRING_VALUE));
+		out.add(toByte(UkuConstants.STRING_VALUE));
 		log.debug("string :" + uString.getString());
 		
 		out.add((byte)(uString.getLength()-2));
@@ -73,7 +74,7 @@ public class ScriptVisitorImpl implements ScriptVisitor{
 
 	@Override
 	public void visit(UkuVariable uVariable) {
-		out.add(toByte(ExpressionTypes.REPOSITORY_VALUE));
+		out.add(toByte(UkuConstants.REPOSITORY_VALUE));
 		out.add(toByte(uVariable.getID()));
 	}
 
@@ -115,7 +116,7 @@ public class ScriptVisitorImpl implements ScriptVisitor{
 	public void visit(LocalFunction localF) {
 		String fname = localF.getFunctionName();
 		// LOCAL_FUNCTION_STATEMENT
-		out.add(toByte(WorkflowTypes.LOCAL_FUNCTION_STATEMENT));
+		out.add(toByte(UkuConstants.LOCAL_FUNCTION_STATEMENT));
 		// id of variable
 		if(localF.hasVariable()){
 			//TODO a variable manager
@@ -142,7 +143,7 @@ public class ScriptVisitorImpl implements ScriptVisitor{
 
 	@Override
 	public void visit(ScopeFunction scopeF) {
-		out.add(toByte(WorkflowTypes.SCOPED_FUNCTION_STATEMENT));
+		out.add(toByte(UkuConstants.SCOPED_FUNCTION_STATEMENT));
 		//TODO Scope id management or hash?
 		//Scope id
 		byte scope_id = 0;
@@ -164,7 +165,7 @@ public class ScriptVisitorImpl implements ScriptVisitor{
 
 	@Override
 	public void visit(ComputationalFunction computationalF) {
-		out.add(toByte(WorkflowTypes.COMPUTATION_STATEMENT));
+		out.add(toByte(UkuConstants.COMPUTATION_STATEMENT));
 		
 		
 		byte id = 0;

@@ -3,17 +3,21 @@ package de.tudarmstadt.dvs.ukuflow.xml.entity;
 import java.util.Vector;
 
 import de.tudarmstadt.dvs.ukuflow.constant.EventTypes;
+import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.constant.WorkflowTypes;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitorImpl;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ScriptVisitor;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitorImpl;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.UnspecifiedGatewayException;
 import de.tudarmstadt.dvs.ukuflow.xml.TypeClassifier;
 import org.apache.commons.codec.binary.Base64;
 public class ElementVisitorImpl implements ElementVisitor {
 	ScriptVisitor sVisitor = new ScriptVisitorImpl();
 	EventBaseVisitor eVisitor = new EventBaseVisitorImpl();
-
+	BpmnLog log = BpmnLog.getInstance(ElementVisitorImpl.class.getSimpleName());
+	
 	TypeClassifier classifier = TypeClassifier.getInstance();
 	protected Vector<Byte> out = new Vector<Byte>();
 	
@@ -54,9 +58,9 @@ public class ElementVisitorImpl implements ElementVisitor {
 			out.add(event.getElementID());
 		
 		if(event.hasIncomings() && !event.hasOutgoings()) //end event
-			out.add(toByte(WorkflowTypes.END_EVENT));
+			out.add(toByte(UkuConstants.END_EVENT));
 		else if(event.hasOutgoings() && !event.hasIncomings()) { //start event
-			out.add(toByte(WorkflowTypes.START_EVENT));
+			out.add(toByte(UkuConstants.START_EVENT));
 			if(event.getOutgoing().size() != 1){
 			} else {
 				UkuEntity outg= event.getOutgoing().get(0);
@@ -73,7 +77,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 	@Override
 	public void visit(UkuExecuteTask task) {
 		out.add(task.getElementID());
-		out.add(toByte(WorkflowTypes.EXECUTE_TASK));
+		out.add(toByte(UkuConstants.EXECUTE_TASK));
 		if(task.getOutgoing().size() != 1){
 		} else {
 			UkuEntity outg= task.getOutgoing().get(0);
@@ -104,10 +108,17 @@ public class ElementVisitorImpl implements ElementVisitor {
 		2 : diverging (1-n)
 		3 : mixed (n-n)
 		*/
-		int tp = classifier.getGatewayType(gateway);
+		int tp =  0;
+		try{
+			tp = classifier.getGatewayType(gateway);
+		} catch (UnspecifiedGatewayException e) {
+			gateway.addErrorMessage(e.getMessage());
+			return;
+		}
+		log.debug("visit gateway " +gateway + "->"+ tp);
 		switch(tp){
-			case WorkflowTypes.JOIN_GATEWAY:
-				out.add(toByte(WorkflowTypes.JOIN_GATEWAY));
+			case UkuConstants.JOIN_GATEWAY:
+				out.add(toByte(UkuConstants.JOIN_GATEWAY));
 				if(gateway.getOutgoing().size() != 1){
 				} else {
 					UkuEntity outg= gateway.getOutgoing().get(0);
@@ -123,8 +134,8 @@ public class ElementVisitorImpl implements ElementVisitor {
 					out.add(previous_id);
 				}
 				break;
-			case WorkflowTypes.FORK_GATEWAY:
-				out.add(toByte(WorkflowTypes.FORK_GATEWAY));
+			case UkuConstants.FORK_GATEWAY:
+				out.add(toByte(UkuConstants.FORK_GATEWAY));
 				out.add(toByte(gateway.getOutgoing().size()));
 				for(UkuEntity outg: gateway.getOutgoing()){				
 					if(outg instanceof UkuSequenceFlow){
@@ -133,8 +144,8 @@ public class ElementVisitorImpl implements ElementVisitor {
 					}
 				}
 				break;
-			case WorkflowTypes.EXCLUSIVE_DECISION_GATEWAY:
-			case WorkflowTypes.INCLUSIVE_DECISION_GATEWAY: // Hard work here!!
+			case UkuConstants.EXCLUSIVE_DECISION_GATEWAY:
+			case UkuConstants.INCLUSIVE_DECISION_GATEWAY: // Hard work here!!
 				
 				out.add(toByte(tp));
 				out.add(toByte(gateway.getOutgoing().size())); // no of Outgoing sequenceflow
@@ -143,9 +154,9 @@ public class ElementVisitorImpl implements ElementVisitor {
 					outSeq.accept(this);
 				}
 				break;
-			case WorkflowTypes.EXCLUSIVE_MERGE_GATEWAY:		
-			case WorkflowTypes.INCLUSIVE_JOIN_GATEWAY:
-				out.add(toByte(WorkflowTypes.INCLUSIVE_JOIN_GATEWAY));
+			case UkuConstants.EXCLUSIVE_MERGE_GATEWAY:		
+			case UkuConstants.INCLUSIVE_JOIN_GATEWAY:
+				out.add(toByte(UkuConstants.INCLUSIVE_JOIN_GATEWAY));
 				if(gateway.getOutgoing().size() != 1){
 				} else {
 					UkuEntity outg= gateway.getOutgoing().get(0);
@@ -162,7 +173,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 				}
 				break;
 						
-			case WorkflowTypes.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY:
+			case UkuConstants.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY:
 				//TODO need more info!
 				break;
 		}

@@ -3,6 +3,7 @@ package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
 import java.io.Serializable;
 
 import de.tudarmstadt.dvs.ukuflow.constant.ExpressionTypes;
+import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
 
 /**
  * represents a ukuFlow Constant. It could be either an integer constant or
@@ -66,13 +67,13 @@ public class UkuConstant extends PrimaryExpression {
 	 */
 	public byte getType() {
 		if (intValue >= 0 && intValue < 256)
-			return (byte) ExpressionTypes.UINT8_VALUE;
+			return (byte) UkuConstants.UINT8_VALUE;
 		else if (intValue >= 0 && intValue < 65536)
-			return (byte) ExpressionTypes.UINT16_VALUE;
+			return (byte) UkuConstants.UINT16_VALUE;
 		else if (intValue >= -128 && intValue < 128)
-			return (byte) ExpressionTypes.INT8_VALUE;
+			return (byte) UkuConstants.INT8_VALUE;
 		else if (intValue >= -32768 && intValue < 32768)
-			return (byte) ExpressionTypes.INT16_VALUE;
+			return (byte) UkuConstants.INT16_VALUE;
 		// TODO throw an exeception
 		return -1;
 	}
@@ -84,11 +85,11 @@ public class UkuConstant extends PrimaryExpression {
 	public int getLength() {
 		
 		switch (getType()) {
-		case ExpressionTypes.UINT8_VALUE:
-		case ExpressionTypes.INT8_VALUE:
+		case UkuConstants.UINT8_VALUE:
+		case UkuConstants.INT8_VALUE:
 			return 2;
-		case ExpressionTypes.UINT16_VALUE:
-		case ExpressionTypes.INT16_VALUE:
+		case UkuConstants.UINT16_VALUE:
+		case UkuConstants.INT16_VALUE:
 			return 3;
 		}
 		

@@ -57,8 +57,6 @@ public class ConvertCommand extends AbstractHandler {
 
 		myConsole = findConsole(CONSOLE_NAME);
 		out = myConsole.newMessageStream();
-		// focus and bring the console in front of other tabs when something are
-		// being printed out
 		out.setActivateOnWrite(true);
 
 		System.out.println(DeviceFinder.getInstance().getDevices());
@@ -66,7 +64,6 @@ public class ConvertCommand extends AbstractHandler {
 				.getActiveMenuSelection(event);
 		
 		Object firstElement = selection.getFirstElement();
-		System.out.println(firstElement.getClass());
 		if (selection.size() != 1) {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event),
 					"Information", "Please choose just one BPMN2 file");
@@ -98,26 +95,7 @@ public class ConvertCommand extends AbstractHandler {
 				List<UkuProcess> processes = parser.getProcesses();
 				log.info("got " + processes.size() + " processes");
 				StringBuilder sb = new StringBuilder();
-				int errcounter = 0;
-				for (UkuProcess up : processes) {
-					log.info(up);
-					for (String errs : up.getErrorMessages()) {
-						sb.append(errs);
-						writeMarkers(file, "",errs.replace("\n", "\\"));
-						sb.append("\n");
-						errcounter++;
-					}
-				}
-				if (errcounter > 0) {
-					out.println("There are(is) "
-							+ errcounter
-							+ " error(s) in the workflow diagram. Please fix them first");
-					out.println(sb.toString());
-
-					return null;
-				} else {
-					out.println("No error!");
-				}
+				
 
 				ElementVisitorImpl visitor = new ElementVisitorImpl();
 
@@ -142,7 +120,26 @@ public class ConvertCommand extends AbstractHandler {
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
+				int errcounter = 0;
+				for (UkuProcess up : processes) {
+					log.info(up);
+					for (String errs : up.getErrorMessages()) {
+						sb.append(errs);
+						writeMarkers(file, "",errs.replace("\n", "\\"));
+						sb.append("\n");
+						errcounter++;
+					}
+				}
+				if (errcounter > 0) {
+					out.println("There are(is) "
+							+ errcounter
+							+ " error(s) in the workflow diagram. Please fix them first");
+					out.println(sb.toString());
 
+					return null;
+				} else {
+					out.println("No error!");
+				}
 				f = new File(nfileLocation);
 				fwrite = null;
 				try {
