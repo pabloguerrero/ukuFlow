@@ -1,7 +1,6 @@
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
-import de.tudarmstadt.dvs.ukuflow.constant.EBConstant;
-import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
+import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 

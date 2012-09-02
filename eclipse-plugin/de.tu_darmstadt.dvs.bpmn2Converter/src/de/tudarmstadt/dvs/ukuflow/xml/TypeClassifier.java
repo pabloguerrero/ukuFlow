@@ -3,8 +3,7 @@ package de.tudarmstadt.dvs.ukuflow.xml;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
-import de.tudarmstadt.dvs.ukuflow.constant.WorkflowTypes;
+import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.UnspecifiedGatewayException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.UnsupportedElementException;

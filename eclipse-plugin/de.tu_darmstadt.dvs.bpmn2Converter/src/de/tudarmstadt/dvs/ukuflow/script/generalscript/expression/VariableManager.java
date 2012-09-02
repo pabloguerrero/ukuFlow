@@ -5,10 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import de.tudarmstadt.dvs.ukuflow.constant.EventTypes;
-import de.tudarmstadt.dvs.ukuflow.constant.RepositoryField;
-import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
-import de.tudarmstadt.dvs.ukuflow.constant.WorkflowTypes;
+import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.NotRegisteredVariableException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyVariableException;

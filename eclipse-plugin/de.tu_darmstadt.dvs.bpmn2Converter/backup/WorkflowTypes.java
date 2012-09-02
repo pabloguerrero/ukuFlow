@@ -1,4 +1,4 @@
-package de.tudarmstadt.dvs.ukuflow.constant;
+package de.tudarmstadt.dvs.ukuflow.script;
 
 public class WorkflowTypes {
 	/* workflow-types.h */

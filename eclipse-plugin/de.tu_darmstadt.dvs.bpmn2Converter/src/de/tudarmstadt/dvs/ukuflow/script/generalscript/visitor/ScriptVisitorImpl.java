@@ -2,11 +2,7 @@ package de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor;
 
 import java.util.Vector;
 
-import de.tudarmstadt.dvs.ukuflow.constant.EventTypes;
-import de.tudarmstadt.dvs.ukuflow.constant.ExpressionTypes;
-import de.tudarmstadt.dvs.ukuflow.constant.RepositoryField;
-import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
-import de.tudarmstadt.dvs.ukuflow.constant.WorkflowTypes;
+import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryLogicalExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryNumericalExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ComparisonExpression;

@@ -75,8 +75,10 @@ public class UkuGateway extends UkuElement{
 			addWarningMessage("was specified as '"+directionName + "', but it was found as a '"+tmpName + "' gateway");
 		}
 		if(type == direction && direction == 0){
+			System.out.println("error");
 			addErrorMessage("Please specify the direction of gateway (Converging,Deverging or Mixed)");
-		}		
+		}
+		System.out.println(type + " / "+direction);
 	}
 	
 	public void setDirection(String d){

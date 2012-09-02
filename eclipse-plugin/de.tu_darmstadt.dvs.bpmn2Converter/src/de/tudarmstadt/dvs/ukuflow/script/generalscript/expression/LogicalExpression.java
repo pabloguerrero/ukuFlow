@@ -1,7 +1,6 @@
 package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
 
-import de.tudarmstadt.dvs.ukuflow.constant.ExpressionTypes;
-import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
+import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 
 /**
  * 

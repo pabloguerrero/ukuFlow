@@ -2,9 +2,7 @@ package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
 import java.util.Vector;
 
-import de.tudarmstadt.dvs.ukuflow.constant.EventTypes;
-import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
-import de.tudarmstadt.dvs.ukuflow.constant.WorkflowTypes;
+import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitorImpl;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ScriptVisitor;

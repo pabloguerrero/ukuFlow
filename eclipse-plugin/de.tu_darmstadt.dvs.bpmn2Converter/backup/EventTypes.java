@@ -1,8 +1,8 @@
-package de.tudarmstadt.dvs.ukuflow.constant;
+package de.tudarmstadt.dvs.ukuflow.script;
 
 import java.lang.reflect.Field;
 
-public class UkuConstants {
+public class EventTypes {
 	/* event-types.h */
 	/* Event Generator */
 	public static final int IMMEDIATE_E_GEN = 0;
@@ -121,8 +121,5 @@ public class UkuConstants {
 	 * 
 	 * @param name
 	 * @return constant's value if it exists, otherwise -1
-	 */
-	public static int getConstantWithName(String name) {
-		return getConstantWithName(name, UkuConstants.class);
-	}
+	 */	
 }

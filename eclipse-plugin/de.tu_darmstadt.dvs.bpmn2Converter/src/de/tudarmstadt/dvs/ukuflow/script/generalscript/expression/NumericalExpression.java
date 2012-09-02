@@ -1,5 +1,5 @@
 package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
-import de.tudarmstadt.dvs.ukuflow.constant.*;
+import de.tudarmstadt.dvs.ukuflow.script.*;
 /**
  * Numerical Expression
  * 

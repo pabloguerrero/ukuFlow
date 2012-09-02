@@ -2,8 +2,7 @@ package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
 
 import java.io.Serializable;
 
-import de.tudarmstadt.dvs.ukuflow.constant.ExpressionTypes;
-import de.tudarmstadt.dvs.ukuflow.constant.UkuConstants;
+import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 
 /**
  * represents a ukuFlow Constant. It could be either an integer constant or
