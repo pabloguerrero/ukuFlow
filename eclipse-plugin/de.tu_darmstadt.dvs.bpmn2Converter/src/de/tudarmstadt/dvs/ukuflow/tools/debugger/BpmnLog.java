@@ -26,9 +26,11 @@ public class BpmnLog {
 	public static BpmnLog getInstance(String className){
 		return new BpmnLog(className);
 	}
+	
 	public static String timeNow(){
 		return "["+DateFormat.getTimeInstance(DateFormat.MEDIUM,Locale.GERMANY).format(new Date(System.currentTimeMillis()))+"]";
 	}
+	
 	public void debug(Object message){
 		if(debug)
 			System.out.println(generateMessage(timeNow(), "DEBUG:", className, message));	

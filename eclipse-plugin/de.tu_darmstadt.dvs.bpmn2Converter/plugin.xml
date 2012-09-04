@@ -180,6 +180,38 @@
    </extension>
    <extension
          point="org.eclipse.emf.validation.constraintBindings">
+   </extension>
+   <extension
+         point="org.eclipse.ui.console.consoleFactories">
+      <consoleFactory
+            class="de.tudarmstadt.dvs.ukuflow.console.ukuConsoleFactory"
+            label="ukuFlowConsole">
+      </consoleFactory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.console.consolePageParticipants">
+      <consolePageParticipant
+            class="de.tudarmstadt.dvs.ukuflow.console.ukuConsolePageParticipant"
+            id="de.tudarmstadt.dvs.ukuflow.console.ukuConsolePageParticipant">
+         <enablement>
+            <instanceof
+                  value="de.tudarmstadt.dvs.ukuflow.console.ukuConsole">
+            </instanceof></enablement>
+      </consolePageParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.ui.console.consolePatternMatchListeners">
+      <consolePatternMatchListener
+            class="de.tudarmstadt.dvs.ukuflow.console.LocalPathMatcher"
+            id="de.tudarmstadt.dvs.ukuflow.console.PathMatcher"
+            qualifier=".+"
+            regex=".+">
+         <enablement>
+            <test
+                  property="org.eclipse.ui.console.consoleTypeTest"
+                  value="de.tudarmstadt.dvs.ukuflow.console.ukuConsole">
+            </test></enablement>
+      </consolePatternMatchListener>
    </extension> 
 
 </plugin>

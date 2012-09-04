@@ -7,15 +7,14 @@ import gnu.io.SerialPort;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
@@ -23,9 +22,8 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
-import de.tudarmstadt.dvs.ukuflow.deployment.UkuDeployment.SerialReader;
-import de.tudarmstadt.dvs.ukuflow.deployment.UkuDeployment.SerialWriter;
 import de.tudarmstadt.dvs.ukuflow.handler.ConvertCommand;
+import de.tudarmstadt.dvs.ukuflow.handler.UkuConsole;
 
 public class DeviceMamager {
 	public final static int WINDOWS_OS = 0;
@@ -34,6 +32,8 @@ public class DeviceMamager {
 	private HashMap<String, String> devs;
 	private int os = -1;
 	private static DeviceMamager INSTANCE = null;
+	private static UkuConsole console = UkuConsole.getConsole();
+	static LinkedBlockingDeque<String> usedPort = new LinkedBlockingDeque<String>();
 
 	private DeviceMamager() {
 		String os_name = System.getProperty("os.name").toLowerCase();
@@ -156,52 +156,65 @@ public class DeviceMamager {
 		}
 		return result;
 	}
-	
-	public void deploy(String portName, String fileName, int timeout) throws Exception{
-		deploy(portName,new File(fileName),timeout);
+
+	public void deploy(String portName, String fileName, int timeout) {
+		deploy(portName, new File(fileName), timeout);
 	}
-	
-	public void deploy(String portName, File file, int timeout)
-			throws Exception {			
-		CommPortIdentifier portIdentifier = CommPortIdentifier
-				.getPortIdentifier(portName);
-		if (portIdentifier.isCurrentlyOwned()) {
-			//TODO HIEN
-			System.out.println("Error: Port is currently in use");
-		} else {
-			CommPort commPort = portIdentifier.open(this.getClass().getName(),
-					2000);
 
-			if (commPort instanceof SerialPort) {
-				SerialPort serialPort = (SerialPort) commPort;
-				serialPort.setSerialPortParams(115200, SerialPort.DATABITS_8,
-						SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+	public void deploy(String portName, File file, int timeout) {
 
-				InputStream in = serialPort.getInputStream();
-				OutputStream out = serialPort.getOutputStream();
+		SerialPort serialPort = null;
+		try {
+			CommPortIdentifier portIdentifier = CommPortIdentifier
+					.getPortIdentifier(portName);
+			if (portIdentifier.isCurrentlyOwned()
+					|| usedPort.contains(portName)) {
 
-				(new Thread(new SerialReader(in, timeout,serialPort))).start();
-				(new Thread(new SerialWriter(out,new FileInputStream(file)))).start();					
-			} else {				
+				console.error("ERROR", portName + " is currently in use");
+			} else {
+				CommPort commPort = null;
+				commPort = portIdentifier.open(this.getClass().getName(),
+						timeout);
+				usedPort.add(portName);
+				if (commPort instanceof SerialPort) {
+					serialPort = (SerialPort) commPort;
+					serialPort.setSerialPortParams(115200,
+							SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+							SerialPort.PARITY_NONE);
+
+					InputStream in = serialPort.getInputStream();
+					OutputStream out = serialPort.getOutputStream();
+
+					(new Thread(new SerialReader(in, timeout, serialPort,
+							portName))).start();
+					(new Thread(
+							new SerialWriter(out, new FileInputStream(file))))
+							.start();
+				} else {
+				}
 			}
-		}	
-			
+		} catch (Exception e) {
+			usedPort.remove(portName);
+			console.error("ERROR", portName + " is busy");
+		}
+
 	}
 
 	public static class SerialReader implements Runnable {
 		InputStream in;
 		int timeout = 30000;
 		SerialPort serialPort;
-		MessageConsole myConsole = null;
-		MessageConsoleStream out = null;
-		public SerialReader(InputStream in, int timeout, SerialPort port) {
+		String portName;
+
+		public SerialReader(InputStream in, int timeout, SerialPort port,
+				String portName) {
 			this.in = in;
 			this.timeout = timeout;
 			this.serialPort = port;
-			myConsole = findConsole(ConvertCommand.CONSOLE_NAME);
-			out = myConsole.newMessageStream();
-			out.setActivateOnWrite(true);
+			this.portName = portName;
+
 		}
+
 		public void run() {
 			byte[] buffer = new byte[1024];
 			int len = -1;
@@ -212,14 +225,14 @@ public class DeviceMamager {
 					String tmp = new String(buffer, 0, len);
 					if (tmp.contains("\n")) {
 						String tmps[] = tmp.split("\n");
-						if(tmps.length <= 0)
+						if (tmps.length <= 0)
 							continue;
 						newLine += tmps[0];
-						out.println("["+serialPort.getName()+"]\t" + newLine);
+						console.out(portName, newLine);
 						newLine = "";
 						if (tmps.length > 1) {
 							for (int i = 1; i < tmps.length - 1; i++) {
-								out.println("["+serialPort.getName()+"]\t" + tmps[i]);
+								console.out(portName, tmps[i]);
 							}
 							newLine = tmps[tmps.length - 1];
 						}
@@ -227,7 +240,8 @@ public class DeviceMamager {
 						newLine += tmp;
 					}
 					if (startTime + timeout < System.currentTimeMillis()) {
-						System.out.println("timeout");
+						console.info("SYSTEM",portName +" is released");
+						usedPort.remove(portName);
 						break;
 					}
 				}
@@ -243,25 +257,27 @@ public class DeviceMamager {
 	public static class SerialWriter implements Runnable {
 		OutputStream out;
 		InputStream in;
+
 		public SerialWriter(OutputStream out, InputStream in) {
 			this.out = out;
 			this.in = in;
-			
+
 		}
 
 		public void run() {
 			try {
 				int c = 0;
-				int last1 = 0, last2 = 0;				
+				int last1 = 0, last2 = 0;
 				while ((c = in.read()) > -1) {
 					this.out.write(c);
 					last2 = last1;
 					last1 = c;
-				}			
+				}
 				if (last2 != 13 & last1 != 10) {
 					/* send "carriage return" symbol */
-					if(last1 !=13);
-						this.out.write(13);
+					if (last1 != 13)
+						;
+					this.out.write(13);
 					/* send "new line" symbol */
 					this.out.write(10);
 				}
@@ -283,17 +299,4 @@ public class DeviceMamager {
 
 	}
 
-	
-	private static MessageConsole findConsole(String name) {
-		ConsolePlugin plugin = ConsolePlugin.getDefault();
-		IConsoleManager conMan = plugin.getConsoleManager();
-		IConsole[] existing = conMan.getConsoles();
-		for (int i = 0; i < existing.length; i++)
-			if (name.equals(existing[i].getName()))
-				return (MessageConsole) existing[i];
-		// no console found, so create a new one
-		MessageConsole myConsole = new MessageConsole(name, null);
-		conMan.addConsoles(new IConsole[] { myConsole });
-		return myConsole;
-	}
 }
