@@ -48,13 +48,19 @@ public class TypeClassifier {
 			if(name.equals("parallelGateway")) return UkuConstants.JOIN_GATEWAY;
 			else if(name.equalsIgnoreCase("inclusiveGateway")) return UkuConstants.INCLUSIVE_JOIN_GATEWAY;
 			else if(name.equalsIgnoreCase("exclusiveGateway")) return UkuConstants.EXCLUSIVE_MERGE_GATEWAY;
-			else if(name.equals("eventBasedGateway")) return UkuConstants.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY;//TODO
+
+			else if(name.equals("eventBasedGateway")) {
+				//TODO this won't happen
+				//return UkuConstants.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY;
+				return UkuConstants.EXCLUSIVE_MERGE_GATEWAY;
+			}
+			
 			break;
 		case 2://Deverging
 			if(name.equalsIgnoreCase("parallelGateway")) return UkuConstants.FORK_GATEWAY;
 			else if(name.equalsIgnoreCase("inclusiveGateway")) return UkuConstants.INCLUSIVE_DECISION_GATEWAY;
 			else if(name.equalsIgnoreCase("exclusiveGateway")) return UkuConstants.EXCLUSIVE_DECISION_GATEWAY;
-			else if(name.equalsIgnoreCase("eventBasedGateway")) return UkuConstants.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY;//TODO
+			else if(name.equalsIgnoreCase("eventBasedGateway")) return UkuConstants.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY;
 			break;
 		default: return 0;
 		}

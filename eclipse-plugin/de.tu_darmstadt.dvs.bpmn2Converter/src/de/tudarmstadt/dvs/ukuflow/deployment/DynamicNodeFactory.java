@@ -1,5 +1,6 @@
 package de.tudarmstadt.dvs.ukuflow.deployment;
 
+import java.io.FileInputStream;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -27,8 +28,8 @@ public class DynamicNodeFactory extends ContributionItem implements
 	
 	static {
 		fileExtensions = new HashSet<String>();
-		fileExtensions.add("bpmn");
-		fileExtensions.add("bpmn2");
+		//fileExtensions.add("bpmn");
+		//fileExtensions.add("bpmn2");
 		fileExtensions.add("uku");
 		fileExtensions.add("uku64");
 	}
@@ -46,12 +47,12 @@ public class DynamicNodeFactory extends ContributionItem implements
 			IFile file = (IFile)selected;
 			String extension = file.getFileExtension();
 			if(fileExtensions.contains(extension.toLowerCase()))
-				return true;			
+				return true;
 		}
 		return false;
 	}
 	@Override
-	public void fill(Menu menu, int index){
+	public void fill(Menu menu, int index){		
 		System.out.println("DynamicNode is filled");
 		
 		if(srv == null)
@@ -64,7 +65,7 @@ public class DynamicNodeFactory extends ContributionItem implements
 		if(!(selected instanceof IFile))
 			return;
 		final IFile file = (IFile)selected;
-		Map<String,String> devs = DeviceFinder.getInstance().getDevices();
+		Map<String,String> devs = DeviceMamager.getInstance().getDevices();
 		for(final String key : devs.keySet()){
 			MenuItem devItem = new MenuItem(menu, SWT.PUSH);
 			devItem.setText(devs.get(key) + " [" + key + "]");
@@ -73,8 +74,14 @@ public class DynamicNodeFactory extends ContributionItem implements
 				public void widgetSelected(SelectionEvent e){
 					//TODO process deployment request
 					System.out.println("selected->");
-					System.out.println("\t"+file.getFullPath().toOSString());
+					System.out.println("\t"+file.getFullPath().toPortableString());					
 					System.out.println("\t"+key);
+					try {
+						DeviceMamager.getInstance().deploy(key, file.getLocation().toOSString(), 10000);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}					
 				}
 			});
 		}

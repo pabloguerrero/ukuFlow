@@ -10,9 +10,13 @@ public class ScopeFunction extends TaskScriptFunction{
 	private String scopeName;
 	private String functionName;
 	private List<UkuExpression> params;
-
+	
 	public ScopeFunction(String name) {
 		scopeName = name;
+	}
+	public byte getScopeID(){
+		//TODO HIEN Scope ID managerment
+		return -1;
 	}
 	public String getScopeName(){
 		return scopeName;

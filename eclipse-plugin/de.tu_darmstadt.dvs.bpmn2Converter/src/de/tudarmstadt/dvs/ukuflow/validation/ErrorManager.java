@@ -1,4 +1,4 @@
-package de.tudarmstadt.dvs.ukuflow.handler;
+package de.tudarmstadt.dvs.ukuflow.validation;
 
 import java.util.LinkedList;
 import java.util.List;

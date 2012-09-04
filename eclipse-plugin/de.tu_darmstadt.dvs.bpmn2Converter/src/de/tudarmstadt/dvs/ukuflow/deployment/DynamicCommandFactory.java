@@ -49,7 +49,7 @@ public class DynamicCommandFactory extends ExtensionContributionFactory {
 		CommandContributionItem convertCommand = new CommandContributionItem(p1);
 		convertCommand.setVisible(true);
 		mm.add(convertCommand);
-		DeviceFinder df = DeviceFinder.getInstance();
+		DeviceMamager df = DeviceMamager.getInstance();
 		HashMap<String, String> devs = df.getDevices();
 		if (devs.size() > 0) {
 			for (String key : devs.keySet()) {

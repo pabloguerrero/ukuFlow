@@ -22,8 +22,9 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
-import de.tudarmstadt.dvs.ukuflow.deployment.DeviceFinder;
+import de.tudarmstadt.dvs.ukuflow.deployment.DeviceMamager;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
+import de.tudarmstadt.dvs.ukuflow.validation.UkuProcessValidation;
 import de.tudarmstadt.dvs.ukuflow.xml.BPMN2XMLParser;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.ElementVisitorImpl;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuProcess;
@@ -34,7 +35,7 @@ public class ConvertCommand extends AbstractHandler {
 	 */
 	private BpmnLog log = BpmnLog.getInstance(ConvertCommand.class
 			.getSimpleName());
-	public static final String CONSOLE_NAME = "bpmn2 converter";
+	public static final String CONSOLE_NAME = "ukuflow console";
 
 	MessageConsole myConsole = null;
 	MessageConsoleStream out = null;
@@ -55,50 +56,45 @@ public class ConvertCommand extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		myConsole = findConsole(CONSOLE_NAME);
+		myConsole = findConsole(CONSOLE_NAME);		
 		out = myConsole.newMessageStream();
 		out.setActivateOnWrite(true);
 
-		System.out.println(DeviceFinder.getInstance().getDevices());
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 				.getActiveMenuSelection(event);
-		
 		Object firstElement = selection.getFirstElement();
+
 		if (selection.size() != 1) {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event),
 					"Information", "Please choose just one BPMN2 file");
 			return null;
 		}
-		
+
 		if (firstElement instanceof IFile) {
 			IFile file = (IFile) firstElement;
-
 			try {
-				file.deleteMarkers(IMarker.PROBLEM, true,
-						IResource.DEPTH_INFINITE);
+				file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
 
 			String extension = file.getFileExtension();
 			String oFileLocation = file.getLocation().toOSString();
-
 			String nfileLocation = oFileLocation + "\n";
 			String nfileLocation64 = oFileLocation + "\n";
 			nfileLocation = nfileLocation.replace(extension + "\n", "uku");
-			nfileLocation64 = nfileLocation64
-					.replace(extension + "\n", "uku64");
+			nfileLocation64 = nfileLocation64.replace(extension + "\n", "uku64");
+			
 			if (extension.equals("bpmn") || extension.equals("bpmn2")) {
-
 				BPMN2XMLParser parser = new BPMN2XMLParser(oFileLocation, out);
 				parser.executeFetch();
 				List<UkuProcess> processes = parser.getProcesses();
-				log.info("got " + processes.size() + " processes");
-				StringBuilder sb = new StringBuilder();
 				
-
+				StringBuilder sb = new StringBuilder();
+				UkuProcessValidation validator = new UkuProcessValidation(processes.get(0));
+				validator.validate();
 				ElementVisitorImpl visitor = new ElementVisitorImpl();
-
+				
 				for (UkuProcess ue : processes) {
 					visitor.reset();
 					ue.accept(visitor);
@@ -120,12 +116,13 @@ public class ConvertCommand extends AbstractHandler {
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
+				/**
 				int errcounter = 0;
 				for (UkuProcess up : processes) {
 					log.info(up);
 					for (String errs : up.getErrorMessages()) {
 						sb.append(errs);
-						writeMarkers(file, "",errs.replace("\n", "\\"));
+						writeMarkers(file, "", errs.replace("\n", "\\"));
 						sb.append("\n");
 						errcounter++;
 					}
@@ -140,6 +137,7 @@ public class ConvertCommand extends AbstractHandler {
 				} else {
 					out.println("No error!");
 				}
+				*/
 				f = new File(nfileLocation);
 				fwrite = null;
 				try {

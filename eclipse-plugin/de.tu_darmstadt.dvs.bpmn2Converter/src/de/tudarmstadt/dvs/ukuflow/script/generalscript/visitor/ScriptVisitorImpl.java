@@ -19,51 +19,51 @@ import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.LocalFunction;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.ScopeFunction;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
-public class ScriptVisitorImpl implements ScriptVisitor{
-	
+public class ScriptVisitorImpl implements ScriptVisitor {
+
 	private BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
-	
+
 	protected Vector<Byte> out = new Vector<Byte>();
-	
-	public ScriptVisitorImpl(){		
+
+	public ScriptVisitorImpl() {
 	}
-	
-	public byte toByte(int v){
-		if(v > 255) return 0;
-		//TODO checking v
-		return(byte)v;
+
+	public byte toByte(int v) {
+		if (v > 255)
+			return 0;
+		// TODO checking v
+		return (byte) v;
 	}
-	
+
 	@Override
 	public void visit(UkuConstant uConstant) {
-		if(uConstant.isBoolValue()){
-			boolean v = (Boolean)uConstant.getValue();
+		if (uConstant.isBoolValue()) {
+			boolean v = (Boolean) uConstant.getValue();
 			log.error("boolean is not supported yet");
 		} else {
-			int v = (Integer)uConstant.getValue();
-			//out.add(toByte(ExpressionTypes.REPOSITORY_VALUE));
+			int v = (Integer) uConstant.getValue();
+			// out.add(toByte(ExpressionTypes.REPOSITORY_VALUE));
 			out.add(uConstant.getType());
-			if(uConstant.getLength() == 2){
+			if (uConstant.getLength() == 2) {
 				out.add(toByte(v));
 				log.debug("length  = 2");
-			} else if (uConstant.getLength() == 3){
-				out.add(toByte(v/256));
-				out.add(toByte(v%256));
+			} else if (uConstant.getLength() == 3) {
+				out.add(toByte(v / 256));
+				out.add(toByte(v % 256));
 			}
-			//out.add(toByte(v));
+			// out.add(toByte(v));
 		}
-		
-		
+
 	}
 
 	@Override
 	public void visit(UkuString uString) {
 		out.add(toByte(UkuConstants.STRING_VALUE));
 		log.debug("string :" + uString.getString());
-		
-		out.add((byte)(uString.getLength()-2));
-		
-		for(byte b : uString.getString().getBytes()){
+
+		out.add((byte) (uString.getLength() - 2));
+
+		for (byte b : uString.getString().getBytes()) {
 			out.add(b);
 		}
 	}
@@ -105,7 +105,7 @@ public class ScriptVisitorImpl implements ScriptVisitor{
 	public void visit(UnaryLogicalExpression uLogicExp) {
 		out.add(toByte(uLogicExp.operator));
 		uLogicExp.operand.accept(this);
-		
+
 	}
 
 	@Override
@@ -114,25 +114,25 @@ public class ScriptVisitorImpl implements ScriptVisitor{
 		// LOCAL_FUNCTION_STATEMENT
 		out.add(toByte(UkuConstants.LOCAL_FUNCTION_STATEMENT));
 		// id of variable
-		if(localF.hasVariable()){
-			//TODO a variable manager
-			byte variable_id = (byte)localF.getVariable().getID();
+		if (localF.hasVariable()) {
+			// TODO a variable manager
+			byte variable_id = (byte) localF.getVariable().getID();
 			out.add(variable_id);
 		} else {
-			out.add((byte)0);
+			out.add((byte) 0);
 		}
-		
+
 		int length = fname.length();
 		// length of command
 		out.add(toByte(length));
 		// no of parameters
 		out.add(toByte(localF.getParams().size()));
-		//command
-		for(byte b : fname.getBytes()){
+		// command
+		for (byte b : fname.getBytes()) {
 			out.add(b);
-		}		
+		}
 		// parameters
-		for(UkuExpression pa : localF.getParams()){
+		for (UkuExpression pa : localF.getParams()) {
 			pa.accept(this);
 		}
 	}
@@ -140,21 +140,24 @@ public class ScriptVisitorImpl implements ScriptVisitor{
 	@Override
 	public void visit(ScopeFunction scopeF) {
 		out.add(toByte(UkuConstants.SCOPED_FUNCTION_STATEMENT));
-		//TODO Scope id management or hash?
-		//Scope id
-		byte scope_id = 0;
+		// TODO HIEN Scope id management?
+		// Scope id
+		byte scope_id = scopeF.getScopeID();
 		out.add(scope_id);
-		//command length
+		// command length
 		String fName = scopeF.getFunctionName();
 		out.add(toByte(fName.length()));
-		//command
-		for(byte b : fName.getBytes()){
+
+		// no of parameters
+		out.add(toByte(scopeF.getParams().size()));
+
+		// command
+		for (byte b : fName.getBytes()) {
 			out.add(b);
 		}
-		//no of parameters
-		out.add(toByte(scopeF.getParams().size()));
-		//parameters
-		for(UkuExpression pa: scopeF.getParams()){
+
+		// parameters
+		for (UkuExpression pa : scopeF.getParams()) {
 			pa.accept(this);
 		}
 	}
@@ -162,34 +165,33 @@ public class ScriptVisitorImpl implements ScriptVisitor{
 	@Override
 	public void visit(ComputationalFunction computationalF) {
 		out.add(toByte(UkuConstants.COMPUTATION_STATEMENT));
-		
-		
+
 		byte id = 0;
 		id = toByte(computationalF.getVariable().getID());
 		out.add(id);
-		
+
 		int l = computationalF.getParam().getLength();
 		out.add(toByte(l));
 		computationalF.getParam().accept(this);
-	}	
-	
+	}
+
 	public static void main(String[] args) {
 		System.out.println("?@@@".getBytes()[0]);
 		StringBuilder sb = new StringBuilder();
 		char c = 256;
-		for(int i = 0; i < 20; i++)
-			sb.append((char)(c+i));		
-		
+		for (int i = 0; i < 20; i++)
+			sb.append((char) (c + i));
+
 	}
 
 	@Override
 	public void visit(UkuTaskScript ukuTaskScript) {
 		// TODO Auto-generated method stub
-		
+		log.error("visit is called");
 	}
 
 	@Override
-	public Vector<Byte> getOutput() {		
+	public Vector<Byte> getOutput() {
 		return out;
 	}
 

@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.tudarmstadt.dvs.ukuflow.validation.ErrorMessage;
+
 /**
  * 
  * @author Hien Quoc Dang
@@ -12,12 +14,12 @@ import java.util.List;
 
 public class UkuProcess implements VisitableElement {
 
-	public List<UkuEntity> entities;
-	List<String> errors = new LinkedList<String>();
+	private List<UkuEntity> entities;
+	List<ErrorMessage> errors = new LinkedList<ErrorMessage>();
 	// public String name;
 	private boolean correctness = true;
 	// private HashMap<String,UkuEntity> ref = new HashMap<String, UkuEntity>();
-	public List<UkuElement> elements;
+
 	public List<UkuScope> scopes;
 	/**
 	 * unique id
@@ -28,18 +30,32 @@ public class UkuProcess implements VisitableElement {
 		this.id = id;
 	}
 
+	public void addEntities(List<UkuEntity> newEntities) {
+		for (UkuEntity e : newEntities) {
+			addEntity(e);
+		}
+	}
+
+	public void addEntity(UkuEntity newEntity) {
+		if (entities.contains(newEntity)) {
+			System.out.println("double element " + newEntity.getID());
+			return;
+		}
+		entities.add(newEntity);
+	}
+
+	public void removeEntity(UkuEntity e) {
+		entities.remove(e);
+	}
+
+	public void removeEntities(List<UkuEntity> es) {
+		entities.removeAll(es);
+	}
+
 	public void setEntities(List<UkuEntity> entities) {
 		this.entities = entities;
-
 		scopes = new LinkedList<UkuScope>();
-		elements = new LinkedList<UkuElement>();
-		for (UkuEntity e : entities) {
-			// ref.put(e.getID(), e);
-			if (e instanceof UkuElement) {
-				elements.add((UkuElement) e);
-			}
 
-		}
 	}
 
 	/*
@@ -52,7 +68,7 @@ public class UkuProcess implements VisitableElement {
 		return correctness;
 	}
 
-	public List<String> getErrorMessages() {
+	public List<ErrorMessage> getErrorMessages() {
 		for (UkuEntity e : entities) {
 			errors.addAll(e.getError());
 		}
@@ -60,8 +76,18 @@ public class UkuProcess implements VisitableElement {
 	}
 
 	public List<UkuElement> getElements() {
-		// TODO: is this enough?
+		final List<UkuElement> elements = new LinkedList<UkuElement>();
+		for (UkuEntity e : entities) {
+			// ref.put(e.getID(), e);
+			if (e instanceof UkuElement) {
+				elements.add((UkuElement) e);
+			}
+		}
 		return elements;
+	}
+
+	public List<UkuEntity> getEntities() {
+		return new LinkedList<UkuEntity>(entities);
 	}
 
 	public byte getNumberOfScope() {
