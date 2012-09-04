@@ -46,6 +46,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 	}
 
 	public String getOutputString64() {
+		out.set(1, (byte) (out.size() - 2));
 		byte[] result = new byte[out.size()];
 		for (int i = 0; i < out.size(); i++) {
 			result[i] = out.get(i);
@@ -113,19 +114,8 @@ public class ElementVisitorImpl implements ElementVisitor {
 	@Override
 	public void visit(UkuGateway gateway) {
 		out.add(gateway.getWorkflowElementID());
-		/*
-		 * 0 : still unknown (1-1) 1 : converging (n-1) 2 : diverging (1-n) 3 :
-		 * mixed (n-n)
-		 */
-		int tp = 0;
-		try {
-			tp = classifier.getGatewayType(gateway);
-		} catch (UnspecifiedGatewayException e) {
-			runtimeError.add(e.getMessage());
-			return;
-		}
-		log.debug("visit gateway " + gateway + "->" + tp);
-		switch (tp) {
+
+		switch (gateway.ukuGatewayType) {
 		case UkuConstants.JOIN_GATEWAY:
 			out.add(toByte(UkuConstants.JOIN_GATEWAY));
 			if (gateway.getOutgoing().size() != 1) {
@@ -159,7 +149,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 		case UkuConstants.EXCLUSIVE_DECISION_GATEWAY:
 		case UkuConstants.INCLUSIVE_DECISION_GATEWAY: // Hard work here!!
 
-			out.add(toByte(tp));
+			out.add(toByte(gateway.ukuGatewayType));
 			out.add(toByte(gateway.getOutgoing().size())); // no of Outgoing
 															// sequenceflow
 			for (UkuEntity outg : gateway.getOutgoing()) {

@@ -1,6 +1,5 @@
 package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,11 +33,13 @@ public class UkuExecuteTask extends UkuElement{
 		}
 	}
 	public void setScript(String script){
+		System.out.println(script);
 		this.script = script;
 		ukuFlowScript parser = ukuFlowScript.getInstance(script);
 		try{
 			statements = parser.parseTaskScript();
 		} catch (ParseException e) {
+			System.out.println("add error msg");
 			addErrorMessage("element "+id+", at line: "+parser.token.beginLine+"& col: "+parser.token.beginColumn,"error near the token "+parser.token);			
 		}
 	}

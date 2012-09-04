@@ -57,18 +57,22 @@ public class DeviceMamager {
 		switch (os) {
 		case 0:
 			devs = getDevices_windows();
-			return devs;
+			break;
 		case 1:
 			devs = getDevices_linux();
-			return devs;
+			break;
 		case 2:
 			devs = getDevices_mac();
-			return devs;
+			break;
 		default:
 			System.err.println("your operating system is not supported yet");
 			return null;
 			// TODO:
 		}
+		for(String used : usedPort){
+			devs.remove(used);
+		}
+		return devs;
 	}
 
 	private List<String> portList() {
@@ -240,7 +244,7 @@ public class DeviceMamager {
 						newLine += tmp;
 					}
 					if (startTime + timeout < System.currentTimeMillis()) {
-						console.info("SYSTEM",portName +" is released");
+						console.out("SYSTEM",portName +" is released");
 						usedPort.remove(portName);
 						break;
 					}

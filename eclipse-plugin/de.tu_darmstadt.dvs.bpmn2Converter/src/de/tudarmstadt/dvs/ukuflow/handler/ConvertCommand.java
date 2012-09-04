@@ -35,10 +35,7 @@ public class ConvertCommand extends AbstractHandler {
 	 */
 	private BpmnLog log = BpmnLog.getInstance(ConvertCommand.class
 			.getSimpleName());
-	public static final String CONSOLE_NAME = "ukuflow console";
-
-	MessageConsole myConsole = null;
-	MessageConsoleStream out = null;
+	private UkuConsole console = UkuConsole.getConsole();
 
 	private void writeMarkers(IResource resource, String location, String msg) {
 		IMarker m = null;
@@ -56,10 +53,6 @@ public class ConvertCommand extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		myConsole = findConsole(CONSOLE_NAME);		
-		out = myConsole.newMessageStream();
-		out.setActivateOnWrite(true);
-
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 				.getActiveMenuSelection(event);
 		Object firstElement = selection.getFirstElement();
@@ -73,7 +66,8 @@ public class ConvertCommand extends AbstractHandler {
 		if (firstElement instanceof IFile) {
 			IFile file = (IFile) firstElement;
 			try {
-				file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+				file.deleteMarkers(IMarker.PROBLEM, true,
+						IResource.DEPTH_INFINITE);
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
@@ -83,27 +77,31 @@ public class ConvertCommand extends AbstractHandler {
 			String nfileLocation = oFileLocation + "\n";
 			String nfileLocation64 = oFileLocation + "\n";
 			nfileLocation = nfileLocation.replace(extension + "\n", "uku");
-			nfileLocation64 = nfileLocation64.replace(extension + "\n", "uku64");
-			
+			nfileLocation64 = nfileLocation64
+					.replace(extension + "\n", "uku64");
+
 			if (extension.equals("bpmn") || extension.equals("bpmn2")) {
-				BPMN2XMLParser parser = new BPMN2XMLParser(oFileLocation, out);
+				BPMN2XMLParser parser = new BPMN2XMLParser(oFileLocation);
 				parser.executeFetch();
 				List<UkuProcess> processes = parser.getProcesses();
+
+				UkuProcessValidation validator = new UkuProcessValidation(
+						processes.get(0));
+				boolean valid = validator.validate();
+				console.info("Validator","Report:");
+				console.info("Validator",validator.warnings.size()+ " warnings are found");
+				if(!valid){					
+					console.info("Validator","There are(is) "+validator.errors.size() + " errors in the diagram, please fix them (it) first");
+					return null;
+				}
+				console.info("Validator", "No error");
 				
-				StringBuilder sb = new StringBuilder();
-				UkuProcessValidation validator = new UkuProcessValidation(processes.get(0));
-				validator.validate();
 				ElementVisitorImpl visitor = new ElementVisitorImpl();
-				
+
 				for (UkuProcess ue : processes) {
 					visitor.reset();
-					ue.accept(visitor);
-					out.println("***");
-					for (byte b : visitor.getOutput())
-						out.print(b + " ");
-					out.println("\n-------------");
-					out.println(visitor.getOutputString64());
-					out.println("***");
+					ue.accept(visitor);					
+					console.info("output",visitor.getOutputString64());					
 				}
 
 				File f = new File(nfileLocation64);
@@ -116,28 +114,7 @@ public class ConvertCommand extends AbstractHandler {
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
-				/**
-				int errcounter = 0;
-				for (UkuProcess up : processes) {
-					log.info(up);
-					for (String errs : up.getErrorMessages()) {
-						sb.append(errs);
-						writeMarkers(file, "", errs.replace("\n", "\\"));
-						sb.append("\n");
-						errcounter++;
-					}
-				}
-				if (errcounter > 0) {
-					out.println("There are(is) "
-							+ errcounter
-							+ " error(s) in the workflow diagram. Please fix them first");
-					out.println(sb.toString());
 
-					return null;
-				} else {
-					out.println("No error!");
-				}
-				*/
 				f = new File(nfileLocation);
 				fwrite = null;
 				try {
@@ -160,57 +137,7 @@ public class ConvertCommand extends AbstractHandler {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event),
 					"Information", "Please select a BPMN or BPMN2 source file");
 		}
-		/*
-		 * if (firstElement instanceof ICompilationUnit) { ICompilationUnit cu =
-		 * (ICompilationUnit) firstElement; IResource res = cu.getResource();
-		 * boolean newDirectory = true; directory = getPersistentProperty(res,
-		 * path); System.out.println("directory: " + directory); if (directory
-		 * != null && directory.length() > 0) { newDirectory =
-		 * !(MessageDialog.openQuestion( HandlerUtil.getActiveShell(event),
-		 * "Question", "Use the previous output directory?")); } if
-		 * (newDirectory) { DirectoryDialog fileDialog = new DirectoryDialog(
-		 * HandlerUtil.getActiveShell(event)); directory = fileDialog.open();
-		 * 
-		 * } if (directory != null && directory.length() > 0) { analyze(cu);
-		 * setPersistentProperty(res, path, directory); write(directory, cu); }
-		 * 
-		 * } else {
-		 * MessageDialog.openInformation(HandlerUtil.getActiveShell(event),
-		 * "Information", "Please select a Java source file"); }
-		 */
+
 		return null;
-	}
-
-	/*
-	 * protected String getPersistentProperty(IResource res, QualifiedName qn) {
-	 * try { return res.getPersistentProperty(qn); } catch (CoreException e) {
-	 * return ""; } }
-	 */
-
-	/*
-	 * protected void setPersistentProperty(IResource res, QualifiedName qn,
-	 * String value) { try { res.setPersistentProperty(qn, value); } catch
-	 * (CoreException e) { e.printStackTrace(); } }
-	 */
-
-	/*******************************************************************************************/
-	/**
-	 * find the console with name = {@code name}. If no console is found, create
-	 * one.
-	 * 
-	 * @param name
-	 * @return
-	 */
-	private MessageConsole findConsole(String name) {
-		ConsolePlugin plugin = ConsolePlugin.getDefault();
-		IConsoleManager conMan = plugin.getConsoleManager();
-		IConsole[] existing = conMan.getConsoles();
-		for (int i = 0; i < existing.length; i++)
-			if (name.equals(existing[i].getName()))
-				return (MessageConsole) existing[i];
-		// no console found, so create a new one
-		MessageConsole myConsole = new MessageConsole(name, null);
-		conMan.addConsoles(new IConsole[] { myConsole });
-		return myConsole;
 	}
 }

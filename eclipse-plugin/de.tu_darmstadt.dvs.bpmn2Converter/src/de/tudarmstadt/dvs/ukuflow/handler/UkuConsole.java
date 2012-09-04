@@ -18,19 +18,29 @@ public class UkuConsole {
 	public static boolean infoBoolean = true;
 
 	static MessageConsole myConsole = null;
+
 	static MessageConsoleStream out = null;
 	static MessageConsoleStream err = null;
 	static MessageConsoleStream info = null;
+	static MessageConsoleStream warn = null;
 
 	private UkuConsole() {
-		myConsole = findConsole(ConvertCommand.CONSOLE_NAME);
+		myConsole = findConsole(CONSOLE_NAME);
+
 		out = myConsole.newMessageStream();
 		err = myConsole.newMessageStream();
 		info = myConsole.newMessageStream();
-
+		warn = myConsole.newMessageStream();
+		
 		err.setColor(new Color(MonitorUlti.getDisplay(), 255, 0, 0));
+		warn.setColor(new Color(MonitorUlti.getDisplay(), 210, 105, 30));
 		out.setColor(new Color(MonitorUlti.getDisplay(), 0, 0, 255));
+		
 		out.setActivateOnWrite(true);
+		info.setActivateOnWrite(true);
+		warn.setActivateOnWrite(true);
+		err.setActivateOnWrite(true);
+		
 
 	}
 
@@ -40,11 +50,17 @@ public class UkuConsole {
 		}
 		return instance;
 	}
-
+	public void warn(Object...objs){
+		String msg = generateMessage(false, objs);
+		if (msg != null) {
+			warn.println(msg);
+		}
+	}
+	
 	public void error(Object... objs) {
 		if (!errBoolean)
 			return;
-		String msg = generateMessage(objs);
+		String msg = generateMessage(false, objs);
 		if (msg != null) {
 			err.println(msg);
 		}
@@ -53,7 +69,7 @@ public class UkuConsole {
 	public void out(Object... objs) {
 		if (!outBoolean)
 			return;
-		String msg = generateMessage(objs);
+		String msg = generateMessage(true, objs);
 		if (msg != null) {
 			out.println(msg);
 		}
@@ -62,17 +78,18 @@ public class UkuConsole {
 	public void info(Object... objs) {
 		if (!infoBoolean)
 			return;
-		String msg = generateMessage(objs);
+		String msg = generateMessage(false, objs);
 		if (msg != null) {
 			info.println(msg);
 		}
 	}
 
-	private String generateMessage(Object... objs) {
+	private String generateMessage(boolean time, Object... objs) {
 		if (objs.length == 0)
 			return null;
 		StringBuilder sb = new StringBuilder();
-		sb.append(BpmnLog.timeNow());
+		if (time)
+			sb.append(BpmnLog.timeNow());
 		for (int i = 0; i < objs.length - 1; i++) {
 			sb.append("[" + objs[i].toString() + "]");
 		}

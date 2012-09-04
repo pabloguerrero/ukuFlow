@@ -13,11 +13,12 @@ public class UkuGateway extends UkuElement {
 	 * 
 	 * @return type of the gateway
 	 */
-	private int type = 0;
-	private int direction = 0;
-	private String directionName;
+	public int type = 0;
+	public int direction = 0;
+	public String directionName;
 	private String typeGateway;
-	private String defaultGway;
+	private String defaultGway = null;
+	public int ukuGatewayType = -1;
 
 	public UkuGateway(String id) {
 		super(id);
@@ -37,7 +38,9 @@ public class UkuGateway extends UkuElement {
 	public void setDefaultGway(String d) {
 		defaultGway = d;
 	}
-
+	public String getDefaultGway(){
+		return defaultGway;
+	}
 	public String getElementType() {
 		return typeGateway;
 	}
@@ -45,44 +48,13 @@ public class UkuGateway extends UkuElement {
 	@Override
 	public void setReference(Map<String, UkuEntity> ref) {
 		super.setReference(ref);
-		// getDefaultGateway
 		if (defaultGway != null) {
-			System.out.println("setting default gateway");
 			UkuSequenceFlow defGateway = (UkuSequenceFlow) ref.get(defaultGway);
 			defGateway.setDefaultGateway();
 		}
-		String tmpName = "";
-		if (outgoing.size() > 1 && incoming.size() > 1) {
-			addWarningMessage("a mixed gateway");
-			type = 3;
-			tmpName = "Mixed";
-		} else if (outgoing.size() == 0 || incoming.size() == 0) {
-			if (outgoing.size() == 0)
-				addWarningMessage("no outgoing sequence flow");
-			if (incoming.size() == 0)
-				addWarningMessage("no incoming sequence flow");
-			type = -1;
-			return;
-		} else if (incoming.size() == 1 && outgoing.size() > 1) {
-			type = 2;
-			tmpName = "Diverging";
-		} else if (incoming.size() > 1 && outgoing.size() == 1) {
-			tmpName = "Converging";
-			type = 1;
-		}
-		if (incoming.size() == 1 && outgoing.size() == 1) {
-			tmpName = "UnKnown";
-			type = 0;
-		}
-		if (type != direction) {
-			addWarningMessage("was specified as '" + directionName
-					+ "', but it was found as a '" + tmpName + "' gateway");
-		}
-		if (type == direction && direction == 0) {
-			System.out.println("error");
-			addErrorMessage("Please specify the direction of gateway (Converging,Deverging or Mixed)");
-		}
-		System.out.println(type + " / " + direction);
+	}
+	public void setType(int type){
+		this.type = type;
 	}
 
 	public void setDirection(String d) {

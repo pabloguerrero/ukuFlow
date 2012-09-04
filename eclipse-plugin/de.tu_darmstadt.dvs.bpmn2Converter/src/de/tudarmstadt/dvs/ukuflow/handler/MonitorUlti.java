@@ -1,7 +1,6 @@
 package de.tudarmstadt.dvs.ukuflow.handler;
 
 import org.eclipse.swt.widgets.Display;
-
 import org.eclipse.ui.IWorkbench;
 
 import org.eclipse.ui.PlatformUI;

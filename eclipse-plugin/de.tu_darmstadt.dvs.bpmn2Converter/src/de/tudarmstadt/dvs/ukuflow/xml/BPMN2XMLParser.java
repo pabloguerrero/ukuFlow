@@ -17,6 +17,7 @@ import org.eclipse.ui.console.MessageConsoleStream;
 import org.jdom2.*;
 import org.jdom2.input.SAXBuilder;
 
+import de.tudarmstadt.dvs.ukuflow.handler.UkuConsole;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.UnsupportedElementException;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuElement;
@@ -43,18 +44,18 @@ public class BPMN2XMLParser {
 	 */
 	Map<String, UkuEntity> reference;
 	Element root;
-	MessageConsoleStream out = null;
+	UkuConsole console = UkuConsole.getConsole();
+
 	TypeClassifier classifier = TypeClassifier.getInstance();
 	List<UkuProcess> processes = null;
 
-	public BPMN2XMLParser(String file, MessageConsoleStream out) {
-		reInit(file, out);
+	public BPMN2XMLParser(String file) {
+		reInit(file);
 	}
 
-	public void reInit(String fileLocation, MessageConsoleStream out) {
+	public void reInit(String fileLocation) {
 		reference = new HashMap<String, UkuEntity>();
 		root = loadFile(fileLocation);
-		this.out = out;
 	}
 
 	/**
@@ -146,7 +147,7 @@ public class BPMN2XMLParser {
 					result.add(tmp);
 			}
 		} else {
-			out.println(e.getName()
+			log.debug(e.getName()
 					+ " is not a 'definitions' of bpmn2 file -> ignored");
 		}
 		return result;
@@ -158,7 +159,7 @@ public class BPMN2XMLParser {
 			result = new UkuProcess(fetchID(e));
 			result.setEntities(fetchEntities(e));
 		} else {
-			out.println("WARNING: element '" + e.getName()
+			log.debug("WARNING: element '" + e.getName()
 					+ "' is not a process -> ignored");
 		}
 		return result;
@@ -187,7 +188,7 @@ public class BPMN2XMLParser {
 		try {
 			type = classifier.getType(name);
 		} catch (UnsupportedElementException e1) {
-			out.println(name + " is not supported : " + e1.getMessage());
+			log.debug(name + " is not supported : " + e1.getMessage());
 			return null;
 		}
 		String id = fetchID(e);
@@ -207,7 +208,7 @@ public class BPMN2XMLParser {
 				} else {
 					log.info("Unknown child: " + childName + " -> ignored");
 				}
-			}
+			}			
 			return result;
 		case 2:
 			UkuExecuteTask et = new UkuExecuteTask(id);
@@ -235,8 +236,13 @@ public class BPMN2XMLParser {
 				} else if (n.equals("outgoing")) {
 					event.addOutgoing(n_id);
 				} else {
-					out.println("WARNING!! unknown child : " + child.getName());
+					log.debug("WARNING!! unknown child : " + child.getName());
 				}
+			}
+			try {
+				event.setType(classifier.getEventType(name));
+			} catch (UnsupportedElementException e1) {
+				event.setType(-1);
 			}
 			return event;
 		case 4: // gateways
@@ -257,7 +263,7 @@ public class BPMN2XMLParser {
 				} else if (n.equals("outgoing")) {
 					gway.addOutgoing(n_id);
 				} else {
-					out.println("WARNING!! unknown child : " + child.getName());
+					log.debug("WARNING!! unknown child : " + child.getName());
 					// TODO
 
 				}
@@ -265,7 +271,7 @@ public class BPMN2XMLParser {
 			return gway;
 
 		default:
-			out.println("WARNING, unknown element: " + type + "/" + e.getName());
+			log.debug("WARNING, unknown element: " + type + "/" + e.getName());
 			// TODO:
 			return null;
 		}
@@ -297,16 +303,20 @@ public class BPMN2XMLParser {
 					UkuGateway left = gway.clone(generateID(gway.getID()));
 					left.setIncoming(gway.getIncomingID());
 					for (String inc : left.getIncomingID()) {
-						UkuSequenceFlow sf = (UkuSequenceFlow) reference.get(inc);
+						UkuSequenceFlow sf = (UkuSequenceFlow) reference
+								.get(inc);
 						sf.setTargetID(left.getID());
 					}
 					UkuGateway right = gway.clone(generateID(gway.getID()));
 					right.setOutgoing(gway.getOutgoingID());
 					for (String outg : right.getOutgoingID()) {
-						UkuSequenceFlow sf = (UkuSequenceFlow) reference.get(outg);
+						UkuSequenceFlow sf = (UkuSequenceFlow) reference
+								.get(outg);
 						sf.setSourceID(right.getID());
 					}
-					UkuSequenceFlow seq = new UkuSequenceFlow(generateID("generated_sequenceflow"), left.getID(),right.getID());
+					UkuSequenceFlow seq = new UkuSequenceFlow(
+							generateID("generated_sequenceflow"), left.getID(),
+							right.getID());
 					left.addOutgoing(seq.getID());
 					right.addIncoming(seq.getID());
 
