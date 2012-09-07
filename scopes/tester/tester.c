@@ -39,7 +39,7 @@
 #define SUB_SCOPE_SPEC PREDICATE_GET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 8
 
 /* \brief number of iterations this test will run */
-#define NUM_ITERATIONS 1
+#define NUM_ITERATIONS 10
 
 PROCESS(tester_process, "tester");
 AUTOSTART_PROCESSES(&tester_process);
