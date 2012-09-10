@@ -1,7 +1,5 @@
 package de.tudarmstadt.dvs.ukuflow.validation;
 
-import java.util.HashSet;
-import java.util.Set;
 
 import de.tudarmstadt.dvs.ukuflow.handler.UkuConsole;
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
@@ -11,14 +9,14 @@ import de.tudarmstadt.dvs.ukuflow.xml.entity.*;
 
 public class UkuProcessValidation {
 	UkuProcess process = null;
-	UkuErrorReporter reporter;
-	UkuConsole console = UkuConsole.getConsole();
-	public Set<ErrorMessage> errors = new HashSet<ErrorMessage>();
-	public Set<WarningMessage> warnings = new HashSet<WarningMessage>();
+	//UkuErrorReporter reporter;
+	//UkuConsole console = UkuConsole.getConsole();
+	//public Set<ErrorMessage> errors = new HashSet<ErrorMessage>();
+	//public Set<WarningMessage> warnings = new HashSet<WarningMessage>();
 
 	public UkuProcessValidation(UkuProcess process) {
 		this.process = process;
-		reporter = UkuErrorReporter.getInstance();
+		//reporter = UkuErrorReporter.getInstance();
 	}
 
 	public boolean validate() {
@@ -37,7 +35,7 @@ public class UkuProcessValidation {
 				System.err.println("error");
 			}
 		}
-
+		/**
 		for (UkuEntity e : process.getEntities()) {
 			errors.addAll(e.getError());
 			warnings.addAll(e.getWarnings());
@@ -47,9 +45,11 @@ public class UkuProcessValidation {
 		}
 		for (WarningMessage wm : warnings) {
 			console.warn("WARNING", wm.location, wm.message);
-		}
+		}*/
+		/**
 		if (errors.size() != 0)
 			return false;
+			*/
 		return true;
 
 	}
@@ -75,9 +75,11 @@ public class UkuProcessValidation {
 	}
 
 	private void validate(UkuExecuteTask task) {
-		if (task.getIncomingID().size() != 1
-				|| task.getOutgoingID().size() != 1)
+		if (task.getIncomingID().size() != 1 || task.getOutgoingID().size() != 1)
 			task.addErrorMessage("A Script task must have exactly one incoming and one outgoing connection");
+		if(!task.hasScript()){
+			task.addErrorMessage("has no script");
+		}
 	}
 
 	public void validate(UkuScope scope) {

@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.ui.console.MessageConsoleStream;
 import org.jdom2.*;
 import org.jdom2.input.SAXBuilder;
 
 import de.tudarmstadt.dvs.ukuflow.handler.UkuConsole;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.UnsupportedElementException;
+import de.tudarmstadt.dvs.ukuflow.validation.ErrorManager;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuElement;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuEntity;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuEvent;
@@ -39,6 +39,8 @@ public class BPMN2XMLParser {
 	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	Set<String> idPool = new HashSet<String>();
 	public static final String DEFAULT_GENERATED_ID = "generated_id_";
+
+	ErrorManager errorManager = ErrorManager.getInstance();
 	/**
 	 * This reference maps each id(String) to its UkuEntity (one-to-one)
 	 */
@@ -188,6 +190,8 @@ public class BPMN2XMLParser {
 		try {
 			type = classifier.getType(name);
 		} catch (UnsupportedElementException e1) {
+			errorManager.addError(e.getParentElement().getAttributeValue("id"),
+					name + " is not supported");
 			log.debug(name + " is not supported : " + e1.getMessage());
 			return null;
 		}
@@ -196,33 +200,44 @@ public class BPMN2XMLParser {
 		case 1:
 			String sourceRef = e.getAttributeValue("sourceRef");
 			String targetRef = e.getAttributeValue("targetRef");
+			String priority = e.getAttributeValue("priority");
+
 			UkuSequenceFlow result = new UkuSequenceFlow(id, sourceRef,
 					targetRef);
+
+			if (priority != null)
+				try {
+					int p = Integer.parseInt(priority);
+					result.setPriority(p);
+				} catch (Exception e2) {
+					// not a number
+				}
 
 			for (Element child : e.getChildren()) {
 				String childName = child.getName();
 				if (childName.equals("conditionExpression")) {
 					String condition = child.getTextTrim();
-					System.out.println(condition);
 					((UkuSequenceFlow) result).setCondition(condition);
 				} else {
-					log.info("Unknown child: " + childName + " -> ignored");
+					errorManager.addWarning(id, "Unknown property of "
+							+ childName + " -> ignored");
 				}
-			}			
+			}
 			return result;
 		case 2:
 			UkuExecuteTask et = new UkuExecuteTask(id);
 			for (Element child : e.getChildren()) {
 				log.debug(et.getID() + " " + child.getName());
 				if (child.getName().equals("incoming")) {
-					log.debug("add incoming");
 					et.addIncoming(child.getTextTrim());
 				} else if (child.getName().equals("outgoing")) {
-					log.debug("add outgoing");
 					et.addOutgoing(child.getTextTrim());
 				} else if (child.getName().equals("script")) {
-					log.debug("add script");
 					et.setScript(child.getTextTrim());
+				} else {
+					errorManager.addWarning(id,
+							"Unknown property of " + child.getName()
+									+ " -> ignored");
 				}
 			}
 			return et;
@@ -236,12 +251,15 @@ public class BPMN2XMLParser {
 				} else if (n.equals("outgoing")) {
 					event.addOutgoing(n_id);
 				} else {
-					log.debug("WARNING!! unknown child : " + child.getName());
+					errorManager.addWarning(id,
+							"Unknown property of " + child.getName()
+									+ " -> ignored");
 				}
 			}
 			try {
 				event.setType(classifier.getEventType(name));
 			} catch (UnsupportedElementException e1) {
+				errorManager.addError(id, name + " is not supported");
 				event.setType(-1);
 			}
 			return event;
@@ -263,16 +281,15 @@ public class BPMN2XMLParser {
 				} else if (n.equals("outgoing")) {
 					gway.addOutgoing(n_id);
 				} else {
-					log.debug("WARNING!! unknown child : " + child.getName());
-					// TODO
-
+					errorManager.addWarning(id,
+							"Unknown property of " + child.getName()
+									+ " -> ignored");
 				}
 			}
 			return gway;
 
 		default:
 			log.debug("WARNING, unknown element: " + type + "/" + e.getName());
-			// TODO:
 			return null;
 		}
 	}

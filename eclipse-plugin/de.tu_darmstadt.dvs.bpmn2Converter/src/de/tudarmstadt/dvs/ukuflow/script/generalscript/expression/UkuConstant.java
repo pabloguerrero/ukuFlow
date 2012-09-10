@@ -3,6 +3,7 @@ package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
 import java.io.Serializable;
 
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
 
 /**
  * represents a ukuFlow Constant. It could be either an integer constant or

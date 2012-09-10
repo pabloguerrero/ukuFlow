@@ -1,6 +1,6 @@
 package de.tudarmstadt.dvs.ukuflow.script.generalscript;
 
-import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ScriptVisitor;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
 
 /**
  * 

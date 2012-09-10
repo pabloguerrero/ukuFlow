@@ -7,10 +7,9 @@ import java.util.Vector;
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitorImpl;
-import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ScriptVisitor;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitorImpl;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
-import de.tudarmstadt.dvs.ukuflow.tools.exception.UnspecifiedGatewayException;
 import de.tudarmstadt.dvs.ukuflow.xml.TypeClassifier;
 import org.apache.commons.codec.binary.Base64;
 

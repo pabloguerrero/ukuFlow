@@ -6,7 +6,6 @@ import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryLogicalExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryNumericalExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ComparisonExpression;
-import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ScriptVisitor;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuString;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuTaskScript;

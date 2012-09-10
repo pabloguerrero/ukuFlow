@@ -8,4 +8,13 @@ public class WarningMessage {
 		this.message = msg;
 		this.location = location;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof WarningMessage) {
+			return ((WarningMessage) o).location.equals(location)
+					&& ((WarningMessage) o).message.equals(message);
+		}
+		return false;
+	}
 }

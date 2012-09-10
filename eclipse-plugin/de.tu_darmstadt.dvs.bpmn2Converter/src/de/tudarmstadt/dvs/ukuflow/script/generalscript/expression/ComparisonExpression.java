@@ -1,6 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
 
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
 
 /**
  * A comparison expression, which can compare two {@link #UkuExpression}. <br />

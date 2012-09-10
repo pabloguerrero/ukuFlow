@@ -1,10 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import de.tudarmstadt.dvs.ukuflow.validation.ErrorMessage;
 
 /**
  * 
@@ -15,12 +12,10 @@ import de.tudarmstadt.dvs.ukuflow.validation.ErrorMessage;
 public class UkuProcess implements VisitableElement {
 
 	private List<UkuEntity> entities;
-	List<ErrorMessage> errors = new LinkedList<ErrorMessage>();
-	// public String name;
-	private boolean correctness = true;
+
 	// private HashMap<String,UkuEntity> ref = new HashMap<String, UkuEntity>();
 
-	public List<UkuScope> scopes;
+	public List<UkuScope> scopes = new LinkedList<UkuScope>();
 	/**
 	 * unique id
 	 */
@@ -54,25 +49,16 @@ public class UkuProcess implements VisitableElement {
 
 	public void setEntities(List<UkuEntity> entities) {
 		this.entities = entities;
-		scopes = new LinkedList<UkuScope>();
+		// scopes = new LinkedList<UkuScope>();
 
 	}
 
-	/*
-	 * public HashMap<String,UkuEntity> getReference(){ return ref; }
-	 */
-	public boolean isCorrect() {
-		for (UkuEntity e : entities) {
-			correctness &= e.isCorrect();
-		}
-		return correctness;
+	public void setScopes(List<UkuScope> scopes) {
+		this.scopes = scopes;
 	}
 
-	public List<ErrorMessage> getErrorMessages() {
-		for (UkuEntity e : entities) {
-			errors.addAll(e.getError());
-		}
-		return errors;
+	public void addScope(UkuScope scope) {
+		this.scopes.add(scope);
 	}
 
 	public List<UkuElement> getElements() {
@@ -91,12 +77,13 @@ public class UkuProcess implements VisitableElement {
 	}
 
 	public byte getNumberOfScope() {
-		// TODO counting number of scope in the process
+		if (scopes != null)
+			return (byte) scopes.size();
 		return 0;
 	}
 
 	public byte getWorkflowID() {
-		// TODO cope with inteference
+		// TODO cope with interference
 		return (byte) (Math.abs(id.hashCode()) % 256);
 	}
 

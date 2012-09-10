@@ -24,6 +24,7 @@ import org.eclipse.ui.console.MessageConsoleStream;
 
 import de.tudarmstadt.dvs.ukuflow.handler.ConvertCommand;
 import de.tudarmstadt.dvs.ukuflow.handler.UkuConsole;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class DeviceMamager {
 	public final static int WINDOWS_OS = 0;
@@ -34,6 +35,8 @@ public class DeviceMamager {
 	private static DeviceMamager INSTANCE = null;
 	private static UkuConsole console = UkuConsole.getConsole();
 	static LinkedBlockingDeque<String> usedPort = new LinkedBlockingDeque<String>();
+	private static BpmnLog log = BpmnLog.getInstance(DeviceMamager.class
+			.getSimpleName());
 
 	private DeviceMamager() {
 		String os_name = System.getProperty("os.name").toLowerCase();
@@ -69,7 +72,7 @@ public class DeviceMamager {
 			return null;
 			// TODO:
 		}
-		for(String used : usedPort){
+		for (String used : usedPort) {
 			devs.remove(used);
 		}
 		return devs;
@@ -244,7 +247,7 @@ public class DeviceMamager {
 						newLine += tmp;
 					}
 					if (startTime + timeout < System.currentTimeMillis()) {
-						console.out("SYSTEM",portName +" is released");
+						console.out("SYSTEM", portName + " is released");
 						usedPort.remove(portName);
 						break;
 					}
@@ -253,7 +256,8 @@ public class DeviceMamager {
 				in.close();
 
 			} catch (IOException e) {
-				e.printStackTrace();
+				// e.printStackTrace();
+				console.info("SYSTEM", "device may be disconnected");
 			}
 		}
 	}
@@ -274,16 +278,22 @@ public class DeviceMamager {
 				int last1 = 0, last2 = 0;
 				while ((c = in.read()) > -1) {
 					this.out.write(c);
+					log.debug("send > " + c);
 					last2 = last1;
 					last1 = c;
 				}
 				if (last2 != 13 & last1 != 10) {
 					/* send "carriage return" symbol */
-					if (last1 != 13)
-						;
-					this.out.write(13);
-					/* send "new line" symbol */
-					this.out.write(10);
+					if (last1 == 13) {
+						log.debug("send > " + 10);
+						this.out.write(10);
+					} else {
+						this.out.write(13);
+						/* send "new line" symbol */
+						this.out.write(10);
+						log.debug("send > " + 13);
+						log.debug("send > " + 10);
+					}
 				}
 
 			} catch (IOException e) {

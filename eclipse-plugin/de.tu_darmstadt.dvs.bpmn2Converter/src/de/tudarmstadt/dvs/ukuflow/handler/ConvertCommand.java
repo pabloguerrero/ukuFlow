@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 
 import de.tudarmstadt.dvs.ukuflow.deployment.DeviceMamager;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
+import de.tudarmstadt.dvs.ukuflow.validation.ErrorManager;
 import de.tudarmstadt.dvs.ukuflow.validation.UkuProcessValidation;
 import de.tudarmstadt.dvs.ukuflow.xml.BPMN2XMLParser;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.ElementVisitorImpl;
@@ -87,21 +88,29 @@ public class ConvertCommand extends AbstractHandler {
 
 				UkuProcessValidation validator = new UkuProcessValidation(
 						processes.get(0));
-				boolean valid = validator.validate();
-				console.info("Validator","Report:");
-				console.info("Validator",validator.warnings.size()+ " warnings are found");
-				if(!valid){					
-					console.info("Validator","There are(is) "+validator.errors.size() + " errors in the diagram, please fix them (it) first");
+				validator.validate();
+				ErrorManager em = ErrorManager.getInstance();
+				em.exportTo(console);
+				console.info("Validator", "Report:");
+				console.info("Validator", em.getWarnings().size()
+						+ " warnings are found");
+				if (!em.isValid()) {
+					console.info(
+							"Validator",
+							"There are(is) "
+									+ em.getErrors().size()
+									+ " errors in the diagram, please fix them (it) first");
+					em.reset();
 					return null;
 				}
 				console.info("Validator", "No error");
-				
+				em.reset();
 				ElementVisitorImpl visitor = new ElementVisitorImpl();
 
 				for (UkuProcess ue : processes) {
 					visitor.reset();
-					ue.accept(visitor);					
-					console.info("output",visitor.getOutputString64());					
+					ue.accept(visitor);
+					console.info("output", visitor.getOutputString64());
 				}
 
 				File f = new File(nfileLocation64);

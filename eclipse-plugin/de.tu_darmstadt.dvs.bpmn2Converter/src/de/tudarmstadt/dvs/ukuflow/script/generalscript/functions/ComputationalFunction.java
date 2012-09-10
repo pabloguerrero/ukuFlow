@@ -3,10 +3,10 @@ package de.tudarmstadt.dvs.ukuflow.script.generalscript.functions;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ScriptVisitor;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.VariableManager;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuVariable;
-import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.VariableManager;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyVariableException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.VariableAlreadyExistException;
 

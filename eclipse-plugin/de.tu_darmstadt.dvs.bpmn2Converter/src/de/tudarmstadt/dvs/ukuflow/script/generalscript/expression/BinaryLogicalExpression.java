@@ -1,5 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
 
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
+
 /**
  * 
  * @author Hien Quoc Dang

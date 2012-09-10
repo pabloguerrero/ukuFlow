@@ -5,6 +5,7 @@ import java.util.List;
 
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.Visitable;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.TaskScriptFunction;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
 
 
 public class UkuTaskScript implements Visitable{

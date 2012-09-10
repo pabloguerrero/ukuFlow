@@ -1,10 +1,8 @@
 package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import de.tudarmstadt.dvs.ukuflow.script.generalscript.Visitable;
+import de.tudarmstadt.dvs.ukuflow.validation.ErrorManager;
 import de.tudarmstadt.dvs.ukuflow.validation.ErrorMessage;
 import de.tudarmstadt.dvs.ukuflow.validation.WarningMessage;
 
@@ -15,8 +13,7 @@ import de.tudarmstadt.dvs.ukuflow.validation.WarningMessage;
 public abstract class UkuEntity implements VisitableElement {
 
 	protected boolean syntax = false;
-	protected List<ErrorMessage> errors = new LinkedList<ErrorMessage>();
-	protected List<WarningMessage> warnings = new LinkedList<WarningMessage>();
+	private ErrorManager errsManager = ErrorManager.getInstance();
 
 	/**
 	 * an unique id of for each entity
@@ -31,27 +28,6 @@ public abstract class UkuEntity implements VisitableElement {
 		return id;
 	}
 
-	/**
-	 * get the error messages
-	 * 
-	 * @return
-	 */
-	public List<ErrorMessage> getError() {
-		final List<ErrorMessage> result = new LinkedList<ErrorMessage>(errors);
-		return result;
-	}
-
-	/**
-	 * get the warning messages
-	 * 
-	 * @return
-	 */
-	public List<WarningMessage> getWarnings() {
-		final List<WarningMessage> result = new LinkedList<WarningMessage>(
-				warnings);
-		return result;
-	}
-
 	public void addErrorMessage(String msg) {
 		addErrorMessage(null, msg);
 	}
@@ -62,7 +38,7 @@ public abstract class UkuEntity implements VisitableElement {
 			l = "element " + id;
 		}
 		ErrorMessage em = new ErrorMessage(l, msg);
-		errors.add(em);
+		errsManager.addError(em);
 	}
 
 	public void addWarningMessage(String msg) {
@@ -75,7 +51,7 @@ public abstract class UkuEntity implements VisitableElement {
 			l = "element " + id;
 		}
 		WarningMessage wm = new WarningMessage(l, msg);
-		warnings.add(wm);
+		errsManager.addWarning(wm);
 	}
 
 	/**

@@ -10,10 +10,14 @@ public class UkuSequenceFlow extends UkuEntity {
 	private BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	public String source;
 	public String target;
+
 	private UkuElement sourceEntity;
 	private UkuElement targetEntity;
+
 	public String condition = null;
 	UkuExpression conditionExp = null;
+
+	private int priority = -1;
 	private boolean isDefault = false;
 
 	public UkuSequenceFlow(String id, String source, String target) {
@@ -91,5 +95,13 @@ public class UkuSequenceFlow extends UkuEntity {
 	public void setDefaultGateway() {
 		isDefault = true;
 
+	}
+
+	public void setPriority(int p) {
+		this.priority = p;
+	}
+
+	public int getPriority() {
+		return priority;
 	}
 }
