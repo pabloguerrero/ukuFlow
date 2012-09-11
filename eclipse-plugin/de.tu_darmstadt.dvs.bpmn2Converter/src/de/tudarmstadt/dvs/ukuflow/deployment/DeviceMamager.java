@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import org.eclipse.ui.console.ConsolePlugin;
@@ -30,7 +31,7 @@ public class DeviceMamager {
 	public final static int WINDOWS_OS = 0;
 	public final static int LINUX_OS = 1;
 	public final static int MAC_OS = 2;
-	private HashMap<String, String> devs;
+	private Map<String, String> devs;
 	private int os = -1;
 	private static DeviceMamager INSTANCE = null;
 	private static UkuConsole console = UkuConsole.getConsole();
@@ -56,7 +57,7 @@ public class DeviceMamager {
 		return INSTANCE;
 	}
 
-	public HashMap<String, String> getDevices() {
+	public Map<String, String> getDevices() {
 		switch (os) {
 		case 0:
 			devs = getDevices_windows();
@@ -89,8 +90,8 @@ public class DeviceMamager {
 		return portName;
 	}
 
-	private HashMap<String, String> getDevices_windows() {
-		HashMap<String, String> staticDevice = WindowsRegistry.getFTDIDevices(); // for
+	private Map<String, String> getDevices_windows() {
+		Map<String, String> staticDevice = WindowsRegistry.getFTDIDevices(); // for
 																					// sky
 																					// mote
 		staticDevice.putAll(WindowsRegistry.getZ1Devices()); // for z1 mote
@@ -109,15 +110,21 @@ public class DeviceMamager {
 		return result;
 	}
 
-	private HashMap<String, String> getDevices_linux() {
+	private Map<String, String> getDevices_linux() {
+		Map<String, String> result = new HashMap<String, String>();
+		result.putAll(getNodeWithCommand("perl lib/motelist/motelist-linux -c"));
+		result.putAll(getNodeWithCommand("perl lib/motelist/motelist-z1 c"));
+		return result;
+	}
+
+	private Map<String, String> getNodeWithCommand(String command) {
 		Process p = null;
 		try {
-			p = Runtime.getRuntime()
-					.exec("perl lib/motelist/motelist-linux -c");
+			p = Runtime.getRuntime().exec(command);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		HashMap<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<String, String>();
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				p.getInputStream()));
 		String line;

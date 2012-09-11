@@ -3,6 +3,7 @@ package de.tudarmstadt.dvs.ukuflow.deployment;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.expressions.EvaluationResult;
 import org.eclipse.core.expressions.Expression;
@@ -50,7 +51,7 @@ public class DynamicCommandFactory extends ExtensionContributionFactory {
 		convertCommand.setVisible(true);
 		mm.add(convertCommand);
 		DeviceMamager df = DeviceMamager.getInstance();
-		HashMap<String, String> devs = df.getDevices();
+		Map<String, String> devs = df.getDevices();
 		if (devs.size() > 0) {
 			for (String key : devs.keySet()) {
 				CommandContributionItemParameter p = new CommandContributionItemParameter(serviceLocator, "","de.tudarmstadt.dvs.ukuflow.deployment.deploycommand",SWT.PUSH);
