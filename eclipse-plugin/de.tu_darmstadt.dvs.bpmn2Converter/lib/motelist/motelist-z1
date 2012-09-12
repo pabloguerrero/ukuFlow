@@ -60,8 +60,9 @@ print_motelist( sort { cmp_usbdev($a,$b) } @devs );
 sub scan_sysfs {
 
   #  Scan /sys/bus/usb/drivers/usb for FTDI devices
-  my @ftdidevs =
+  my @ftdidevs =    
     grep { ($_->{UsbVendor}||"") eq "10c4" && ($_->{UsbProduct}||"") eq "ea60" && ($_->{ProductString}||"") eq "Zolertia Z1" }
+    
     map { {
       SysPath => $_,
       UsbVendor => snarf("$_/idVendor",1),
@@ -69,7 +70,7 @@ sub scan_sysfs {
       ProductString => snarf("$_/product",1),
     } }
     glob("/sys/bus/usb/drivers/usb/*");
-
+	
   #  Gather information about each FTDI device
   for my $f (@ftdidevs) {
     my $syspath = $f->{SysPath};

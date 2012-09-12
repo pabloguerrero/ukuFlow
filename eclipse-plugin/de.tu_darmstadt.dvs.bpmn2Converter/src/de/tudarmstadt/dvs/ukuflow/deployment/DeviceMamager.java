@@ -7,6 +7,7 @@ import gnu.io.SerialPort;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -111,16 +112,36 @@ public class DeviceMamager {
 	}
 
 	private Map<String, String> getDevices_linux() {
-		Map<String, String> result = new HashMap<String, String>();
-		result.putAll(getNodeWithCommand("perl lib/motelist/motelist-linux -c"));
-		result.putAll(getNodeWithCommand("perl lib/motelist/motelist-z1 c"));
-		return result;
+		
+		DeviceFinderLinux df = new DeviceFinderLinux();
+		return df.getFTDIDevices();
 	}
 
 	private Map<String, String> getNodeWithCommand(String command) {
+		File f = new File(command);
+		String motelist_command ="";
+		try {
+			FileInputStream fis = new FileInputStream(f);
+			int t;
+			while((t= fis.read()) != -1){
+				char ch = (char)t;
+				if(ch != '\n')
+					motelist_command += ch;
+				else 
+					motelist_command += " ";
+			}
+			fis.close();
+		} catch (FileNotFoundException e) { 
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		Process p = null;
 		try {
-			p = Runtime.getRuntime().exec(command);
+			System.out.println(motelist_command);
+			Runtime.getRuntime().exec("echo "+motelist_command + " > tmp_motelist.pl");
+			p = Runtime.getRuntime().exec("ls");
+			//Runtime.getRuntime().exec("rm tmp_motelist.pl");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -128,13 +149,16 @@ public class DeviceMamager {
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				p.getInputStream()));
 		String line;
+		System.out.println("here");
 		try {
 			while ((line = br.readLine()) != null) {
+				System.out.print(line);
 				String s[] = line.split("[,]");
 				if (s.length != 3) {
-					System.out.println(line);
+					System.out.println("< ignored");
 					continue;
 				}
+				System.out.println("< ok");
 				result.put(s[1], s[0]);
 
 			}
@@ -158,8 +182,9 @@ public class DeviceMamager {
 		try {
 			while ((line = br.readLine()) != null) {
 				String s[] = line.split("[,]");
+				System.out.println(line);
+
 				if (s.length != 3) {
-					System.out.println(line);
 					continue;
 				}
 				result.put(s[1], s[0]);
@@ -176,11 +201,10 @@ public class DeviceMamager {
 	}
 
 	public void deploy(String portName, File file, int timeout) {
-
+		System.out.println(portName);
 		SerialPort serialPort = null;
 		try {
-			CommPortIdentifier portIdentifier = CommPortIdentifier
-					.getPortIdentifier(portName);
+			CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
 			if (portIdentifier.isCurrentlyOwned()
 					|| usedPort.contains(portName)) {
 
@@ -319,5 +343,8 @@ public class DeviceMamager {
 		}
 
 	}
-
+	public static void main(String[] args) {
+		DeviceMamager dm = DeviceMamager.getInstance();
+		System.out.println(dm.getDevices());
+	}
 }
