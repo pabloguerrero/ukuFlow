@@ -93,8 +93,8 @@ public class DeviceMamager {
 
 	private Map<String, String> getDevices_windows() {
 		Map<String, String> staticDevice = WindowsRegistry.getFTDIDevices(); // for
-																					// sky
-																					// mote
+																				// sky
+																				// mote
 		staticDevice.putAll(WindowsRegistry.getZ1Devices()); // for z1 mote
 		HashMap<String, String> result = new HashMap<String, String>();
 		List<String> portName = portList();
