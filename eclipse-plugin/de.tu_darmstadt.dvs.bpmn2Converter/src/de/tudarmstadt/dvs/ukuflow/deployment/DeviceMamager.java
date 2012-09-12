@@ -7,6 +7,7 @@ import gnu.io.SerialPort;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -92,8 +93,8 @@ public class DeviceMamager {
 
 	private Map<String, String> getDevices_windows() {
 		Map<String, String> staticDevice = WindowsRegistry.getFTDIDevices(); // for
-																					// sky
-																					// mote
+																				// sky
+																				// mote
 		staticDevice.putAll(WindowsRegistry.getZ1Devices()); // for z1 mote
 		HashMap<String, String> result = new HashMap<String, String>();
 		List<String> portName = portList();
