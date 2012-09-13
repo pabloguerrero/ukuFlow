@@ -60,23 +60,32 @@ public class DeviceFinderLinux {
 					continue;
 				String usbVendor = getFileContent(fx.getAbsolutePath()
 						+ "/idVendor");
-				if (!usbVendor.startsWith("10c4"))
-					continue;
 				String usbProduct = getFileContent(fx.getAbsolutePath()
 						+ "/idProduct");
-				if (!usbProduct.startsWith("ea60"))
-					continue;
 				String ProductString = getFileContent(fx.getAbsolutePath()
 						+ "/product");
-				if (!ProductString.startsWith("Zolertia Z1"))
+				boolean found = false;
+				if (usbVendor.startsWith("10c4")
+						&& usbProduct.startsWith("ea60")
+						&& ProductString.startsWith("Zolertia Z1")) {
+					found = true;
+					System.out.println("z1 found");
+				}
+				if (usbVendor.startsWith("0403")
+						&& usbProduct.startsWith("6001")) {
+					found = true;
+					System.out.println("sky found");
+				}
+				if (!found) {
 					continue;
-				String infoSerial = getFileContent(fx.getAbsolutePath()
-						+ "/serial").replace('\n', ' ');
+				}
+				String infoSerial = getFileContent(
+						fx.getAbsolutePath() + "/serial").replace('\n', ' ');
 				if (infoSerial == null)
 					infoSerial = ProductString.replace('\n', ' ');
 				String devPath = getDevInfo(fx.getAbsolutePath(), fx.getName());
 				if (devPath != null) {
-					result.put(devPath,infoSerial);
+					result.put(devPath, infoSerial);
 				}
 			}
 		}
@@ -131,9 +140,10 @@ public class DeviceFinderLinux {
 		}
 		return content;
 	}
-
+/*
 	public static void main(String[] args) {
 		DeviceFinderLinux dfl = new DeviceFinderLinux();
 		System.out.println(dfl.getFTDIDevices());
 	}
+	*/
 }

@@ -4,6 +4,7 @@ import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -112,26 +114,26 @@ public class DeviceMamager {
 	}
 
 	private Map<String, String> getDevices_linux() {
-		
+
 		DeviceFinderLinux df = new DeviceFinderLinux();
 		return df.getFTDIDevices();
 	}
 
 	private Map<String, String> getNodeWithCommand(String command) {
 		File f = new File(command);
-		String motelist_command ="";
+		String motelist_command = "";
 		try {
 			FileInputStream fis = new FileInputStream(f);
 			int t;
-			while((t= fis.read()) != -1){
-				char ch = (char)t;
-				if(ch != '\n')
+			while ((t = fis.read()) != -1) {
+				char ch = (char) t;
+				if (ch != '\n')
 					motelist_command += ch;
-				else 
+				else
 					motelist_command += " ";
 			}
 			fis.close();
-		} catch (FileNotFoundException e) { 
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -139,9 +141,10 @@ public class DeviceMamager {
 		Process p = null;
 		try {
 			System.out.println(motelist_command);
-			Runtime.getRuntime().exec("echo "+motelist_command + " > tmp_motelist.pl");
+			Runtime.getRuntime().exec(
+					"echo " + motelist_command + " > tmp_motelist.pl");
 			p = Runtime.getRuntime().exec("ls");
-			//Runtime.getRuntime().exec("rm tmp_motelist.pl");
+			// Runtime.getRuntime().exec("rm tmp_motelist.pl");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -201,10 +204,11 @@ public class DeviceMamager {
 	}
 
 	public void deploy(String portName, File file, int timeout) {
-		System.out.println(portName);
+		System.out.println(portName + ">" + portList());
 		SerialPort serialPort = null;
 		try {
-			CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+			CommPortIdentifier portIdentifier = CommPortIdentifier
+					.getPortIdentifier(portName);
 			if (portIdentifier.isCurrentlyOwned()
 					|| usedPort.contains(portName)) {
 
@@ -232,6 +236,7 @@ public class DeviceMamager {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			usedPort.remove(portName);
 			console.error("ERROR", portName + " is busy");
 		}
@@ -240,13 +245,15 @@ public class DeviceMamager {
 
 	public static class SerialReader implements Runnable {
 		InputStream in;
-		int timeout = 30000;
+		int timeout = 10000;
 		SerialPort serialPort;
 		String portName;
+		BufferedReader br;
 
 		public SerialReader(InputStream in, int timeout, SerialPort port,
 				String portName) {
 			this.in = in;
+			br = new BufferedReader(new InputStreamReader(in));
 			this.timeout = timeout;
 			this.serialPort = port;
 			this.portName = portName;
@@ -254,35 +261,53 @@ public class DeviceMamager {
 		}
 
 		public void run() {
-			byte[] buffer = new byte[1024];
+			char[] buffer = new char[1024];
 			int len = -1;
 			String newLine = "";
 			long startTime = System.currentTimeMillis();
 			try {
-				while ((len = this.in.read(buffer)) > -1) {
-					String tmp = new String(buffer, 0, len);
-					if (tmp.contains("\n")) {
-						String tmps[] = tmp.split("\n");
-						if (tmps.length <= 0)
-							continue;
-						newLine += tmps[0];
-						console.out(portName, newLine);
-						newLine = "";
-						if (tmps.length > 1) {
-							for (int i = 1; i < tmps.length - 1; i++) {
-								console.out(portName, tmps[i]);
-							}
-							newLine = tmps[tmps.length - 1];
-						}
-					} else {
-						newLine += tmp;
-					}
+				while ((len = in.available()) >= 0) {
 					if (startTime + timeout < System.currentTimeMillis()) {
 						console.out("SYSTEM", portName + " is released");
-						usedPort.remove(portName);
 						break;
 					}
+					if (len == 0) {
+						continue;
+					}
+					if (br.ready()) {
+						System.out.println("blocking");
+						len = br.read(buffer);
+						System.out.println("release");
+
+						String tmp = new String(buffer, 0, len);
+						if (tmp.contains("\n")) {
+							String tmps[] = tmp.split("\n");
+							if (tmps.length <= 0) {
+								console.out(portName, newLine);
+								newLine = "";
+								continue;
+							}
+							if (tmp.startsWith("\n")) {
+								console.out(portName, newLine);
+								newLine = tmps[0];
+							} else {
+								newLine += tmps[0];
+								console.out(portName, newLine);
+								newLine = "";
+							}
+							if (tmps.length > 1) {
+								for (int i = 1; i < tmps.length - 1; i++) {
+									console.out(portName, tmps[i]);
+								}
+								newLine = tmps[tmps.length - 1];
+							}
+						} else {
+							newLine += tmp;
+						}
+					}
 				}
+
+				usedPort.remove(portName);
 				serialPort.close();
 				in.close();
 
@@ -300,7 +325,6 @@ public class DeviceMamager {
 		public SerialWriter(OutputStream out, InputStream in) {
 			this.out = out;
 			this.in = in;
-
 		}
 
 		public void run() {
@@ -309,21 +333,17 @@ public class DeviceMamager {
 				int last1 = 0, last2 = 0;
 				while ((c = in.read()) > -1) {
 					this.out.write(c);
-					log.debug("send > " + c);
 					last2 = last1;
 					last1 = c;
 				}
 				if (last2 != 13 & last1 != 10) {
 					/* send "carriage return" symbol */
 					if (last1 == 13) {
-						log.debug("send > " + 10);
 						this.out.write(10);
 					} else {
 						this.out.write(13);
 						/* send "new line" symbol */
 						this.out.write(10);
-						log.debug("send > " + 13);
-						log.debug("send > " + 10);
 					}
 				}
 
@@ -336,15 +356,11 @@ public class DeviceMamager {
 				out.close();
 				in.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 		}
 
 	}
-	public static void main(String[] args) {
-		DeviceMamager dm = DeviceMamager.getInstance();
-		System.out.println(dm.getDevices());
-	}
+
 }

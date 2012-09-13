@@ -5,7 +5,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/jdom-2.0.1.jar" sourcepath="lib/jdom-2.0.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/javacc.jar"/>
-	<classpathentry kind="lib" path="lib/rxtx/RXTXcomm.jar">
+	<classpathentry kind="lib" path="lib/rxtx/RXTXcomm.jar" sourcepath="/home/hien/Downloads/rxtx-2.1-7r2.zip">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="de.tudarmstadt.dvs.ukuflow/lib/rxtx"/>
 		</attributes>
