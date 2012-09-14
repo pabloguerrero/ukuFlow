@@ -4,7 +4,6 @@ import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,20 +12,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.MessageConsole;
-import org.eclipse.ui.console.MessageConsoleStream;
-
-import de.tudarmstadt.dvs.ukuflow.handler.ConvertCommand;
 import de.tudarmstadt.dvs.ukuflow.handler.UkuConsole;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
@@ -114,89 +105,12 @@ public class DeviceMamager {
 	}
 
 	private Map<String, String> getDevices_linux() {
-
 		DeviceFinderLinux df = new DeviceFinderLinux();
 		return df.getFTDIDevices();
-	}
+	}	
 
-	private Map<String, String> getNodeWithCommand(String command) {
-		File f = new File(command);
-		String motelist_command = "";
-		try {
-			FileInputStream fis = new FileInputStream(f);
-			int t;
-			while ((t = fis.read()) != -1) {
-				char ch = (char) t;
-				if (ch != '\n')
-					motelist_command += ch;
-				else
-					motelist_command += " ";
-			}
-			fis.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Process p = null;
-		try {
-			System.out.println(motelist_command);
-			Runtime.getRuntime().exec(
-					"echo " + motelist_command + " > tmp_motelist.pl");
-			p = Runtime.getRuntime().exec("ls");
-			// Runtime.getRuntime().exec("rm tmp_motelist.pl");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Map<String, String> result = new HashMap<String, String>();
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				p.getInputStream()));
-		String line;
-		System.out.println("here");
-		try {
-			while ((line = br.readLine()) != null) {
-				System.out.print(line);
-				String s[] = line.split("[,]");
-				if (s.length != 3) {
-					System.out.println("< ignored");
-					continue;
-				}
-				System.out.println("< ok");
-				result.put(s[1], s[0]);
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-	private HashMap<String, String> getDevices_mac() {
-		Process p = null;
-		try {
-			p = Runtime.getRuntime().exec("perl lib/motelist/motelist-mac -c");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		HashMap<String, String> result = new HashMap<String, String>();
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				p.getInputStream()));
-		String line;
-		try {
-			while ((line = br.readLine()) != null) {
-				String s[] = line.split("[,]");
-				System.out.println(line);
-
-				if (s.length != 3) {
-					continue;
-				}
-				result.put(s[1], s[0]);
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return result;
+	private Map<String, String> getDevices_mac() {
+		return DeviceFinderMac.getDevs();
 	}
 
 	public void deploy(String portName, String fileName, int timeout) {

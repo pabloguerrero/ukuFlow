@@ -11,7 +11,6 @@ public class UkuScope extends UkuEntity {
 	@Override
 	public void accept(ElementVisitor visitor) {
 		visitor.visit(this);
-
 	}
 
 	@Override
