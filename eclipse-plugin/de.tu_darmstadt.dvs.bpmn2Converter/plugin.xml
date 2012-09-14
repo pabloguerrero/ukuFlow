@@ -163,23 +163,5 @@
          </with>
       </definition>
    </extension>
-   <extension
-         point="org.eclipse.emf.validation.constraintProviders">
-      <category
-            id="de.tudarmstadt.dvs.ukuflow.validation"
-            name="ukuFlow Constraints">
-      </category>
-      <constraintProvider
-            cache="true">
-         <package
-               namespaceUri="http://www.omg.org/spec/BPMN/20100524/MODEL-XMI">
-         </package>
-         <constraints
-               categories="de.tudarmstadt.dvs.ukuflow.validation"></constraints>
-      </constraintProvider>
-   </extension>
-   <extension
-         point="org.eclipse.emf.validation.constraintBindings">
-   </extension>
 
 </plugin>
