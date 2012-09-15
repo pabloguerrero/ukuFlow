@@ -8,7 +8,7 @@
     <bpmn2:endEvent id="EndEvent_1">
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
     </bpmn2:endEvent>
-    <bpmn2:inclusiveGateway id="InclusiveGateway_1" name="Inclusive Gateway 1" default="SequenceFlow_6">
+    <bpmn2:inclusiveGateway id="InclusiveGateway_1" name="Inclusive Gateway 1" default="SequenceFlow_4">
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
@@ -68,15 +68,15 @@
         <di:waypoint xsi:type="dc:Point" x="256.0" y="76.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_5" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_InclusiveGateway_2">
-        <di:waypoint xsi:type="dc:Point" x="366.0" y="178.0"/>
+        <di:waypoint xsi:type="dc:Point" x="366.0" y="171.0"/>
         <di:waypoint xsi:type="dc:Point" x="421.0" y="118.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
-        <dc:Bounds height="50.0" width="110.0" x="256.0" y="153.0"/>
+        <dc:Bounds height="50.0" width="110.0" x="256.0" y="146.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_6" sourceElement="BPMNShape_InclusiveGateway_1" targetElement="BPMNShape_ScriptTask_2">
         <di:waypoint xsi:type="dc:Point" x="206.0" y="118.0"/>
-        <di:waypoint xsi:type="dc:Point" x="256.0" y="178.0"/>
+        <di:waypoint xsi:type="dc:Point" x="256.0" y="171.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

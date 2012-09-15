@@ -48,7 +48,7 @@ public class UkuExecuteTask extends UkuElement {
 	}
 
 	public boolean hasScript() {
-		return script != null && !script.equals("") && statements.size() > 0;
+		return script != null && !script.equals("") && statements != null&& (statements.size() > 0);
 	}
 
 	public List<TaskScriptFunction> getStatements() {
