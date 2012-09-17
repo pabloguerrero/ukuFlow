@@ -163,48 +163,5 @@
          </with>
       </definition>
    </extension>
-   <extension
-         id="id1"
-         point="org.eclipse.core.runtime.applications">
-      <application
-            cardinality="singleton-global"
-            thread="main"
-            visible="true">
-         <run
-               class="de.tudarmstadt.dvs.ukuflow.application.DeploymentApplication">
-         </run>
-      </application>
-   </extension>
-   <extension
-         point="org.eclipse.debug.core.launchDelegates">
-      <launchDelegate
-            delegate="org.eclipse.jdt.internal.launching.JavaAppletLaunchConfigurationDelegate"
-            id="org.eclipse.jdt.launching.javaApplet"
-            name="T">
-      </launchDelegate>
-   </extension>
-   <extension
-         point="org.eclipse.debug.core.launchConfigurationTypes">
-      <launchConfigurationType
-            id="de.tudarmstadt.dvs.ukuflow.launchConfigurationType1"
-            name="ABCDEF"
-            public="true">
-         <fileExtension
-               extension=".uku64">
-         </fileExtension>
-      </launchConfigurationType>
-   </extension>
-   <extension
-         id="id2"
-         point="org.eclipse.core.runtime.applications">
-      <application
-            cardinality="singleton-global"
-            thread="main"
-            visible="true">
-         <run
-               class="de.tudarmstadt.dvs.ukuflow.application.DeploymentApplication">
-         </run>
-      </application>
-   </extension>
 
 </plugin>

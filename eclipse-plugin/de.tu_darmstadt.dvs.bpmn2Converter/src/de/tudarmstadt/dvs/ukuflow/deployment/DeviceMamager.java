@@ -82,6 +82,11 @@ public class DeviceMamager {
 				.getPortIdentifiers();
 		while (portEnum.hasMoreElements()) {			
 			CommPortIdentifier portIdentifier = portEnum.nextElement();
+			if(usedPort.contains(portIdentifier.getName())){
+				System.out.println("port " +portIdentifier.getName() + " is currently in use");
+				continue;
+			}
+			
 			if(portIdentifier.getPortType() == CommPortIdentifier.PORT_SERIAL){
 				CommPort cp;
 				try {
