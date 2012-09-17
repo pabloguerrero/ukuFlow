@@ -76,21 +76,25 @@ public class DeviceMamager {
 		return devs;
 	}
 
-	private Set<String> portList() {
+	private Set<String> portList(Set<String> ports) {
 		Set<String> portName = new HashSet<String>();
 		java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier
 				.getPortIdentifiers();
 		while (portEnum.hasMoreElements()) {			
 			CommPortIdentifier portIdentifier = portEnum.nextElement();
-			if(usedPort.contains(portIdentifier.getName())){
-				System.out.println("port " +portIdentifier.getName() + " is currently in use");
+			String name = portIdentifier.getName();
+			if(usedPort.contains(name)){
+				System.out.println("port " +name + " is currently in use");
 				continue;
 			}
-			
+			if(!ports.contains(name)){
+				System.out.println(name + " is not a sensor device");
+				continue;
+			}
 			if(portIdentifier.getPortType() == CommPortIdentifier.PORT_SERIAL){
 				CommPort cp;
 				try {
-					cp = portIdentifier.open("testopen", 1);
+					cp = portIdentifier.open("testopen", 50);
 					cp.close();
 					portName.add(portIdentifier.getName());
 				} catch (PortInUseException e) {
@@ -119,7 +123,7 @@ public class DeviceMamager {
 	 * @return 
 	 */
 	private Map<String, String> getAvailableDevices(Map<String,String> staticDev){
-		Set<String> devs = portList();
+		Set<String> devs = portList(staticDev.keySet());
 		Map<String,String> result = new HashMap<String, String>();
 		
 		/*
