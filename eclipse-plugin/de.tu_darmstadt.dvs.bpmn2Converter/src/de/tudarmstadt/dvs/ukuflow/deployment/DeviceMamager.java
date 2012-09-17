@@ -25,6 +25,7 @@ import de.tudarmstadt.dvs.ukuflow.handler.UkuConsole;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class DeviceMamager {
+	public static Object lock = new Object();
 	public final static int WINDOWS_OS = 0;
 	public final static int LINUX_OS = 1;
 	public final static int MAC_OS = 2;
@@ -80,18 +81,18 @@ public class DeviceMamager {
 		Set<String> portName = new HashSet<String>();
 		java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier
 				.getPortIdentifiers();
-		while (portEnum.hasMoreElements()) {			
+		while (portEnum.hasMoreElements()) {
 			CommPortIdentifier portIdentifier = portEnum.nextElement();
 			String name = portIdentifier.getName();
-			if(usedPort.contains(name)){
-				System.out.println("port " +name + " is currently in use");
+			if (usedPort.contains(name)) {
+				System.out.println("port " + name + " is currently in use");
 				continue;
 			}
-			if(!ports.contains(name)){
+			if (!ports.contains(name)) {
 				System.out.println(name + " is not a sensor device");
 				continue;
 			}
-			if(portIdentifier.getPortType() == CommPortIdentifier.PORT_SERIAL){
+			if (portIdentifier.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 				CommPort cp;
 				try {
 					cp = portIdentifier.open("testopen", 50);
@@ -99,10 +100,10 @@ public class DeviceMamager {
 					portName.add(portIdentifier.getName());
 				} catch (PortInUseException e) {
 					e.printStackTrace();
-				} catch (Exception e1){
+				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				
+
 			}
 		}
 		return portName;
@@ -112,36 +113,38 @@ public class DeviceMamager {
 		// sky mote
 		Map<String, String> staticDevice = WindowsRegistry.getFTDIDevices();
 		// for z1 mote
-		staticDevice.putAll(WindowsRegistry.getZ1Devices()); 		
+		staticDevice.putAll(WindowsRegistry.getZ1Devices());
 		return getAvailableDevices(staticDevice);
 	}
-	
+
 	/**
 	 * 
 	 * @param staticDev
 	 * @param devs
-	 * @return 
+	 * @return
 	 */
-	private Map<String, String> getAvailableDevices(Map<String,String> staticDev){
+	private Map<String, String> getAvailableDevices(
+			Map<String, String> staticDev) {
 		Set<String> devs = portList(staticDev.keySet());
-		Map<String,String> result = new HashMap<String, String>();
-		
+		Map<String, String> result = new HashMap<String, String>();
+
 		/*
 		 * merge the list of node from windows registry and the list of
 		 * available nodes
-		 */		
+		 */
 		for (String port : devs) {
 			if (staticDev.containsKey(port)) {
 				result.put(port, staticDev.get(port));
 			}
 		}
 		return result;
-		
+
 	}
+
 	private Map<String, String> getDevices_linux() {
 		DeviceFinderLinux df = new DeviceFinderLinux();
 		return getAvailableDevices(df.getFTDIDevices());
-	}	
+	}
 
 	private Map<String, String> getDevices_mac() {
 		return getAvailableDevices(DeviceFinderMac.getDevs());
@@ -155,16 +158,15 @@ public class DeviceMamager {
 		SerialPort serialPort = null;
 		try {
 			CommPortIdentifier portIdentifier = CommPortIdentifier
-					.getPortIdentifier(portName);			
+					.getPortIdentifier(portName);
 			if (portIdentifier.isCurrentlyOwned()
 					|| usedPort.contains(portName)) {
 
 				console.error("ERROR", portName + " is currently in use");
 			} else {
 				CommPort commPort = null;
-				commPort = portIdentifier.open(this.getClass().getName(),
-						2000);
-				
+				commPort = portIdentifier.open(this.getClass().getName(), 2000);
+
 				if (commPort instanceof SerialPort) {
 					usedPort.add(portName);
 					serialPort = (SerialPort) commPort;
@@ -186,7 +188,7 @@ public class DeviceMamager {
 		} catch (Exception e) {
 			e.printStackTrace();
 			usedPort.remove(portName);
-			if(serialPort!=null)
+			if (serialPort != null)
 				serialPort.close();
 			console.error("ERROR", portName + " is busy");
 		}
@@ -216,62 +218,65 @@ public class DeviceMamager {
 			String newLine = "";
 			long startTime = System.currentTimeMillis();
 			try {
-				while ((len = in.available()) >= 0) {
+				// while ((len = in.available()) >= 0) {
+				while (true) {
 					if (startTime + timeout < System.currentTimeMillis()) {
 						console.out("SYSTEM", portName + " is released");
 						break;
 					}
-					if (len == 0) {
-						continue;
-					}
-					if (br.ready()) {
-						len = br.read(buffer);
+					// if (len == 0) {
+					// continue;
+					// }
+					synchronized (lock) {
+						if (br.ready()) {
+							len = br.read(buffer);
 
-						String tmp = new String(buffer, 0, len);
-						System.out.println("["+tmp+"]");
-						if (tmp.contains("\n")) {
-							String tmps[] = tmp.split("\n");							
-							if (tmps.length <= 0) {
-								console.out(portName, newLine);
-								newLine = "";
-								continue;
+							String tmp = new String(buffer, 0, len);
+							System.out.println("[" + tmp + "]");
+							if (tmp.contains("\n")) {
+								String tmps[] = tmp.split("\n");
+								if (tmps.length <= 0) {
+									console.out(portName, newLine);
+									newLine = "";
+									continue;
+								}
+								if (tmp.startsWith("\n")) {
+									console.out(portName, newLine);
+									newLine = "";
+								}
+								for (int i = 0; i < tmps.length - 1; i++) {
+									newLine += tmps[i];
+									console.out(portName, newLine);
+									newLine = "";
+								}
+								newLine += tmps[tmps.length - 1];
+								if (tmp.endsWith("\n")) {
+									console.out(portName, newLine);
+									newLine = "";
+								}
+
+							} else {
+								newLine += tmp;
 							}
-							if (tmp.startsWith("\n")) {
-								console.out(portName, newLine);
-								newLine = "";
-							} 
-							for(int i = 0;i < tmps.length- 1; i++){
-								newLine += tmps[i];
-								console.out(portName,newLine);
-								newLine ="";
-							}
-							newLine += tmps[tmps.length-1];
-							if(tmp.endsWith("\n")){
-								console.out(portName,newLine);
-								newLine ="";
-							}
-								
-						} else {
-							newLine += tmp;							
 						}
 					}
 				}
 
-				
-
 			} catch (IOException e) {
 				console.info("SYSTEM", "device may be disconnected");
-			} finally {				
-				usedPort.remove(portName);				
+			} finally {
+				usedPort.remove(portName);
 				try {
-					in.close();
+					// in.close();
+					// serialPort.getOutputStream().flush();
+					// serialPort.getOutputStream().close();
 				} catch (Exception e) {
 				}
-				if(serialPort!=null)
+				if (serialPort != null)
 					serialPort.close();
 			}
 		}
-		
+
 	}
 
 	public static class SerialWriter implements Runnable {
@@ -288,28 +293,31 @@ public class DeviceMamager {
 				int c = 0;
 				int last1 = 0, last2 = 0;
 				while ((c = in.read()) > -1) {
-					this.out.write(c);
-					last2 = last1;
-					last1 = c;
+					synchronized (lock) {
+						this.out.write(c);
+						last2 = last1;
+						last1 = c;
+					}
 				}
 				if (last2 != 13 & last1 != 10) {
-					/* send "carriage return" symbol */
-					if (last1 == 13) {
-						this.out.write(10);
-					} else {
-						this.out.write(13);
-						/* send "new line" symbol */
-						this.out.write(10);
+					synchronized (lock) {
+						/* send "carriage return" symbol */
+						if (last1 == 13) {
+							this.out.write(10);
+						} else {
+							this.out.write(13);
+							/* send "new line" symbol */
+							this.out.write(10);
+						}
 					}
 				}
 
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			System.out.println("done");
 			try {
-				out.flush();
-				out.close();
+				// out.flush();
+				// out.close();
 				in.close();
 			} catch (IOException e) {
 				e.printStackTrace();
