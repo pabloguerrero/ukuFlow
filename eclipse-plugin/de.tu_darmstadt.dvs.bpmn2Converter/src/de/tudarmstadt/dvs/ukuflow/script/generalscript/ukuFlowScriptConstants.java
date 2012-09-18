@@ -15,19 +15,19 @@ public interface ukuFlowScriptConstants {
   /** RegularExpression Id. */
   int OR = 6;
   /** RegularExpression Id. */
-  int XOR = 7;
+  int NOT = 7;
   /** RegularExpression Id. */
-  int NOT = 8;
+  int ADDITIVE = 8;
   /** RegularExpression Id. */
-  int ADDITIVE = 9;
+  int BOOLEAN = 9;
   /** RegularExpression Id. */
-  int BOOLEAN = 10;
+  int TRUE = 10;
   /** RegularExpression Id. */
-  int TRUE = 11;
+  int FALSE = 11;
   /** RegularExpression Id. */
-  int FALSE = 12;
+  int AT_ = 12;
   /** RegularExpression Id. */
-  int AT_ = 13;
+  int SCOPE_DESC = 13;
   /** RegularExpression Id. */
   int LOCAL = 14;
   /** RegularExpression Id. */
@@ -73,13 +73,13 @@ public interface ukuFlowScriptConstants {
     "\"\\r\"",
     "<AND>",
     "<OR>",
-    "<XOR>",
     "<NOT>",
     "<ADDITIVE>",
     "<BOOLEAN>",
     "<TRUE>",
     "<FALSE>",
     "\"@\"",
+    "\"SCOPE\"",
     "\"local\"",
     "<SCOPE>",
     "<VARIABLE>",

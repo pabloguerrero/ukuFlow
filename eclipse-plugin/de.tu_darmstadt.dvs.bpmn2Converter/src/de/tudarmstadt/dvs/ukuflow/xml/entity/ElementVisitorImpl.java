@@ -206,13 +206,24 @@ public class ElementVisitorImpl implements ElementVisitor {
 		for (UkuElement e : p.getElements()) {
 			e.accept(this);
 		}
+		
 		for (UkuScope s : p.getScope()) {
 			s.accept(this);
 		}
 	}
 
 	public void visit(UkuScope us) {
-		// TODO: implemetation
+		if(!us.hasScript()){
+			us.addWarningMessage("no script");
+			return;
+		}
+		out.add(toByte(us.getScopeID()));
+		out.add(toByte(us.getTTL()/256));
+		out.add(toByte(us.getTTL()%256));
+		sVisitor.reset();
+		us.getScopeExp().accept(sVisitor);
+		out.add(toByte(sVisitor.getOutput().size()));
+		out.addAll(sVisitor.getOutput());
 	}
 
 }

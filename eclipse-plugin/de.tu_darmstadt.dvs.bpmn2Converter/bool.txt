@@ -1,5 +1,1 @@
-local t = run 100 variable 1;
-local open --windoww 20;
-@rom20 open --string  test 1;
-t = 1 + 2/3 -3*3;
-local open $t_eo;
+SCOPE windows 1023 (SENSOR_LIGHT_PAR_RAW >2 &&($v+2)>2)

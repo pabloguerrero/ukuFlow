@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 import de.tudarmstadt.dvs.ukuflow.deployment.DeviceMamager;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.ScopeManager;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.validation.ErrorManager;
 import de.tudarmstadt.dvs.ukuflow.validation.UkuProcessValidation;
@@ -90,6 +91,7 @@ public class ConvertCommand extends AbstractHandler {
 						processes.get(0));
 				validator.validate();
 				ErrorManager em = ErrorManager.getInstance();
+				ScopeManager sm = ScopeManager.getInstance();
 				em.exportTo(console);
 				console.info("Validator", "Report:");
 				console.info("Validator", em.getWarnings().size()
@@ -101,17 +103,19 @@ public class ConvertCommand extends AbstractHandler {
 									+ em.getErrors().size()
 									+ " errors in the diagram, please fix them (it) first");
 					em.reset();
+					sm.reset();
 					return null;
 				}
 				console.info("Validator", "No error");
 				em.reset();
+				sm.reset();
 				ElementVisitorImpl visitor = new ElementVisitorImpl();
 
-				for (UkuProcess ue : processes) {
-					visitor.reset();
-					ue.accept(visitor);
-					console.info("output", visitor.getOutputString64());
-				}
+				UkuProcess ue = processes.get(0);
+				visitor.reset();
+				ue.accept(visitor);
+				console.info("output", visitor.getOutputString64());
+				
 
 				File f = new File(nfileLocation64);
 				FileWriter fwrite = null;

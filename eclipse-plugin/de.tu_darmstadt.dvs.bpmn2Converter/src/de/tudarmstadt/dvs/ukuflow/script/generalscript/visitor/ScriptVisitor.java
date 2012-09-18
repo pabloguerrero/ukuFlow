@@ -6,6 +6,7 @@ import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryLogicalE
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryNumericalExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ComparisonExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuConstant;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuRepositoryField;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuString;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuTaskScript;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuVariable;
@@ -37,5 +38,6 @@ public interface ScriptVisitor {
 	// visit taskScript
 	public void visit(UkuTaskScript ukuTaskScript);
 	
+	public void visit(UkuRepositoryField field);
 	public Vector<Byte> getOutput();
 }

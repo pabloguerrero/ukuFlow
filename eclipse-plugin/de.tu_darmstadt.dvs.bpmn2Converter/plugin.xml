@@ -8,16 +8,6 @@
             id="de.tudarmstadt.dvs.ukuflow.converterBase64"
             name="convertcmd">
       </command>
-      <command
-            defaultHandler="de.tudarmstadt.dvs.ukuflow.deployment.DeployCommand"
-            id="de.tudarmstadt.dvs.ukuflow.deployment.deploycommand"
-            name="deploycommand">
-         <commandParameter
-               id="de.tudarmstadt.dvs.ukuflow.deployment.portID"
-               name="PortID"
-               optional="false">
-         </commandParameter>
-      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">

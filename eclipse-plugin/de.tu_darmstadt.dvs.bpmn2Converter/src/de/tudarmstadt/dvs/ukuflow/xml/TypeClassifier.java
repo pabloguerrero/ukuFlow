@@ -14,6 +14,7 @@ public class TypeClassifier {
 	private Set<String> tasks = new HashSet<String>();
 	private Set<String> gateways = new HashSet<String>();
 	private Set<String> events = new HashSet<String>();
+	private Set<String> textAnnotation = new HashSet<String>();
 	private static TypeClassifier INSTANCE = null;
 	BpmnLog log = BpmnLog.getInstance(TypeClassifier.class.getSimpleName());
 
@@ -33,7 +34,8 @@ public class TypeClassifier {
 		gateways.add("complexGateway");
 		gateways.add("eventBasedGateway");
 		gateways.add("inclusiveGateway");
-
+		
+		textAnnotation.add("textAnnotation");
 	}
 
 	public static TypeClassifier getInstance() {
@@ -83,7 +85,13 @@ public class TypeClassifier {
 	/**
 	 * 
 	 * @param name
-	 * @return 1 : connector 2 : task 3 : event 4 : gateway
+	 * @return 
+	 * <li> 1 : connector </li>
+	 * <li> 2 : task </li> 
+	 * <li> 3 : event </li>
+	 * <li> 4 : gateway </li>
+	 * <li> 5 : textAnnotation </li>
+	 * 
 	 * @throws UnsupportedElementException
 	 */
 	public int getType(String name) throws UnsupportedElementException {
@@ -95,6 +103,8 @@ public class TypeClassifier {
 			return 3;
 		if (gateways.contains(name))
 			return 4;
+		if (textAnnotation.contains(name))
+			return 5;
 
 		throw new UnsupportedElementException(name);
 	}

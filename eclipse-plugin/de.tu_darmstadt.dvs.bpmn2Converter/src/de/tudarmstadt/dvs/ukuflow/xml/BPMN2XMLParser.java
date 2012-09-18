@@ -26,6 +26,7 @@ import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuEvent;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuExecuteTask;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuGateway;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuProcess;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuScope;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuSequenceFlow;
 
 /**
@@ -267,7 +268,7 @@ public class BPMN2XMLParser {
 			UkuGateway gway = new UkuGateway(id);
 			gway.setElementType(name);
 			String direction = e.getAttributeValue("gatewayDirection");
-			String defaultGway = e.getAttributeValue("default");
+			String defaultGway = e.getAttributeValue("default");			
 			gway.setDefaultGway(defaultGway);
 			if (direction != null) {
 				gway.setDirection(direction);
@@ -287,7 +288,17 @@ public class BPMN2XMLParser {
 				}
 			}
 			return gway;
-
+		case 5: // Text Annotation
+			UkuScope scope = new UkuScope(id);
+			String scope_desc = "";
+			for(Element child :e.getChildren()){
+				if(child.getName().equals("text")){
+					scope_desc= child.getTextTrim();
+					scope.setScript(scope_desc);
+					break;
+				}
+			}				
+			return scope;
 		default:
 			log.debug("WARNING, unknown element: " + type + "/" + e.getName());
 			return null;

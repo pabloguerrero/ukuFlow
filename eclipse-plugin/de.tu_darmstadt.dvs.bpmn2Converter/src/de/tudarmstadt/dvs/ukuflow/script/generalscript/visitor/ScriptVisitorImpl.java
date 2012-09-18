@@ -7,6 +7,7 @@ import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryLogicalE
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryNumericalExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ComparisonExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuRepositoryField;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuString;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuTaskScript;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuVariable;
@@ -197,5 +198,12 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 	@Override
 	public void reset() {
 		out.clear();
+	}
+
+	@Override
+	public void visit(UkuRepositoryField field) {
+		out.add(toByte(UkuConstants.getConstantWithName("REPOSITORY_VALUE")));
+		out.add(toByte(field.getFieldID()));
+		
 	}
 }

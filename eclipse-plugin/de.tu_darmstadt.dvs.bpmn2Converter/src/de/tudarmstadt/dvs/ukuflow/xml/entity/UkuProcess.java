@@ -32,7 +32,12 @@ public class UkuProcess implements VisitableElement {
 	}
 
 	public void addEntity(UkuEntity newEntity) {
-		if (entities.contains(newEntity)) {
+		if(newEntity instanceof UkuScope){
+			if(scopes == null)
+				scopes = new LinkedList<UkuScope>();
+			scopes.add((UkuScope) newEntity);
+			return;
+		}else if (entities.contains(newEntity)) {
 			System.out.println("double element " + newEntity.getID());
 			return;
 		}
@@ -41,15 +46,23 @@ public class UkuProcess implements VisitableElement {
 
 	public void removeEntity(UkuEntity e) {
 		entities.remove(e);
+		scopes.remove(e);
 	}
 
 	public void removeEntities(List<UkuEntity> es) {
 		entities.removeAll(es);
+		scopes.removeAll(es);
 	}
 
 	public void setEntities(List<UkuEntity> entities) {
-		this.entities = entities;
-		// scopes = new LinkedList<UkuScope>();
+		this.entities = new LinkedList<UkuEntity>();
+		this.scopes = new LinkedList<UkuScope>();
+		for(UkuEntity e : entities){
+			if(e instanceof UkuScope)
+				scopes.add((UkuScope)e);
+			else 
+				this.entities.add(e);
+		}
 
 	}
 
