@@ -19,96 +19,108 @@ import org.eclipse.ui.menus.IWorkbenchContribution;
 import org.eclipse.ui.services.IServiceLocator;
 
 import de.tudarmstadt.dvs.ukuflow.handler.ConvertCommand;
+import de.tudarmstadt.dvs.ukuflow.handler.UkuConsole;
 
 public class DynamicNodeFactory extends ContributionItem implements
 		IWorkbenchContribution {
-	
+
 	private ISelectionService srv;
 	private Object selected;
 	private static Set<String> fileExtensions;
-	//private String extension;
-	
+	// private String extension;
+
 	static {
 		fileExtensions = new HashSet<String>();
-		//fileExtensions.add("bpmn");
-		//fileExtensions.add("bpmn2");
+		// fileExtensions.add("bpmn");
+		// fileExtensions.add("bpmn2");
 		fileExtensions.add("uku");
 		fileExtensions.add("uku64");
 	}
-	
-	public DynamicNodeFactory(){
+
+	public DynamicNodeFactory() {
 		this(null);
 	}
-	public DynamicNodeFactory(String id){
-		super(id);		
+
+	public DynamicNodeFactory(String id) {
+		super(id);
 	}
-	
-	@Override	
-	public boolean isEnabled(){
-		if(selected != null && selected instanceof IFile){
-			IFile file = (IFile)selected;
+
+	@Override
+	public boolean isEnabled() {
+		if (selected != null && selected instanceof IFile) {
+			IFile file = (IFile) selected;
 			String extension = file.getFileExtension();
-			if(fileExtensions.contains(extension.toLowerCase()))
+			if (fileExtensions.contains(extension.toLowerCase()))
 				return true;
 		}
 		return false;
 	}
+
 	@Override
-	public void fill(Menu menu, int index){		
+	public void fill(Menu menu, int index) {
 		System.out.println("DynamicNode is filled");
-		
-		if(srv == null)
+
+		if (srv == null)
 			return;
 		ISelection sel = srv.getSelection();
 		if (!(sel instanceof IStructuredSelection))
 			return;
-		
+
 		selected = ((IStructuredSelection) sel).getFirstElement();
-		if(!(selected instanceof IFile))
+		if (!(selected instanceof IFile))
 			return;
-		final IFile file = (IFile)selected;
-		Map<String,String> devs = DeviceManager.getInstance().getDevices();
-		for(final String key : devs.keySet()){
+		final IFile file = (IFile) selected;
+		Map<String, String> devs = DeviceManager.getInstance().getDevices();
+		for (final String key : devs.keySet()) {
 			MenuItem devItem = new MenuItem(menu, SWT.PUSH);
 			devItem.setText(devs.get(key) + " [" + key + "]");
 			devItem.addSelectionListener(new SelectionAdapter() {
 				@Override
-				public void widgetSelected(SelectionEvent e){
-					//TODO process deployment request
+				public void widgetSelected(SelectionEvent e) {
+					// TODO process deployment request
 					System.out.println("selected->");
-					System.out.println("\t"+file.getFullPath().toPortableString());					
-					System.out.println("\t"+key);
+					System.out.println("\t"
+							+ file.getFullPath().toPortableString());
+					System.out.println("\t" + key);
+					String fname;
 					String extension = file.getFileExtension();
 					boolean converted = false;
-					if(extension.equals("bpmn") || extension.equals("bpmn2"))
+					if (extension.equals("bpmn") || extension.equals("bpmn2")) {
 						converted = ConvertCommand.convert(file);
-					if(!converted)
-						return;
-					String fname = file.getLocation().toOSString()+"\n";
-					fname = fname.replace(extension + "\n","uku64");
+						if (!converted) {
+							return;
+						}
+						fname = file.getLocation().toOSString() + "\n";
+						fname = fname.replace(extension + "\n", "uku64");
+					} else {
+						fname = file.getLocation().toOSString();
+					}
+
 					try {
 						DeviceManager.getInstance().deploy(key, fname, 10000);
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-					}					
+					}
 				}
 			});
 		}
 	}
+
 	@Override
-	public boolean isDynamic(){
+	public boolean isDynamic() {
 		return true;
 	}
-	
+
 	@Override
 	public void initialize(IServiceLocator serviceLocator) {
 		System.out.println("DynamicNode is initialized");
-		
-		srv = (ISelectionService) serviceLocator.getService(ISelectionService.class);
+
+		srv = (ISelectionService) serviceLocator
+				.getService(ISelectionService.class);
 		ISelection sel = srv.getSelection();
 		if (!(sel instanceof IStructuredSelection))
-			return;		
+			return;
 		selected = ((IStructuredSelection) sel).getFirstElement();
 	}
 

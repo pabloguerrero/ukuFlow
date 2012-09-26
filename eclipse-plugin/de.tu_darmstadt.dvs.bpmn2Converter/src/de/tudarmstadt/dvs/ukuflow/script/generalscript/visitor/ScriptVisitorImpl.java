@@ -9,7 +9,6 @@ import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ComparisonExpr
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuRepositoryField;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuString;
-import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuTaskScript;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuVariable;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UnaryLogicalExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UnaryNumericalExpression;
@@ -172,9 +171,12 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 		id = toByte(computationalF.getVariable().getID());
 		out.add(id);
 
-		int l = computationalF.getParam().getLength();
-		out.add(toByte(l));
+		//int l = computationalF.getParam().getLength();
+		int current_pos = out.size();
+		out.add(toByte(1));
 		computationalF.getParam().accept(this);
+		int length = out.size()-current_pos-1;
+		out.set(current_pos,(byte) length);
 	}
 
 	public static void main(String[] args) {
@@ -185,13 +187,13 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 			sb.append((char) (c + i));
 
 	}
-
+/*
 	@Override
 	public void visit(UkuTaskScript ukuTaskScript) {
 		// TODO Auto-generated method stub
 		log.error("visit is called");
 	}
-
+*/
 	@Override
 	public Vector<Byte> getOutput() {
 		return out;
@@ -204,7 +206,7 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 
 	@Override
 	public void visit(UkuRepositoryField field) {
-		out.add(toByte(UkuConstants.getConstantWithName("REPOSITORY_VALUE")));
+		out.add(toByte(UkuConstants.REPOSITORY_VALUE));
 		out.add(toByte(field.getFieldID()));
 		
 	}
