@@ -502,7 +502,7 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
   final public UkuScopeExpression scopeExpression() throws ParseException {
   UkuScopeExpression result = null;
   String sName = null;
-  int ttl =-1;
+  Integer ttl =null;
   UkuExpression sExp = null;
     jj_consume_token(SCOPE_DESC);
     if (jj_2_43(2)) {

@@ -29,7 +29,7 @@ var2 = 1 + $var1;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" name="" sourceRef="ScriptTask_2" targetRef="ScriptTask_3"/>
     <bpmn2:textAnnotation id="TextAnnotation_1">
-      <bpmn2:text>SCOPE window 60 (NODE_ID > 3)</bpmn2:text>
+      <bpmn2:text>SCOPE window (NODE_ID > 3)</bpmn2:text>
     </bpmn2:textAnnotation>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Process Diagram">

@@ -13,7 +13,7 @@ public class UkuScopeExpression {
 	
 	public Integer ttl = null;
 
-	public UkuScopeExpression(String name, int ttl, UkuExpression sExp) {
+	public UkuScopeExpression(String name, Integer ttl, UkuExpression sExp) {
 		this.name = name;
 		this.scopeExp = sExp;
 		this.ttl = ttl;
