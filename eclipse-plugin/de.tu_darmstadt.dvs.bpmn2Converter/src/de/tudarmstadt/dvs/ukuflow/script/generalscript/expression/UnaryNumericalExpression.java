@@ -16,16 +16,28 @@ public class UnaryNumericalExpression extends NumericalExpression {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @uml.property  name="operand"
+	 * @uml.associationEnd  
+	 */
 	protected UkuExpression operand;
 	
 	public int getOperator(){
 		return operator;
 	}
 	
+	/**
+	 * @param n
+	 * @uml.property  name="operand"
+	 */
 	public void setOperand(UkuExpression n) {
 		this.operand = n;
 	}
 
+	/**
+	 * @return
+	 * @uml.property  name="operand"
+	 */
 	public UkuExpression getOperand() {
 		return operand;
 	}

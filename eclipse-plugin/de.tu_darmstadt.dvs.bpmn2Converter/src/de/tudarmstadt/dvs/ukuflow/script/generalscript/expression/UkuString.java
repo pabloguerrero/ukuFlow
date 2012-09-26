@@ -9,6 +9,9 @@ import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
  * 
  */
 public class UkuString extends PrimaryExpression {
+	/**
+	 * @uml.property  name="s"
+	 */
 	String s;
 
 	public UkuString(String s) {

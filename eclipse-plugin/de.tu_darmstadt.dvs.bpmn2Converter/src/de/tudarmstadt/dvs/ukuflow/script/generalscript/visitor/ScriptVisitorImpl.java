@@ -29,8 +29,10 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 	}
 
 	public byte toByte(int v) {
-		if (v > 255)
+		if (v > 255){
+			System.out.println("error");
 			return 0;
+		}
 		// TODO checking v
 		return (byte) v;
 	}

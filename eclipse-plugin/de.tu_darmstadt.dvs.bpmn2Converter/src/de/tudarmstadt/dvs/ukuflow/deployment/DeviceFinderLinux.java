@@ -6,9 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class DeviceFinderLinux {
@@ -50,7 +48,7 @@ public class DeviceFinderLinux {
 		return s.substring(ind, ind + 3);
 	}
 
-	public Map<String, String> getFTDIDevices() {
+	public Map<String, String> getDevices() {
 		Map<String, String> result = new HashMap<String, String>();
 		File f = new File("/sys/bus/usb/drivers/usb/");
 		if (f.isDirectory()) {

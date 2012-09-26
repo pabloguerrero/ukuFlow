@@ -9,15 +9,26 @@ import de.tudarmstadt.dvs.ukuflow.tools.exception.VariableAlreadyExistException;
 
 /**
  * represents ukuFlow variable
- * 
- * @author Hien Quoc Dang
- * 
+ * @author  Hien Quoc Dang
  */
 public class UkuVariable extends PrimaryExpression {
+	/**
+	 * @uml.property  name="name"
+	 */
 	public String name;
+	/**
+	 * @uml.property  name="declaration"
+	 */
 	boolean declaration = false;
+	/**
+	 * @uml.property  name="id"
+	 */
 	private int id = 0;
 	
+	/**
+	 * @uml.property  name="log"
+	 * @uml.associationEnd  
+	 */
 	private static final BpmnLog log = BpmnLog.getInstance(UkuVariable.class.getSimpleName());
 	
 	public UkuVariable(String name) {

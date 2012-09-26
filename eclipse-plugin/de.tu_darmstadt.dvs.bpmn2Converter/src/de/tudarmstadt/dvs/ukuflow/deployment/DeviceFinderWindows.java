@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-public class WindowsRegistry {
+
+public class DeviceFinderWindows {
+	
 	public static final int HKEY_CURRENT_USER = 0x80000001;
 	public static final int HKEY_LOCAL_MACHINE = 0x80000002;
 	public static final int REG_SUCCESS = 0;
@@ -73,7 +75,7 @@ public class WindowsRegistry {
 		}
 	}
 
-	private WindowsRegistry() {
+	private DeviceFinderWindows() {
 
 	}
 
@@ -89,7 +91,7 @@ public class WindowsRegistry {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public static String readString(int hkey, String key, String valueName)
+	private static String readString(int hkey, String key, String valueName)
 			throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
 		if (hkey == HKEY_LOCAL_MACHINE) {
@@ -112,7 +114,7 @@ public class WindowsRegistry {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public static Map<String, String> readStringValues(int hkey, String key)
+	private static Map<String, String> readStringValues(int hkey, String key)
 			throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
 		if (hkey == HKEY_LOCAL_MACHINE) {
@@ -135,7 +137,7 @@ public class WindowsRegistry {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public static List<String> readStringSubKeys(int hkey, String key)
+	private static List<String> readStringSubKeys(int hkey, String key)
 			throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
 		if (hkey == HKEY_LOCAL_MACHINE) {
@@ -157,7 +159,7 @@ public class WindowsRegistry {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public static void createKey(int hkey, String key)
+	private static void createKey(int hkey, String key)
 			throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
 		int[] ret;
@@ -187,7 +189,7 @@ public class WindowsRegistry {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public static void writeStringValue(int hkey, String key, String valueName,
+	private static void writeStringValue(int hkey, String key, String valueName,
 			String value) throws IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
 		if (hkey == HKEY_LOCAL_MACHINE) {
@@ -208,7 +210,7 @@ public class WindowsRegistry {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public static void deleteKey(int hkey, String key)
+	private static void deleteKey(int hkey, String key)
 			throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
 		int rc = -1;
@@ -232,7 +234,7 @@ public class WindowsRegistry {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public static void deleteValue(int hkey, String key, String value)
+	private static void deleteValue(int hkey, String key, String value)
 			throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
 		int rc = -1;
@@ -372,9 +374,15 @@ public class WindowsRegistry {
 		result[str.length()] = 0;
 		return result;
 	}
-
+	/**
+	 * 
+	 * @param hkey
+	 * @param value
+	 * @param location
+	 * @deprecated
+	 */
 	public static void searchFor(int hkey, String value, String location) {
-
+		
 	}
 	public static HashMap<String,String> getZ1Devices(){
 		HashMap<String, String> result = new HashMap<String, String>();
@@ -474,7 +482,7 @@ public class WindowsRegistry {
 	 */
 	public static void main(String[] args) throws IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
-		HashMap<String, String> hm = WindowsRegistry.getZ1Devices();//WindowsRegistry.getFTDIDevices();
+		HashMap<String, String> hm = DeviceFinderWindows.getZ1Devices();//WindowsRegistry.getFTDIDevices();
 		System.out.println(hm);
 		//List<String> l = searchFor("COM34", "");
 		//for(String s : l){

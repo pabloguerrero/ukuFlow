@@ -5,6 +5,9 @@ import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.InvalidRepositoryNameException;
 
 public class UkuRepositoryField extends PrimaryExpression {
+	/**
+	 * @uml.property  name="fieldID"
+	 */
 	int fieldID = -1;
 
 	public UkuRepositoryField(String name)
@@ -20,6 +23,10 @@ public class UkuRepositoryField extends PrimaryExpression {
 		}
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="fieldID"
+	 */
 	public int getFieldID() {
 		return fieldID;
 	}
@@ -32,7 +39,7 @@ public class UkuRepositoryField extends PrimaryExpression {
 	@Override
 	public int getLength() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 2;
 	}
 
 }

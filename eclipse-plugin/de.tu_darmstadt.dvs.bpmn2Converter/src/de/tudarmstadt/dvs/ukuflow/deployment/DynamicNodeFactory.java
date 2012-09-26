@@ -18,6 +18,8 @@ import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.menus.IWorkbenchContribution;
 import org.eclipse.ui.services.IServiceLocator;
 
+import de.tudarmstadt.dvs.ukuflow.handler.ConvertCommand;
+
 public class DynamicNodeFactory extends ContributionItem implements
 		IWorkbenchContribution {
 	
@@ -65,7 +67,7 @@ public class DynamicNodeFactory extends ContributionItem implements
 		if(!(selected instanceof IFile))
 			return;
 		final IFile file = (IFile)selected;
-		Map<String,String> devs = DeviceMamager.getInstance().getDevices();
+		Map<String,String> devs = DeviceManager.getInstance().getDevices();
 		for(final String key : devs.keySet()){
 			MenuItem devItem = new MenuItem(menu, SWT.PUSH);
 			devItem.setText(devs.get(key) + " [" + key + "]");
@@ -76,8 +78,16 @@ public class DynamicNodeFactory extends ContributionItem implements
 					System.out.println("selected->");
 					System.out.println("\t"+file.getFullPath().toPortableString());					
 					System.out.println("\t"+key);
+					String extension = file.getFileExtension();
+					boolean converted = false;
+					if(extension.equals("bpmn") || extension.equals("bpmn2"))
+						converted = ConvertCommand.convert(file);
+					if(!converted)
+						return;
+					String fname = file.getLocation().toOSString()+"\n";
+					fname = fname.replace(extension + "\n","uku64");
 					try {
-						DeviceMamager.getInstance().deploy(key, file.getLocation().toOSString(), 10000);
+						DeviceManager.getInstance().deploy(key, fname, 10000);
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();

@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class DeviceFinderMac {
 	private final static String dev_folder = "/dev/";
+	
 	private final static String tmote = "tty.usbserial-";
 	private final static String z1 = "tty.SLAB_";
 

@@ -2,8 +2,10 @@ package de.tudarmstadt.dvs.ukuflow.script.generalscript.functions;
 
 import java.util.List;
 
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.ScopeManager;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.ScopeNotExistException;
 
 
 public class ScopeFunction extends TaskScriptFunction{
@@ -14,8 +16,12 @@ public class ScopeFunction extends TaskScriptFunction{
 	public ScopeFunction(String name) {
 		scopeName = name;
 	}
-	public byte getScopeID(){
-		//TODO HIEN Scope ID managerment
+	public byte getScopeID(){		
+		try {
+			return (byte) ScopeManager.getInstance().getScopeID(scopeName);
+		} catch (ScopeNotExistException e) {			
+			e.printStackTrace();
+		}
 		return -1;
 	}
 	public String getScopeName(){

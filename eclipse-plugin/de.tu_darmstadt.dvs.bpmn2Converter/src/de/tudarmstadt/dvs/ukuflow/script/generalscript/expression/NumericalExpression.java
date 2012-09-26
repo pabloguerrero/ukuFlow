@@ -16,12 +16,19 @@ public abstract class NumericalExpression extends UkuExpression {
 	public static final int MINUS = 0;//TODO: mapping negative & positive number
 	public static final int PLUS = 0;//TODO:
 
+	/**
+	 * @uml.property  name="operator"
+	 */
 	protected int operator = -1;
 
 	public NumericalExpression(int operator) {
 		this.operator = operator;
 	}
 
+	/**
+	 * @param operator
+	 * @uml.property  name="operator"
+	 */
 	public void setOperator(int operator) {
 		this.operator = operator;
 	}

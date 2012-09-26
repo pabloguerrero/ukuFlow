@@ -24,20 +24,20 @@ import java.util.concurrent.LinkedBlockingDeque;
 import de.tudarmstadt.dvs.ukuflow.handler.UkuConsole;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
-public class DeviceMamager {
+public class DeviceManager {
 	public static Object lock = new Object();
 	public final static int WINDOWS_OS = 0;
 	public final static int LINUX_OS = 1;
 	public final static int MAC_OS = 2;
 	private Map<String, String> devs;
 	private int os = -1;
-	private static DeviceMamager INSTANCE = null;
+	private static DeviceManager INSTANCE = null;
 	private static UkuConsole console = UkuConsole.getConsole();
 	static LinkedBlockingDeque<String> usedPort = new LinkedBlockingDeque<String>();
-	private static BpmnLog log = BpmnLog.getInstance(DeviceMamager.class
+	private static BpmnLog log = BpmnLog.getInstance(DeviceManager.class
 			.getSimpleName());
 
-	private DeviceMamager() {
+	private DeviceManager() {
 		String os_name = System.getProperty("os.name").toLowerCase();
 		if (os_name.contains("win"))
 			os = 0;
@@ -48,9 +48,9 @@ public class DeviceMamager {
 		}
 	}
 
-	public static DeviceMamager getInstance() {
+	public static DeviceManager getInstance() {
 		if (INSTANCE == null) {
-			INSTANCE = new DeviceMamager();
+			INSTANCE = new DeviceManager();
 		}
 		return INSTANCE;
 	}
@@ -111,9 +111,9 @@ public class DeviceMamager {
 
 	private Map<String, String> getDevices_windows() {
 		// sky mote
-		Map<String, String> staticDevice = WindowsRegistry.getFTDIDevices();
+		Map<String, String> staticDevice = DeviceFinderWindows.getFTDIDevices();
 		// for z1 mote
-		staticDevice.putAll(WindowsRegistry.getZ1Devices());
+		staticDevice.putAll(DeviceFinderWindows.getZ1Devices());
 		return getAvailableDevices(staticDevice);
 	}
 
@@ -143,7 +143,7 @@ public class DeviceMamager {
 
 	private Map<String, String> getDevices_linux() {
 		DeviceFinderLinux df = new DeviceFinderLinux();
-		return getAvailableDevices(df.getFTDIDevices());
+		return getAvailableDevices(df.getDevices());
 	}
 
 	private Map<String, String> getDevices_mac() {
@@ -151,7 +151,12 @@ public class DeviceMamager {
 	}
 
 	public void deploy(String portName, String fileName, int timeout) {
-		deploy(portName, new File(fileName), timeout);
+		File f = new File(fileName);
+		if(!f.exists()){
+			console.error("file \""+fileName +"\" doesn't exist");
+			return;
+		}
+		deploy(portName, f, timeout);
 	}
 
 	public void deploy(String portName, File file, int timeout) {

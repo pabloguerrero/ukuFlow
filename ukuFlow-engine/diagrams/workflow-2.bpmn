@@ -11,29 +11,26 @@
     <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1" scriptFormat="http://www.java.com/java">
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
-      <bpmn2:script>var1 = 1 + 2;&#xD;
+      <bpmn2:script>local blink 1;&#xD;
+var1 = 1 + 2;&#xD;
 var2 = 1 + $var1;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="StartEvent_1" targetRef="ScriptTask_1"/>
     <bpmn2:scriptTask id="ScriptTask_2" name="Script Task 2" scriptFormat="http://www.java.com/java">
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
-      <bpmn2:script>local blink $var2;
-local blink 3;
-local blink 2;
-</bpmn2:script>
+      <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
+      <bpmn2:script>var2 =  $var2*3;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" name="" sourceRef="ScriptTask_1" targetRef="ScriptTask_2"/>
     <bpmn2:scriptTask id="ScriptTask_3" name="Script Task 3" scriptFormat="http://www.java.com/java">
-      <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
       <bpmn2:script>@window blink $var2;</bpmn2:script>
     </bpmn2:scriptTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" name="" sourceRef="ScriptTask_2" targetRef="ScriptTask_3"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" name="" sourceRef="ScriptTask_2" targetRef="ScriptTask_3"/>
     <bpmn2:textAnnotation id="TextAnnotation_1">
-      <bpmn2:text>SCOPE window (NODE_ID > 3)</bpmn2:text>
+      <bpmn2:text>SCOPE window 60 (NODE_ID > 3)</bpmn2:text>
     </bpmn2:textAnnotation>
-    <bpmn2:association id="Association_1" sourceRef="ScriptTask_3" targetRef="TextAnnotation_1"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Process Diagram">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="workflow-2-2">
@@ -41,11 +38,11 @@ local blink 2;
         <dc:Bounds height="36.0" width="36.0" x="39.0" y="87.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_2" bpmnElement="EndEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="610.0" y="87.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="880.0" y="87.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_ScriptTask_3" targetElement="BPMNShape_2">
-        <di:waypoint xsi:type="dc:Point" x="560.0" y="105.0"/>
-        <di:waypoint xsi:type="dc:Point" x="610.0" y="105.0"/>
+        <di:waypoint xsi:type="dc:Point" x="830.0" y="105.0"/>
+        <di:waypoint xsi:type="dc:Point" x="880.0" y="105.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
         <dc:Bounds height="50.0" width="110.0" x="120.0" y="80.0"/>
@@ -62,18 +59,14 @@ local blink 2;
         <di:waypoint xsi:type="dc:Point" x="295.0" y="105.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_ScriptTask_3" bpmnElement="ScriptTask_3">
-        <dc:Bounds height="50.0" width="110.0" x="450.0" y="80.0"/>
+        <dc:Bounds height="50.0" width="110.0" x="720.0" y="80.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_ScriptTask_3">
-        <di:waypoint xsi:type="dc:Point" x="405.0" y="105.0"/>
-        <di:waypoint xsi:type="dc:Point" x="450.0" y="105.0"/>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_1" bpmnElement="TextAnnotation_1">
         <dc:Bounds height="51.0" width="121.0" x="450.0" y="180.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="BPMNEdge_Association_1" bpmnElement="Association_1" sourceElement="BPMNShape_ScriptTask_3" targetElement="BPMNShape_TextAnnotation_1">
-        <di:waypoint xsi:type="dc:Point" x="505.0" y="130.0"/>
-        <di:waypoint xsi:type="dc:Point" x="510.0" y="180.0"/>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_6" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_ScriptTask_3">
+        <di:waypoint xsi:type="dc:Point" x="405.0" y="105.0"/>
+        <di:waypoint xsi:type="dc:Point" x="720.0" y="105.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -297,7 +297,7 @@ public class BPMN2XMLParser {
 					scope.setScript(scope_desc);
 					break;
 				}
-			}				
+			}
 			return scope;
 		default:
 			log.debug("WARNING, unknown element: " + type + "/" + e.getName());

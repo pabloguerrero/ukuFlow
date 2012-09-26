@@ -6,15 +6,21 @@ import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
 
 /**
- * represents a ukuFlow Constant. It could be either an integer constant or
- * boolean constant
- * 
- * @author Hien Quoc Dang
- * 
+ * represents a ukuFlow Constant. It could be either an integer constant or boolean constant
+ * @author  Hien Quoc Dang
  */
 public class UkuConstant extends PrimaryExpression {
+	/**
+	 * @uml.property  name="intValue"
+	 */
 	int intValue;
+	/**
+	 * @uml.property  name="boolValue"
+	 */
 	boolean boolValue;
+	/**
+	 * @uml.property  name="isBool"
+	 */
 	boolean isBool;
 
 	public UkuConstant(int value) {
@@ -45,6 +51,10 @@ public class UkuConstant extends PrimaryExpression {
 		}
 	}
 
+	/**
+	 * @return
+	 * @uml.property  name="boolValue"
+	 */
 	public boolean isBoolValue() {
 		return isBool;
 	}

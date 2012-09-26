@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>de.tudarmstadt.dvs.ukuflow</name>
-	<comment>JavaCC Nature</comment>
+	<comment>JavaCC Nature@key 32303037303533312D31302064652E74756461726D73746164742E6476732E756B75666C6F772F4D722044616E67 </comment>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -25,10 +25,16 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>com.soyatec.additional.Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>sf.eclipse.javacc.javaccnature</nature>
+		<nature>com.soyatec.additional.Nature</nature>
 	</natures>
 </projectDescription>

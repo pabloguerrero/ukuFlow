@@ -19,8 +19,20 @@ public class ComparisonExpression extends BoolExpression {
 	public static final int GREATEROREQUAL = UkuConstants.PREDICATE_GET;
 	public static final int LESSOREQUAL = UkuConstants.PREDICATE_LET;
 
+	/**
+	 * @uml.property  name="operator"
+	 */
 	public int operator = 0;
-	public UkuExpression operand1, operand2;
+	/**
+	 * @uml.property  name="operand1"
+	 * @uml.associationEnd  
+	 */
+	public UkuExpression operand1;
+	/**
+	 * @uml.property  name="operand2"
+	 * @uml.associationEnd  
+	 */
+	public UkuExpression operand2;
 	
 	public ComparisonExpression(int operator) {
 		this.operator = operator;
@@ -35,18 +47,34 @@ public class ComparisonExpression extends BoolExpression {
 	public int getLength(){
 		return 1 + operand1.getLength() + operand2.getLength();
 	}
+	/**
+	 * @return
+	 * @uml.property  name="operand2"
+	 */
 	public UkuExpression getOperand2() {
 		return operand2;
 	}
 
+	/**
+	 * @param operand2
+	 * @uml.property  name="operand2"
+	 */
 	public void setOperand2(UkuExpression operand2) {
 		this.operand2 = operand2;
 	}
 
+	/**
+	 * @return
+	 * @uml.property  name="operand1"
+	 */
 	public UkuExpression getOperand1() {
 		return operand1;
 	}
 
+	/**
+	 * @param operand1
+	 * @uml.property  name="operand1"
+	 */
 	public void setOperand1(UkuExpression operand1) {
 		this.operand1 = operand1;
 	}

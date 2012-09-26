@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.tudarmstadt.dvs.ukuflow.tools.exception.DuplicateScopeNameException;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.ScopeNotExistException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyScopeException;
 
 public class ScopeManager {
@@ -24,12 +25,14 @@ public class ScopeManager {
 			instance = new ScopeManager();
 		return instance;
 	}
-	public void reset(){
+
+	public void reset() {
 		availableID = new LinkedList<Integer>();
 		for (int i = 0; i < 256; i++)
 			availableID.add(i);
 		namePool = new HashMap<String, Integer>();
 	}
+
 	public int registerScope(String sName) throws DuplicateScopeNameException,
 			TooManyScopeException {
 		if (namePool.containsKey(sName)) {
@@ -42,7 +45,7 @@ public class ScopeManager {
 		if (availableID.contains(result)) {
 
 		} else {
-			//System.out.println("collision " + sName + " > " + result);
+			// System.out.println("collision " + sName + " > " + result);
 			int tmp = Math.abs(result) % availableID.size();
 			result = availableID.get(tmp);
 		}
@@ -50,6 +53,13 @@ public class ScopeManager {
 		availableID.remove(new Integer(result));
 		namePool.put(sName, result);
 		return result;
+	}
+
+	public int getScopeID(String sName) throws ScopeNotExistException {
+		if (namePool.containsKey(sName))
+			return namePool.get(sName);
+		System.out.println(sName + " : " + namePool);
+		throw new ScopeNotExistException();
 	}
 
 	// *** test ***//
@@ -64,11 +74,12 @@ public class ScopeManager {
 				c += 11;
 			}
 		} catch (Exception e) {
-			//e.printStackTrace();
-			System.out.println("namePool size: "+instance.namePool.size());
-			System.out.println("availableID size: "+instance.availableID.size());
-			for(int i = 0; i < 256; i++){
-				if(!instance.namePool.containsValue(i)){
+			// e.printStackTrace();
+			System.out.println("namePool size: " + instance.namePool.size());
+			System.out.println("availableID size: "
+					+ instance.availableID.size());
+			for (int i = 0; i < 256; i++) {
+				if (!instance.namePool.containsValue(i)) {
 					System.out.println(i);
 				}
 			}

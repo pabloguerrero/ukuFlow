@@ -8,7 +8,14 @@ import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.TaskScriptFunct
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
 
 
+/**
+ * @author  Hien Quoc Dang
+ */
 public class UkuTaskScript implements Visitable{
+	/**
+	 * @uml.property  name="funs"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.TaskScriptFunction"
+	 */
 	List<TaskScriptFunction> funs;
 	
 	public UkuTaskScript(){
@@ -23,6 +30,10 @@ public class UkuTaskScript implements Visitable{
 		funs.add(ts);
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="funs"
+	 */
 	public List<TaskScriptFunction> getFuns(){
 		return funs;
 	}

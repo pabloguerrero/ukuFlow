@@ -37,7 +37,6 @@ public class Converter {
 			e.printStackTrace();
 		}
 	}
-	@SuppressWarnings("deprecation")
 	public void execute(){		
 		Element root = null;
 		SAXBuilder builder = new SAXBuilder();

@@ -9,7 +9,15 @@ import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
  */
 public class BinaryLogicalExpression extends LogicalExpression {
 
+	/**
+	 * @uml.property  name="operand1"
+	 * @uml.associationEnd  
+	 */
 	public UkuExpression operand1;
+	/**
+	 * @uml.property  name="operand2"
+	 * @uml.associationEnd  
+	 */
 	public UkuExpression operand2;
 
 	public BinaryLogicalExpression(int operator) {
@@ -24,18 +32,34 @@ public class BinaryLogicalExpression extends LogicalExpression {
 		this.operand2 = operand2;
 	}
 
+	/**
+	 * @param b
+	 * @uml.property  name="operand1"
+	 */
 	public void setOperand1(UkuExpression b) {
 		operand1 = b;
 	}
 
+	/**
+	 * @param b
+	 * @uml.property  name="operand2"
+	 */
 	public void setOperand2(UkuExpression b) {
 		operand2 = b;
 	}
 
+	/**
+	 * @return
+	 * @uml.property  name="operand1"
+	 */
 	public UkuExpression getOperand1() {
 		return operand1;
 	}
 
+	/**
+	 * @return
+	 * @uml.property  name="operand2"
+	 */
 	public UkuExpression getOperand2() {
 		return operand2;
 	}
