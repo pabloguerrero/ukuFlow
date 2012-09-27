@@ -1,1 +1,0 @@
-SCOPE windows 1023 (SENSOR_LIGHT_PAR_RAW >2 &&($v+2)>2)
