@@ -149,7 +149,7 @@ public class DeviceFinderLinux {
 	 * @param f
 	 * @return
 	 */
-	private String getFileContent(File f) {
+	public static String getFileContent(File f) {
 		String content = "";
 		try {
 			FileInputStream fis = new FileInputStream(f);

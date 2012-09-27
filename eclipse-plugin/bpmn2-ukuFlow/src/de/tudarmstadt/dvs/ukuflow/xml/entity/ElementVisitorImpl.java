@@ -9,6 +9,7 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisito
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitorImpl;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitorImpl;
+import de.tudarmstadt.dvs.ukuflow.tools.Base64Converter;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.xml.TypeClassifier;
 import org.apache.commons.codec.binary.Base64;
@@ -46,11 +47,14 @@ public class ElementVisitorImpl implements ElementVisitor {
 
 	public String getOutputString64() {
 		out.set(1, (byte) (out.size() - 2));
+		return Base64Converter.getBase64String(out);
+		/*
 		byte[] result = new byte[out.size()];
 		for (int i = 0; i < out.size(); i++) {
 			result[i] = out.get(i);
 		}
 		return Base64.encodeBase64String(result);
+		*/
 	}
 
 	public void reset() {

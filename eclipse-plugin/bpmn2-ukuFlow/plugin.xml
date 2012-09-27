@@ -23,7 +23,7 @@
                   label="&amp;Deploy to"
                   mnemonic="deploy the workflow on one of the connected nodes (z1 or sky)">
                <dynamic
-                     class="de.tudarmstadt.dvs.ukuflow.deployment.DynamicNodeFactory"
+                     class="de.tudarmstadt.dvs.ukuflow.deployment.DeploymentDynamicMenu"
                      id="de.tudarmstadt.dvs.ukuflow.deploymentDynamic">
                </dynamic>
             </menu>
@@ -57,6 +57,13 @@
                   </with>
                </visibleWhen>
             </command>
+            <menu
+                  label="Undeploy..">
+               <dynamic
+                     class="de.tudarmstadt.dvs.ukuflow.deployment.UndeploymentCommand"
+                     id="de.tudarmstadt.dvs.ukuflow.undeploymentdymanic">
+               </dynamic>
+            </menu>
             <visibleWhen
                   checkEnabled="false">
                <and>

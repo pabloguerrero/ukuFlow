@@ -24,6 +24,8 @@ import org.eclipse.core.runtime.CoreException;
 
 import de.tudarmstadt.dvs.ukuflow.deployment.DeviceManager;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ScopeManager;
+import de.tudarmstadt.dvs.ukuflow.tools.Base64Converter;
+import de.tudarmstadt.dvs.ukuflow.tools.QuickFileReader;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.validation.ErrorManager;
 import de.tudarmstadt.dvs.ukuflow.validation.UkuProcessValidation;
@@ -87,6 +89,21 @@ public class ConvertCommand extends AbstractHandler {
 		deleteMarker(file);
 		return convert(file.getLocation().toOSString(), file.getFileExtension());
 
+	}
+	public static int getProcessID(IFile file){
+		//deleteMarker
+		String extension = file.getFileExtension();
+		if(extension.equals("bpmn") || extension.equals("bpmn2")){
+			BPMN2XMLParser parser = new BPMN2XMLParser(file.getLocation().toOSString());
+			return parser.getProcessID();
+		} else if(extension.equals("uku64")){
+			String s = QuickFileReader.getFileContent(file.getLocation().toOSString());
+			return Base64Converter.decodeFrom(s)[2];
+		} else if(extension.equals("uku")){
+			String s = QuickFileReader.getFileContent(file.getLocation().toOSString());
+			return Integer.valueOf(s.split(" ")[2]);
+		}
+		throw new NullPointerException("");
 	}
 
 	private static boolean convert(String oFileLocation, String extension) {

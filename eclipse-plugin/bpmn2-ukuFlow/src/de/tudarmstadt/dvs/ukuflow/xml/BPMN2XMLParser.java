@@ -60,7 +60,17 @@ public class BPMN2XMLParser {
 		reference = new HashMap<String, UkuEntity>();
 		root = loadFile(fileLocation);
 	}
-
+	public int getProcessID(){
+		if(root.getName().equals("definitions")){
+			for(Element child :root.getChildren()){
+				if(child.getName().equals("process")){
+					UkuProcess process = new UkuProcess(fetchID(child));
+					return process.getWorkflowID();
+				}
+			}
+		}
+		throw new NullPointerException();
+	}
 	/**
 	 * this function will fetch all process, set the reference and the element
 	 * id for each elements

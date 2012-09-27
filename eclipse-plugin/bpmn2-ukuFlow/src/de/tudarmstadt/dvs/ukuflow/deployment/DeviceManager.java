@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import de.tudarmstadt.dvs.ukuflow.handler.UkuConsole;
+import de.tudarmstadt.dvs.ukuflow.tools.Base64Converter;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class DeviceManager {
@@ -150,10 +151,48 @@ public class DeviceManager {
 		return getAvailableDevices(DeviceFinderMac.getDevs());
 	}
 
+	public void undeploy(String portName, int process_id, int timeout) {
+		SerialPort serialPort = null;
+		try {
+			CommPortIdentifier portIdentifier = CommPortIdentifier
+					.getPortIdentifier(portName);
+			if (portIdentifier.isCurrentlyOwned()
+					|| usedPort.contains(portName)) {
+
+				console.error("ERROR", portName + " is currently in use");
+			} else {
+				CommPort commPort = null;
+				commPort = portIdentifier.open(this.getClass().getName(), 2000);
+
+				if (commPort instanceof SerialPort) {
+					usedPort.add(portName);
+					serialPort = (SerialPort) commPort;
+					serialPort.setSerialPortParams(115200,
+							SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+							SerialPort.PARITY_NONE);
+
+					InputStream in = serialPort.getInputStream();
+					OutputStream out = serialPort.getOutputStream();
+
+					(new Thread(new SerialReader(in, timeout, serialPort,
+							portName))).start();
+					(new Thread(new SerialWriter(out, process_id))).start();
+				} else {
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			usedPort.remove(portName);
+			if (serialPort != null)
+				serialPort.close();
+			console.error("ERROR", portName + " is busy");
+		}
+	}
+
 	public void deploy(String portName, String fileName, int timeout) {
 		File f = new File(fileName);
-		if(!f.exists()){
-			console.error("file \""+fileName +"\" doesn't exist");
+		if (!f.exists()) {
+			console.error("file \"" + fileName + "\" doesn't exist");
 			return;
 		}
 		deploy(portName, f, timeout);
@@ -271,10 +310,7 @@ public class DeviceManager {
 				console.info("SYSTEM", "device may be disconnected");
 			} finally {
 				usedPort.remove(portName);
-				try {
-					// in.close();
-					// serialPort.getOutputStream().flush();
-					// serialPort.getOutputStream().close();
+				try {				
 				} catch (Exception e) {
 				}
 				if (serialPort != null)
@@ -287,13 +323,44 @@ public class DeviceManager {
 	public static class SerialWriter implements Runnable {
 		OutputStream out;
 		InputStream in;
+		boolean deployment = true;
+		int id;
 
 		public SerialWriter(OutputStream out, InputStream in) {
 			this.out = out;
 			this.in = in;
+			deployment = true;
+		}
+
+		public SerialWriter(OutputStream out, int id) {
+			this.out = out;
+			this.id = id;
+			deployment = false;
 		}
 
 		public void run() {
+			if (deployment)
+				runDeploy();
+			else
+				runUndeploy();
+		}
+
+		private void runUndeploy() {
+			String undeploySequence = Base64Converter.getBase64String(1, id);
+			synchronized (lock) {
+				try {
+					for (byte t : undeploySequence.getBytes()) {
+						this.out.write(t);
+					}
+					this.out.write(13);
+					this.out.write(10);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		private void runDeploy() {
 			try {
 				int c = 0;
 				int last1 = 0, last2 = 0;
