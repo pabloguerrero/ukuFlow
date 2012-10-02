@@ -62,18 +62,7 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
   }
 
 /* ultimate function for parsing all type of expression */
-  final public void mainFunction() throws ParseException {
-    if (jj_2_1(2)) {
-      taskScript();
-    } else if (jj_2_2(2)) {
-      ConditionalOrFunction();
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-    jj_consume_token(0);
-  }
-
+/*void mainFunction() :{}{  (    taskScript()  | ConditionalOrFunction()  )  < EOF >}*/
 /*** for parsing conditional expression*/
   final public UkuExpression conditionalExpression() throws ParseException {
   UkuExpression result = null;
@@ -90,18 +79,18 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
   TaskScriptFunction tmp = null;
     label_1:
     while (true) {
-      if (jj_2_3(2)) {
+      if (jj_2_1(2)) {
         ;
       } else {
         break label_1;
       }
-      if (jj_2_4(2)) {
+      if (jj_2_2(2)) {
         tmp = localFunction();
       result.add(tmp);
-      } else if (jj_2_5(2)) {
+      } else if (jj_2_3(2)) {
         tmp = scopeFunction();
       result.add(tmp);
-      } else if (jj_2_6(2)) {
+      } else if (jj_2_4(2)) {
         tmp = computationFunction();
       result.add(tmp);
       } else {
@@ -114,6 +103,7 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     throw new Error("Missing return statement in function");
   }
 
+/*************************************************************************/
   final public LocalFunction localFunction() throws ParseException {
   UkuVariable variable = null;
   String function_name = "";
@@ -121,18 +111,18 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
   List < UkuExpression > params = new LinkedList < UkuExpression > ();
   LocalFunction lf;
     jj_consume_token(LOCAL);
-    if (jj_2_7(2)) {
+    if (jj_2_5(2)) {
       jj_consume_token(IDENTIFIER);
       String v = token.image.trim();
       variable = new UkuVariable(v);
-      jj_consume_token(30);
+      jj_consume_token(31);
     } else {
       ;
     }
     jj_consume_token(IDENTIFIER);
     function_name = token.image.trim();
     params = parseParamsList();
-    jj_consume_token(31);
+    jj_consume_token(32);
     lf = new LocalFunction(variable, function_name, params);
     {if (true) return lf;}
     throw new Error("Missing return statement in function");
@@ -149,21 +139,21 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     jj_consume_token(IDENTIFIER);
     functionName = token.image.trim();
     params = parseParamsList();
-    jj_consume_token(31);
+    jj_consume_token(32);
     //TODO:
     {if (true) return new ScopeFunction(scopeName, functionName, params);}
     throw new Error("Missing return statement in function");
   }
 
-/*** parser for computation function. It can handle: +,-,*,/,%,^,*/
+/*** parser for computation function. It can handle: +,-,*,/,%,*/
   final public ComputationalFunction computationFunction() throws ParseException {
   UkuExpression exp = null;
   String variable = "";
     jj_consume_token(IDENTIFIER);
     variable = token.image.trim();
-    jj_consume_token(30);
-    exp = computationalExpression();
     jj_consume_token(31);
+    exp = ConditionalOrFunction();
+    jj_consume_token(32);
     {if (true) return new ComputationalFunction(variable, exp);}
     log.debug(exp);
     throw new Error("Missing return statement in function");
@@ -175,15 +165,15 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
   UkuExpression tmp = null;
     label_2:
     while (true) {
-      if (jj_2_8(2)) {
+      if (jj_2_6(2)) {
         ;
       } else {
         break label_2;
       }
-      if (jj_2_11(2)) {
-        if (jj_2_9(2)) {
+      if (jj_2_9(2)) {
+        if (jj_2_7(2)) {
           jj_consume_token(IDENTIFIER);
-        } else if (jj_2_10(2)) {
+        } else if (jj_2_8(2)) {
           jj_consume_token(STRING);
         } else {
           jj_consume_token(-1);
@@ -191,7 +181,7 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
         }
       params.add(new UkuString(token.image.trim()));
       log.info(token.image.trim());
-      } else if (jj_2_12(2)) {
+      } else if (jj_2_10(2)) {
         tmp = NumberOrVariable();
       params.add((PrimaryExpression) tmp);
       } else {
@@ -203,12 +193,14 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     throw new Error("Missing return statement in function");
   }
 
+/********************************************************************/
+/** * parser for or expression */
   final public UkuExpression ConditionalOrFunction() throws ParseException {
   UkuExpression result = null, exp1 = null, exp2 = null;
     exp1 = ConditionalAndFunction();
     label_3:
     while (true) {
-      if (jj_2_13(2)) {
+      if (jj_2_11(2)) {
         ;
       } else {
         break label_3;
@@ -227,170 +219,111 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
 
   final public UkuExpression ConditionalAndFunction() throws ParseException {
   UkuExpression result = null, exp1 = null, exp2 = null;
-    exp1 = ConditionalNotFunction();
-    log.debug("condionalAndFunciton" + exp1);
+    exp1 = EqualityExpression();
     label_4:
     while (true) {
-      if (jj_2_14(2)) {
+      if (jj_2_12(2)) {
         ;
       } else {
         break label_4;
       }
       jj_consume_token(AND);
-      exp2 = ConditionalNotFunction();
+      exp2 = EqualityExpression();
       if (result != null) exp1 = result;
       result = new BinaryLogicalExpression(LogicalExpression.AND);
       ((BinaryLogicalExpression) result).setOperand1(exp1);
       ((BinaryLogicalExpression) result).setOperand2(exp2);
-      {
-        log.debug(exp1 + "/" + exp2);
-      }
     }
     if (result == null) result = exp1;
     {if (true) return result;}
     throw new Error("Missing return statement in function");
   }
 
-/*UkuExpression ConditionalXorFunction() :{  UkuExpression result = null, exp1 = null, exp2 = null;}{  exp1 = ConditionalNotFunction()  (    < XOR > exp2 = ConditionalNotFunction()    {      if (result != null) exp1 = result;      result = new BinaryLogicalExpression(-1);      ((BinaryLogicalExpression) result).setOperand1(exp1);      ((BinaryLogicalExpression) result).setOperand2(exp2);    }  )*  {    if (result == null) result = exp1;    return result;  }}*/
-  final public UkuExpression ConditionalNotFunction() throws ParseException {
-  UkuExpression result = null, exp1 = null;
-    if (jj_2_15(2)) {
-      jj_consume_token(NOT);
-      exp1 = ConditionalPrimaryFunction();
-    result = new UnaryLogicalExpression(LogicalExpression.NOT);
-    ((UnaryLogicalExpression) result).setOperand(exp1);
-    {if (true) return result;}
-    } else if (jj_2_16(2)) {
-      result = ConditionalPrimaryFunction();
-    {if (true) return result;}
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-    throw new Error("Missing return statement in function");
-  }
-
-  final public UkuExpression ConditionalPrimaryFunction() throws ParseException {
-  UkuExpression result = null;
-    if (jj_2_17(2)) {
-      jj_consume_token(BOOLEAN);
-    {if (true) return new UkuConstant(token.image);}
-    } else if (jj_2_18(2)) {
-      result = ConditionalRelationalFunction();
-    {if (true) return result;}
-    } else if (jj_2_19(2)) {
-      jj_consume_token(32);
-      result = tmp();
-      jj_consume_token(33);
-    {if (true) return result;}
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-    throw new Error("Missing return statement in function");
-  }
-
-  final public UkuExpression tmp() throws ParseException {
-  UkuExpression result = null;
-    if (jj_2_20(2147483647)) {
-      result = ConditionalOrFunction();
-    {if (true) return result;}
-    } else if (jj_2_21(2)) {
-      result = ConditionalRelationalFunction();
-    {if (true) return result;}
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-    throw new Error("Missing return statement in function");
-  }
-
-  final public UkuExpression ConditionalRelationalFunction() throws ParseException {
+  final public UkuExpression EqualityExpression() throws ParseException {
   UkuExpression result = null, exp1 = null, exp2 = null;
-  int operator = 0;
-    exp1 = computationalExpression();
-    if (jj_2_22(2)) {
-      jj_consume_token(EQUAL);
-    } else if (jj_2_23(2)) {
-      jj_consume_token(UNEQUAL);
-    } else if (jj_2_24(2)) {
-      jj_consume_token(GREATERTHAN);
-    } else if (jj_2_25(2)) {
-      jj_consume_token(LESSTHAN);
-    } else if (jj_2_26(2)) {
-      jj_consume_token(GREATEROREQUAL);
-    } else if (jj_2_27(2)) {
-      jj_consume_token(LESSOREQUAL);
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-    if (token.image.equals("==")) operator = ComparisonExpression.EQUAL;
-    if (token.image.equals(">")) operator = ComparisonExpression.GREATERTHAN;
-    if (token.image.equals("<")) operator = ComparisonExpression.LESSTHAN;
-    if (token.image.equals(">=")) operator = ComparisonExpression.GREATEROREQUAL;
-    if (token.image.equals("=<")) operator = ComparisonExpression.LESSOREQUAL;
-    exp2 = computationalExpression();
-    log.debug(exp1 + "/" + exp2);
-    result = new ComparisonExpression(operator, exp1, exp2);
-    {if (true) return result;}
-    throw new Error("Missing return statement in function");
-  }
-
-/**void ConditionalPrimaryExpression() :{}{ computationalExpression()|  "(" ConditionalOrFunction() ")"}*/
-/*** parser for local function: "local functionName parameter1 parameter2 ... ;*/
-  final public UkuExpression computationalExpression() throws ParseException {
-  UkuExpression exp1, exp2;
-  UkuExpression result = null;
-  int operator = 0;
-    exp1 = computationalMulExpression();
-    log.debug(token.image + ": " + exp1);
+  int operator =-1;
+    exp1 = RelationalExpression();
     label_5:
     while (true) {
-      if (jj_2_28(2)) {
+      if (jj_2_13(2)) {
         ;
       } else {
         break label_5;
       }
-      jj_consume_token(ADDITIVE);
-      operator = token.image.equals("+") ? NumericalExpression.ADD : NumericalExpression.SUB;
-      exp2 = computationalMulExpression();
-      if (result != null) exp1 = result;
-      result = new BinaryNumericalExpression(operator);
-      ((BinaryNumericalExpression) result).setOperand1(exp1);
-      ((BinaryNumericalExpression) result).setOperand2(exp2);
-    }
-    //log.debug(exp1 _
-    if (result == null) result = exp1;
-    {if (true) return result;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public UkuExpression computationalMulExpression() throws ParseException {
-  int operator = 0;
-  UkuExpression exp1 = null, exp2 = null;
-  UkuExpression result = null;
-    exp1 = computationalUnaryExpression();
-    log.debug("computationalUnaryExpression " + token.image + ": " + exp1);
-    label_6:
-    while (true) {
-      if (jj_2_29(2)) {
-        ;
-      } else {
-        break label_6;
-      }
-      if (jj_2_30(2)) {
-        jj_consume_token(34);
-      } else if (jj_2_31(2)) {
-        jj_consume_token(35);
-      } else if (jj_2_32(2)) {
-        jj_consume_token(36);
+      if (jj_2_14(2)) {
+        jj_consume_token(EQUAL);
+        operator = LogicalExpression.EQUAL;
+      } else if (jj_2_15(2)) {
+        jj_consume_token(UNEQUAL);
+        operator = LogicalExpression.UNEQUAL;
       } else {
         jj_consume_token(-1);
         throw new ParseException();
       }
-      operator = token.image.equals("*") ? BinaryNumericalExpression.MUL : token.image.equals("/") ? BinaryNumericalExpression.DIV : BinaryNumericalExpression.MOD;
-      exp2 = computationalUnaryExpression();
+      exp2 = RelationalExpression();
+      if (result != null) exp1 = result;
+      result = new BinaryLogicalExpression(operator);
+      ((BinaryLogicalExpression) result).setOperand1(exp1);
+      ((BinaryLogicalExpression) result).setOperand2(exp2);
+    }
+    if (result == null) result = exp1;
+    {if (true) return result;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public UkuExpression RelationalExpression() throws ParseException {
+  UkuExpression result = null, exp1 = null, exp2 = null;
+  int operator =-1;
+    exp1 = AdditiveExpression();
+    label_6:
+    while (true) {
+      if (jj_2_16(2)) {
+        ;
+      } else {
+        break label_6;
+      }
+      if (jj_2_17(2)) {
+        jj_consume_token(GREATERTHAN);
+        operator = LogicalExpression.GREATERTHAN;
+      } else if (jj_2_18(2)) {
+        jj_consume_token(LESSTHAN);
+        operator = LogicalExpression.LESSTHAN;
+      } else if (jj_2_19(2)) {
+        jj_consume_token(GREATEROREQUAL);
+        operator = LogicalExpression.GREATEROREQUAL;
+      } else if (jj_2_20(2)) {
+        jj_consume_token(LESSOREQUAL);
+        operator = LogicalExpression.LESSOREQUAL;
+      } else {
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      exp2 = AdditiveExpression();
+      if (result != null) exp1 = result;
+      result = new BinaryLogicalExpression(operator);
+      ((BinaryLogicalExpression) result).setOperand1(exp1);
+      ((BinaryLogicalExpression) result).setOperand2(exp2);
+    }
+    if (result == null) result = exp1;
+    {if (true) return result;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public UkuExpression AdditiveExpression() throws ParseException {
+  UkuExpression result = null, exp1 = null, exp2 = null;
+  int operator =-1;
+    exp1 = MulticativeExpression();
+    label_7:
+    while (true) {
+      if (jj_2_21(2)) {
+        ;
+      } else {
+        break label_7;
+      }
+      jj_consume_token(ADDITIVE);
+      if (token.image.equals("+")) operator = NumericalExpression.ADD;
+      else operator = NumericalExpression.SUB;
+      exp2 = MulticativeExpression();
       if (result != null) exp1 = result;
       result = new BinaryNumericalExpression(operator);
       ((BinaryNumericalExpression) result).setOperand1(exp1);
@@ -401,52 +334,58 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public UkuExpression computationalUnaryExpression() throws ParseException {
-  UkuExpression operand = null;
-  UkuExpression result = null;
-  int operator = 0;
-    if (jj_2_33(2)) {
-      jj_consume_token(ADDITIVE);
-    log.debug("Minus");
-    operator = token.image.equals("-") ? NumericalExpression.MINUS : NumericalExpression.PLUS;
-      computationalPrimaryExpression();
-    result = new UnaryNumericalExpression(operator);
-    ((UnaryNumericalExpression) result).setOperand(operand);
-    {if (true) return result;}
-    } else if (jj_2_34(2)) {
-      result = computationalPrimaryExpression();
-    {if (true) return result;}
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
+  final public UkuExpression MulticativeExpression() throws ParseException {
+  UkuExpression result = null, exp1 = null, exp2 = null;
+  int operator =-1;
+    exp1 = UnaryExpression();
+    label_8:
+    while (true) {
+      if (jj_2_22(2)) {
+        ;
+      } else {
+        break label_8;
+      }
+      jj_consume_token(MULTICATIVE);
+      if (token.image.equals("*")) operator = NumericalExpression.MUL;
+      else if (token.image.equals("/")) operator = NumericalExpression.DIV;
+      else operator = NumericalExpression.MOD;
+      exp2 = UnaryExpression();
+      if (result != null) exp1 = result;
+      result = new BinaryNumericalExpression(operator);
+      ((BinaryNumericalExpression) result).setOperand1(exp1);
+      ((BinaryNumericalExpression) result).setOperand2(exp2);
     }
+    if (result == null) result = exp1;
+    {if (true) return result;}
     throw new Error("Missing return statement in function");
   }
 
-  final public UkuExpression computationalPrimaryExpression() throws ParseException {
-  UkuExpression result = null;
-    if (jj_2_35(2)) {
+  final public UkuExpression UnaryExpression() throws ParseException {
+  UkuExpression result = null, exp = null;
+    if (jj_2_23(2)) {
       result = NumberOrVariable();
-    //log.debug("got here" + result);
-    {if (true) return result;}
-    } else if (jj_2_36(2)) {
-      jj_consume_token(32);
-      result = computationalExpression();
+    } else if (jj_2_24(2)) {
+      jj_consume_token(NOT);
+      exp = UnaryExpression();
+          result = new UnaryLogicalExpression(LogicalExpression.NOT, exp);
+    } else if (jj_2_25(2)) {
       jj_consume_token(33);
-    {if (true) return result;}
+      result = ConditionalOrFunction();
+      jj_consume_token(34);
     } else {
       jj_consume_token(-1);
       throw new ParseException();
     }
+    {if (true) return result;}
     throw new Error("Missing return statement in function");
   }
 
   final public UkuExpression NumberOrVariable() throws ParseException {
   UkuExpression result = null;
-    if (jj_2_37(2)) {
+    if (jj_2_26(2)) {
       result = ConstantExpression();
     {if (true) return result;}
-    } else if (jj_2_38(2)) {
+    } else if (jj_2_27(2)) {
       jj_consume_token(VARIABLE);
     String var = token.image.trim();
     //if (!variables.contains(var)) variables.add(var);
@@ -462,11 +401,11 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
   final public UkuExpression ConstantExpression() throws ParseException {
   UkuConstant c = null;
   UkuExpression result = null;
-    if (jj_2_39(2)) {
+    if (jj_2_28(2)) {
       jj_consume_token(INTEGER_LITERAL);
     c = new UkuConstant(Integer.parseInt(token.image));
     {if (true) return c;}
-    } else if (jj_2_40(2)) {
+    } else if (jj_2_29(2)) {
       result = predefinedConstant();
     {if (true) return result;}
     } else {
@@ -477,9 +416,9 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
   }
 
   final public UkuExpression predefinedConstant() throws ParseException {
-    if (jj_2_41(2)) {
+    if (jj_2_30(2)) {
       jj_consume_token(IDENTIFIER);
-    } else if (jj_2_42(2)) {
+    } else if (jj_2_31(2)) {
       jj_consume_token(STRING);
     } else {
       jj_consume_token(-1);
@@ -502,30 +441,30 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
   final public UkuScopeExpression scopeExpression() throws ParseException {
   UkuScopeExpression result = null;
   String sName = null;
-  Integer ttl =null;
+  Integer ttl = null;
   UkuExpression sExp = null;
     jj_consume_token(SCOPE_DESC);
-    if (jj_2_43(2)) {
+    if (jj_2_32(2)) {
       jj_consume_token(IDENTIFIER);
-    } else if (jj_2_44(2)) {
+    } else if (jj_2_33(2)) {
       jj_consume_token(STRING);
-    } else if (jj_2_45(2)) {
+    } else if (jj_2_34(2)) {
       jj_consume_token(INTEGER_LITERAL);
     } else {
       jj_consume_token(-1);
       throw new ParseException();
     }
     sName = token.image.trim();
-    if (jj_2_46(2)) {
+    if (jj_2_35(2)) {
       jj_consume_token(INTEGER_LITERAL);
       ttl = Integer.parseInt(token.image);
     } else {
       ;
     }
-    jj_consume_token(32);
+    jj_consume_token(33);
     sExp = ConditionalOrFunction();
     result = new UkuScopeExpression(sName, ttl, sExp);
-    jj_consume_token(33);
+    jj_consume_token(34);
     jj_consume_token(0);
     {if (true) return result;}
     throw new Error("Missing return statement in function");
@@ -776,207 +715,62 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     finally { jj_save(34, xla); }
   }
 
-  private boolean jj_2_36(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_36(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(35, xla); }
-  }
-
-  private boolean jj_2_37(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_37(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(36, xla); }
-  }
-
-  private boolean jj_2_38(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_38(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(37, xla); }
-  }
-
-  private boolean jj_2_39(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_39(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(38, xla); }
-  }
-
-  private boolean jj_2_40(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_40(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(39, xla); }
-  }
-
-  private boolean jj_2_41(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_41(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(40, xla); }
-  }
-
-  private boolean jj_2_42(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_42(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(41, xla); }
-  }
-
-  private boolean jj_2_43(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_43(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(42, xla); }
-  }
-
-  private boolean jj_2_44(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_44(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(43, xla); }
-  }
-
-  private boolean jj_2_45(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_45(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(44, xla); }
-  }
-
-  private boolean jj_2_46(int xla) {
-    jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_46(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(45, xla); }
-  }
-
-  private boolean jj_3R_7() {
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_3()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_scan_token(0)) return true;
-    return false;
-  }
-
-  private boolean jj_3_46() {
-    if (jj_scan_token(INTEGER_LITERAL)) return true;
-    return false;
-  }
-
-  private boolean jj_3_45() {
-    if (jj_scan_token(INTEGER_LITERAL)) return true;
-    return false;
-  }
-
-  private boolean jj_3_44() {
-    if (jj_scan_token(STRING)) return true;
-    return false;
-  }
-
-  private boolean jj_3_34() {
-    if (jj_3R_20()) return true;
-    return false;
-  }
-
-  private boolean jj_3_43() {
-    if (jj_scan_token(IDENTIFIER)) return true;
+  private boolean jj_3R_17() {
+    if (jj_3R_18()) return true;
     return false;
   }
 
   private boolean jj_3R_11() {
     if (jj_scan_token(IDENTIFIER)) return true;
-    if (jj_scan_token(30)) return true;
+    if (jj_scan_token(31)) return true;
     return false;
   }
 
-  private boolean jj_3R_19() {
+  private boolean jj_3_13() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_33()) {
+    if (jj_3_14()) {
     jj_scanpos = xsp;
-    if (jj_3_34()) return true;
+    if (jj_3_15()) return true;
     }
+    if (jj_3R_15()) return true;
     return false;
   }
 
-  private boolean jj_3_33() {
-    if (jj_scan_token(ADDITIVE)) return true;
-    if (jj_3R_20()) return true;
+  private boolean jj_3R_14() {
+    if (jj_3R_15()) return true;
     return false;
   }
 
-  private boolean jj_3_27() {
-    if (jj_scan_token(LESSOREQUAL)) return true;
+  private boolean jj_3_31() {
+    if (jj_scan_token(STRING)) return true;
     return false;
   }
 
-  private boolean jj_3_26() {
-    if (jj_scan_token(GREATEROREQUAL)) return true;
+  private boolean jj_3_30() {
+    if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
-  private boolean jj_3_25() {
-    if (jj_scan_token(LESSTHAN)) return true;
-    return false;
-  }
-
-  private boolean jj_3_24() {
-    if (jj_scan_token(GREATERTHAN)) return true;
-    return false;
-  }
-
-  private boolean jj_3_2() {
-    if (jj_3R_8()) return true;
-    return false;
-  }
-
-  private boolean jj_3_23() {
-    if (jj_scan_token(UNEQUAL)) return true;
-    return false;
-  }
-
-  private boolean jj_3_1() {
-    if (jj_3R_7()) return true;
-    return false;
-  }
-
-  private boolean jj_3_22() {
-    if (jj_scan_token(EQUAL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_16() {
-    if (jj_3R_21()) return true;
+  private boolean jj_3R_21() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_22()) {
+    if (jj_3_30()) {
     jj_scanpos = xsp;
-    if (jj_3_23()) {
-    jj_scanpos = xsp;
-    if (jj_3_24()) {
-    jj_scanpos = xsp;
-    if (jj_3_25()) {
-    jj_scanpos = xsp;
-    if (jj_3_26()) {
-    jj_scanpos = xsp;
-    if (jj_3_27()) return true;
+    if (jj_3_31()) return true;
     }
-    }
-    }
-    }
-    }
-    if (jj_3R_21()) return true;
     return false;
   }
 
-  private boolean jj_3_14() {
+  private boolean jj_3_12() {
     if (jj_scan_token(AND)) return true;
     if (jj_3R_14()) return true;
+    return false;
+  }
+
+  private boolean jj_3_21() {
+    if (jj_scan_token(ADDITIVE)) return true;
+    if (jj_3R_17()) return true;
     return false;
   }
 
@@ -986,146 +780,80 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     return false;
   }
 
-  private boolean jj_3_42() {
-    if (jj_scan_token(STRING)) return true;
-    return false;
-  }
-
-  private boolean jj_3_41() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3_20() {
-    if (jj_3R_8()) return true;
+  private boolean jj_3_29() {
+    if (jj_3R_21()) return true;
     return false;
   }
 
   private boolean jj_3R_13() {
     if (jj_3R_14()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_14()) { jj_scanpos = xsp; break; }
-    }
     return false;
   }
 
-  private boolean jj_3_32() {
-    if (jj_scan_token(36)) return true;
+  private boolean jj_3R_16() {
+    if (jj_3R_17()) return true;
     return false;
   }
 
-  private boolean jj_3R_23() {
+  private boolean jj_3R_20() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_41()) {
+    if (jj_3_28()) {
     jj_scanpos = xsp;
-    if (jj_3_42()) return true;
+    if (jj_3_29()) return true;
     }
     return false;
   }
 
-  private boolean jj_3_31() {
-    if (jj_scan_token(35)) return true;
-    return false;
-  }
-
-  private boolean jj_3_30() {
-    if (jj_scan_token(34)) return true;
-    return false;
-  }
-
-  private boolean jj_3_21() {
-    if (jj_3R_16()) return true;
-    return false;
-  }
-
-  private boolean jj_3_29() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_30()) {
-    jj_scanpos = xsp;
-    if (jj_3_31()) {
-    jj_scanpos = xsp;
-    if (jj_3_32()) return true;
-    }
-    }
-    if (jj_3R_19()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_24() {
-    if (jj_3R_8()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_17() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_24()) {
-    jj_scanpos = xsp;
-    if (jj_3_21()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_40() {
-    if (jj_3R_23()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_18() {
-    if (jj_3R_19()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_29()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_22() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_39()) {
-    jj_scanpos = xsp;
-    if (jj_3_40()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_39() {
+  private boolean jj_3_28() {
     if (jj_scan_token(INTEGER_LITERAL)) return true;
     return false;
   }
 
-  private boolean jj_3_13() {
+  private boolean jj_3_11() {
     if (jj_scan_token(OR)) return true;
     if (jj_3R_13()) return true;
     return false;
   }
 
-  private boolean jj_3_7() {
+  private boolean jj_3_27() {
+    if (jj_scan_token(VARIABLE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_19() {
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+  private boolean jj_3_5() {
     if (jj_scan_token(IDENTIFIER)) return true;
-    if (jj_scan_token(30)) return true;
+    if (jj_scan_token(31)) return true;
+    return false;
+  }
+
+  private boolean jj_3_20() {
+    if (jj_scan_token(LESSOREQUAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_12() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_26()) {
+    jj_scanpos = xsp;
+    if (jj_3_27()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3_26() {
+    if (jj_3R_20()) return true;
     return false;
   }
 
   private boolean jj_3_19() {
-    if (jj_scan_token(32)) return true;
-    if (jj_3R_17()) return true;
-    if (jj_scan_token(33)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_8() {
-    if (jj_3R_13()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_13()) { jj_scanpos = xsp; break; }
-    }
+    if (jj_scan_token(GREATEROREQUAL)) return true;
     return false;
   }
 
@@ -1133,86 +861,109 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     if (jj_scan_token(LOCAL)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_7()) jj_scanpos = xsp;
+    if (jj_3_5()) jj_scanpos = xsp;
     if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
   private boolean jj_3_18() {
-    if (jj_3R_16()) return true;
+    if (jj_scan_token(LESSTHAN)) return true;
     return false;
   }
 
-  private boolean jj_3R_15() {
+  private boolean jj_3_25() {
+    if (jj_scan_token(33)) return true;
+    if (jj_3R_19()) return true;
+    return false;
+  }
+
+  private boolean jj_3_17() {
+    if (jj_scan_token(GREATERTHAN)) return true;
+    return false;
+  }
+
+  private boolean jj_3_16() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_17()) {
     jj_scanpos = xsp;
     if (jj_3_18()) {
     jj_scanpos = xsp;
-    if (jj_3_19()) return true;
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3_17() {
-    if (jj_scan_token(BOOLEAN)) return true;
-    return false;
-  }
-
-  private boolean jj_3_38() {
-    if (jj_scan_token(VARIABLE)) return true;
-    return false;
-  }
-
-  private boolean jj_3_12() {
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_12() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_37()) {
+    if (jj_3_19()) {
     jj_scanpos = xsp;
-    if (jj_3_38()) return true;
+    if (jj_3_20()) return true;
     }
-    return false;
-  }
-
-  private boolean jj_3_37() {
-    if (jj_3R_22()) return true;
-    return false;
-  }
-
-  private boolean jj_3_28() {
-    if (jj_scan_token(ADDITIVE)) return true;
-    if (jj_3R_18()) return true;
+    }
+    }
+    if (jj_3R_16()) return true;
     return false;
   }
 
   private boolean jj_3_10() {
+    if (jj_3R_12()) return true;
+    return false;
+  }
+
+  private boolean jj_3_24() {
+    if (jj_scan_token(NOT)) return true;
+    if (jj_3R_18()) return true;
+    return false;
+  }
+
+  private boolean jj_3_23() {
+    if (jj_3R_12()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_15() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_18() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_23()) {
+    jj_scanpos = xsp;
+    if (jj_3_24()) {
+    jj_scanpos = xsp;
+    if (jj_3_25()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3_8() {
     if (jj_scan_token(STRING)) return true;
     return false;
   }
 
-  private boolean jj_3_9() {
+  private boolean jj_3_7() {
     if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
-  private boolean jj_3_16() {
-    if (jj_3R_15()) return true;
+  private boolean jj_3_35() {
+    if (jj_scan_token(INTEGER_LITERAL)) return true;
     return false;
   }
 
-  private boolean jj_3_6() {
+  private boolean jj_3_4() {
     if (jj_3R_11()) return true;
     return false;
   }
 
-  private boolean jj_3_11() {
+  private boolean jj_3_9() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_7()) {
+    jj_scanpos = xsp;
+    if (jj_3_8()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3_6() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_9()) {
@@ -1222,84 +973,57 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     return false;
   }
 
-  private boolean jj_3_8() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_11()) {
-    jj_scanpos = xsp;
-    if (jj_3_12()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_21() {
-    if (jj_3R_18()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_28()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3_5() {
+  private boolean jj_3_3() {
     if (jj_3R_10()) return true;
     return false;
   }
 
-  private boolean jj_3R_14() {
+  private boolean jj_3_34() {
+    if (jj_scan_token(INTEGER_LITERAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3_33() {
+    if (jj_scan_token(STRING)) return true;
+    return false;
+  }
+
+  private boolean jj_3_32() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_15()) {
+    if (jj_3_2()) {
     jj_scanpos = xsp;
-    if (jj_3_16()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_36() {
-    if (jj_scan_token(32)) return true;
-    if (jj_3R_21()) return true;
-    if (jj_scan_token(33)) return true;
-    return false;
-  }
-
-  private boolean jj_3_15() {
-    if (jj_scan_token(NOT)) return true;
-    if (jj_3R_15()) return true;
-    return false;
-  }
-
-  private boolean jj_3_3() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_4()) {
+    if (jj_3_3()) {
     jj_scanpos = xsp;
-    if (jj_3_5()) {
-    jj_scanpos = xsp;
-    if (jj_3_6()) return true;
+    if (jj_3_4()) return true;
     }
     }
     return false;
   }
 
-  private boolean jj_3_4() {
+  private boolean jj_3_2() {
     if (jj_3R_9()) return true;
     return false;
   }
 
-  private boolean jj_3R_20() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_35()) {
-    jj_scanpos = xsp;
-    if (jj_3_36()) return true;
-    }
+  private boolean jj_3_15() {
+    if (jj_scan_token(UNEQUAL)) return true;
     return false;
   }
 
-  private boolean jj_3_35() {
-    if (jj_3R_12()) return true;
+  private boolean jj_3_22() {
+    if (jj_scan_token(MULTICATIVE)) return true;
+    if (jj_3R_18()) return true;
+    return false;
+  }
+
+  private boolean jj_3_14() {
+    if (jj_scan_token(EQUAL)) return true;
     return false;
   }
 
@@ -1327,7 +1051,7 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
    private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {};
    }
-  final private JJCalls[] jj_2_rtns = new JJCalls[46];
+  final private JJCalls[] jj_2_rtns = new JJCalls[35];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
@@ -1511,7 +1235,7 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[37];
+    boolean[] la1tokens = new boolean[35];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -1528,7 +1252,7 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
         }
       }
     }
-    for (int i = 0; i < 37; i++) {
+    for (int i = 0; i < 35; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -1555,7 +1279,7 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
 
   private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 46; i++) {
+    for (int i = 0; i < 35; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -1597,17 +1321,6 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
             case 32: jj_3_33(); break;
             case 33: jj_3_34(); break;
             case 34: jj_3_35(); break;
-            case 35: jj_3_36(); break;
-            case 36: jj_3_37(); break;
-            case 37: jj_3_38(); break;
-            case 38: jj_3_39(); break;
-            case 39: jj_3_40(); break;
-            case 40: jj_3_41(); break;
-            case 41: jj_3_42(); break;
-            case 42: jj_3_43(); break;
-            case 43: jj_3_44(); break;
-            case 44: jj_3_45(); break;
-            case 45: jj_3_46(); break;
           }
         }
         p = p.next;

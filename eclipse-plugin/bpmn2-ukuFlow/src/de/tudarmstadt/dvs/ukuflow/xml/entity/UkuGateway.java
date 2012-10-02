@@ -2,6 +2,9 @@ package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
 import java.util.Map;
 
+import de.tudarmstadt.dvs.ukuflow.tools.exception.UnspecifiedGatewayException;
+import de.tudarmstadt.dvs.ukuflow.xml.TypeClassifier;
+
 public class UkuGateway extends UkuElement {
 
 	/**
@@ -88,7 +91,52 @@ public class UkuGateway extends UkuElement {
 	public int getType() {
 		return type;
 	}
-
+	
+	public void selfValidate(){
+		String tmpName = "";
+		if (getOutgoingID().size() > 1 && getIncomingID().size() > 1) {
+			 addWarningMessage("a mixed gateway");
+			 setType(3);
+			tmpName = "Mixed";
+		} else if ( getOutgoingID().size() == 0
+				||  getIncomingID().size() == 0) {
+			if ( getOutgoingID().size() == 0)
+				 addWarningMessage("no outgoing sequence flow");
+			if ( getIncomingID().size() == 0)
+				 addWarningMessage("no incoming sequence flow");
+			 setType(-1);
+			return;
+		} else if ( getIncomingID().size() == 1
+				&&  getOutgoingID().size() > 1) {
+			 setType(2);
+			tmpName = "Diverging";
+		} else if ( getIncomingID().size() > 1
+				&&  getOutgoingID().size() == 1) {
+			tmpName = "Converging";
+			 setType(1);
+		}
+		if ( getIncomingID().size() == 1
+				&&  getOutgoingID().size() == 1) {
+			tmpName = "UnKnown";
+			 setType(0);
+		}
+		if ( getType() !=  direction) {
+			 addWarningMessage("was specified as '" +  directionName
+					+ "', but it was found as a '" + tmpName + "' gateway");
+		}
+		if ( type ==  direction &&  direction == 0) {
+			 addErrorMessage("Please specify the direction of gateway (Converging,Deverging or Mixed)");
+		}
+		int tp = 0;
+		try {
+			tp = TypeClassifier.getInstance().getGatewayType(this);
+			 ukuGatewayType = tp;
+		} catch (UnspecifiedGatewayException e) {
+			 addErrorMessage(e.getMessage());
+			return;
+		}
+	}
+	
 	@Override
 	public void accept(ElementVisitor visitor) {
 		visitor.visit(this);

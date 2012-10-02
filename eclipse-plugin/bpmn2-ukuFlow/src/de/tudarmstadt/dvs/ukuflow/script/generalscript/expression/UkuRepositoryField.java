@@ -9,7 +9,7 @@ public class UkuRepositoryField extends PrimaryExpression {
 	 * @uml.property  name="fieldID"
 	 */
 	int fieldID = -1;
-
+	
 	public UkuRepositoryField(String name)
 			throws InvalidRepositoryNameException {
 		if (name.startsWith("NODE_") || name.startsWith("SENSOR_")) {
@@ -41,5 +41,8 @@ public class UkuRepositoryField extends PrimaryExpression {
 		// TODO Auto-generated method stub
 		return 2;
 	}
-
+	@Override
+	public String toString(){
+		return "FIELD_"+fieldID;
+	}
 }

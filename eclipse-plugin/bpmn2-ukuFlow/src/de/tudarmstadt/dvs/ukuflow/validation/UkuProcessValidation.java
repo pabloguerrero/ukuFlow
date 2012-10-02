@@ -20,6 +20,7 @@ public class UkuProcessValidation {
 	}
 
 	public boolean validate() {
+		
 		for (UkuEntity e : process.getEntities()) {
 			if (e instanceof UkuEvent) {
 				validate((UkuEvent) e);
@@ -27,12 +28,12 @@ public class UkuProcessValidation {
 				validate((UkuExecuteTask) e);
 			} else if (e instanceof UkuScope) {
 				validate((UkuScope) e);
-			} else if (e instanceof UkuGateway) {
-				validate((UkuGateway) e);
 			} else if (e instanceof UkuSequenceFlow) {
 				validate((UkuSequenceFlow) e);
+			} else if (e instanceof UkuGateway) {
+				validate((UkuGateway) e);
 			} else {
-				System.err.println("error");
+				System.err.println(e);
 			}
 		}
 		/**
@@ -87,48 +88,7 @@ public class UkuProcessValidation {
 	}
 
 	public void validate(UkuGateway gway) {
-		String tmpName = "";
-		if (gway.getOutgoingID().size() > 1 && gway.getIncomingID().size() > 1) {
-			gway.addWarningMessage("a mixed gateway");
-			gway.setType(3);
-			tmpName = "Mixed";
-		} else if (gway.getOutgoingID().size() == 0
-				|| gway.getIncomingID().size() == 0) {
-			if (gway.getOutgoingID().size() == 0)
-				gway.addWarningMessage("no outgoing sequence flow");
-			if (gway.getIncomingID().size() == 0)
-				gway.addWarningMessage("no incoming sequence flow");
-			gway.setType(-1);
-			return;
-		} else if (gway.getIncomingID().size() == 1
-				&& gway.getOutgoingID().size() > 1) {
-			gway.setType(2);
-			tmpName = "Diverging";
-		} else if (gway.getIncomingID().size() > 1
-				&& gway.getOutgoingID().size() == 1) {
-			tmpName = "Converging";
-			gway.setType(1);
-		}
-		if (gway.getIncomingID().size() == 1
-				&& gway.getOutgoingID().size() == 1) {
-			tmpName = "UnKnown";
-			gway.setType(0);
-		}
-		if (gway.getType() != gway.direction) {
-			gway.addWarningMessage("was specified as '" + gway.directionName
-					+ "', but it was found as a '" + tmpName + "' gateway");
-		}
-		if (gway.type == gway.direction && gway.direction == 0) {
-			gway.addErrorMessage("Please specify the direction of gateway (Converging,Deverging or Mixed)");
-		}
-		int tp = 0;
-		try {
-			tp = TypeClassifier.getInstance().getGatewayType(gway);
-			gway.ukuGatewayType = tp;
-		} catch (UnspecifiedGatewayException e) {
-			gway.addErrorMessage(e.getMessage());
-			return;
-		}
+		
 		if (gway.ukuGatewayType == UkuConstants.INCLUSIVE_DECISION_GATEWAY) {
 			if (gway.getDefaultGway() == null);
 				//gway.addErrorMessage("inclusive decision gateway should have a default gateway");
@@ -138,11 +98,13 @@ public class UkuProcessValidation {
 	public void validate(UkuSequenceFlow sef) {
 		if (sef.getSource() instanceof UkuGateway) {
 			UkuGateway sourceGway = (UkuGateway) sef.getSource();
-
+			System.out.println(sourceGway.ukuGatewayType +"->"+ sef.getID());
 			switch (sourceGway.ukuGatewayType) {
 			case UkuConstants.INCLUSIVE_DECISION_GATEWAY:
 			case UkuConstants.EXCLUSIVE_DECISION_GATEWAY:
-				if (!sef.hasCondition() && sef.isDefault()) {
+				if(!sef.hasCondition() && !sef.isDefault()){
+					sef.addErrorMessage("sequence Flow has no condition or condition expression has incorrect syntax");
+				}else if (!sef.hasCondition() && sef.isDefault()) {
 					sef.addWarningMessage("this sequence flow should be default or have a condition");
 				}
 				break;

@@ -22,13 +22,13 @@ public class TypeClassifier {
 		connectors.add("sequenceFlow");
 
 		tasks.add("scriptTask");
-		tasks.add("userTask");
+		//tasks.add("userTask");
 
 		events.add("endEvent");
 		events.add("startEvent");
-		events.add("intermediateThrowEvent");
-		events.add("intermediateCatchEvent");
-
+		//events.add("intermediateThrowEvent");
+		//events.add("intermediateCatchEvent");
+		
 		gateways.add("parallelGateway");
 		gateways.add("exclusiveGateway");
 		gateways.add("complexGateway");

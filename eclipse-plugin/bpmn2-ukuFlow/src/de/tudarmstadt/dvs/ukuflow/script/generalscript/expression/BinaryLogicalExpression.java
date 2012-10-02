@@ -66,7 +66,12 @@ public class BinaryLogicalExpression extends LogicalExpression {
 	public String getStringOperator() {
 		switch(operator){
 		case AND : return "&&";
-		case OR : return "||";		
+		case OR : return "||";
+		case NOT: return "!";
+		case GREATERTHAN: return ">";
+		case LESSTHAN: return "<";
+		case GREATEROREQUAL : return ">=";
+		case LESSOREQUAL: return "<=";
 		//case XOR : return "^";
 		default: return "?";
 		}

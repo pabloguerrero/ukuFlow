@@ -16,7 +16,7 @@ public class UkuSequenceFlow extends UkuEntity {
 
 	public String condition = null;
 	UkuExpression conditionExp = null;
-
+	private boolean hasCondition = false;
 	private int priority = -1;
 	private boolean isDefault = false;
 
@@ -62,12 +62,15 @@ public class UkuSequenceFlow extends UkuEntity {
 	}
 
 	public void setCondition(String condition) {
-		if (condition == null || condition.equals(""))
+		if (condition == null || condition.equals("")){
 			return;
+		}
 		this.condition = condition;
+		hasCondition = true;
 		ukuFlowScript parser = ukuFlowScript.getInstance(condition);
 		try {
 			conditionExp = parser.parseCondition();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			String msg = "Error found at element " + id + " : "
@@ -81,9 +84,10 @@ public class UkuSequenceFlow extends UkuEntity {
 	}
 
 	public boolean hasCondition() {
-		return (conditionExp != null);
+		System.out.println(source + "->"+condition+"->"+target);
+		return hasCondition;
 	}
-
+	
 	public UkuExpression getConditionExp() {
 		return conditionExp;
 	}

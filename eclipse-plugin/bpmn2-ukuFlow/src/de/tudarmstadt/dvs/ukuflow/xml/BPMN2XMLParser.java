@@ -60,10 +60,11 @@ public class BPMN2XMLParser {
 		reference = new HashMap<String, UkuEntity>();
 		root = loadFile(fileLocation);
 	}
-	public int getProcessID(){
-		if(root.getName().equals("definitions")){
-			for(Element child :root.getChildren()){
-				if(child.getName().equals("process")){
+
+	public int getProcessID() {
+		if (root.getName().equals("definitions")) {
+			for (Element child : root.getChildren()) {
+				if (child.getName().equals("process")) {
 					UkuProcess process = new UkuProcess(fetchID(child));
 					return process.getWorkflowID();
 				}
@@ -71,6 +72,7 @@ public class BPMN2XMLParser {
 		}
 		throw new NullPointerException();
 	}
+
 	/**
 	 * this function will fetch all process, set the reference and the element
 	 * id for each elements
@@ -201,8 +203,8 @@ public class BPMN2XMLParser {
 		try {
 			type = classifier.getType(name);
 		} catch (UnsupportedElementException e1) {
-			errorManager.addWarning(e.getParentElement().getAttributeValue("id"),
-					name + " is not supported");
+			errorManager.addWarning(e.getParentElement()
+					.getAttributeValue("id"), name + " is not supported");
 			log.debug(name + " is not supported : " + e1.getMessage());
 			return null;
 		}
@@ -278,7 +280,7 @@ public class BPMN2XMLParser {
 			UkuGateway gway = new UkuGateway(id);
 			gway.setElementType(name);
 			String direction = e.getAttributeValue("gatewayDirection");
-			String defaultGway = e.getAttributeValue("default");			
+			String defaultGway = e.getAttributeValue("default");
 			gway.setDefaultGway(defaultGway);
 			if (direction != null) {
 				gway.setDirection(direction);
@@ -301,9 +303,9 @@ public class BPMN2XMLParser {
 		case 5: // Text Annotation
 			UkuScope scope = new UkuScope(id);
 			String scope_desc = "";
-			for(Element child :e.getChildren()){
-				if(child.getName().equals("text")){
-					scope_desc= child.getTextTrim();
+			for (Element child : e.getChildren()) {
+				if (child.getName().equals("text")) {
+					scope_desc = child.getTextTrim();
 					scope.setScript(scope_desc);
 					break;
 				}
@@ -330,44 +332,55 @@ public class BPMN2XMLParser {
 	 */
 	private void optimize(UkuProcess process) {
 		List<UkuEntity> tmp = new LinkedList<UkuEntity>();
-		for (UkuEntity entity : process.getEntities()) {
-			if (entity instanceof UkuGateway) {
-				UkuGateway gway = (UkuGateway) entity;
-				if (gway.getOutgoingID().size() > 1
-						&& gway.getIncomingID().size() > 1) {
-					System.out.println("optimizing");
-					process.removeEntity(gway);
-					reference.remove(gway.getID());
-					UkuGateway left = gway.clone(generateID(gway.getID()));
-					left.setIncoming(gway.getIncomingID());
-					for (String inc : left.getIncomingID()) {
-						UkuSequenceFlow sf = (UkuSequenceFlow) reference
-								.get(inc);
-						sf.setTargetID(left.getID());
-					}
-					UkuGateway right = gway.clone(generateID(gway.getID()));
-					right.setOutgoing(gway.getOutgoingID());
-					for (String outg : right.getOutgoingID()) {
-						UkuSequenceFlow sf = (UkuSequenceFlow) reference
-								.get(outg);
-						sf.setSourceID(right.getID());
-					}
-					UkuSequenceFlow seq = new UkuSequenceFlow(
-							generateID("generated_sequenceflow"), left.getID(),
-							right.getID());
-					left.addOutgoing(seq.getID());
-					right.addIncoming(seq.getID());
+		boolean done = false;
+		while (!done) {
+			for (UkuEntity entity : process.getEntities()) {
+				if (entity instanceof UkuGateway) {
+					UkuGateway gway = (UkuGateway) entity;
+					if (gway.getOutgoingID().size() > 1
+							&& gway.getIncomingID().size() > 1) {
+						System.out.println("optimizing");
+						process.removeEntity(gway);
+						reference.remove(gway.getID());
+						UkuGateway left = gway.clone(generateID(gway.getID()));
+						left.setIncoming(gway.getIncomingID());
+						for (String inc : left.getIncomingID()) {
+							UkuSequenceFlow sf = (UkuSequenceFlow) reference
+									.get(inc);
+							sf.setTargetID(left.getID());
+						}
+						UkuGateway right = gway.clone(generateID(gway.getID()));
+						right.setOutgoing(gway.getOutgoingID());
+						for (String outg : right.getOutgoingID()) {
+							UkuSequenceFlow sf = (UkuSequenceFlow) reference
+									.get(outg);
+							sf.setSourceID(right.getID());
+						}
+						UkuSequenceFlow seq = new UkuSequenceFlow(
+								generateID("generated_sequenceflow"),
+								left.getID(), right.getID());
+						left.addOutgoing(seq.getID());
+						right.addIncoming(seq.getID());
 
-					tmp.add(left);
-					reference.put(left.getID(), left);
-					tmp.add(right);
-					reference.put(right.getID(), right);
-					tmp.add(seq);
-					reference.put(seq.getID(), seq);
+						tmp.add(left);
+						reference.put(left.getID(), left);
+						tmp.add(right);
+						reference.put(right.getID(), right);
+						tmp.add(seq);
+						reference.put(seq.getID(), seq);
+						process.addEntities(tmp);
+						break;
+					}
 				}
 			}
+			done = true;
 		}
-		process.addEntities(tmp);
+		for(UkuEntity e : process.getElements()){
+			if(e instanceof UkuGateway){
+				((UkuGateway)e).selfValidate();
+			}
+		}
+
 	}
 
 	private String generateID(String rootID) {

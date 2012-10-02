@@ -103,6 +103,7 @@ public class ConvertCommand extends AbstractHandler {
 			String s = QuickFileReader.getFileContent(file.getLocation().toOSString());
 			return Integer.valueOf(s.split(" ")[2]);
 		}
+		
 		throw new NullPointerException("");
 	}
 

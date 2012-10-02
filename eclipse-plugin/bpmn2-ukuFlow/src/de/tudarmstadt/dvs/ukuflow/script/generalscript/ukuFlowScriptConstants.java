@@ -19,47 +19,49 @@ public interface ukuFlowScriptConstants {
   /** RegularExpression Id. */
   int ADDITIVE = 8;
   /** RegularExpression Id. */
-  int BOOLEAN = 9;
+  int MULTICATIVE = 9;
   /** RegularExpression Id. */
-  int TRUE = 10;
+  int BOOLEAN = 10;
   /** RegularExpression Id. */
-  int FALSE = 11;
+  int TRUE = 11;
   /** RegularExpression Id. */
-  int AT_ = 12;
+  int FALSE = 12;
   /** RegularExpression Id. */
-  int SCOPE_DESC = 13;
+  int AT_ = 13;
   /** RegularExpression Id. */
-  int LOCAL = 14;
+  int SCOPE_DESC = 14;
   /** RegularExpression Id. */
-  int SCOPE = 15;
+  int LOCAL = 15;
   /** RegularExpression Id. */
-  int VARIABLE = 16;
+  int SCOPE = 16;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 17;
+  int VARIABLE = 17;
   /** RegularExpression Id. */
-  int DECIMAL_LITERAL = 18;
+  int INTEGER_LITERAL = 18;
   /** RegularExpression Id. */
-  int HEX_LITERAL = 19;
+  int DECIMAL_LITERAL = 19;
   /** RegularExpression Id. */
-  int IDENTIFIER = 20;
+  int HEX_LITERAL = 20;
   /** RegularExpression Id. */
-  int LETTER = 21;
+  int IDENTIFIER = 21;
   /** RegularExpression Id. */
-  int DIGIT = 22;
+  int LETTER = 22;
   /** RegularExpression Id. */
-  int EQUAL = 23;
+  int DIGIT = 23;
   /** RegularExpression Id. */
-  int UNEQUAL = 24;
+  int EQUAL = 24;
   /** RegularExpression Id. */
-  int GREATERTHAN = 25;
+  int UNEQUAL = 25;
   /** RegularExpression Id. */
-  int LESSTHAN = 26;
+  int GREATERTHAN = 26;
   /** RegularExpression Id. */
-  int GREATEROREQUAL = 27;
+  int LESSTHAN = 27;
   /** RegularExpression Id. */
-  int LESSOREQUAL = 28;
+  int GREATEROREQUAL = 28;
   /** RegularExpression Id. */
-  int STRING = 29;
+  int LESSOREQUAL = 29;
+  /** RegularExpression Id. */
+  int STRING = 30;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -75,6 +77,7 @@ public interface ukuFlowScriptConstants {
     "<OR>",
     "<NOT>",
     "<ADDITIVE>",
+    "<MULTICATIVE>",
     "<BOOLEAN>",
     "<TRUE>",
     "<FALSE>",
@@ -100,9 +103,6 @@ public interface ukuFlowScriptConstants {
     "\";\"",
     "\"(\"",
     "\")\"",
-    "\"*\"",
-    "\"/\"",
-    "\"%\"",
   };
 
 }

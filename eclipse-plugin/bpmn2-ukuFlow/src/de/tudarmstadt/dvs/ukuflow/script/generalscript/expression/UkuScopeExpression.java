@@ -18,4 +18,8 @@ public class UkuScopeExpression {
 		this.scopeExp = sExp;
 		this.ttl = ttl;
 	}
+	@Override
+	public String toString(){
+		return "[scope:"+name+"-"+ttl+"s-<"+scopeExp+">";
+	}
 }
