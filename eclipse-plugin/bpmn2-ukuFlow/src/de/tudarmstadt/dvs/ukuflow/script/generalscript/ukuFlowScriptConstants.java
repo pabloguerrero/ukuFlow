@@ -11,57 +11,59 @@ public interface ukuFlowScriptConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int AND = 5;
+  int PREDEFINED_CONSTANT = 5;
   /** RegularExpression Id. */
-  int OR = 6;
+  int AND = 6;
   /** RegularExpression Id. */
-  int NOT = 7;
+  int OR = 7;
   /** RegularExpression Id. */
-  int ADDITIVE = 8;
+  int NOT = 8;
   /** RegularExpression Id. */
-  int MULTICATIVE = 9;
+  int ADDITIVE = 9;
   /** RegularExpression Id. */
-  int BOOLEAN = 10;
+  int MULTICATIVE = 10;
   /** RegularExpression Id. */
-  int TRUE = 11;
+  int BOOLEAN = 11;
   /** RegularExpression Id. */
-  int FALSE = 12;
+  int TRUE = 12;
   /** RegularExpression Id. */
-  int AT_ = 13;
+  int FALSE = 13;
   /** RegularExpression Id. */
-  int SCOPE_DESC = 14;
+  int AT_ = 14;
   /** RegularExpression Id. */
-  int LOCAL = 15;
+  int SCOPE_DESC = 15;
   /** RegularExpression Id. */
-  int SCOPE = 16;
+  int LOCAL = 16;
   /** RegularExpression Id. */
-  int VARIABLE = 17;
+  int SCOPE = 17;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 18;
+  int VARIABLE = 18;
   /** RegularExpression Id. */
-  int DECIMAL_LITERAL = 19;
+  int INTEGER_LITERAL = 19;
   /** RegularExpression Id. */
-  int HEX_LITERAL = 20;
+  int DECIMAL_LITERAL = 20;
   /** RegularExpression Id. */
-  int IDENTIFIER = 21;
+  int HEX_LITERAL = 21;
   /** RegularExpression Id. */
-  int LETTER = 22;
+  int IDENTIFIER = 22;
   /** RegularExpression Id. */
-  int DIGIT = 23;
+  int LETTER = 23;
   /** RegularExpression Id. */
-  int EQUAL = 24;
+  int DIGIT = 24;
   /** RegularExpression Id. */
-  int UNEQUAL = 25;
+  int EQUAL = 25;
   /** RegularExpression Id. */
-  int GREATERTHAN = 26;
+  int UNEQUAL = 26;
   /** RegularExpression Id. */
-  int LESSTHAN = 27;
+  int GREATERTHAN = 27;
   /** RegularExpression Id. */
-  int GREATEROREQUAL = 28;
+  int LESSTHAN = 28;
   /** RegularExpression Id. */
-  int LESSOREQUAL = 29;
+  int GREATEROREQUAL = 29;
   /** RegularExpression Id. */
-  int STRING = 30;
+  int LESSOREQUAL = 30;
+  /** RegularExpression Id. */
+  int STRING = 31;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -73,6 +75,7 @@ public interface ukuFlowScriptConstants {
     "\"\\n\"",
     "\"\\t\"",
     "\"\\r\"",
+    "<PREDEFINED_CONSTANT>",
     "<AND>",
     "<OR>",
     "<NOT>",
