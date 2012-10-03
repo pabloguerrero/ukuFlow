@@ -2,6 +2,8 @@ package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
 import java.util.Map;
 
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.ParseException;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.TokenMgrError;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ukuFlowScript;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
@@ -14,7 +16,7 @@ public class UkuSequenceFlow extends UkuEntity {
 	private UkuElement sourceEntity;
 	private UkuElement targetEntity;
 
-	public String condition = null;
+
 	UkuExpression conditionExp = null;
 	private boolean hasCondition = false;
 	private int priority = -1;
@@ -65,12 +67,18 @@ public class UkuSequenceFlow extends UkuEntity {
 		if (condition == null || condition.equals("")){
 			return;
 		}
-		this.condition = condition;
 		hasCondition = true;
 		ukuFlowScript parser = ukuFlowScript.getInstance(condition);
 		try {
-			conditionExp = parser.parseCondition();
-			
+			conditionExp = parser.parseCondition();			
+		}catch (Error error) {
+			if (parser.token != null)
+				addErrorMessage("element " + id + ", at line: "
+						+ parser.token.beginLine + "& col: "
+						+ parser.token.beginColumn, "error near the token "
+						+ parser.token);
+			else
+				addErrorMessage(error.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			String msg = "Error found at element " + id + " : "
@@ -84,7 +92,6 @@ public class UkuSequenceFlow extends UkuEntity {
 	}
 
 	public boolean hasCondition() {
-		System.out.println(source + "->"+condition+"->"+target);
 		return hasCondition;
 	}
 	

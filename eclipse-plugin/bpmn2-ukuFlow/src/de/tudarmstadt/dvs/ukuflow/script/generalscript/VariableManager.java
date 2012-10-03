@@ -11,6 +11,7 @@ import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.NotRegisteredVariableException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyVariableException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.VariableAlreadyExistException;
+import de.tudarmstadt.dvs.ukuflow.validation.ErrorManager;
 
 /**
  * this class represent a variable table, which contains all created and used
@@ -20,7 +21,7 @@ import de.tudarmstadt.dvs.ukuflow.tools.exception.VariableAlreadyExistException;
  * 
  */
 public class VariableManager {
-
+	private ErrorManager errM = ErrorManager.getInstance();
 	private static VariableManager INSTANCE = null;
 	public static final int NODE_ID = UkuConstants.NODE_ID;
 	private int current_id;
@@ -36,7 +37,7 @@ public class VariableManager {
 		variables = new HashMap<String, Integer>();
 		current_id = NODE_ID + 1;
 	}
-
+	
 	/**
 	 * 
 	 * @return the instance of VariableManager
@@ -60,7 +61,10 @@ public class VariableManager {
 		variables = new HashMap<String, Integer>();
 		current_id = NODE_ID;
 	}
-
+	public void addErrorMessage(String msg){
+		errM.addError("ErrorManager", msg);
+	}
+	
 	public int getVariableID(String name) {
 		if (name.startsWith("$"))
 			name = name.substring(1);

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ParseException;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ScopeManager;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.TokenMgrError;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ukuFlowScript;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuScopeExpression;
@@ -11,23 +12,34 @@ import de.tudarmstadt.dvs.ukuflow.tools.exception.DuplicateScopeNameException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyScopeException;
 
 public class UkuScope extends UkuEntity {
-	private String script = null;
+	//private String script = null;
 
 	private int ttl = -1;
 	private int scopeID = 0;
 	private String name = null;
 	UkuExpression sExpression = null;
-
+	private boolean hasScript = false;
 	public UkuScope(String id) {
 		super(id);
 	}
 
 	public void setScript(String script) {
-		this.script = script;
+		if(script == null || script.equals("")){
+			return;
+		}
+		hasScript = true;
 		ukuFlowScript parser = ukuFlowScript.getInstance(script);
 		UkuScopeExpression exp = null;
 		try {
-			exp = parser.scopeExpression();
+			exp = parser.scopeExpression();			
+		} catch (Error error) {
+			if (parser.token != null)
+				addErrorMessage("element " + id + ", at line: "
+						+ parser.token.beginLine + "& col: "
+						+ parser.token.beginColumn, "error near the token "
+						+ parser.token);
+			else
+				addErrorMessage(error.getMessage());
 		} catch (ParseException e) {
 			addErrorMessage("element " + id + ", at line: "
 					+ parser.token.beginLine + "& col: "
@@ -68,7 +80,7 @@ public class UkuScope extends UkuEntity {
 	}
 
 	public boolean hasScript() {
-		return script != null;
+		return hasScript;
 	}
 
 	@Override

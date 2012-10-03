@@ -1,10 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.validation;
 
 
-import de.tudarmstadt.dvs.ukuflow.handler.UkuConsole;
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
-import de.tudarmstadt.dvs.ukuflow.tools.exception.UnspecifiedGatewayException;
-import de.tudarmstadt.dvs.ukuflow.xml.TypeClassifier;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.*;
 
 public class UkuProcessValidation {
@@ -84,7 +81,7 @@ public class UkuProcessValidation {
 	}
 
 	public void validate(UkuScope scope) {
-		// TODO
+		// nothing do validate with scope.
 	}
 
 	public void validate(UkuGateway gway) {
@@ -98,7 +95,6 @@ public class UkuProcessValidation {
 	public void validate(UkuSequenceFlow sef) {
 		if (sef.getSource() instanceof UkuGateway) {
 			UkuGateway sourceGway = (UkuGateway) sef.getSource();
-			System.out.println(sourceGway.ukuGatewayType +"->"+ sef.getID());
 			switch (sourceGway.ukuGatewayType) {
 			case UkuConstants.INCLUSIVE_DECISION_GATEWAY:
 			case UkuConstants.EXCLUSIVE_DECISION_GATEWAY:

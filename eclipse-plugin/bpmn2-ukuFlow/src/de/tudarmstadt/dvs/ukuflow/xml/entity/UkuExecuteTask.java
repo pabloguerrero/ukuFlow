@@ -3,17 +3,17 @@ package de.tudarmstadt.dvs.ukuflow.xml.entity;
 import java.util.List;
 import java.util.Map;
 
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.TokenMgrError;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ParseException;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ukuFlowScript;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.TaskScriptFunction;
 
 public class UkuExecuteTask extends UkuElement {
 	private List<TaskScriptFunction> statements;
-	private String script;
+	private boolean hasScript = false;
 
 	public UkuExecuteTask(String id) {
 		super(id);
-		script = "";
 	}
 
 	@Override
@@ -33,22 +33,36 @@ public class UkuExecuteTask extends UkuElement {
 	}
 
 	public void setScript(String script) {
-		System.out.println(script);
-		this.script = script;
+		//this.script = script;
+		if(script == null || script.equals("")){
+			System.err.println(script);
+			return;
+		}
+		hasScript = true;
 		ukuFlowScript parser = ukuFlowScript.getInstance(script);
 		try {
 			statements = parser.parseTaskScript();
+		} catch (Error error) {
+			if (parser.token != null)
+				addErrorMessage("element " + id + ", at line: "
+						+ parser.token.beginLine + "& col: "
+						+ parser.token.beginColumn, "error near the token "
+						+ parser.token);
+			else
+				addErrorMessage(error.getMessage());
 		} catch (ParseException e) {
-			System.out.println("add error msg");
+			String msg = "error near the token "
+					+ parser.token;
+			if(e.getMessage().startsWith(parser.token.image))
+				msg = e.getMessage();
 			addErrorMessage("element " + id + ", at line: "
 					+ parser.token.beginLine + "& col: "
-					+ parser.token.beginColumn, "error near the token "
-					+ parser.token);
+					+ parser.token.beginColumn, msg);
 		}
 	}
 
 	public boolean hasScript() {
-		return script != null && !script.equals("") && statements != null&& (statements.size() > 0);
+		return hasScript;
 	}
 
 	public List<TaskScriptFunction> getStatements() {

@@ -28,9 +28,9 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 	}
 
 	public byte toByte(int v) {
-		if (v > 255){
+		if (v > 255) {
 			System.out.println("error");
-			return 0;
+			return (byte)255;
 		}
 		// TODO checking v
 		return (byte) v;
@@ -40,10 +40,14 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 	public void visit(UkuConstant uConstant) {
 		if (uConstant.isBoolValue()) {
 			boolean v = (Boolean) uConstant.getValue();
-			log.error("boolean is not supported yet");
+			out.add(toByte(UkuConstants.UINT8_VALUE));
+			if (v)
+				out.add(toByte(1));
+			else
+				out.add(toByte(0));
+
 		} else {
 			int v = (Integer) uConstant.getValue();
-			// out.add(toByte(ExpressionTypes.REPOSITORY_VALUE));
 			out.add(uConstant.getType());
 			if (uConstant.getLength() == 2) {
 				out.add(toByte(v));
@@ -75,6 +79,13 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 		out.add(toByte(uVariable.getID()));
 	}
 
+	@Override
+	public void visit(UkuRepositoryField field) {
+		out.add(toByte(UkuConstants.REPOSITORY_VALUE));
+		out.add(toByte(field.getFieldID()));
+
+	}
+	
 	@Override
 	public void visit(UnaryNumericalExpression uNumExp) {
 		out.add(toByte(uNumExp.getOperator()));
@@ -116,7 +127,6 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 		out.add(toByte(UkuConstants.LOCAL_FUNCTION_STATEMENT));
 		// id of variable
 		if (localF.hasVariable()) {
-			// TODO a variable manager
 			byte variable_id = (byte) localF.getVariable().getID();
 			out.add(variable_id);
 		} else {
@@ -141,7 +151,6 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 	@Override
 	public void visit(ScopeFunction scopeF) {
 		out.add(toByte(UkuConstants.SCOPED_FUNCTION_STATEMENT));
-		// TODO HIEN Scope id management?
 		// Scope id
 		byte scope_id = scopeF.getScopeID();
 		out.add(scope_id);
@@ -171,12 +180,12 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 		id = toByte(computationalF.getVariable().getID());
 		out.add(id);
 
-		//int l = computationalF.getParam().getLength();
+		// int l = computationalF.getParam().getLength();
 		int current_pos = out.size();
 		out.add(toByte(1));
 		computationalF.getParam().accept(this);
-		int length = out.size()-current_pos-1;
-		out.set(current_pos,(byte) length);
+		int length = out.size() - current_pos - 1;
+		out.set(current_pos, (byte) length);
 	}
 
 	public static void main(String[] args) {
@@ -187,13 +196,11 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 			sb.append((char) (c + i));
 
 	}
-/*
-	@Override
-	public void visit(UkuTaskScript ukuTaskScript) {
-		// TODO Auto-generated method stub
-		log.error("visit is called");
-	}
-*/
+
+	/*
+	 * @Override public void visit(UkuTaskScript ukuTaskScript) { 
+	 * Auto-generated method stub log.error("visit is called"); }
+	 */
 	@Override
 	public Vector<Byte> getOutput() {
 		return out;
@@ -204,10 +211,5 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 		out.clear();
 	}
 
-	@Override
-	public void visit(UkuRepositoryField field) {
-		out.add(toByte(UkuConstants.REPOSITORY_VALUE));
-		out.add(toByte(field.getFieldID()));
-		
-	}
+	
 }

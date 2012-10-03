@@ -6,38 +6,28 @@ import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
  * represent an unary numerical expression
  * 
  * @author Hien Quoc Dang
- * @suppresswarnings restrict
+ * 
  */
 
-@SuppressWarnings("restricted")
 public class UnaryNumericalExpression extends NumericalExpression {
 	public UnaryNumericalExpression(int operator) {
 		super(operator);
 		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * @uml.property  name="operand"
-	 * @uml.associationEnd  
-	 */
+	
 	protected UkuExpression operand;
 	
 	public int getOperator(){
 		return operator;
 	}
 	
-	/**
-	 * @param n
-	 * @uml.property  name="operand"
-	 */
+	
 	public void setOperand(UkuExpression n) {
 		this.operand = n;
 	}
 
-	/**
-	 * @return
-	 * @uml.property  name="operand"
-	 */
+	
 	public UkuExpression getOperand() {
 		return operand;
 	}
@@ -50,6 +40,7 @@ public class UnaryNumericalExpression extends NumericalExpression {
 	public void accept(ScriptVisitor visitor) {
 		visitor.visit(this);
 	}
+	
 	public int getLength(){
 		return 1 + operand.getLength();
 	}

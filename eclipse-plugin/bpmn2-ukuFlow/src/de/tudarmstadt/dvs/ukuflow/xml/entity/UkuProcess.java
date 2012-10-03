@@ -20,9 +20,12 @@ public class UkuProcess implements VisitableElement {
 	 * unique id
 	 */
 	public String id;
+	
+	public String name;
 
-	public UkuProcess(String id) {
+	public UkuProcess(String id, String name) {
 		this.id = id;
+		this.name = name;		
 	}
 
 	public void addEntities(List<UkuEntity> newEntities) {
@@ -96,8 +99,9 @@ public class UkuProcess implements VisitableElement {
 	}
 
 	public byte getWorkflowID() {
-		// TODO cope with interference
-		return (byte) (Math.abs(id.hashCode()) % 256);
+		if(name == null)
+			return (byte) (Math.abs(id.hashCode()) % 256);
+		return (byte) (Math.abs(name.hashCode()) % 256);
 	}
 
 	@Override

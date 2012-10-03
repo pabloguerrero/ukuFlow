@@ -3,7 +3,6 @@ package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.VariableManager;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
-import de.tudarmstadt.dvs.ukuflow.tools.exception.NotRegisteredVariableException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyVariableException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.VariableAlreadyExistException;
 
@@ -42,7 +41,7 @@ public class UkuVariable extends PrimaryExpression {
 		try{
 			id = vm.registerVariable(this);
 		}catch (TooManyVariableException e) {
-			//HIEN TODO handle if there are too many variables are declared			
+			vm.addErrorMessage("Too many variable are used in this process");
 		} catch (VariableAlreadyExistException e) {
 			id = vm.getVariableID(name);
 		}

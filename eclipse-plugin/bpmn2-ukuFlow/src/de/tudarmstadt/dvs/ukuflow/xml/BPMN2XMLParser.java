@@ -65,7 +65,7 @@ public class BPMN2XMLParser {
 		if (root.getName().equals("definitions")) {
 			for (Element child : root.getChildren()) {
 				if (child.getName().equals("process")) {
-					UkuProcess process = new UkuProcess(fetchID(child));
+					UkuProcess process = new UkuProcess(fetchID(child),fetchName(child));
 					return process.getWorkflowID();
 				}
 			}
@@ -171,8 +171,11 @@ public class BPMN2XMLParser {
 	private UkuProcess fetchUkuProcess(Element e) {
 		UkuProcess result = null;
 		if (e.getName().equals("process")) {
-			result = new UkuProcess(fetchID(e));
+			result = new UkuProcess(fetchID(e),fetchName(e));			
 			result.setEntities(fetchEntities(e));
+			if(result.name.equals("Default Process")){
+				errorManager.addWarning("process: " +result.name, "default name for process is used, it could lead to interference with other processes");
+			}
 		} else {
 			log.debug("WARNING: element '" + e.getName()
 					+ "' is not a process -> ignored");
@@ -321,6 +324,10 @@ public class BPMN2XMLParser {
 		String id = e.getAttributeValue("id");
 		idPool.add(id);
 		return id;
+	}
+	private String fetchName(Element e){
+		String name = e.getAttributeValue("name");
+		return name;
 	}
 
 	/**

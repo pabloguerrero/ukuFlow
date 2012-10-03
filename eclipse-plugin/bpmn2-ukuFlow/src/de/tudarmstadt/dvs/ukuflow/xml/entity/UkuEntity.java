@@ -12,16 +12,24 @@ import de.tudarmstadt.dvs.ukuflow.validation.WarningMessage;
  */
 public abstract class UkuEntity implements VisitableElement {
 
-	//protected boolean syntax = false;
-	private ErrorManager errsManager = ErrorManager.getInstance();
+	// protected boolean syntax = false;
+	private ErrorManager errsManager;
 
 	/**
 	 * an unique id of for each entity
 	 */
 	protected String id;
 
-	public UkuEntity(String id) {
+	public UkuEntity(String id, ErrorManager errsM) {
 		this.id = id;
+		if (errsM == null) {
+			errsM = ErrorManager.getInstance();
+		}
+		errsManager = errsM;
+	}
+
+	public UkuEntity(String id) {
+		this(id, null);
 	}
 
 	public String getID() {
@@ -53,7 +61,7 @@ public abstract class UkuEntity implements VisitableElement {
 		WarningMessage wm = new WarningMessage(l, msg);
 		errsManager.addWarning(wm);
 	}
-	
+
 	public abstract void setReference(Map<String, UkuEntity> ref);
 
 	@Override
