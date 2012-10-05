@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<bpmn:BpmnDiagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:bpmn="http://stp.eclipse.org/bpmn" xmi:id="_RJCtweE6EeCHlvxDDI54ZA" iD="_RJCtwOE6EeCHlvxDDI54ZA">
-  <pools xmi:type="bpmn:Pool" xmi:id="_RKzBQeE6EeCHlvxDDI54ZA" iD="_RKzBQOE6EeCHlvxDDI54ZA" name="Pool">
-    <vertices xmi:type="bpmn:Activity" xmi:id="_WIxXIeE6EeCHlvxDDI54ZA" iD="_WIxXIOE6EeCHlvxDDI54ZA" outgoingEdges="_ZfcYAeE6EeCHlvxDDI54ZA" activityType="EventStartEmpty"/>
-    <vertices xmi:type="bpmn:Activity" xmi:id="_XA5R8eE6EeCHlvxDDI54ZA" iD="_XA5R8OE6EeCHlvxDDI54ZA" incomingEdges="_ZfcYAeE6EeCHlvxDDI54ZA" activityType="EventEndEmpty"/>
-    <sequenceEdges xmi:type="bpmn:SequenceEdge" xmi:id="_ZfcYAeE6EeCHlvxDDI54ZA" iD="_ZfcYAOE6EeCHlvxDDI54ZA"/>
-  </pools>
-</bpmn:BpmnDiagram>
