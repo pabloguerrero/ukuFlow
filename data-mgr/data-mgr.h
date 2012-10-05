@@ -97,7 +97,7 @@ enum entry_type {
 //
 };
 
-/** \brief		TODO				*/
+/** \brief		Macro defining all fields a repository entry has				*/
 #define GENERIC_REPOSITORY_ENTRY_FIELDS								\
 	/**  \brief Pointer to next repository entry in the list */		\
 	struct repository_entry *next;									\
@@ -145,6 +145,7 @@ enum repository_fields {
 	SENSOR_CO2_RAW, /*						11*/
 	SENSOR_CO_RAW, /*						12*/
 	NODE_ID, /**							13*/
+	USER_FIELD, /**							14*/
 };
 
 data_repository_id_t data_mgr_create(clock_time_t max_ttl);

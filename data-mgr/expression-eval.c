@@ -110,12 +110,12 @@ static int read_byte(void) {
 	if (pos < length) {
 		uint8_t value = bytecode[pos];
 		pos++;
-		return value;
+		return (value);
 	}
 
 	/* no more input */
 	invalid_input = 1;
-	return NO_MORE_INPUT;
+	return (NO_MORE_INPUT);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -174,7 +174,7 @@ static long int eval_operator_and(void) {
 
 	//	LOG(")");
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -190,7 +190,7 @@ static long int eval_operator_or(void) {
 
 	//	LOG(")");
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -206,7 +206,7 @@ static long int eval_operator_add(void) {
 
 	//	LOG(")");
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -222,7 +222,7 @@ static long int eval_operator_sub(void) {
 
 	//	LOG(")");
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -238,7 +238,7 @@ static long int eval_operator_div(void) {
 
 	//	LOG(")");
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -254,7 +254,7 @@ static long int eval_operator_mult(void) {
 
 	//	LOG(")");
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -270,7 +270,7 @@ static long int eval_operator_mod(void) {
 
 	//	LOG(")");
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -286,7 +286,7 @@ static long int eval_operator_not(void) {
 
 	//	LOG(")");
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -303,7 +303,7 @@ static long int eval_predicate_eq(void) {
 
 	//	LOG(")");
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -312,7 +312,7 @@ static long int eval_predicate_neq(void) {
 
 	long int result = !eval_predicate_eq();
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -328,7 +328,7 @@ static long int eval_predicate_lt(void) {
 
 	//	LOG(")");
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -345,7 +345,7 @@ static long int eval_predicate_gt(void) {
 
 	//	LOG(")");
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -354,7 +354,7 @@ static long int eval_predicate_let(void) {
 
 	long int result = !eval_predicate_gt();
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -363,7 +363,7 @@ static long int eval_predicate_get(void) {
 
 	long int result = !eval_predicate_lt();
 
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -373,7 +373,7 @@ static long int eval_uint8_value(void) {
 
 	long int result = value;
 	//	printf("uint8 converted value is %li\n", result);
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -384,7 +384,7 @@ static long int eval_uint16_value(void) {
 
 	//	LOG("%d", value);
 	long int result = value;
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -392,7 +392,7 @@ static long int eval_int8_value(void) {
 	int8_t value = read_byte();
 
 	long int result = value;
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -402,7 +402,7 @@ static long int eval_int16_value(void) {
 	value |= read_byte();
 
 	long int result = value;
-	return result;
+	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -417,7 +417,7 @@ static long int eval_string_value(void) {
 	for (i = 0; i < length; i++)
 		read_byte();
 
-	return length;
+	return (length);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -437,11 +437,11 @@ static long int eval_repository_value(void) {
 
 			PRINTF(5,"(EXPRESSION-EVAL) repo value: %u\n", result);
 
-			return result;
+			return (result);
 		}
 		PRINTF(5,"(EXPRESSION-EVAL) Repository entry not found!\n");
 	}
-	return 0;
+	return (0);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -461,11 +461,11 @@ static long int eval_custom_input_value(void) {
 
 			//		printf("repo value: %u\n", result);
 
-			return result;
+			return (result);
 		}
 	}
 	//	printf("repo entry not found!\n");
-	return 0;
+	return (0);
 }
 
 /**
@@ -518,7 +518,7 @@ long int expression_eval_evaluate(uint8_t *expression_spec, data_len_t spec_len)
 	custom_input = NULL;
 	custom_input_function = NULL;
 	/* return */
-	return result;
+	return (result);
 }
 
 /** @} */

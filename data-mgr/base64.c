@@ -44,6 +44,9 @@
  */
 
 #include "base64.h"
+
+// for strlen
+#include "string.h"
 #include "logger.h"
 #include <ctype.h> // for isspace()
 /**
@@ -71,17 +74,17 @@ struct base64_decoder_state {
  */
 static int base64_decode_char(char c) {
 	if (c >= 'A' && c <= 'Z') {
-		return c - 'A';
+		return (c - 'A');
 	} else if (c >= 'a' && c <= 'z') {
-		return c - 'a' + 26;
+		return (c - 'a' + 26);
 	} else if (c >= '0' && c <= '9') {
-		return c - '0' + 52;
+		return (c - '0' + 52);
 	} else if (c == '+') {
-		return 62;
+		return (62);
 	} else if (c == '/') {
-		return 63;
+		return (63);
 	} else {
-		return 0;
+		return (0);
 	}
 }
 /*-----------------------------------------------------------------------------------*/
@@ -92,7 +95,7 @@ static int base64_decode_char(char c) {
 static int base64_add_char(struct base64_decoder_state *s, char c,
 		uint8_t *output) {
 	if (isspace(c)) {
-		return 0;
+		return (0);
 	}
 
 	if (c == '=') {
@@ -111,9 +114,9 @@ static int base64_add_char(struct base64_decoder_state *s, char c,
 		PRINTF(3,
 				"4 sextets decoded: [%u][%u][%u]\n", output[s->dataptr], output[s->dataptr + 1], output[s->dataptr + 2]);
 		s->dataptr += 3;
-		return 3 - (s->padding);
+		return (3 - (s->padding));
 	}
-	return 0;
+	return (0);
 }
 
 /**
@@ -146,8 +149,8 @@ data_len_t base64_decode(char *input, uint8_t *output,
 			decoded_len += base64_add_char(&s, input[i], output);
 		}
 
-		return decoded_len;
+		return (decoded_len);
 	} else
-		return 0;
+		return (0);
 }
 /** @} */

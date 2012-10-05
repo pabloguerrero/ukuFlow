@@ -38,7 +38,13 @@
  */
 #include "data-mgr.h"
 #include "lib/list.h"
+
+// for malloc
 #include "stdlib.h"
+
+// for memcpy
+#include "string.h"
+
 #include "net/rime/rimeaddr.h"
 #include "logger.h"
 #ifdef CONTIKI_TARGET_SKY
@@ -68,12 +74,12 @@ static uint16_t sensor_light_par_raw(void) {
 	SENSORS_ACTIVATE(light_sensor);
 	int result = light_sensor.value(LIGHT_SENSOR_PHOTOSYNTHETIC);
 	SENSORS_DEACTIVATE(light_sensor);
+	return result;
 #else
 #ifdef CONTIKI_TARGET_Z1
-	int result = 0;
+	return (0);
 #endif
 #endif
-	return result;
 }
 
 /**
@@ -84,12 +90,12 @@ static uint16_t sensor_light_tsr_raw(void) {
 	SENSORS_ACTIVATE(light_sensor);
 	int result = light_sensor.value(LIGHT_SENSOR_TOTAL_SOLAR);
 	SENSORS_DEACTIVATE(light_sensor);
+	return (result);
 #else
 #ifdef CONTIKI_TARGET_Z1
-	int result = 0;
+	return (0);
 #endif
 #endif
-	return result;
 }
 
 #ifdef CONTIKI_TARGET_SKY
@@ -110,7 +116,7 @@ static uint16_t sensor_temperature_raw(void) {
 	int result = tmp102_read_temp_raw();
 #endif
 #endif
-	return result;
+	return (result);
 }
 
 /**
@@ -118,9 +124,7 @@ static uint16_t sensor_temperature_raw(void) {
  */
 static uint16_t sensor_temperature_celsius(void) {
 #ifdef CONTIKI_TARGET_SKY
-	SENSORS_ACTIVATE(sht11_sensor);
-	int result = sht11_sensor.value(SHT11_SENSOR_TEMP);
-	SENSORS_DEACTIVATE(sht11_sensor);
+	int result = sensor_temperature_raw();
 	return (-39.60 + 0.01 * result);
 #else
 #ifdef CONTIKI_TARGET_Z1
@@ -137,8 +141,7 @@ static uint16_t sensor_temperature_celsius(void) {
     //uint16_t temp_fractional_part = ((absraw >> 4) % 16) * 625;	// Info in 1/10000 of degree
 	//printf("INT.FRAC is %d,%u \n", temp_integer_part, temp_fractional_part);
 
-	uint16_t result = temp_integer_part;
-	return result;
+	return (temp_integer_part);
 #endif
 #endif
 }
@@ -148,15 +151,11 @@ static uint16_t sensor_temperature_celsius(void) {
  */
 static uint16_t sensor_temperature_fahrenheit(void) {
 #ifdef CONTIKI_TARGET_SKY
-	SENSORS_ACTIVATE(sht11_sensor);
-	int result = sht11_sensor.value(SHT11_SENSOR_TEMP);
-	SENSORS_DEACTIVATE(sht11_sensor);
+	int result = sensor_temperature_raw();
 	return (-39.60 + 0.01 * result) * 9 / 5 + 32;
 #else
 #ifdef CONTIKI_TARGET_Z1
-	uint16_t temp_celsius = sensor_temperature_celsius(), result;
-	result = temp_celsius * 9 / 5 + 32;
-	return result;
+	return (sensor_temperature_celsius() * 9 / 5 + 32);
 #endif
 #endif
 }
@@ -174,7 +173,7 @@ static uint16_t sensor_humidity_raw(void) {
 	uint16_t result = 0;
 #endif
 #endif
-	return result;
+	return (result);
 }
 
 /**
@@ -189,7 +188,7 @@ static uint16_t sensor_humidity_percent(void) {
 #else
 #ifdef CONTIKI_TARGET_Z1
 	uint16_t result = 0;
-	return result;
+	return (result);
 #endif
 #endif
 }
@@ -199,11 +198,11 @@ static uint16_t sensor_humidity_percent(void) {
  */
 static uint16_t sensor_accm_x_axis(void) {
 #ifdef CONTIKI_TARGET_SKY
-	return 0;
+	return (0);
 #else
 #ifdef CONTIKI_TARGET_Z1
 	int result = 0;
-	return result;
+	return (result);
 #endif
 #endif
 }
@@ -213,11 +212,10 @@ static uint16_t sensor_accm_x_axis(void) {
  */
 static uint16_t sensor_accm_y_axis(void) {
 #ifdef CONTIKI_TARGET_SKY
-	return 0;
+	return (0);
 #else
 #ifdef CONTIKI_TARGET_Z1
-	uint16_t result = 0;
-	return result;
+	return (0);
 #endif
 #endif
 }
@@ -230,8 +228,7 @@ static uint16_t sensor_accm_z_axis(void) {
 	return 0;
 #else
 #ifdef CONTIKI_TARGET_Z1
-	uint16_t result = 0;
-	return result;
+	return (0);
 #endif
 #endif
 }
@@ -249,7 +246,7 @@ static uint16_t sensor_voltage_raw(void) {
 	uint16_t result = 0;
 #endif
 #endif
-	return result;
+	return (result);
 }
 
 /**
@@ -263,7 +260,7 @@ static uint16_t sensor_co2_raw(void) {
 	// TODO
 #endif
 #endif
-	return 0;
+	return (0);
 }
 
 /**
@@ -277,7 +274,7 @@ static uint16_t sensor_co_raw(void) {
 	// TODO
 #endif
 #endif
-	return 0;
+	return (0);
 }
 
 
@@ -292,7 +289,7 @@ data_mgr_lookup(data_repository_id_t id) {
 	struct repository *repo = list_head(repository_list);
 	while ((repo != NULL) && (repo->id != id))
 		repo = repo->next;
-	return repo;
+	return (repo);
 }
 
 /**
@@ -307,7 +304,7 @@ repository_entry_lookup(struct repository* repo, entry_id_t entry_id) {
 		PRINTF(3,"entry %d\n", entry->entry_id);
 	}
 	PRINTF(3,"-*-*- %d\n", entry->entry_id);
-	return entry;
+	return (entry);
 }
 
 /**
@@ -457,13 +454,13 @@ data_repository_id_t data_mgr_create(clock_time_t max_ttl) {
 
 	if (list_length(repository_list) == MAX_REPOSITORIES)
 		/* No space left for more repositories! */
-		return 0;
+		return (0);
 
 	struct repository *repo = malloc(sizeof(struct repository));
 
 	/* Check if it was possible to allocate memory for repository: */
 	if (repo == NULL)
-		return 0;
+		return (0);
 
 	/* Lowest repository id for users is 2 */
 	data_repository_id_t id = 2;
@@ -476,7 +473,7 @@ data_repository_id_t data_mgr_create(clock_time_t max_ttl) {
 	list_add(repository_list, repo);
 
 	adjust_ttl_common_repository();
-	return id;
+	return (id);
 
 }
 
@@ -506,11 +503,11 @@ bool data_mgr_remove(data_repository_id_t id) {
 
 			adjust_ttl_common_repository();
 
-			return TRUE;
+			return (TRUE);
 		}
 	}
 
-	return FALSE;
+	return (FALSE);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -533,7 +530,7 @@ repository_entry_create(struct repository *repo, entry_id_t entry_id,
 		struct auto_repository_entry *a_entry = malloc(
 				sizeof(struct auto_repository_entry) + data_len);
 		if (a_entry == NULL)
-			return NULL;
+			return (NULL);
 		a_entry->updater = NULL;
 		a_entry->timestamp = 0;
 		entry = (struct repository_entry*) a_entry;
@@ -543,7 +540,7 @@ repository_entry_create(struct repository *repo, entry_id_t entry_id,
 		struct manual_repository_entry *m_entry = malloc(
 				sizeof(struct manual_repository_entry) + data_len);
 		if (m_entry == NULL)
-			return NULL;
+			return (NULL);
 		entry = (struct repository_entry*) m_entry;
 		break;
 	}
@@ -552,7 +549,7 @@ repository_entry_create(struct repository *repo, entry_id_t entry_id,
 	entry->entry_id = entry_id;
 	entry->data_len = data_len;
 
-	return entry;
+	return (entry);
 }
 
 /**
@@ -691,7 +688,7 @@ data_mgr_get_data(data_repository_id_t repo_id_param, entry_id_t entry_id,
 	struct repository *repo = data_mgr_lookup(repo_id);
 
 	if (repo == NULL)
-		return NULL;
+		return (NULL);
 
 	// ok, repository exists (whether it is the common repository or a user-specific one)
 	struct repository_entry *entry = repository_entry_lookup(repo, entry_id);
@@ -699,7 +696,7 @@ data_mgr_get_data(data_repository_id_t repo_id_param, entry_id_t entry_id,
 	PRINTF(3,"getting field %d, entry %p\n", entry_id, entry);
 
 	if (entry == NULL)
-		return NULL;
+		return (NULL);
 
 	// ok, entry exists
 	uint8_t *result = NULL;
@@ -740,7 +737,7 @@ data_mgr_get_data(data_repository_id_t repo_id_param, entry_id_t entry_id,
 	} // switch
 
 	*data_len = entry->data_len;
-	return result;
+	return (result);
 
 }
 /** @} */
