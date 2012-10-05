@@ -1,0 +1,224 @@
+<class-diagram version="1.0.10" icons="true" always-add-relationships="false" generalizations="true" 
+  realizations="false" associations="false" dependencies="false" nesting-relationships="true">  
+  <class id="1" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.PrimaryExpression" 
+    project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/PrimaryExpression.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="513" y="213"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="2" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UnaryNumericalExpression" 
+    project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/UnaryNumericalExpression.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="1592" y="545"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="3" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuConstant" project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/UkuConstant.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="222" y="592"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="4" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuRepositoryField" 
+    project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/UkuRepositoryField.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="187" y="366"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="5" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression" project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/UkuExpression.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="1105" y="83"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="6" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UnaryLogicalExpression" 
+    project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/UnaryLogicalExpression.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="902" y="895"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="7" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuVariable" project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/UkuVariable.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="489" y="593"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="8" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BoolExpression" 
+    project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/BoolExpression.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="1105" y="210"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="9" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.LogicalExpression" 
+    project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/LogicalExpression.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="1019" y="571"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="10" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryNumericalExpression" 
+    project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/BinaryNumericalExpression.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="1851" y="571"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="11" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuString" project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/UkuString.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="746" y="542"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="12" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.NumericalExpression" 
+    project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/NumericalExpression.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="1609" y="279"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="13" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.BinaryLogicalExpression" 
+    project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/BinaryLogicalExpression.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="1192" y="938"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="14" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.ComparisonExpression" 
+    project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/expression/ComparisonExpression.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="1300" y="614"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface id="15" corner="BOTTOM_RIGHT" language="java" 
+    name="de.tudarmstadt.dvs.ukuflow.script.generalscript.Visitable" project="de.tudarmstadt.dvs.ukuflow" 
+    file="/de.tudarmstadt.dvs.ukuflow/src/de/tudarmstadt/dvs/ukuflow/script/generalscript/Visitable.java" binary="false">    
+    <position height="-1" width="-1" x="750" y="73"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <generalization id="16">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="12"/>  
+  </generalization>  
+  <generalization id="17">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="8"/>  
+  </generalization>  
+  <generalization id="18">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="1"/>  
+  </generalization>  
+  <dependency id="19">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="15"/>  
+  </dependency>  
+  <generalization id="20">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="1"/>  
+  </generalization>  
+  <generalization id="21">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="5"/>  
+  </generalization>  
+  <generalization id="22">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="8"/>  
+  </generalization>  
+  <generalization id="23">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="5"/>  
+  </generalization>  
+  <generalization id="24">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="1"/>  
+  </generalization>  
+  <generalization id="25">    
+    <end type="SOURCE" refId="13"/>    
+    <end type="TARGET" refId="9"/>  
+  </generalization>  
+  <generalization id="26">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="12"/>  
+  </generalization>  
+  <generalization id="27">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="9"/>  
+  </generalization>  
+  <generalization id="28">    
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="5"/>  
+  </generalization>  
+  <generalization id="29">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="1"/>  
+  </generalization>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true"/>    
+    <operations public="true" package="true" protected="true" private="true"/>  
+  </classifier-display>  
+  <association-display labels="false" multiplicity="false"/>
+</class-diagram>
