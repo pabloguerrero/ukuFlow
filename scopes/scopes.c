@@ -104,9 +104,12 @@ void scopes_close(subscriber_id_t subscriber_id, scope_id_t scope_id);
 void scopes_send(subscriber_id_t subscriber_id, scope_id_t scope_id,
 		bool to_creator, void *data, data_len_t data_len);
 void scopes_receive(struct scopes_msg_generic *gmsg);
-/* declaration of scopes process */PROCESS(scopes_process, "scopes process");
-/** \brief Static memory for scopes' information */MEMB(scopes_mem, struct scope, SCOPES_MAX_SCOPES);
-/** \brief Static memory for scopes' subscribers */MEMB(subscribers_mem, struct scopes_subscriber, SCOPES_MAX_SUBSCRIBER);
+/** \brief declaration of scopes process */
+PROCESS(scopes_process, "scopes process");
+/** \brief Static memory for scopes' information */
+MEMB(scopes_mem, struct scope, SCOPES_MAX_SCOPES);
+/** \brief Static memory for scopes' subscribers */
+MEMB(subscribers_mem, struct scopes_subscriber, SCOPES_MAX_SUBSCRIBER);
 
 /* data structures for scope and subscriber management */
 /** \brief List of scope entries */
@@ -173,7 +176,7 @@ int scopes_register(subscriber_id_t id, struct scopes_application *application) 
 	for (s = list_head(subscribers); s != NULL; s = s->next) {
 		if (s->id == id) {
 			PRINTF(3, "process is already subscribed to scopes\n");
-			return 0;
+			return (0);
 		}
 	}
 
@@ -182,7 +185,7 @@ int scopes_register(subscriber_id_t id, struct scopes_application *application) 
 
 	if (subscriber == NULL) {
 		PRINTF(3, "Could not allocate memory for subscriber %d.\n", id);
-		return 0;
+		return (0);
 	}
 
 	/* set id, status, application and process */
@@ -195,7 +198,7 @@ int scopes_register(subscriber_id_t id, struct scopes_application *application) 
 	list_add(subscribers, subscriber);
 	PRINTF(3,
 			"[%u.%u:%10lu] %s::%s() : added subscriber: %s (sid=%u)\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, subscriber->process->name, subscriber->id);
-	return 1;
+	return (1);
 }
 
 /** \brief TODO */
@@ -236,7 +239,7 @@ bool scopes_open(subscriber_id_t subscriber_id, scope_id_t super_scope_id,
 	/* check if the application is subscribed */
 	if (subscriber != NULL && !IS_SUBSCRIBED(subscriber)) {
 		PRINTF(3, "application not subscribed or not found\n");
-		return FALSE;
+		return (FALSE);
 	}
 
 	/* check if the scope id is already known */
@@ -245,21 +248,21 @@ bool scopes_open(subscriber_id_t subscriber_id, scope_id_t super_scope_id,
 		scope->use_counter++;
 		//		PRINTF(3,"scope id already in use: %u\n", scope_id);
 		//		return FALSE;
-		return TRUE;
+		return (TRUE);
 	}
 
 	/* check if the super scope is known */
 	super_scope = lookup_scope_id(super_scope_id);
 	if (super_scope == NULL) {
 		PRINTF(3, "super scope does not exist: %u\n", super_scope_id);
-		return FALSE;
+		return (FALSE);
 	}
 
 	/* check if memory is available */
 	scope = allocate_scope(spec_len);
 	if (scope == NULL) {
 		PRINTF(3, "can't get memory for scope: %u\n", scope_id);
-		return FALSE;
+		return (FALSE);
 	}
 
 	/* fill in the scope information */
@@ -286,19 +289,19 @@ bool scopes_open(subscriber_id_t subscriber_id, scope_id_t super_scope_id,
 			(void (*)(void *)) announce_scope_open, scope);
 
 	/* return TRUE, because scope was created correctly */
-	return TRUE;
+	return (TRUE);
 }
 
 /** \brief Returns whether this node is member of the scope with id passed as parameter */
 bool scopes_member_of(scope_id_t scope_id) {
 	struct scope *scope = lookup_scope_id(scope_id);
-	return HAS_STATUS(scope, SCOPES_STATUS_MEMBER);
+	return (HAS_STATUS(scope, SCOPES_STATUS_MEMBER));
 }
 
 /** \brief Returns whether this node is creator (root) of the scope with id passed as parameter */
 bool scopes_creator_of(scope_id_t scope_id) {
 	struct scope *scope = lookup_scope_id(scope_id);
-	return HAS_STATUS(scope, SCOPES_STATUS_CREATOR);
+	return (HAS_STATUS(scope, SCOPES_STATUS_CREATOR));
 }
 
 /** \brief TODO */
@@ -511,10 +514,10 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 				&& ARE_LINKED(super_scope, sub_scope)
 				&& !HAS_STATUS(sub_scope, SCOPES_STATUS_CREATOR)) {
 			/* remove the scope */
-			PRINTF(3,"(SCOPES) had %d scopes\n", list_length(scopes));
+			PRINTF(3, "(SCOPES) had %d scopes\n", list_length(scopes));
 			remove_scope(sub_scope);
-			PRINTF(3,"(SCOPES) removed %d, now only %d scopes!\n", sub_scope->scope_id,
-					list_length(scopes));
+			PRINTF(3,
+					"(SCOPES) removed %d, now only %d scopes!\n", sub_scope->scope_id, list_length(scopes));
 		}
 		break;
 	}
@@ -538,24 +541,25 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 			if (HAS_STATUS(scope, SCOPES_STATUS_MEMBER) || //
 					(msg->to_creator && HAS_FLAG(scope, SCOPES_FLAG_INTERCEPT))) {
 				/* check if the message should be delivered */
-				if ((msg->to_creator && HAS_STATUS(scope, SCOPES_STATUS_CREATOR))
-						|| (!(msg->to_creator)
-								&& !HAS_STATUS(scope, SCOPES_STATUS_CREATOR))
-						|| (msg->to_creator
-								&& HAS_FLAG(scope, SCOPES_FLAG_INTERCEPT))) {
-					/* check if the owner is subscribed */
-					if (IS_SUBSCRIBED(scope->owner)) {
-						/* calculate the position of the payload */
-						void *payload_ptr = (void *) ((uint8_t *) gmsg
-								+ sizeof(struct scopes_msg_data));
+				if ((msg->to_creator
+						&& HAS_STATUS(scope, SCOPES_STATUS_CREATOR))
+				|| (!(msg->to_creator)
+						&& !HAS_STATUS(scope, SCOPES_STATUS_CREATOR))
+				|| (msg->to_creator
+						&& HAS_FLAG(scope, SCOPES_FLAG_INTERCEPT))){
+				/* check if the owner is subscribed */
+				if (IS_SUBSCRIBED(scope->owner)) {
+					/* calculate the position of the payload */
+					void *payload_ptr = (void *) ((uint8_t *) gmsg
+							+ sizeof(struct scopes_msg_data));
 
-						/* notify the owner */
-						CALLBACK(scope->owner,
-								recv(scope->scope_id, payload_ptr, msg->data_len, msg->to_creator, &msg->source));
-					}
+					/* notify the owner */
+					CALLBACK(scope->owner,
+							recv(scope->scope_id, payload_ptr, msg->data_len, msg->to_creator, &msg->source));
 				}
 			}
 		}
+	}
 		break;
 	}
 	default:
@@ -579,7 +583,7 @@ allocate_scope(data_len_t spec_len) {
 
 	/* check if memory could be obtained */
 	if (scope == NULL) {
-		return NULL;
+		return (NULL);
 	}
 
 	/* try to get memory for the specification */
@@ -589,14 +593,14 @@ allocate_scope(data_len_t spec_len) {
 	if (specs_ptr == NULL) {
 		/* free memory for scope structure */
 		memb_free(&scopes_mem, scope);
-		return NULL;
+		return (NULL);
 	}
 
 	/* set memory address of specification */
 	scope->specs = specs_ptr;
 
 	/* return new scope */
-	return scope;
+	return (scope);
 }
 
 static void deallocate_scope(struct scope *scope) {
@@ -728,7 +732,7 @@ lookup_scope_id(scope_id_t scope_id) {
 			return s;
 		}
 	}
-	return NULL;
+	return (NULL);
 }
 
 /** \brief TODO */
@@ -744,8 +748,7 @@ static void handle_scope_timeout(struct scope *scope) {
 		reset_scope_timer(scope);
 	} else {
 		/* remove the expired scope */
-		PRINTF(3,
-				"(SCOPES) Scope %u has expired\n", scope->scope_id);
+		PRINTF(3, "(SCOPES) Scope %u has expired\n", scope->scope_id);
 		remove_scope(scope);
 	}
 }
@@ -824,14 +827,16 @@ lookup_subscriber_id(subscriber_id_t id) {
 	/* go through the list of subscribers and find the one with the given id */
 	for (s = list_head(subscribers); s != NULL; s = s->next) {
 		if (s->id == id) {
-			return s;
+			return (s);
 		}
 	}
-	return NULL;
+	return (NULL);
 }
 
 /** \brief Scopes process
- **/PROCESS_THREAD( scopes_process, ev, data) {
+ * */
+
+PROCESS_THREAD( scopes_process, ev, data) {
 	PROCESS_BEGIN()
 		;
 
@@ -863,7 +868,8 @@ lookup_subscriber_id(subscriber_id_t id) {
 							"[%u.%u:%10lu] %s::%s() : should be member: %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, should_be_member);
 
 					/* decide action */
-					if (should_be_member && !HAS_STATUS(s, SCOPES_STATUS_MEMBER)) {
+					if (should_be_member
+							&& !HAS_STATUS(s, SCOPES_STATUS_MEMBER)) {
 						/* join scope */
 						join_scope(s);
 					} else if (!should_be_member

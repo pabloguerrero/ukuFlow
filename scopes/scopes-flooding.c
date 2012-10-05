@@ -48,13 +48,14 @@ static void scopes_flooding_buffer_clear(bool to_creator) {
 }
 
 static uint8_t *scopes_flooding_buffer_ptr(bool to_creator) {
-	return packetbuf_dataptr();
+	return (packetbuf_dataptr());
 }
 
 static void scopes_flooding_buffer_setlen(bool to_creator, uint16_t len) {
 	packetbuf_set_datalen(len);
 }
 
+/* \brief TODO */
 ROUTING(scopes_flooding, //
 		"flooding",//
 		scopes_flooding_init,//

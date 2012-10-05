@@ -67,7 +67,7 @@ int bitvector_get(uint8_t *bitvector, uint8_t bit_nr) {
 	PRINTF(4, "bitvector : shifted_bit is %u\n", shifted_bit);
 
 	/**  second, the corresponding byte is OR'ed against the byte with the 'shifted_bit' */
-	return bitvector[bit_nr / 8] | shifted_bit;
+	return (bitvector[bit_nr / 8] | shifted_bit);
 }
 
 /**
@@ -93,7 +93,7 @@ int bitvector_all_set(uint8_t *bitvector, uint8_t num_bits) {
 		PRINTF(4, "after updating, one is %u\n", one);
 	}
 
-	return result;
+	return (result);
 }
 
 /**

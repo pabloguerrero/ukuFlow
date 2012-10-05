@@ -97,12 +97,12 @@ static struct netflood_callbacks data_flood_callbacks = { receive_flood_data,
 		NULL, NULL };
 static uint8_t data_seqno = 0;
 
-/* reliable unicast connection and callbacks for activation messages */
+/** \brief reliable unicast connection and callbacks for activation messages */
 static struct runicast_conn activation_runicast;
 static struct runicast_callbacks activation_callbacks = { receive_activation,
 		NULL, NULL };
 
-/* unicast connection and callbacks for data to the sink */
+/** \brief unicast connection and callbacks for data to the sink */
 #ifdef FRAGMENTATION_ENABLED
 static struct frag_unicast_conn data_unicast;
 static struct frag_unicast_callbacks
@@ -113,7 +113,7 @@ static struct unicast_callbacks data_unicast_callbacks =
 		{ receive_unicast_data };
 #endif
 
-/* broadcast connection and callbacks for suppress messages */
+/** \brief broadcast connection and callbacks for suppress messages */
 static struct broadcast_conn suppress_broadcast;
 static struct broadcast_callbacks suppress_broadcast_callbacks = {
 		receive_suppress };
@@ -161,11 +161,11 @@ static int receive_tree_update(struct netflood_conn *c, const rimeaddr_t *from,
 			add_routing_entry(originator, from);
 		}
 		/* rebroadcast the tree update */
-		return 1;
+		return (1);
 	}
 
 	/* do not rebroadcast the tree update if the local node is the originator */
-	return 0;
+	return (0);
 }
 
 /** \brief		TODO */
@@ -216,7 +216,7 @@ static int receive_flood_data(struct netflood_conn *c, const rimeaddr_t *from,
 
 	/* bail out if address in invalid! */
 	if (rimeaddr_cmp(originator, &rimeaddr_null))
-		return 0;
+		return (0);
 
 	/* whether to rebroadcast the message */
 	int rebroadcast = 0;
@@ -268,7 +268,7 @@ static int receive_flood_data(struct netflood_conn *c, const rimeaddr_t *from,
 	}
 
 	/* return rebroadcast decision */
-	return rebroadcast;
+	return (rebroadcast);
 }
 
 #ifdef FRAGMENTATION_ENABLED
@@ -439,11 +439,11 @@ static void selfur_buffer_clear(bool to_creator) {
 static uint8_t *selfur_buffer_ptr(bool to_creator) {
 #ifdef FRAGMENTATION_ENABLED
 	if (to_creator)
-	return frag_unicast_buffer_ptr(&data_unicast);
+	return (frag_unicast_buffer_ptr(&data_unicast));
 	else
-	return packetbuf_dataptr();
+	return (packetbuf_dataptr());
 #else
-	return packetbuf_dataptr();
+	return (packetbuf_dataptr());
 #endif
 }
 
@@ -612,10 +612,10 @@ lookup_routing_entry(const rimeaddr_t *root) {
 	for (r = list_head(routing_list); r != NULL; r = r->next) {
 		/* find the one with the matching root address */
 		if (rimeaddr_cmp(root, &(r->root))) {
-			return r;
+			return (r);
 		}
 	}
-	return NULL;
+	return (NULL);
 }
 
 /** \brief		TODO */
@@ -691,10 +691,10 @@ lookup_scope_entry(scope_id_t scope_id) {
 		/* find the one with the matching scope id */
 		PRINTF(5, "comparing %u with %u\n", scope_id, s->scope_id);
 		if (s->scope_id == scope_id) {
-			return s;
+			return (s);
 		}
 	}
-	return NULL;
+	return (NULL);
 }
 
 /** \brief		TODO */
@@ -704,6 +704,7 @@ static void print_scope_entry(struct scope_entry *s, char *msg) {
 }
 
 /** \brief		TODO */
+
 PROCESS_THREAD( tree_update_process, ev, data) {
 	PROCESS_BEGIN()
 		;
@@ -730,6 +731,7 @@ PROCESS_THREAD( tree_update_process, ev, data) {
 }
 
 /** \brief		TODO */
+
 PROCESS_THREAD( activation_process, ev, data) {
 PROCESS_BEGIN()
 	;
@@ -760,6 +762,7 @@ PROCESS_END();
 
 #ifndef SCOPES_NOINFO
 /** \brief		TODO */
+
 PROCESS_THREAD( info_process, ev, data) {
 PROCESS_BEGIN()
 ;
