@@ -5,49 +5,49 @@
       <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_11" tns:priority="1" name="" sourceRef="StartEvent_1" targetRef="ScriptTask_1"/>
-    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task" scriptFormat="http://www.dvs.tu-darmstadt.de/research/ukuFlow">
+    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task" scriptFormat="http://www.java.com/java">
       <bpmn2:incoming>SequenceFlow_11</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_22</bpmn2:outgoing>
-      <bpmn2:script>var1 = 30
-var2 = 40
-var3 = 50</bpmn2:script>
+      <bpmn2:script>var1 = 30;
+var2 = 40;
+var3 = 50;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_22" tns:priority="1" name="" sourceRef="ScriptTask_1" targetRef="InclusiveGateway_3"/>
-    <bpmn2:inclusiveGateway id="InclusiveGateway_3">
+    <bpmn2:inclusiveGateway id="InclusiveGateway_3" gatewayDirection="Diverging" default="SequenceFlow_25">
       <bpmn2:incoming>SequenceFlow_22</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_23</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_24</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_25</bpmn2:outgoing>
     </bpmn2:inclusiveGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_23" tns:priority="1" name="" sourceRef="InclusiveGateway_3" targetRef="ScriptTask_2">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1">var1 &lt; 35</bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1">$var1 &lt; 35</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_24" tns:priority="2" name="" sourceRef="InclusiveGateway_3" targetRef="ScriptTask_3">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2">var2 &lt; 45</bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2">$var2 &lt; 45</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_25" tns:priority="3" name="" sourceRef="InclusiveGateway_3" targetRef="ScriptTask_4"/>
-    <bpmn2:scriptTask id="ScriptTask_2" name="Script Task" scriptFormat="http://www.mvel.org/2.0">
+    <bpmn2:scriptTask id="ScriptTask_2" name="Script Task" scriptFormat="http://www.java.com/java">
       <bpmn2:incoming>SequenceFlow_23</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_19</bpmn2:outgoing>
       <bpmn2:script>var4 = 1 + 2;
-var5 = 1 + var4;</bpmn2:script>
+var5 = 1 + $var4;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_19" tns:priority="1" name="" sourceRef="ScriptTask_2" targetRef="InclusiveGateway_2"/>
-    <bpmn2:scriptTask id="ScriptTask_4" name="Script Task" scriptFormat="http://www.dvs.tu-darmstadt.de/research/ukuFlow">
+    <bpmn2:scriptTask id="ScriptTask_4" name="Script Task" scriptFormat="http://www.java.com/java">
       <bpmn2:incoming>SequenceFlow_25</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_20</bpmn2:outgoing>
       <bpmn2:script>local blink 5;
 @222 blink 5;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_20" tns:priority="1" name="" sourceRef="ScriptTask_4" targetRef="InclusiveGateway_2"/>
-    <bpmn2:scriptTask id="ScriptTask_3" name="Script Task" scriptFormat="http://www.mvel.org/2.0">
+    <bpmn2:scriptTask id="ScriptTask_3" name="Script Task" scriptFormat="http://www.java.com/java">
       <bpmn2:incoming>SequenceFlow_24</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_18</bpmn2:outgoing>
-      <bpmn2:script>var5 = 1 + var4;
-var5 = 1 + var5;</bpmn2:script>
+      <bpmn2:script>var5 = 1 + $var4;
+var5 = 1 + $var5;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_18" tns:priority="1" name="" sourceRef="ScriptTask_3" targetRef="InclusiveGateway_2"/>
-    <bpmn2:inclusiveGateway id="InclusiveGateway_2">
+    <bpmn2:inclusiveGateway id="InclusiveGateway_2" gatewayDirection="Converging">
       <bpmn2:incoming>SequenceFlow_18</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_19</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_20</bpmn2:incoming>
@@ -60,8 +60,7 @@ var5 = 1 + var5;</bpmn2:script>
   </bpmn2:process>
   <bpmn2:process id="Process_1" tns:version="1" tns:packageName="defaultPackage">
     <bpmn2:textAnnotation id="TextAnnotation_1">
-      <bpmn2:text>SCOPE 222 (NODE_ID > 3)&#xD;
-abc</bpmn2:text>
+      <bpmn2:text>SCOPE 222 (NODE_ID > 3)</bpmn2:text>
     </bpmn2:textAnnotation>
   </bpmn2:process>
   <bpmn2:process id="Process_2" tns:version="1" tns:packageName="defaultPackage">
@@ -70,7 +69,7 @@ abc</bpmn2:text>
   <bpmndi:BPMNDiagram id="BPMNDiagram" name="ukuFlow Test Diagram 5">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="workflow-5">
       <bpmndi:BPMNShape id="BPMNShape_1" bpmnElement="StartEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="20.0" y="134.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="20.0" y="133.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_2" bpmnElement="EndEvent_1">
         <dc:Bounds height="36.0" width="36.0" x="690.0" y="133.0"/>
@@ -97,7 +96,7 @@ abc</bpmn2:text>
         <dc:Bounds height="50.0" width="181.0" x="364.0" y="280.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="SequenceFlow_11" sourceElement="BPMNShape_1" targetElement="BPMNShape_ScriptTask_1">
-        <di:waypoint xsi:type="dc:Point" x="56.0" y="152.0"/>
+        <di:waypoint xsi:type="dc:Point" x="56.0" y="151.0"/>
         <di:waypoint xsi:type="dc:Point" x="120.0" y="151.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_17" bpmnElement="SequenceFlow_17" sourceElement="BPMNShape_InclusiveGateway_2" targetElement="BPMNShape_2">
