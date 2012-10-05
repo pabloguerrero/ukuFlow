@@ -3,6 +3,8 @@
 	<name>ukuFlow - ukuFlow-engine</name>
 	<comment></comment>
 	<projects>
+		<project>ukuFlow - data-mgr</project>
+		<project>ukuFlow - scopes</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -18,7 +20,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.autoBuildTarget</key>
-					<value>all</value>
+					<value></value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildArguments</key>
@@ -29,16 +31,12 @@
 					<value>make</value>
 				</dictionary>
 				<dictionary>
-					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
-					<value>clean</value>
-				</dictionary>
-				<dictionary>
 					<key>org.eclipse.cdt.make.core.contents</key>
 					<value>org.eclipse.cdt.make.core.activeConfigSettings</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.enableAutoBuild</key>
-					<value>true</value>
+					<value>false</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.enableCleanBuild</key>
@@ -50,7 +48,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.fullBuildTarget</key>
-					<value>all</value>
+					<value></value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.stopOnError</key>
