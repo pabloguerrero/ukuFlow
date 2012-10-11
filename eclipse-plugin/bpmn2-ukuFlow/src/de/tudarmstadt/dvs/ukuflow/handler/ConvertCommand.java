@@ -126,8 +126,8 @@ public class ConvertCommand extends AbstractHandler {
 			ScopeManager sm = ScopeManager.getInstance();
 			em.exportTo(console);
 			console.info("Validator", "Report:");
-			console.info("Validator", em.getWarnings().size()
-					+ " warnings are found");
+			console.info("Validator", "Issued " + em.getWarnings().size()
+					+ (em.getWarnings().size()==1?" warming":" warnings "));
 			if (!em.isValid()) {
 				console.info("Validator", "There are(is) "
 						+ em.getErrors().size()
@@ -136,7 +136,7 @@ public class ConvertCommand extends AbstractHandler {
 				sm.reset();
 				return false;
 			}
-			console.info("Validator", "No error");
+			//console.info("Validator", "No error");
 			
 			ElementVisitorImpl visitor = new ElementVisitorImpl();
 
