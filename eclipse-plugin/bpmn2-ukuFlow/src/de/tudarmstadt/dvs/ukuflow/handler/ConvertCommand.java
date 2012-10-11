@@ -64,11 +64,10 @@ public class ConvertCommand extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-
+		
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 				.getActiveMenuSelection(event);
 		Object firstElement = selection.getFirstElement();
-
 		if (selection.size() != 1) {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event),
 					"Information", "Please choose just one BPMN2 file");
@@ -76,7 +75,7 @@ public class ConvertCommand extends AbstractHandler {
 		}
 
 		if (firstElement instanceof IFile) {
-			IFile file = (IFile) firstElement;
+			IFile file = (IFile) firstElement;			
 			return convert(file);
 		} else {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event),

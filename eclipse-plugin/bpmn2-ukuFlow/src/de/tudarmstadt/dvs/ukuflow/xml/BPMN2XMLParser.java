@@ -171,9 +171,12 @@ public class BPMN2XMLParser {
 	private UkuProcess fetchUkuProcess(Element e) {
 		UkuProcess result = null;
 		if (e.getName().equals("process")) {
+			//String name = fetchName(e);
 			result = new UkuProcess(fetchID(e),fetchName(e));			
 			result.setEntities(fetchEntities(e));
-			if(result.name.equals("Default Process")){
+			if(result.name==null || result.name.equals("")){
+				errorManager.addError(result.id, "name of the process is not specified");
+			} else if(result.name.equals("Default Process")){
 				errorManager.addWarning("process: " +result.name, "default name for process is used, it could lead to interference with other processes");
 			}
 		} else {
@@ -326,7 +329,7 @@ public class BPMN2XMLParser {
 		return id;
 	}
 	private String fetchName(Element e){
-		String name = e.getAttributeValue("name");
+		String name = e.getAttributeValue("name");		
 		return name;
 	}
 
@@ -346,7 +349,7 @@ public class BPMN2XMLParser {
 					UkuGateway gway = (UkuGateway) entity;
 					if (gway.getOutgoingID().size() > 1
 							&& gway.getIncomingID().size() > 1) {
-						System.out.println("optimizing");
+						log.info("optimizing");
 						process.removeEntity(gway);
 						reference.remove(gway.getID());
 						UkuGateway left = gway.clone(generateID(gway.getID()));

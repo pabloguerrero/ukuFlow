@@ -101,7 +101,7 @@ public class UkuProcessValidation {
 				if(!sef.hasCondition() && !sef.isDefault()){
 					sef.addErrorMessage("sequence Flow has no condition or condition expression has incorrect syntax");
 				}else if (!sef.hasCondition() && sef.isDefault()) {
-					sef.addWarningMessage("this sequence flow should be default or have a condition");
+					//sef.addWarningMessage("this sequence flow should be default or have a condition");
 				}
 				break;
 			case UkuConstants.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY:
