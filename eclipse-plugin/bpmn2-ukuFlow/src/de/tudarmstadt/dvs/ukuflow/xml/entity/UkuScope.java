@@ -52,18 +52,18 @@ public class UkuScope extends UkuEntity {
 		try {
 			scopeID = ScopeManager.getInstance().registerScope(name);
 		} catch (DuplicateScopeNameException e) {
-			addErrorMessage("scope '" + name + "' already exists");
+			addErrorMessage("Scope '" + name + "' already exists");
 		} catch (TooManyScopeException e) {
-			addErrorMessage("there are too many scope definition (allowed are maximal 256 scopes)");
+			addErrorMessage("There are too many scope definition (allowed are maximal 256 scopes)");
 		}
 		if (exp.ttl != null) {
 			ttl = exp.ttl;			
 		} else {
-			addWarningMessage("Time-to-Live for scope "+name+" isn't specified -> used default ttl: 60s");
+			addWarningMessage("Time-to-Live for scope '"+name+"' wasn't specified -> using default ttl: 60s");			
 			ttl = 60;
 		}		
 		if (ttl < 0 || ttl > 65535) {
-			addErrorMessage("invalid time-to-live (allowed value is in range 0->65535");
+			addErrorMessage("Invalid Time-to-Live for scope '"+name+"' (allowed value is in range 0->65535");
 		}
 	}
 

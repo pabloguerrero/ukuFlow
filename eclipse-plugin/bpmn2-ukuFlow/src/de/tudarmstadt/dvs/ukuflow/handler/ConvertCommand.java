@@ -64,11 +64,10 @@ public class ConvertCommand extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-
+		
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 				.getActiveMenuSelection(event);
 		Object firstElement = selection.getFirstElement();
-
 		if (selection.size() != 1) {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event),
 					"Information", "Please choose just one BPMN2 file");
@@ -76,7 +75,7 @@ public class ConvertCommand extends AbstractHandler {
 		}
 
 		if (firstElement instanceof IFile) {
-			IFile file = (IFile) firstElement;
+			IFile file = (IFile) firstElement;			
 			return convert(file);
 		} else {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event),
@@ -127,8 +126,8 @@ public class ConvertCommand extends AbstractHandler {
 			ScopeManager sm = ScopeManager.getInstance();
 			em.exportTo(console);
 			console.info("Validator", "Report:");
-			console.info("Validator", em.getWarnings().size()
-					+ " warnings are found");
+			console.info("Validator", "Issued " + em.getWarnings().size()
+					+ (em.getWarnings().size()==1?" warming":" warnings "));
 			if (!em.isValid()) {
 				console.info("Validator", "There are(is) "
 						+ em.getErrors().size()
@@ -137,7 +136,7 @@ public class ConvertCommand extends AbstractHandler {
 				sm.reset();
 				return false;
 			}
-			console.info("Validator", "No error");
+			//console.info("Validator", "No error");
 			
 			ElementVisitorImpl visitor = new ElementVisitorImpl();
 
