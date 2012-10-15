@@ -58,7 +58,7 @@ public class ScopeManager {
 	public int getScopeID(String sName) throws ScopeNotExistException {
 		if (namePool.containsKey(sName))
 			return namePool.get(sName);
-		System.out.println(sName + " : " + namePool);
+		//System.out.println(sName + " : " + namePool);
 		throw new ScopeNotExistException();
 	}
 

@@ -2,6 +2,12 @@ package de.tudarmstadt.dvs.ukuflow.validation;
 
 
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.ScopeManager;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.ComputationalFunction;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.LocalFunction;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.ScopeFunction;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.TaskScriptFunction;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.ScopeNotExistException;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.*;
 
 public class UkuProcessValidation {
@@ -77,9 +83,26 @@ public class UkuProcessValidation {
 			task.addErrorMessage("A Script task must have exactly one incoming and one outgoing connection");
 		if(!task.hasScript()){
 			task.addErrorMessage("has no script");
+		} else {
+			for(TaskScriptFunction tsf : task.getStatements()){
+				validate(task,tsf);
+			}
 		}
 	}
-
+	private void validate(UkuExecuteTask parent, TaskScriptFunction tsf){
+		if(tsf instanceof ComputationalFunction){
+			//TODO anything to validate?
+		} else if(tsf instanceof LocalFunction){
+			//TODO anything to validate?
+		} else if(tsf instanceof ScopeFunction){
+			String sName = ((ScopeFunction) tsf).getScopeName();
+			try {
+				ScopeManager.getInstance().getScopeID(sName);
+			} catch (ScopeNotExistException e) {
+				parent.addErrorMessage("couldn't found the declaration for scope " + sName);
+			}
+		}
+	}
 	public void validate(UkuScope scope) {
 		// nothing do validate with scope.
 	}
