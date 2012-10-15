@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Set;
 
 //import org.jdom2.
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -20,7 +19,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.Saveable;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -32,14 +30,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.MessageConsole;
-import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.internal.SaveableHelper;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
@@ -48,16 +40,12 @@ import org.eclipse.ui.model.WorkbenchPartLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
-
-import de.tudarmstadt.dvs.ukuflow.deployment.DeviceManager;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ScopeManager;
 import de.tudarmstadt.dvs.ukuflow.tools.Base64Converter;
 import de.tudarmstadt.dvs.ukuflow.tools.QuickFileReader;
@@ -68,6 +56,7 @@ import de.tudarmstadt.dvs.ukuflow.xml.BPMN2XMLParser;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.ElementVisitorImpl;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuProcess;
 
+@SuppressWarnings("restriction")
 public class ConvertCommand extends AbstractHandler {
 	/**
 	 * Console name
@@ -121,7 +110,9 @@ public class ConvertCommand extends AbstractHandler {
 
 	public static boolean convert(IFile file) {
 		deleteMarker(file);
-		saveAllResources(file);
+		boolean saved = saveAllResources(file);
+		if(!saved)
+			return false;
 		return convert(file.getLocation().toOSString(), file.getFileExtension());
 
 	}
@@ -178,8 +169,7 @@ public class ConvertCommand extends AbstractHandler {
 				em.reset();
 				sm.reset();
 				return false;
-			}
-			// console.info("Validator", "No error");
+			}			
 
 			ElementVisitorImpl visitor = new ElementVisitorImpl();
 
@@ -215,6 +205,7 @@ public class ConvertCommand extends AbstractHandler {
 		return true;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static boolean saveAllResources(IFile file) {
 		
 		List selected = new LinkedList();
@@ -241,18 +232,20 @@ public class ConvertCommand extends AbstractHandler {
 					}
 				}
 			}
-		}
-		//final Shell shellProvider = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		}		
 		final IWorkbenchWindow iwindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		ListSelectionDialog lsd = new ListSelectionDialog(windows[0].getShell(), result, new ArrayContentProvider(), new WorkbenchPartLabelProvider(), "message");
+		if(result.isEmpty())
+			return true;
+		//if(selected)
 		lsd.setInitialElementSelections(selected);
 		if(lsd.open()==Window.CANCEL)
 			return false;
-		result = Arrays.asList(lsd.getResult());
+		result = Arrays.asList(lsd.getResult());	
 		if(result.isEmpty())
 			return true;
 		final List finalModels = result;
-		IRunnableWithProgress progressOp = new IRunnableWithProgress() {
+		IRunnableWithProgress progressOp = new IRunnableWithProgress() {			
 			public void run(IProgressMonitor monitor) {
 				IProgressMonitor monitorWrap = new EventLoopProgressMonitor(
 						monitor);
@@ -265,7 +258,6 @@ public class ConvertCommand extends AbstractHandler {
 						continue;
 					}
 					model.doSave(monitorWrap);
-					//SaveableHelper.doSaveModel(model, new SubProgressMonitor(monitorWrap, 1), iwindow, true);
 					if (monitorWrap.isCanceled()) {
 						break;
 					}
@@ -276,6 +268,7 @@ public class ConvertCommand extends AbstractHandler {
 	
 		return runProgressMonitorOperation(WorkbenchMessages.Save_All, progressOp, iwindow, iwindow);
 	}
+	
 	private static boolean runProgressMonitorOperation(String opName,
 			final IRunnableWithProgress progressOp,
 			final IRunnableContext runnableContext, final IShellProvider shellProvider) {
@@ -298,11 +291,10 @@ public class ConvertCommand extends AbstractHandler {
 					PlatformUI.PLUGIN_ID, 0, title, targetExc));			
 			StatusUtil.handleStatus(title, targetExc, StatusManager.SHOW,
 					shellProvider.getShell());
-			// Fall through to return failure
 		} catch (InterruptedException e) {
-			// The user pressed cancel. Fall through to return failure
+
 		} catch (OperationCanceledException e) {
-			// The user pressed cancel. Fall through to return failure
+
 		}
 		return success[0];
 	}
