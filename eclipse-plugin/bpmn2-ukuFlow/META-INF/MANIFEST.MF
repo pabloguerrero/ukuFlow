@@ -45,3 +45,4 @@ Bundle-NativeCode:
  lib/rxtx/Windows/i368-mingw32/rxtxParallel.dll;
  lib/rxtx/Windows/i368-mingw32/rxtxSerial.dll;
  osname=Win32; processor=x86
+Import-Package: org.eclipse.ui

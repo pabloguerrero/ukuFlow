@@ -20,6 +20,6 @@ public class UkuScopeExpression {
 	}
 	@Override
 	public String toString(){
-		return "[scope:"+name+"-"+ttl+"s-<"+scopeExp+">";
+		return "[scope:"+name+"-"+ttl+"s-{"+scopeExp+"}";
 	}
 }
