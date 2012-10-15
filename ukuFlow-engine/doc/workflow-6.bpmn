@@ -5,19 +5,19 @@
       <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_11" tns:priority="1" name="" sourceRef="StartEvent_1" targetRef="ScriptTask_1"/>
-    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task" scriptFormat="http://www.mvel.org/2.0">
+    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task" scriptFormat="http://www.java.com/java">
       <bpmn2:incoming>SequenceFlow_11</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_22</bpmn2:outgoing>
-      <bpmn2:script>var1 = 30
-var2 = 40
-var3 = 50</bpmn2:script>
+      <bpmn2:script>var1 = 30;
+var2 = 40;
+var3 = 50;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_22" tns:priority="1" name="" sourceRef="ScriptTask_1" targetRef="ExclusiveGateway_1"/>
     <bpmn2:scriptTask id="ScriptTask_2" name="Script Task" scriptFormat="http://www.mvel.org/2.0">
       <bpmn2:incoming>SequenceFlow_23</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_19</bpmn2:outgoing>
       <bpmn2:script>var4 = 1 + 2;
-var5 = 1 + var4;</bpmn2:script>
+var5 = 1 + $var4;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_19" tns:priority="1" name="" sourceRef="ScriptTask_2" targetRef="ExclusiveGateway_2"/>
     <bpmn2:scriptTask id="ScriptTask_4" name="Script Task" scriptFormat="http://www.mvel.org/2.0">
@@ -30,24 +30,25 @@ var5 = 1 + var4;</bpmn2:script>
     <bpmn2:scriptTask id="ScriptTask_3" name="Script Task" scriptFormat="http://www.mvel.org/2.0">
       <bpmn2:incoming>SequenceFlow_24</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_18</bpmn2:outgoing>
-      <bpmn2:script>var5 = 1 + var4;
-var5 = 1 + var5;</bpmn2:script>
+      <bpmn2:script>var5 = 1 + $var4;
+var5 = $var5 + $var5;
+var5 = 1 + $var5;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_18" tns:priority="1" name="" sourceRef="ScriptTask_3" targetRef="ExclusiveGateway_2"/>
-    <bpmn2:exclusiveGateway id="ExclusiveGateway_1" default="SequenceFlow_25">
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_1" gatewayDirection="Diverging" default="SequenceFlow_25">
       <bpmn2:incoming>SequenceFlow_22</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_23</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_24</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_25</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_23" tns:priority="1" name="" sourceRef="ExclusiveGateway_1" targetRef="ScriptTask_2">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1">var1 &lt; 35</bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1">$var1 &lt; 35</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_24" tns:priority="2" name="" sourceRef="ExclusiveGateway_1" targetRef="ScriptTask_3">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2">var2 &lt; 45</bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_2">$var2 &lt; 45</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_25" tns:priority="3" name="" sourceRef="ExclusiveGateway_1" targetRef="ScriptTask_4"/>
-    <bpmn2:exclusiveGateway id="ExclusiveGateway_2">
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_2" gatewayDirection="Converging">
       <bpmn2:incoming>SequenceFlow_19</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_18</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_20</bpmn2:incoming>
@@ -61,7 +62,7 @@ var5 = 1 + var5;</bpmn2:script>
   <bpmndi:BPMNDiagram id="BPMNDiagram" name="ukuFlow Test Diagram 6">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="workflow-6">
       <bpmndi:BPMNShape id="BPMNShape_1" bpmnElement="StartEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="20.0" y="134.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="20.0" y="133.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_2" bpmnElement="EndEvent_1">
         <dc:Bounds height="36.0" width="36.0" x="670.0" y="134.0"/>
@@ -85,7 +86,7 @@ var5 = 1 + var5;</bpmn2:script>
         <dc:Bounds height="50.0" width="50.0" x="588.0" y="126.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="SequenceFlow_11" sourceElement="BPMNShape_1" targetElement="BPMNShape_ScriptTask_1">
-        <di:waypoint xsi:type="dc:Point" x="56.0" y="152.0"/>
+        <di:waypoint xsi:type="dc:Point" x="56.0" y="151.0"/>
         <di:waypoint xsi:type="dc:Point" x="120.0" y="151.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_17" bpmnElement="SequenceFlow_17" sourceElement="BPMNShape_ExclusiveGateway_2" targetElement="BPMNShape_2">
