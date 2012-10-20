@@ -64,14 +64,15 @@ public class UkuGateway extends UkuElement {
 		if (d != null)
 			directionName = d;
 		else
-			directionName = "";
+			directionName = "Unspecified";
+		
 		if (directionName.equalsIgnoreCase("Diverging")) {
 			direction = 2;
 		} else if (directionName.equalsIgnoreCase("Converging")) {
 			direction = 1;
 		} else if (directionName.equalsIgnoreCase("Mixed")) {
 			direction = 3;
-		} else if (directionName.equalsIgnoreCase("Unspecified")) {
+		} else if (directionName.equalsIgnoreCase("Unspecified") || directionName == null) {
 			direction = 0;
 		} else { // ""
 			direction = 0;
@@ -91,7 +92,11 @@ public class UkuGateway extends UkuElement {
 	public int getType() {
 		return type;
 	}
-	
+	/**
+	 * automatically find out which type of Gateway is this : 
+	 * <li>Mixed</li>
+	 * <li>Converging</li><li>Deverging</li><li>Unspecified</li>
+	 */
 	public void selfValidate(){
 		String tmpName = "";
 		if (getOutgoingID().size() > 1 && getIncomingID().size() > 1) {

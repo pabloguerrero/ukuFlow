@@ -17,7 +17,9 @@ import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.menus.IWorkbenchContribution;
 import org.eclipse.ui.services.IServiceLocator;
 
+import de.tudarmstadt.dvs.ukuflow.converter.Activator;
 import de.tudarmstadt.dvs.ukuflow.handler.ConvertCommand;
+import de.tudarmstadt.dvs.ukuflow.preference.UkuPreference;
 
 public class DeploymentDynamicMenu extends ContributionItem implements
 		IWorkbenchContribution {
@@ -57,7 +59,7 @@ public class DeploymentDynamicMenu extends ContributionItem implements
 	@Override
 	public void fill(Menu menu, int index) {
 		System.out.println("DynamicNode is filled");
-
+		final int timeout = 1000*Activator.getDefault().getPreferenceStore().getInt(UkuPreference.TIMEOUT);
 		if (srv == null)
 			return;
 		ISelection sel = srv.getSelection();
@@ -75,7 +77,6 @@ public class DeploymentDynamicMenu extends ContributionItem implements
 			devItem.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					// TODO process deployment request
 					System.out.println("selected->");
 					System.out.println("\t"
 							+ file.getFullPath().toPortableString());
@@ -93,11 +94,10 @@ public class DeploymentDynamicMenu extends ContributionItem implements
 					} else {
 						fname = file.getLocation().toOSString();
 					}
-
+					
 					try {
-						DeviceManager.getInstance().deploy(key, fname, 10000);
+						DeviceManager.getInstance().deploy(key, fname, timeout);
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}

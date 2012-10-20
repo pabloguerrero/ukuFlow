@@ -74,12 +74,12 @@ public class ElementVisitorImpl implements ElementVisitor {
 			out.add(toByte(UkuConstants.END_EVENT));
 		else if (event.hasOutgoings() && !event.hasIncomings()) { // start event
 			out.add(toByte(UkuConstants.START_EVENT));
-			if (event.getOutgoing().size() != 1) {
+			if (event.getOutgoingEntity().size() != 1) {
 			} else {
-				UkuEntity outg = event.getOutgoing().get(0);
+				UkuEntity outg = event.getOutgoingEntity().get(0);
 				if (outg instanceof UkuSequenceFlow) {
-					byte next = ((UkuSequenceFlow) outg).getTarget()
-							.getWorkflowElementID();
+					byte next = ((UkuElement)((UkuSequenceFlow) outg).getTargetEntity()
+							).getWorkflowElementID();
 					out.add(next);
 				} else {
 				}
@@ -92,11 +92,11 @@ public class ElementVisitorImpl implements ElementVisitor {
 	public void visit(UkuExecuteTask task) {
 		out.add(task.getWorkflowElementID());
 		out.add(toByte(UkuConstants.EXECUTE_TASK));
-		if (task.getOutgoing().size() != 1) {
+		if (task.getOutgoingEntity().size() != 1) {
 		} else {
-			UkuEntity outg = task.getOutgoing().get(0);
+			UkuEntity outg = task.getOutgoingEntity().get(0);
 			if (outg instanceof UkuSequenceFlow) {
-				byte next = ((UkuSequenceFlow) outg).getTarget()
+				byte next = ((UkuSequenceFlow) outg).getTargetEntity()
 						.getWorkflowElementID();
 				out.add(next);
 			} else {
@@ -121,11 +121,11 @@ public class ElementVisitorImpl implements ElementVisitor {
 		switch (gateway.ukuGatewayType) {
 		case UkuConstants.JOIN_GATEWAY:
 			out.add(toByte(UkuConstants.JOIN_GATEWAY));
-			if (gateway.getOutgoing().size() != 1) {
+			if (gateway.getOutgoingEntity().size() != 1) {
 			} else {
-				UkuEntity outg = gateway.getOutgoing().get(0);
+				UkuEntity outg = gateway.getOutgoingEntity().get(0);
 				if (outg instanceof UkuSequenceFlow) {
-					byte next = ((UkuSequenceFlow) outg).getTarget()
+					byte next = ((UkuSequenceFlow) outg).getTargetEntity()
 							.getWorkflowElementID();
 					out.add(next);
 				} else {
@@ -133,17 +133,17 @@ public class ElementVisitorImpl implements ElementVisitor {
 			}
 			out.add(toByte(gateway.getIncoming().size()));
 			for (UkuEntity sq : gateway.getIncoming()) {
-				byte previous_id = ((UkuSequenceFlow) sq).getSource()
+				byte previous_id = ((UkuSequenceFlow) sq).getSourceEntity()
 						.getWorkflowElementID();
 				out.add(previous_id);
 			}
 			break;
 		case UkuConstants.FORK_GATEWAY:
 			out.add(toByte(UkuConstants.FORK_GATEWAY));
-			out.add(toByte(gateway.getOutgoing().size()));
-			for (UkuEntity outg : gateway.getOutgoing()) {
+			out.add(toByte(gateway.getOutgoingEntity().size()));
+			for (UkuEntity outg : gateway.getOutgoingEntity()) {
 				if (outg instanceof UkuSequenceFlow) {
-					int id_ = ((UkuSequenceFlow) outg).getTarget()
+					int id_ = ((UkuSequenceFlow) outg).getTargetEntity()
 							.getWorkflowElementID();
 					out.add(toByte(id_));
 				}
@@ -153,9 +153,9 @@ public class ElementVisitorImpl implements ElementVisitor {
 		case UkuConstants.INCLUSIVE_DECISION_GATEWAY: // Hard work here!!
 
 			out.add(toByte(gateway.ukuGatewayType));
-			out.add(toByte(gateway.getOutgoing().size())); // no of Outgoing
+			out.add(toByte(gateway.getOutgoingEntity().size())); // no of Outgoing
 															// sequenceflow
-			for (UkuEntity outg : gateway.getOutgoing()) {
+			for (UkuEntity outg : gateway.getOutgoingEntity()) {
 				UkuSequenceFlow outSeq = (UkuSequenceFlow) outg;
 				outSeq.accept(this);
 			}
@@ -163,11 +163,11 @@ public class ElementVisitorImpl implements ElementVisitor {
 		case UkuConstants.EXCLUSIVE_MERGE_GATEWAY:
 		case UkuConstants.INCLUSIVE_JOIN_GATEWAY:
 			out.add(toByte(UkuConstants.INCLUSIVE_JOIN_GATEWAY));
-			if (gateway.getOutgoing().size() != 1) {
+			if (gateway.getOutgoingEntity().size() != 1) {
 			} else {
-				UkuEntity outg = gateway.getOutgoing().get(0);
+				UkuEntity outg = gateway.getOutgoingEntity().get(0);
 				if (outg instanceof UkuSequenceFlow) {
-					byte next = ((UkuSequenceFlow) outg).getTarget()
+					byte next = ((UkuSequenceFlow) outg).getTargetEntity()
 							.getWorkflowElementID();
 					out.add(next);
 				} else {
@@ -175,7 +175,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 			}
 			out.add(toByte(gateway.getIncoming().size()));
 			for (UkuEntity sq : gateway.getIncoming()) {
-				byte previous_id = ((UkuSequenceFlow) sq).getSource()
+				byte previous_id = ((UkuSequenceFlow) sq).getSourceEntity()
 						.getWorkflowElementID();
 				out.add(previous_id);
 			}
@@ -190,7 +190,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 
 	@Override
 	public void visit(UkuSequenceFlow task) {
-		out.add(task.getTarget().getWorkflowElementID());
+		out.add(task.getTargetEntity().getWorkflowElementID());
 		if (task.hasCondition()) {
 			sVisitor.reset();
 			task.getConditionExp().accept(sVisitor);

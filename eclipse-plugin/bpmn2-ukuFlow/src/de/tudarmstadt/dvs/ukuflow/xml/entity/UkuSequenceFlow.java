@@ -13,8 +13,8 @@ public class UkuSequenceFlow extends UkuEntity {
 	public String source;
 	public String target;
 
-	private UkuElement sourceEntity;
-	private UkuElement targetEntity;
+	private UkuEntity sourceEntity;
+	private UkuEntity targetEntity;
 
 
 	UkuExpression conditionExp = null;
@@ -27,15 +27,28 @@ public class UkuSequenceFlow extends UkuEntity {
 		this.source = source;
 		this.target = target;
 	}
-
+	
+	public UkuSequenceFlow(String id, UkuEntity source, UkuEntity target){
+		super(id);
+		this.sourceEntity = source;
+		this.targetEntity = target;
+	}
+	
 	public void setTargetID(String target) {
 		this.target = target;
 	}
-
+	public void setTargetEntity(UkuEntity  target){
+		this.targetEntity = target;
+	}
+	
 	public void setSourceID(String source) {
 		this.source = source;
 	}
-
+	
+	public void setSourceEntity(UkuEntity source){
+		this.sourceEntity = source;
+	}
+	
 	public void setReference(Map<String, UkuEntity> ref) {
 		if (ref.containsKey(source)) {
 			sourceEntity = (UkuElement) ref.get(source);
@@ -55,11 +68,11 @@ public class UkuSequenceFlow extends UkuEntity {
 		return isDefault;
 	}
 
-	public UkuElement getSource() {
+	public UkuEntity getSourceEntity() {
 		return sourceEntity;
 	}
 
-	public UkuElement getTarget() {
+	public UkuEntity getTargetEntity() {
 		return targetEntity;
 	}
 

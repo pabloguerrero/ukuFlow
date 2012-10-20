@@ -23,7 +23,12 @@ public class UkuProcessValidation {
 	}
 
 	public boolean validate() {
-		
+		/*
+		for(UkuEntity e : process.getElements()){
+			if(e instanceof UkuGateway){
+				((UkuGateway)e).selfValidate();
+			}
+		}*/
 		for (UkuEntity e : process.getEntities()) {
 			if (e instanceof UkuEvent) {
 				validate((UkuEvent) e);
@@ -108,7 +113,7 @@ public class UkuProcessValidation {
 	}
 
 	public void validate(UkuGateway gway) {
-		
+		gway.selfValidate();		
 		if (gway.ukuGatewayType == UkuConstants.INCLUSIVE_DECISION_GATEWAY) {
 			if (gway.getDefaultGway() == null);
 				//gway.addErrorMessage("inclusive decision gateway should have a default gateway");
@@ -116,8 +121,8 @@ public class UkuProcessValidation {
 	}
 
 	public void validate(UkuSequenceFlow sef) {
-		if (sef.getSource() instanceof UkuGateway) {
-			UkuGateway sourceGway = (UkuGateway) sef.getSource();
+		if (sef.getSourceEntity() instanceof UkuGateway) {
+			UkuGateway sourceGway = (UkuGateway) sef.getSourceEntity();
 			switch (sourceGway.ukuGatewayType) {
 			case UkuConstants.INCLUSIVE_DECISION_GATEWAY:
 			case UkuConstants.EXCLUSIVE_DECISION_GATEWAY:

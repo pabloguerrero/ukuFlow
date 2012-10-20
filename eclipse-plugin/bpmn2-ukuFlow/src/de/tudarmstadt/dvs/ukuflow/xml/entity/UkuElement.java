@@ -46,6 +46,14 @@ public abstract class UkuElement extends UkuEntity {
 		this.incoming = in;
 	}
 
+	public void setOutgoingEntity(List<UkuEntity> outg) {
+		this.outgoingEntities = outg;
+	}
+
+	public void setIncomingEntity(List<UkuEntity> in) {
+		this.incomingEntities = in;
+	}
+
 	public void setOutgoing(List<String> outg) {
 		this.outgoing = outg;
 	}
@@ -66,14 +74,14 @@ public abstract class UkuElement extends UkuEntity {
 		this.outgoing.add(sequenceFlow);
 	}
 
-	public List<UkuEntity> getOutgoing() {
+	public List<UkuEntity> getOutgoingEntity() {
 		return outgoingEntities;
 	}
 
 	public List<UkuEntity> getIncoming() {
 		return incomingEntities;
 	}
-	
+
 	public boolean hasIncomings() {
 		return incoming.size() > 0;
 	}

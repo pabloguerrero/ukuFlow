@@ -286,12 +286,10 @@ public class BPMN2XMLParser {
 			UkuGateway gway = new UkuGateway(id);
 			gway.setElementType(name);
 			String direction = e.getAttributeValue("gatewayDirection");
-			String defaultGway = e.getAttributeValue("default");
-			gway.setDefaultGway(defaultGway);
-			if (direction != null) {
-				gway.setDirection(direction);
-			}
-
+			String isdefaultGway = e.getAttributeValue("default");
+			gway.setDefaultGway(isdefaultGway);			
+			gway.setDirection(direction);
+			
 			for (Element child : e.getChildren()) {
 				String n = child.getName();
 				String n_id = child.getTextTrim();
@@ -384,13 +382,7 @@ public class BPMN2XMLParser {
 				}
 			}
 			done = true;
-		}
-		for(UkuEntity e : process.getElements()){
-			if(e instanceof UkuGateway){
-				((UkuGateway)e).selfValidate();
-			}
-		}
-
+		}		
 	}
 
 	private String generateID(String rootID) {

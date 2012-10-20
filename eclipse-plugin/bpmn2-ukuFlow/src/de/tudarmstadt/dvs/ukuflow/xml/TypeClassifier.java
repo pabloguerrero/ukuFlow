@@ -83,9 +83,9 @@ public class TypeClassifier {
 	}
 
 	/**
-	 * 
-	 * @param name
-	 * @return 
+	 * get type of element base on the xml tag.
+	 * @param name (xml tag)
+	 * @return type
 	 * <li> 1 : connector </li>
 	 * <li> 2 : task </li> 
 	 * <li> 3 : event </li>

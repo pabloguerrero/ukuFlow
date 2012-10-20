@@ -17,7 +17,9 @@ import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.menus.IWorkbenchContribution;
 import org.eclipse.ui.services.IServiceLocator;
 
+import de.tudarmstadt.dvs.ukuflow.converter.Activator;
 import de.tudarmstadt.dvs.ukuflow.handler.ConvertCommand;
+import de.tudarmstadt.dvs.ukuflow.preference.UkuPreference;
 
 public class UndeploymentCommand extends ContributionItem implements
 		IWorkbenchContribution {
@@ -41,7 +43,7 @@ public class UndeploymentCommand extends ContributionItem implements
 
 	@Override
 	public void fill(Menu menu, int index) {		
-
+		final int timeout = 1000*Activator.getDefault().getPreferenceStore().getInt(UkuPreference.TIMEOUT);
 		if (srv == null)
 			return;
 		ISelection sel = srv.getSelection();
@@ -61,7 +63,7 @@ public class UndeploymentCommand extends ContributionItem implements
 				public void widgetSelected(SelectionEvent e) {					
 					int pid = ConvertCommand.getProcessID(file);
 					try {
-						DeviceManager.getInstance().undeploy(key, pid, 10000);
+						DeviceManager.getInstance().undeploy(key, pid, timeout);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}

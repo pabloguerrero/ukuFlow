@@ -88,7 +88,8 @@ public class ConvertCommand extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-
+		boolean validateonly = new Boolean(event.getParameter("de.tudarmstadt.dvs.ukuflow.convert.validateonly"));
+		
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 				.getActiveMenuSelection(event);
 		Object firstElement = selection.getFirstElement();
@@ -100,14 +101,60 @@ public class ConvertCommand extends AbstractHandler {
 
 		if (firstElement instanceof IFile) {
 			IFile file = (IFile) firstElement;
-			return convert(file);
+			if(validateonly){
+				return validate(file);
+			} else {
+				return convert(file);
+			}
 		} else {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event),
 					"Information", "Please select a BPMN or BPMN2 source file");
 		}
 		return null;
 	}
+	public static boolean validate(IFile file){
+		deleteMarker(file);
+		boolean saved = saveAllResources(file);
+		if(!saved)
+			return false;
+		String extension = file.getFileExtension();
+		String oFileLocation = file.getLocation().toOSString();
+		String nfileLocation =  oFileLocation+ "\n";
+		String nfileLocation64 = oFileLocation + "\n";
+		nfileLocation = nfileLocation.replace(extension + "\n", "uku");
+		nfileLocation64 = nfileLocation64.replace(extension + "\n", "uku64");
 
+		if (extension.equals("bpmn") || extension.equals("bpmn2")) {
+			BPMN2XMLParser parser = new BPMN2XMLParser(oFileLocation);
+			parser.executeFetch();
+			List<UkuProcess> processes = parser.getProcesses();
+
+			UkuProcessValidation validator = new UkuProcessValidation(
+					processes.get(0));
+			validator.validate();
+			ErrorManager em = ErrorManager.getInstance();
+			ScopeManager sm = ScopeManager.getInstance();
+			em.exportTo(console);
+			console.info("Validator", "Report:");
+			console.info("Validator",
+					"Issued "
+							+ em.getWarnings().size()
+							+ (em.getWarnings().size() == 1 ? " warming"
+									: " warnings "));
+			if (!em.isValid()) {
+				console.info("Validator", "There are(is) "
+						+ em.getErrors().size()
+						+ " errors in the diagram, please fix them (it) first");
+				em.reset();
+				sm.reset();
+				return false;
+			}
+			em.reset();
+			sm.reset();
+		}
+		
+		return true;
+	}
 	public static boolean convert(IFile file) {
 		deleteMarker(file);
 		boolean saved = saveAllResources(file);
@@ -201,6 +248,7 @@ public class ConvertCommand extends AbstractHandler {
 			}
 			em.reset();
 			sm.reset();
+			visitor = null;
 		}
 		return true;
 	}
