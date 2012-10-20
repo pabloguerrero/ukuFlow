@@ -1,3 +1,11 @@
+check.project.nature=true
 eclipse.preferences.version=1
+is.expanded=ALWAYS_TRUE
+is.horizontal=DEFAULT_TRUE
+is.marker.visible=DEFAULT_TRUE
+is.message.visible=ALWAYS_TRUE
 override.model.enablements=true
-target.runtime=org.eclipse.bpmn2.modeler.runtime.none
+show.advanced.properties=true
+show.descriptions=true
+show.id.attribute=true
+target.runtime=org.jboss.runtime.jbpm5

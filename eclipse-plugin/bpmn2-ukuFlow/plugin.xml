@@ -196,5 +196,18 @@
             class="de.tudarmstadt.dvs.ukuflow.preference.UkuPreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="de.tudarmstadt.dvs.ukuflow.editorcategory"
+            name="ukuFLow">
+      </category>
+      <wizard
+            category="de.tudarmstadt.dvs.ukuflow.editorcategory"
+            class="de.tudarmstadt.dvs.ukuflow.NewWizard1"
+            id="de.tudarmstadt.dvs.ukuflow.wizarddiagram"
+            name="ukuFLow Diagram">
+      </wizard>
+   </extension>
 
 </plugin>
