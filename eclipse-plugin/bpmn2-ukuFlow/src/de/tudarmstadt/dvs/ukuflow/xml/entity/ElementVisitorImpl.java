@@ -118,7 +118,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 	public void visit(UkuGateway gateway) {
 		out.add(gateway.getWorkflowElementID());
 
-		switch (gateway.ukuGatewayType) {
+		switch (gateway.getUkuType()) {
 		case UkuConstants.JOIN_GATEWAY:
 			out.add(toByte(UkuConstants.JOIN_GATEWAY));
 			if (gateway.getOutgoingEntity().size() != 1) {
@@ -131,8 +131,8 @@ public class ElementVisitorImpl implements ElementVisitor {
 				} else {
 				}
 			}
-			out.add(toByte(gateway.getIncoming().size()));
-			for (UkuEntity sq : gateway.getIncoming()) {
+			out.add(toByte(gateway.getIncomingEntity().size()));
+			for (UkuEntity sq : gateway.getIncomingEntity()) {
 				byte previous_id = ((UkuElement)((UkuSequenceFlow) sq).getSourceEntity())
 						.getWorkflowElementID();
 				out.add(previous_id);
@@ -152,7 +152,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 		case UkuConstants.EXCLUSIVE_DECISION_GATEWAY:
 		case UkuConstants.INCLUSIVE_DECISION_GATEWAY: // Hard work here!!
 
-			out.add(toByte(gateway.ukuGatewayType));
+			out.add(toByte(gateway.getUkuType()));
 			out.add(toByte(gateway.getOutgoingEntity().size())); // no of Outgoing
 															// sequenceflow
 			for (UkuEntity outg : gateway.getOutgoingEntity()) {
@@ -173,8 +173,8 @@ public class ElementVisitorImpl implements ElementVisitor {
 				} else {
 				}
 			}
-			out.add(toByte(gateway.getIncoming().size()));
-			for (UkuEntity sq : gateway.getIncoming()) {
+			out.add(toByte(gateway.getIncomingEntity().size()));
+			for (UkuEntity sq : gateway.getIncomingEntity()) {
 				byte previous_id = ((UkuElement)((UkuSequenceFlow) sq).getSourceEntity())
 						.getWorkflowElementID();
 				out.add(previous_id);

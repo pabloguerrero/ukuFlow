@@ -51,9 +51,13 @@ import de.tudarmstadt.dvs.ukuflow.tools.Base64Converter;
 import de.tudarmstadt.dvs.ukuflow.tools.QuickFileReader;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.validation.ErrorManager;
+import de.tudarmstadt.dvs.ukuflow.validation.ErrorMessage;
 import de.tudarmstadt.dvs.ukuflow.validation.UkuProcessValidation;
 import de.tudarmstadt.dvs.ukuflow.xml.BPMN2XMLParser;
+import de.tudarmstadt.dvs.ukuflow.xml.ProcessOptimizer;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.ElementVisitorImpl;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuElement;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuEntity;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuProcess;
 
 @SuppressWarnings("restriction")
@@ -61,10 +65,10 @@ public class ConvertCommand extends AbstractHandler {
 	/**
 	 * Console name
 	 */
-	private BpmnLog log = BpmnLog.getInstance(ConvertCommand.class
+	private static BpmnLog log = BpmnLog.getInstance(ConvertCommand.class
 			.getSimpleName());
 	private static UkuConsole console = UkuConsole.getConsole();
-
+	/*
 	private void writeMarkers(IResource resource, String location, String msg) {
 		IMarker m = null;
 		try {
@@ -77,7 +81,7 @@ public class ConvertCommand extends AbstractHandler {
 			e.printStackTrace();
 		}
 	}
-
+	*/
 	private static void deleteMarker(IFile file) {
 		try {
 			file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
@@ -88,8 +92,8 @@ public class ConvertCommand extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		boolean validateonly = new Boolean(event.getParameter("de.tudarmstadt.dvs.ukuflow.convert.validateonly"));
-		
+		boolean validateonly = new Boolean(
+				event.getParameter("de.tudarmstadt.dvs.ukuflow.convert.validateonly"));		
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 				.getActiveMenuSelection(event);
 		Object firstElement = selection.getFirstElement();
@@ -101,66 +105,21 @@ public class ConvertCommand extends AbstractHandler {
 
 		if (firstElement instanceof IFile) {
 			IFile file = (IFile) firstElement;
-			if(validateonly){
-				return validate(file);
-			} else {
-				return convert(file);
-			}
+			return convert(file,!validateonly);			
 		} else {
 			MessageDialog.openInformation(HandlerUtil.getActiveShell(event),
 					"Information", "Please select a BPMN or BPMN2 source file");
 		}
 		return null;
 	}
-	public static boolean validate(IFile file){
+	
+	public static boolean convert(IFile file, boolean saveOutput) {
 		deleteMarker(file);
 		boolean saved = saveAllResources(file);
-		if(!saved)
+		if (!saved)
 			return false;
-		String extension = file.getFileExtension();
-		String oFileLocation = file.getLocation().toOSString();
-		String nfileLocation =  oFileLocation+ "\n";
-		String nfileLocation64 = oFileLocation + "\n";
-		nfileLocation = nfileLocation.replace(extension + "\n", "uku");
-		nfileLocation64 = nfileLocation64.replace(extension + "\n", "uku64");
-
-		if (extension.equals("bpmn") || extension.equals("bpmn2")) {
-			BPMN2XMLParser parser = new BPMN2XMLParser(oFileLocation);
-			parser.executeFetch();
-			List<UkuProcess> processes = parser.getProcesses();
-
-			UkuProcessValidation validator = new UkuProcessValidation(
-					processes.get(0));
-			validator.validate();
-			ErrorManager em = ErrorManager.getInstance();
-			ScopeManager sm = ScopeManager.getInstance();
-			em.exportTo(console);
-			console.info("Validator", "Report:");
-			console.info("Validator",
-					"Issued "
-							+ em.getWarnings().size()
-							+ (em.getWarnings().size() == 1 ? " warming"
-									: " warnings "));
-			if (!em.isValid()) {
-				console.info("Validator", "There are(is) "
-						+ em.getErrors().size()
-						+ " errors in the diagram, please fix them (it) first");
-				em.reset();
-				sm.reset();
-				return false;
-			}
-			em.reset();
-			sm.reset();
-		}
-		
-		return true;
-	}
-	public static boolean convert(IFile file) {
-		deleteMarker(file);
-		boolean saved = saveAllResources(file);
-		if(!saved)
-			return false;
-		return convert(file.getLocation().toOSString(), file.getFileExtension());
+		return convert(file.getLocation().toOSString(),
+				file.getFileExtension(), saveOutput);
 
 	}
 
@@ -180,82 +139,125 @@ public class ConvertCommand extends AbstractHandler {
 					.toOSString());
 			return Integer.valueOf(s.split(" ")[2]);
 		}
-
-		throw new NullPointerException("");
+		throw new NullPointerException("unsupported file type : ."
+				+ file.getFileExtension());
 	}
 
-	private static boolean convert(String oFileLocation, String extension) {
+	/**
+	 * 
+	 * @param process
+	 * @param em
+	 * @param sm
+	 * @return false if process contain some error, true if everything is fine
+	 */
+	private static boolean reporting(UkuProcess process, ErrorManager em,
+			ScopeManager sm) {
+		console.println();
+		console.info("Validator", "checking process " + process.name);
+		em.exportTo(console);
+		console.info("Validator", "Report:");
+		console.info("Validator", "Issued " + em.getWarnings().size()
+				+ (em.getWarnings().size() == 1 ? " warming" : " warnings "));
+		if (!em.isValid()) {
+			console.info("Validator", "There are(is) " + em.getErrors().size()
+					+ " errors in the diagram, please fix them (it) first");
+			return false;
+		}
+		return true;
+	}
+
+	private static boolean convert(String oFileLocation, String extension,
+			boolean saveOutput) {		
 		// String extension = file.getFileExtension();
 		// String oFileLocation = file.getLocation().toOSString();
+		
 		String nfileLocation = oFileLocation + "\n";
 		String nfileLocation64 = oFileLocation + "\n";
 		nfileLocation = nfileLocation.replace(extension + "\n", "uku");
 		nfileLocation64 = nfileLocation64.replace(extension + "\n", "uku64");
 
 		if (extension.equals("bpmn") || extension.equals("bpmn2")) {
-			BPMN2XMLParser parser = new BPMN2XMLParser(oFileLocation);
-			parser.executeFetch();
-			List<UkuProcess> processes = parser.getProcesses();
-
-			UkuProcessValidation validator = new UkuProcessValidation(
-					processes.get(0));
-			validator.validate();
 			ErrorManager em = ErrorManager.getInstance();
 			ScopeManager sm = ScopeManager.getInstance();
-			em.exportTo(console);
-			console.info("Validator", "Report:");
-			console.info("Validator",
-					"Issued "
-							+ em.getWarnings().size()
-							+ (em.getWarnings().size() == 1 ? " warming"
-									: " warnings "));
-			if (!em.isValid()) {
-				console.info("Validator", "There are(is) "
-						+ em.getErrors().size()
-						+ " errors in the diagram, please fix them (it) first");
-				em.reset();
-				sm.reset();
-				return false;
-			}			
-
-			ElementVisitorImpl visitor = new ElementVisitorImpl();
-
-			UkuProcess ue = processes.get(0);
-			visitor.reset();
-			ue.accept(visitor);
-			console.info("output", visitor.getOutputString64());
-			File f = new File(nfileLocation64);
-			FileWriter fwrite = null;
-			try {
-				fwrite = new FileWriter(f);
-				fwrite.write(visitor.getOutputString64());
-				fwrite.flush();
-				fwrite.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
+			BPMN2XMLParser parser = new BPMN2XMLParser(oFileLocation);
+			/* fetching & set references */
+			parser.executeFetch();
+			List<UkuProcess> processes = parser.getProcesses();
+			UkuProcess process = processes.get(0);
+			if (processes.size() > 1) {
+				em.addError(new ErrorMessage(
+						oFileLocation,
+						processes.size()
+								+ " processes are found. Just one process is supported.\n"
+								+ "\t Trying to convert the first process"));
 			}
+			/* checking cycles */
 
-			f = new File(nfileLocation);
-			fwrite = null;
-			try {
-				fwrite = new FileWriter(f);
-				for (byte b : visitor.getOutput())
-					fwrite.write(b + " ");
-				fwrite.flush();
-				fwrite.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
+			/* split mixed */
+			boolean valid = new ProcessOptimizer(process).optimize();
+			/* checking each element, cycle and balancing(if valid==true) */			
+			new UkuProcessValidation(process).validate(valid);
+
+			boolean isValid = reporting(process, em, sm);
 			em.reset();
 			sm.reset();
-			visitor = null;
+			if (!isValid) {
+				return false;
+			}
+			/* set ID & visit & writing output to file */
+			if (saveOutput)
+				visiting(process, nfileLocation64, nfileLocation);
 		}
 		return true;
 	}
 
+	private static void visiting(UkuProcess process, String nfileLocation64,
+			String nfileLocation) {
+		//console.info("generating output");
+		/*
+		 * set workflow-element-id for each element this id will be used later
+		 * in the bytecode format output
+		 */
+		byte id = 0;
+		for (UkuEntity ue : process.getEntities()) {
+			if (ue instanceof UkuElement) {
+				((UkuElement) ue).setWorkflowElementID(id);
+				id++;
+			}
+		}
+		ElementVisitorImpl visitor = new ElementVisitorImpl();
+
+		visitor.reset();
+		process.accept(visitor);
+		console.info("Output", visitor.getOutputString64());
+		File f = new File(nfileLocation64);
+		FileWriter fwrite = null;
+		try {
+			fwrite = new FileWriter(f);
+			fwrite.write(visitor.getOutputString64());
+			fwrite.flush();
+			fwrite.close();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+
+		f = new File(nfileLocation);
+		fwrite = null;
+		try {
+			fwrite = new FileWriter(f);
+			for (byte b : visitor.getOutput())
+				fwrite.write(b + " ");
+			fwrite.flush();
+			fwrite.close();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		visitor = null;
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static boolean saveAllResources(IFile file) {
-		
+
 		List selected = new LinkedList();
 		Set<IEditorInput> inputs = new HashSet<IEditorInput>();
 		List result = new LinkedList();
@@ -265,42 +267,47 @@ public class ConvertCommand extends AbstractHandler {
 			IWorkbenchPage[] pages = window.getPages();
 			for (IWorkbenchPage page : pages) {
 				IEditorPart[] editors = page.getDirtyEditors();
-				for (IEditorPart editor: editors) {					
+				for (IEditorPart editor : editors) {
 					IEditorInput input = editor.getEditorInput();
 					if (input instanceof IFileEditorInput) {
 						IFileEditorInput fileInput = (IFileEditorInput) input;
-						if(file.equals(fileInput.getFile()))
+						if (file.equals(fileInput.getFile()))
 							selected.add(editor);
-						//if (files.contains(fileInput.getFile())) {
-							if (!inputs.contains(input)) {
-								inputs.add(input);
-								result.add(editor);
-							}
-						//}
+						// if (files.contains(fileInput.getFile())) {
+						if (!inputs.contains(input)) {
+							inputs.add(input);
+							result.add(editor);
+						}
+						// }
 					}
 				}
 			}
-		}		
-		final IWorkbenchWindow iwindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		ListSelectionDialog lsd = new ListSelectionDialog(windows[0].getShell(), result, new ArrayContentProvider(), new WorkbenchPartLabelProvider(), "message");
-		if(result.isEmpty())
+		}
+		final IWorkbenchWindow iwindow = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow();
+		ListSelectionDialog lsd = new ListSelectionDialog(
+				windows[0].getShell(), result, new ArrayContentProvider(),
+				new WorkbenchPartLabelProvider(), "message");
+		if (result.isEmpty())
 			return true;
-		//if(selected)
+		// if(selected)
 		lsd.setInitialElementSelections(selected);
-		if(lsd.open()==Window.CANCEL)
+		if (lsd.open() == Window.CANCEL)
 			return false;
-		result = Arrays.asList(lsd.getResult());	
-		if(result.isEmpty())
+		result = Arrays.asList(lsd.getResult());
+		if (result.isEmpty())
 			return true;
 		final List finalModels = result;
-		IRunnableWithProgress progressOp = new IRunnableWithProgress() {			
+		IRunnableWithProgress progressOp = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) {
 				IProgressMonitor monitorWrap = new EventLoopProgressMonitor(
 						monitor);
-				monitorWrap.beginTask(WorkbenchMessages.Saving_Modifications, finalModels.size());
+				monitorWrap.beginTask(WorkbenchMessages.Saving_Modifications,
+						finalModels.size());
 				for (Iterator i = finalModels.iterator(); i.hasNext();) {
 					IEditorPart model = (IEditorPart) i.next();
-					// handle case where this model got saved as a result of saving another
+					// handle case where this model got saved as a result of
+					// saving another
 					if (!model.isDirty()) {
 						monitor.worked(1);
 						continue;
@@ -313,16 +320,19 @@ public class ConvertCommand extends AbstractHandler {
 				monitorWrap.done();
 			}
 		};
-	
-		return runProgressMonitorOperation(WorkbenchMessages.Save_All, progressOp, iwindow, iwindow);
+
+		return runProgressMonitorOperation(WorkbenchMessages.Save_All,
+				progressOp, iwindow, iwindow);
 	}
-	
+
 	private static boolean runProgressMonitorOperation(String opName,
 			final IRunnableWithProgress progressOp,
-			final IRunnableContext runnableContext, final IShellProvider shellProvider) {
+			final IRunnableContext runnableContext,
+			final IShellProvider shellProvider) {
 		final boolean[] success = new boolean[] { false };
 		IRunnableWithProgress runnable = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+			public void run(IProgressMonitor monitor)
+					throws InvocationTargetException, InterruptedException {
 				progressOp.run(monitor);
 				// Only indicate success if the monitor wasn't canceled
 				if (!monitor.isCanceled())
@@ -333,10 +343,11 @@ public class ConvertCommand extends AbstractHandler {
 		try {
 			runnableContext.run(false, true, runnable);
 		} catch (InvocationTargetException e) {
-			String title = NLS.bind(WorkbenchMessages.EditorManager_operationFailed, opName ); 
+			String title = NLS.bind(
+					WorkbenchMessages.EditorManager_operationFailed, opName);
 			Throwable targetExc = e.getTargetException();
 			WorkbenchPlugin.log(title, new Status(IStatus.WARNING,
-					PlatformUI.PLUGIN_ID, 0, title, targetExc));			
+					PlatformUI.PLUGIN_ID, 0, title, targetExc));
 			StatusUtil.handleStatus(title, targetExc, StatusManager.SHOW,
 					shellProvider.getShell());
 		} catch (InterruptedException e) {

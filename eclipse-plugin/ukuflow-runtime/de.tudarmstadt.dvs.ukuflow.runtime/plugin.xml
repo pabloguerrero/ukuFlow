@@ -6,17 +6,16 @@
       <runtime
             class="de.tudarmstadt.dvs.ukuflow.runtime.ukuFlowRuntime"
             description="BPMN2 Modeler customizations for the ukuFlow Process engine"
-            id="de.tudarmstadt.dvs.ukuflow.runtime"
+            id="de.tudarmstadt.dvs.ukuflow.runtime.ukuflowprocess"
             name="ukuFlow Process"
             versions="1.0">
       </runtime>
       <modelEnablement
-            runtimeId="de.tudarmstadt.dvs.ukuflow.runtime"
+            runtimeId="de.tudarmstadt.dvs.ukuflow.runtime.ukuflowprocess"
             type="Process">
             <disable object="all"/>
             <enable object="ScriptTask"/>
             
-			   
             <enable object="InclusiveGateway"/>
 			<enable object="ExclusiveGateway"/>
 			<enable object="EventBasedGateway"/>

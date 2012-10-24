@@ -1,30 +1,96 @@
 package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import de.tudarmstadt.dvs.ukuflow.tools.exception.UnspecifiedGatewayException;
 import de.tudarmstadt.dvs.ukuflow.xml.TypeClassifier;
 
-public class UkuGateway extends UkuElement {
+public abstract class UkuGateway extends UkuElement {
 
-	/**
-	 * -1: dead <br/>
-	 * 0 : still unknown <br/>
-	 * 1 : converging <br/>
-	 * 2 : diverging <br/>
-	 * 3 : mixed <br/>
-	 * 
-	 * @return type of the gateway
+	public class UkuEventGateway {
+
+	}
+	
+	/** direction of ukuGateway specified by user <br /> 
+	 *  1 = converging <br />
+	 *  2 = diverging <br />
+	 *  3 = mixed <br />
+	 *  0 = unspecified <br />
 	 */
-	public int type = 0;
-	public int direction = 0;
-	public String directionName;
-	private String typeGateway;
-	private String defaultGway = null;
-	public int ukuGatewayType = -1;
+	protected int direction = 0;
+	protected String directionName;
+	
+	/* xml tag name of gateway */
+	protected String typeGateway;
+	
+	/* default sequence flow id */
+	private String defaultGway = null;	
+	
+	private boolean skip = false;
 
-	public UkuGateway(String id) {
+	public  UkuGateway(String id) {
 		super(id);
+	}
+
+	public void setSkip() {
+		skip = true;
+	}
+
+	public boolean isSkipped() {
+		return skip;
+	}
+
+	public List<UkuGateway> getPreviousGateways() {
+		Set<UkuGateway> result = new HashSet<UkuGateway>();
+		for (UkuEntity flow : incomingEntities) {
+			UkuEntity tmp = flow;
+			while (!(tmp instanceof UkuGateway)
+					|| ((UkuGateway) tmp).isSkipped()) {
+				if (tmp instanceof UkuSequenceFlow) {
+					tmp = ((UkuSequenceFlow) tmp).getSourceEntity();
+				} else if (tmp instanceof UkuExecuteTask) {
+					tmp = ((UkuExecuteTask) tmp).getIncomingEntity().get(0);
+				} else if (tmp instanceof UkuEvent) {
+					break;
+				} else if (tmp instanceof UkuGateway
+						&& ((UkuGateway) tmp).isSkipped()) {
+					tmp = ((UkuGateway) tmp).getIncomingEntity().get(0);
+				}
+			}
+			if (tmp instanceof UkuGateway) {
+				result.add((UkuGateway) tmp);
+			}
+		}
+		return new LinkedList<UkuGateway>(result);
+	}
+
+	public List<UkuGateway> getNextGateways() {
+		Set<UkuGateway> result = new HashSet<UkuGateway>();
+		for (UkuEntity flow : outgoingEntities) {
+			UkuEntity tmp = flow;
+			while (!(tmp instanceof UkuGateway)||((UkuGateway)tmp).isSkipped()) {
+				System.out.println("getNextGateways() is looping");
+				if (tmp instanceof UkuSequenceFlow) {
+					tmp = ((UkuSequenceFlow) tmp).getTargetEntity();
+				} else if (tmp instanceof UkuExecuteTask) {
+					tmp = ((UkuExecuteTask) tmp).getOutgoingEntity().get(0);
+				} else if (tmp instanceof UkuEvent) {
+					break;
+				} else if (tmp instanceof UkuGateway
+						&& ((UkuGateway) tmp).isSkipped()) {
+					tmp = ((UkuGateway) tmp).getOutgoingEntity().get(0);
+				}
+			}
+			if (tmp instanceof UkuGateway) {
+				result.add((UkuGateway) tmp);
+			}
+		}
+		return new LinkedList<UkuGateway>(result);
 	}
 
 	/*
@@ -41,9 +107,11 @@ public class UkuGateway extends UkuElement {
 	public void setDefaultGway(String d) {
 		defaultGway = d;
 	}
-	public String getDefaultGway(){
+
+	public String getDefaultGway() {
 		return defaultGway;
 	}
+
 	public String getElementType() {
 		return typeGateway;
 	}
@@ -56,23 +124,21 @@ public class UkuGateway extends UkuElement {
 			defGateway.setDefaultGateway();
 		}
 	}
-	public void setType(int type){
-		this.type = type;
-	}
-
+	
 	public void setDirection(String d) {
 		if (d != null)
 			directionName = d;
 		else
 			directionName = "Unspecified";
-		
+
 		if (directionName.equalsIgnoreCase("Diverging")) {
 			direction = 2;
 		} else if (directionName.equalsIgnoreCase("Converging")) {
 			direction = 1;
 		} else if (directionName.equalsIgnoreCase("Mixed")) {
 			direction = 3;
-		} else if (directionName.equalsIgnoreCase("Unspecified") || directionName == null) {
+		} else if (directionName.equalsIgnoreCase("Unspecified")
+				|| directionName == null) {
 			direction = 0;
 		} else { // ""
 			direction = 0;
@@ -81,82 +147,124 @@ public class UkuGateway extends UkuElement {
 	}
 
 	/**
-	 * -1: dead (0-n) or (n-0)<br/>
-	 * 0 : still unknown (1-1)<br/>
+	 * 
+	 * 0 : still unknown <br/>
 	 * 1 : converging (n-1)<br/>
 	 * 2 : diverging (1-n)<br/>
 	 * 3 : mixed (n-n)<br/>
 	 * 
 	 * @return type of the gateway
+	 * 
 	 */
+	/*
 	public int getType() {
-		return type;
-	}
+		if (direction == 0)
+			return calculateType();
+		else
+			return direction;
+	}*/
+
 	/**
-	 * automatically find out which type of Gateway is this : 
-	 * <li>Mixed</li>
-	 * <li>Converging</li><li>Deverging</li><li>Unspecified</li>
+	 * automatically find out which type of Gateway is this : <li>Mixed</li> <li>
+	 * Converging</li><li>Deverging</li><li>Unspecified</li>
 	 */
-	public void selfValidate(){
+	/*
+	public void selfValidate() {
 		String tmpName = "";
 		if (getOutgoingID().size() > 1 && getIncomingID().size() > 1) {
-			 addWarningMessage("a mixed gateway");
-			 setType(3);
+			addWarningMessage("a mixed gateway");
+			setType(3);
 			tmpName = "Mixed";
-		} else if ( getOutgoingID().size() == 0
-				||  getIncomingID().size() == 0) {
-			if ( getOutgoingID().size() == 0)
-				 addWarningMessage("no outgoing sequence flow");
-			if ( getIncomingID().size() == 0)
-				 addWarningMessage("no incoming sequence flow");
-			 setType(-1);
+		} else if (getOutgoingID().size() == 0 || getIncomingID().size() == 0) {
+			if (getOutgoingID().size() == 0)
+				addWarningMessage("no outgoing sequence flow");
+			if (getIncomingID().size() == 0)
+				addWarningMessage("no incoming sequence flow");
+			setType(-1);
 			return;
-		} else if ( getIncomingID().size() == 1
-				&&  getOutgoingID().size() > 1) {
-			 setType(2);
+		} else if (getIncomingID().size() == 1 && getOutgoingID().size() > 1) {
+			setType(2);
 			tmpName = "Diverging";
-		} else if ( getIncomingID().size() > 1
-				&&  getOutgoingID().size() == 1) {
+		} else if (getIncomingID().size() > 1 && getOutgoingID().size() == 1) {
 			tmpName = "Converging";
-			 setType(1);
+			setType(1);
 		}
-		if ( getIncomingID().size() == 1
-				&&  getOutgoingID().size() == 1) {
+		if (getIncomingID().size() == 1 && getOutgoingID().size() == 1) {
 			tmpName = "UnKnown";
-			 setType(0);
+			setType(0);
 		}
-		if ( getType() !=  direction) {
-			 addWarningMessage("was specified as '" +  directionName
+		if (getType() != direction) {
+			addWarningMessage("was specified as '" + directionName
 					+ "', but it was found as a '" + tmpName + "' gateway");
 		}
-		if ( type ==  direction &&  direction == 0) {
-			 addErrorMessage("Please specify the direction of gateway (Converging,Deverging or Mixed)");
+		if (type == direction && direction == 0) {
+			addErrorMessage("Please specify the direction of gateway (Converging,Deverging or Mixed)");
 		}
 		int tp = 0;
 		try {
 			tp = TypeClassifier.getInstance().getGatewayType(this);
-			 ukuGatewayType = tp;
+			//ukuGatewayType = tp;
 		} catch (UnspecifiedGatewayException e) {
-			 addErrorMessage(e.getMessage());
+			addErrorMessage(e.getMessage());
 			return;
 		}
 	}
-	
+	*/
 	@Override
 	public void accept(ElementVisitor visitor) {
 		visitor.visit(this);
 	}
 
+	public abstract int getUkuType();
+
 	public UkuGateway clone(String newID) {
-		UkuGateway ob = new UkuGateway(newID);
+		UkuGateway ob = null;
+
+		try {
+			ob = (UkuGateway) getClass().getConstructor(String.class)
+					.newInstance(newID);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		}
+
 		if (defaultGway != null)
 			ob.defaultGway = defaultGway.trim();
 		ob.direction = direction;
 		if (directionName != null)
 			ob.directionName = directionName.trim();
-		ob.type = type;
+		// ob.type = type;
 		if (typeGateway != null)
 			ob.typeGateway = typeGateway.trim();
 		return ob;
+	}
+	/**
+	 * 
+	 * @return 1 if converging, 2 if diverging, 3 if mixed and 0 if cannot be calculated
+	 */
+	public int calculateType(){		
+		if(incomingEntities.size()>1 && outgoingEntities.size()==1)
+			return 1;
+		if(incomingEntities.size()==1 && outgoingEntities.size()>1)
+			return 2;
+		if(incomingEntities.size()>1 && outgoingEntities.size()>1)
+			return 3;
+		return 0;
+	}
+
+	public boolean equals(Object o) {
+		if (o instanceof UkuGateway)
+			return ((UkuGateway) o).id.equals(id);
+		return false;
+
 	}
 }

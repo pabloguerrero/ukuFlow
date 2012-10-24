@@ -1,13 +1,19 @@
 package de.tudarmstadt.dvs.ukuflow.xml;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.UnspecifiedGatewayException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.UnsupportedElementException;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuEventGateway;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuExclusiveGateway;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuGateway;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuInclusiveGateway;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuParallelGateway;
 
 public class TypeClassifier {
 	private Set<String> connectors = new HashSet<String>();
@@ -16,6 +22,7 @@ public class TypeClassifier {
 	private Set<String> events = new HashSet<String>();
 	private Set<String> textAnnotation = new HashSet<String>();
 	private static TypeClassifier INSTANCE = null;
+	private Map<String, Class> gatewayClass = new HashMap<String, Class>();
 	BpmnLog log = BpmnLog.getInstance(TypeClassifier.class.getSimpleName());
 
 	private TypeClassifier() {
@@ -36,6 +43,11 @@ public class TypeClassifier {
 		gateways.add("inclusiveGateway");
 		
 		textAnnotation.add("textAnnotation");
+		
+		gatewayClass.put("parallelGateway", UkuParallelGateway.class);
+		gatewayClass.put("inclusiveGateway", UkuInclusiveGateway.class);
+		gatewayClass.put("exclusiveGateway", UkuExclusiveGateway.class);
+		gatewayClass.put("eventBasedGateway", UkuEventGateway.class);
 	}
 
 	public static TypeClassifier getInstance() {
@@ -44,12 +56,14 @@ public class TypeClassifier {
 		}
 		return INSTANCE;
 	}
-
+	public Class getGatewayClass(String name){
+		return gatewayClass.get(name);
+	}
 	public int getGatewayType(UkuGateway gway)
 			throws UnspecifiedGatewayException {
 		String name = gway.getElementType();
-		log.debug("gateway " + name + " -> " + gway.getType());
-		switch (gway.getType()) {
+		//log.debug("gateway " + name + " -> " + gway.getType());
+		switch (gway.calculateType()) {
 		case 1:// Converging
 			if (name.equals("parallelGateway"))
 				return UkuConstants.JOIN_GATEWAY;
@@ -74,9 +88,7 @@ public class TypeClassifier {
 				return UkuConstants.EXCLUSIVE_DECISION_GATEWAY;
 			else if (name.equalsIgnoreCase("eventBasedGateway"))
 				return UkuConstants.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY;
-			break;
-		default:
-			return 0;
+			break;		
 		}
 		throw new UnspecifiedGatewayException(name + " is unspecified");
 

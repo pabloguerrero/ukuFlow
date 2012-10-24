@@ -3,6 +3,8 @@ package de.tudarmstadt.dvs.ukuflow.xml.entity;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
+
 /**
  * 
  * @author Hien Quoc Dang
@@ -12,7 +14,7 @@ import java.util.List;
 public class UkuProcess implements VisitableElement {
 
 	private List<UkuEntity> entities;
-
+	public UkuEvent startEvent = null;
 	// private HashMap<String,UkuEntity> ref = new HashMap<String, UkuEntity>();
 
 	public List<UkuScope> scopes = new LinkedList<UkuScope>();
@@ -20,12 +22,12 @@ public class UkuProcess implements VisitableElement {
 	 * unique id
 	 */
 	public String id;
-	
+
 	public String name;
 
 	public UkuProcess(String id, String name) {
 		this.id = id;
-		this.name = name;		
+		this.name = name;
 	}
 
 	public void addEntities(List<UkuEntity> newEntities) {
@@ -35,14 +37,18 @@ public class UkuProcess implements VisitableElement {
 	}
 
 	public void addEntity(UkuEntity newEntity) {
-		if(newEntity instanceof UkuScope){
-			if(scopes == null)
+		if (newEntity instanceof UkuScope) {
+			if (scopes == null)
 				scopes = new LinkedList<UkuScope>();
 			scopes.add((UkuScope) newEntity);
 			return;
-		}else if (entities.contains(newEntity)) {
-			System.out.println("double element " + newEntity.getID());
+		} else if (entities.contains(newEntity)) {
+			System.err.println("double element " + newEntity.getID());
 			return;
+		}
+		if (startEvent == null && newEntity instanceof UkuEvent
+				&& ((UkuEvent) newEntity).getType() == UkuConstants.START_EVENT) {
+			startEvent = (UkuEvent) newEntity;
 		}
 		entities.add(newEntity);
 	}
@@ -60,11 +66,11 @@ public class UkuProcess implements VisitableElement {
 	public void setEntities(List<UkuEntity> entities) {
 		this.entities = new LinkedList<UkuEntity>();
 		this.scopes = new LinkedList<UkuScope>();
-		for(UkuEntity e : entities){
-			if(e instanceof UkuScope)
-				scopes.add((UkuScope)e);
-			else 
-				this.entities.add(e);
+		for (UkuEntity e : entities) {
+			if (e instanceof UkuScope)
+				scopes.add((UkuScope) e);
+			else
+				addEntity(e);
 		}
 
 	}
@@ -99,7 +105,7 @@ public class UkuProcess implements VisitableElement {
 	}
 
 	public byte getWorkflowID() {
-		if(name == null)
+		if (name == null)
 			return (byte) (Math.abs(id.hashCode()) % 256);
 		return (byte) (Math.abs(name.hashCode()) % 256);
 	}

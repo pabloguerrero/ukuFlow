@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -84,23 +85,13 @@ public class BPMN2XMLParser {
 
 		for (UkuProcess process : processes) {
 			// optimization
-			optimize(process);
+			//optimize(process);
+			
 			// set reference
 			for (UkuEntity entity : process.getEntities()) {
 				entity.setReference(reference);
 			}
-
-			/*
-			 * set workflow-element-id for each element this id will be used
-			 * later in the bytecode format output
-			 */
-			byte id = 0;
-			for (UkuEntity ue : process.getEntities()) {
-				if (ue instanceof UkuElement) {
-					((UkuElement) ue).setWorkflowElementID(id);
-					id++;
-				}
-			}
+						
 		}
 	}
 
@@ -283,7 +274,22 @@ public class BPMN2XMLParser {
 			}
 			return event;
 		case 4: // gateways
-			UkuGateway gway = new UkuGateway(id);
+			UkuGateway gway = null;
+			try {
+				gway = (UkuGateway) classifier.getGatewayClass(name).getConstructor(String.class).newInstance(id);
+			} catch (IllegalArgumentException e1) {
+				e1.printStackTrace();
+			} catch (SecurityException e1) {
+				e1.printStackTrace();
+			} catch (InstantiationException e1) {
+				e1.printStackTrace();
+			} catch (IllegalAccessException e1) {
+				e1.printStackTrace();
+			} catch (InvocationTargetException e1) {
+				e1.printStackTrace();
+			} catch (NoSuchMethodException e1) {
+				e1.printStackTrace();
+			}			
 			gway.setElementType(name);
 			String direction = e.getAttributeValue("gatewayDirection");
 			String isdefaultGway = e.getAttributeValue("default");
@@ -327,7 +333,7 @@ public class BPMN2XMLParser {
 		return id;
 	}
 	private String fetchName(Element e){
-		String name = e.getAttributeValue("name");		
+		String name = e.getAttributeValue("name");
 		return name;
 	}
 
@@ -335,8 +341,8 @@ public class BPMN2XMLParser {
 	 * this function will search for a mixed gateway in a process and try to
 	 * split it in 2 simple gateway and also add a sequence flow between them
 	 * 
-	 * @param process
-	 * @need tests!
+	 * @param process 
+	 * @deprecated
 	 */
 	private void optimize(UkuProcess process) {
 		List<UkuEntity> tmp = new LinkedList<UkuEntity>();

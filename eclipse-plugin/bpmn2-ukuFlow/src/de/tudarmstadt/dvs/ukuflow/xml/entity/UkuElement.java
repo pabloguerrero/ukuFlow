@@ -18,9 +18,9 @@ public abstract class UkuElement extends UkuEntity {
 	protected List<String> incoming = new LinkedList<String>();
 	protected List<String> outgoing = new LinkedList<String>();
 
-	protected List<UkuEntity> incomingEntities = new LinkedList<UkuEntity>();
-	protected List<UkuEntity> outgoingEntities = new LinkedList<UkuEntity>();
-
+	protected List<UkuSequenceFlow> incomingEntities = new LinkedList<UkuSequenceFlow>();
+	protected List<UkuSequenceFlow> outgoingEntities = new LinkedList<UkuSequenceFlow>();
+	protected boolean hasReference = false;
 	public UkuElement(String id) {
 		super(id);
 	}
@@ -37,7 +37,13 @@ public abstract class UkuElement extends UkuEntity {
 		element_id = id;
 		hasElementID = true;
 	}
-
+	public List<UkuElement> getNextElements(){
+		List<UkuElement> result = new LinkedList<UkuElement>();
+		for(UkuEntity e: outgoingEntities){
+			
+		}
+		return result;
+	}
 	public byte getWorkflowElementID() {
 		return element_id;
 	}
@@ -46,11 +52,11 @@ public abstract class UkuElement extends UkuEntity {
 		this.incoming = in;
 	}
 
-	public void setOutgoingEntity(List<UkuEntity> outg) {
+	public void setOutgoingEntity(List<UkuSequenceFlow> outg) {
 		this.outgoingEntities = outg;
 	}
 
-	public void setIncomingEntity(List<UkuEntity> in) {
+	public void setIncomingEntity(List<UkuSequenceFlow> in) {
 		this.incomingEntities = in;
 	}
 
@@ -74,11 +80,11 @@ public abstract class UkuElement extends UkuEntity {
 		this.outgoing.add(sequenceFlow);
 	}
 
-	public List<UkuEntity> getOutgoingEntity() {
+	public List<UkuSequenceFlow> getOutgoingEntity() {
 		return outgoingEntities;
 	}
 
-	public List<UkuEntity> getIncoming() {
+	public List<UkuSequenceFlow> getIncomingEntity() {
 		return incomingEntities;
 	}
 
@@ -91,9 +97,10 @@ public abstract class UkuElement extends UkuEntity {
 	}
 
 	public void setReference(Map<String, UkuEntity> ref) {
+		//hasReference = true;
 		for (String entity : incoming) {
 			if (ref.containsKey(entity)) {
-				incomingEntities.add(ref.get(entity));
+				incomingEntities.add((UkuSequenceFlow)ref.get(entity));
 			} else {
 				addErrorMessage("the reference of '" + id
 						+ "' doesnot contain element " + entity
@@ -103,7 +110,7 @@ public abstract class UkuElement extends UkuEntity {
 
 		for (String entity : outgoing) {
 			if (ref.containsKey(entity)) {
-				outgoingEntities.add(ref.get(entity));
+				outgoingEntities.add((UkuSequenceFlow)ref.get(entity));
 			} else {
 				addErrorMessage("the reference of '" + id
 						+ "' does not contain element " + entity
@@ -111,5 +118,45 @@ public abstract class UkuElement extends UkuEntity {
 			}
 		}
 	}
-
+	public List<UkuGateway> getPreviousGateways(){
+		List<UkuGateway> result = new LinkedList<UkuGateway>();
+		
+		for(UkuEntity flow : incomingEntities){
+			UkuEntity tmp = flow;
+			while(!(tmp instanceof UkuGateway)){
+				if(tmp instanceof UkuSequenceFlow){
+					tmp = ((UkuSequenceFlow)tmp).getSourceEntity();
+				} else if(tmp instanceof UkuExecuteTask){
+					tmp = ((UkuExecuteTask)tmp).getIncomingEntity().get(0);
+				} else if(tmp instanceof UkuEvent){
+					break;
+				}
+				
+			}
+			if(tmp instanceof UkuGateway){
+				result.add((UkuGateway)tmp);
+			}
+		}
+		return result;
+	}
+	public List<UkuGateway> getNextGateways(){
+		List<UkuGateway> result = new LinkedList<UkuGateway>();		
+		for(UkuEntity flow : outgoingEntities){
+			UkuEntity tmp = flow;
+			while(!(tmp instanceof UkuGateway)){
+				if(tmp instanceof UkuSequenceFlow){
+					tmp = ((UkuSequenceFlow)tmp).getTargetEntity();
+				} else if(tmp instanceof UkuExecuteTask){
+					tmp = ((UkuExecuteTask)tmp).getOutgoingEntity().get(0);
+				} else if(tmp instanceof UkuEvent){
+					break;
+				}
+				
+			}
+			if(tmp instanceof UkuGateway){
+				result.add((UkuGateway)tmp);
+			}
+		}
+		return result;
+	}
 }

@@ -85,7 +85,7 @@ public class DeploymentDynamicMenu extends ContributionItem implements
 					String extension = file.getFileExtension();
 					boolean converted = false;
 					if (extension.equals("bpmn") || extension.equals("bpmn2")) {
-						converted = ConvertCommand.convert(file);
+						converted = ConvertCommand.convert(file, true);
 						if (!converted) {
 							return;
 						}

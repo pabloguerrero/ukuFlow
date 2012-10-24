@@ -31,17 +31,20 @@ public class UkuConsole {
 		err = myConsole.newMessageStream();
 		info = myConsole.newMessageStream();
 		warn = myConsole.newMessageStream();
-		
+
 		err.setColor(new Color(MonitorUlti.getDisplay(), 255, 0, 0));
 		warn.setColor(new Color(MonitorUlti.getDisplay(), 210, 105, 30));
 		out.setColor(new Color(MonitorUlti.getDisplay(), 0, 0, 255));
-		
+
 		out.setActivateOnWrite(true);
 		info.setActivateOnWrite(true);
 		warn.setActivateOnWrite(true);
 		err.setActivateOnWrite(true);
-		
 
+	}
+
+	public void println() {
+		info.println();
 	}
 
 	public static UkuConsole getConsole() {
@@ -50,13 +53,14 @@ public class UkuConsole {
 		}
 		return instance;
 	}
-	public void warn(Object...objs){
+
+	public void warn(Object... objs) {
 		String msg = generateMessage(false, objs);
 		if (msg != null) {
 			warn.println(msg);
 		}
 	}
-	
+
 	public void error(Object... objs) {
 		if (!errBoolean)
 			return;

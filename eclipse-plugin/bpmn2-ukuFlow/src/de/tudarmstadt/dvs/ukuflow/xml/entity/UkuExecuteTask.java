@@ -33,8 +33,8 @@ public class UkuExecuteTask extends UkuElement {
 	}
 
 	public void setScript(String script) {
-		//this.script = script;
-		if(script == null || script.equals("")){
+		// this.script = script;
+		if (script == null || script.equals("")) {
 			System.err.println(script);
 			return;
 		}
@@ -51,13 +51,20 @@ public class UkuExecuteTask extends UkuElement {
 			else
 				addErrorMessage(error.getMessage());
 		} catch (ParseException e) {
-			String msg = "error near the token "
-					+ parser.token;
-			if(e.getMessage().startsWith(parser.token.image))
-				msg = e.getMessage();
-			addErrorMessage("element " + id + ", at line: "
-					+ parser.token.beginLine + "& col: "
-					+ parser.token.beginColumn, msg);
+			String tkn = null;
+			String msg = null;
+
+			if (parser.token != null) {
+				tkn = parser.token.image;
+				msg = "error near the token " + tkn;
+				if (e.getMessage() != null && e.getMessage().startsWith(tkn))
+					msg = e.getMessage();
+				addErrorMessage("element " + id + ", at line: "
+						+ parser.token.beginLine + "& col: "
+						+ parser.token.beginColumn, msg);
+			} else {
+				addErrorMessage("element "+id,"there is an unknown error in the script");
+			}
 		}
 	}
 
