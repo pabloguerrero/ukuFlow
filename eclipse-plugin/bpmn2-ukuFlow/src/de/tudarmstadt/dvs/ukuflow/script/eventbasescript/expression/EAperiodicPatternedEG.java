@@ -3,11 +3,9 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
-public class EAperiodicPatternedEG extends EventGenerator{
-	int sensor_type = -1;
+public class EAperiodicPatternedEG extends EventGenerator{	
 	int time = 1;
-	String pattern = "";
-	private String scopeName;
+	String pattern = "";	
 	public void setTime(int time){
 		this.time = time;
 	}
@@ -19,19 +17,15 @@ public class EAperiodicPatternedEG extends EventGenerator{
 		}
 		this.pattern = pattern;
 	}
-	public void setSensorType(String sensor){
-		sensor_type = UkuConstants.getConstantWithName(sensor);
-		if(sensor_type == -1){
-			//TODO or not?
-		}
-	}
-	public void setScope(String scope){
-		this.scopeName = scope;
-	}
+	
 	@Override
 	public void accept(EventBaseVisitor visitor) {
 		// TODO Auto-generated method stub
 		
 	}
-	
+	@Override
+	public String toString(){
+		String s ="[PATTERNED="+pattern+"("+time+"s)]";		
+		return getVariable()+"PEG_"+getSensorType()+"_"+s+"@"+getScope();
+	}
 }

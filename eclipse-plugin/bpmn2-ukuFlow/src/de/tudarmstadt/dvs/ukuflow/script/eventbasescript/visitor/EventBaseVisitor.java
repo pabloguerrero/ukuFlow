@@ -11,12 +11,12 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleFilterConstraint;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ETopExpression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator;
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseScript;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
 
 
 public interface EventBaseVisitor {
 
-	void visit(EventBaseScript eventBaseScript);
+	void visit(EEventBaseScript eventBaseScript);
 	void visit(EComplexEF ef);
 	void visit(EComplexFilterBinaryExpression exp);
 	void visit(EComplexFilterPolicy policy);

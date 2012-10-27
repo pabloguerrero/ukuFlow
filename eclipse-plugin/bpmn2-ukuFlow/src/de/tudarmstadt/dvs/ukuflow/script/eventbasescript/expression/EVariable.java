@@ -5,4 +5,7 @@ public class EVariable extends EventBaseOperator {
 	public EVariable(String v){
 		this.variable = v.trim();
 	}
+	public String toString(){
+		return variable;
+	}
 }

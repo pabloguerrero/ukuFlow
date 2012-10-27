@@ -6,8 +6,13 @@ public class EComplexEF extends EventBaseOperator{
 
 	@Override
 	public void accept(EventBaseVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		visitor.visit(this);
+	}
+
+	@Override
+	public String toString() {
+		String s;
+		return null;
 	}
 	
 }

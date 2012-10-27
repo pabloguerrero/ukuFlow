@@ -1,7 +1,6 @@
 package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
-import de.tudarmstadt.dvs.ukuflow.tools.exception.UnspecifiedGatewayException;
 
 public class UkuInclusiveGateway extends UkuGateway{
 

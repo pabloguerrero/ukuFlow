@@ -2,7 +2,7 @@ package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
 import java.util.Map;
 
-public class UkuEvent extends UkuElement {
+public class UkuEvent extends UkuActivity {
 	byte type;
 
 	public UkuEvent(String id) {

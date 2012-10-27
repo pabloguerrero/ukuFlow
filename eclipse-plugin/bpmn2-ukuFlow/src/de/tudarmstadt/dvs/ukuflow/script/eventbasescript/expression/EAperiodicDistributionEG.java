@@ -11,11 +11,26 @@ public class EAperiodicDistributionEG extends EventGenerator{
 		this.functionName = name;
 		this.parameters = params;
 	}
-	
+	public String getFunction(){
+		return functionName;
+	}
+	public List<Integer> getParameters(){
+		return parameters;
+	}
 	@Override
 	public void accept(EventBaseVisitor visitor) {
-		// TODO Auto-generated method stub
+		//visitor.visit(this);
 		
 	}
-	
+	@Override
+	public String toString(){
+		String s="";
+		s+= "[DISTRIBUTION="+functionName+"(";		
+		for(Integer i : parameters){
+			s+= i +",";
+		}
+		s+="__";
+		s= s.replace(",__",")");
+		return getVariable()+"PEG_"+getSensorType()+"_"+s+"@"+getScope();
+	}
 }

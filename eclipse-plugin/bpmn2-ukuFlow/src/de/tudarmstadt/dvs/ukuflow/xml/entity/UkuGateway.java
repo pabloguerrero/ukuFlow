@@ -107,7 +107,10 @@ public abstract class UkuGateway extends UkuElement {
 	public void setDefaultGway(String d) {
 		defaultGway = d;
 	}
-
+	/**
+	 * gateway type specified by user
+	 * @return
+	 */
 	public String getDefaultGway() {
 		return defaultGway;
 	}

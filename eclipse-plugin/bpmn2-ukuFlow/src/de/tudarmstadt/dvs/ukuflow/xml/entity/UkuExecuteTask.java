@@ -5,12 +5,14 @@ import java.util.Map;
 
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.TokenMgrError;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ParseException;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.Token;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ukuFlowScript;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.TaskScriptFunction;
 
-public class UkuExecuteTask extends UkuElement {
+public class UkuExecuteTask extends UkuActivity {
 	private List<TaskScriptFunction> statements;
 	private boolean hasScript = false;
+	private boolean valid = false;
 
 	public UkuExecuteTask(String id) {
 		super(id);
@@ -19,7 +21,7 @@ public class UkuExecuteTask extends UkuElement {
 	@Override
 	public void setReference(Map<String, UkuEntity> ref) {
 		super.setReference(ref);
-
+		/*
 		if (incoming.size() == 0) {
 			addWarningMessage(" this element may never be reached. It has no incoming sequence flow");
 		}
@@ -29,47 +31,57 @@ public class UkuExecuteTask extends UkuElement {
 		}
 		if (outgoing.size() > 1 || incoming.size() > 1) {
 			addErrorMessage("this element has multiple incoming- or outgoing- sequence flows");
-		}
+		}*/
 	}
 
 	public void setScript(String script) {
 		// this.script = script;
-		if (script == null || script.equals("")) {
-			System.err.println(script);
+		if (script == null || script.equals("")) {			
 			return;
 		}
 		hasScript = true;
 		ukuFlowScript parser = ukuFlowScript.getInstance(script);
 		try {
+			System.out.println("parsing "+script);
 			statements = parser.parseTaskScript();
+			valid = true;
 		} catch (Error error) {
-			if (parser.token != null)
-				addErrorMessage("element " + id + ", at line: "
-						+ parser.token.beginLine + "& col: "
-						+ parser.token.beginColumn, "error near the token "
-						+ parser.token);
-			else
+			Token tk = parser.token;
+
+			if (tk != null) {
+				if (tk.next != null)
+					tk = tk.next;
+				addErrorMessage(id + ", at line: "
+						+ tk.beginLine + "& col: "
+						+ tk.beginColumn, "error near the token "
+						+ tk);
+			} else
 				addErrorMessage(error.getMessage());
 		} catch (ParseException e) {
 			String tkn = null;
 			String msg = null;
-
-			if (parser.token != null) {
-				tkn = parser.token.image;
+			Token tk = parser.token;
+			if (tk != null) {
+				if(tk.next != null)
+					tk = tk.next;
+				tkn = tk.image;
 				msg = "error near the token " + tkn;
-				if (e.getMessage() != null && e.getMessage().startsWith(tkn))
-					msg = e.getMessage();
+				//if (e.getMessage() != null && e.getMessage().startsWith(tkn)) msg = e.getMessage();
 				addErrorMessage("element " + id + ", at line: "
-						+ parser.token.beginLine + "& col: "
-						+ parser.token.beginColumn, msg);
+						+ tk.beginLine + "& col: "
+						+ tk.beginColumn, msg);
 			} else {
-				addErrorMessage("element "+id,"there is an unknown error in the script");
-			}
+				addErrorMessage("element " + id,
+						"there is an unknown error in the script");
+			}			
 		}
 	}
 
 	public boolean hasScript() {
 		return hasScript;
+	}
+	public boolean isValid(){
+		return valid;
 	}
 
 	public List<TaskScriptFunction> getStatements() {

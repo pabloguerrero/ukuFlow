@@ -41,8 +41,13 @@ public class ProcessOptimizer {
 						break;
 					}
 					if (type == 0) {
-						//valid = false; //TODO						
-						e.addErrorMessage("Gateway with one incoming and one outgoing is not allowed");
+						valid = false; //TODO
+						if(e.getIncomingEntity().size()>1)
+							e.addErrorMessage("Gateway should have at least one outgoing sequence flow");
+						else if(e.getOutgoingEntity().size()>1)
+							e.addErrorMessage("Gateway should have at least one incoming sequence flow");
+						else 
+							e.addErrorMessage("Gateway with one incoming and one outgoing is not allowed");
 					}
 				}
 				done = true;

@@ -78,38 +78,188 @@ public class UkuProcessValidation {
 		 * if (errors.size() != 0) return false;
 		 */
 		boolean noCycle = checkingNoCyclus();
-		if(!noCycle){
-			ErrorManager.getInstance().addError(new ErrorMessage(process.name, " Process contains cycle"));
+		if (!noCycle) {
+			ErrorManager.getInstance().addError(
+					new ErrorMessage(process.name, " Process contains cycle"));
 			System.err.println(" process contains circlus");
 			return;
 		}
-		if(balanceCheck)
-			balanceChecking();
+		if (balanceCheck && ErrorManager.getInstance().isValid()) {
+			UkuElement last = wellformednessChecking3(start);
+			if (last != null && last instanceof UkuEvent && ((UkuEvent)last).getType()==UkuConstants.END_EVENT)
+				System.out.println("workflow is well-formed");
+			else 
+				System.err.println("workflow is not well-formed "+ last);
+		}
 
 	}
+
 	/**
 	 * checking if there is a cycle in the workflow
+	 * 
 	 * @return
 	 */
-	private boolean checkingNoCyclus(){		
-		return goToNextEntity(start,process.getElements().size()+1);
+	private boolean checkingNoCyclus() {
+		return goToNextEntity(start, process.getElements().size() + 1);
 	}
-	private boolean goToNextEntity(UkuEntity current, int max){
-		if(max == 0) return false;
-		if(current instanceof UkuSequenceFlow){
-			return goToNextEntity(((UkuSequenceFlow)current).getTargetEntity(), max);
-		} else if(current instanceof UkuEvent && ((UkuEvent)current).getType()==UkuConstants.END_EVENT){
+
+	private boolean goToNextEntity(UkuEntity current, int max) {
+		if (max == 0)
+			return false;
+		if (current instanceof UkuSequenceFlow) {
+			return goToNextEntity(
+					((UkuSequenceFlow) current).getTargetEntity(), max);
+		} else if (current instanceof UkuEvent
+				&& ((UkuEvent) current).getType() == UkuConstants.END_EVENT) {
 			return true;
 		} else {
 			UkuElement e = (UkuElement) current;
-			for(UkuEntity s : e.getOutgoingEntity()){
-				if(!goToNextEntity(s, max-1))
+			for (UkuEntity s : e.getOutgoingEntity()) {
+				if (!goToNextEntity(s, max - 1))
 					return false;
 			}
 			return true;
 		}
 	}
-	private void balanceChecking() {
+
+	private UkuElement wellformednessChecking3(UkuElement start) {
+		if (start == null)
+			return null;
+		if (start instanceof UkuActivity) {
+			if (start.getOutgoingEntity().size() == 0)
+				return start;
+			else if (start.getOutgoingEntity().size() == 1)
+				return wellformednessChecking3((UkuElement) start
+						.getOutgoingEntity().get(0).getTargetEntity());
+			else {
+				System.err.println("Activity has more than one outgoing???");// TODO:ERROR:
+				return null;
+			}
+
+		} else if (start instanceof UkuGateway) {
+			UkuGateway tmp = (UkuGateway) start;
+			if (tmp.calculateType() == 1) {
+				return tmp;
+			} else {
+				Set<UkuElement> nextElement = new HashSet<UkuElement>();
+				for (UkuSequenceFlow seq : tmp.getOutgoingEntity()) {
+					UkuElement t = wellformednessChecking3((UkuElement) seq
+							.getTargetEntity());
+					nextElement.add(t);
+					
+				}
+				if (nextElement.size() > 1) {
+					String msg ="found "+nextElement.size() + " matched gateway:";
+					boolean coma= false;
+					for(UkuElement e : nextElement){
+						if(coma)
+							msg+=", ";
+						coma=true;
+						if(e!=null)
+							msg += e.getID();
+						else {
+							msg =null;
+							break;
+						}
+					}
+					if(msg!=null){
+						msg+=" (Note that each diverging gateway must have one and only one matched converging gateway)";
+						start.addErrorMessage(msg);
+					} else{
+						start.addErrorMessage("couldn't find a matched converging gateway for diverging gateway "+start.getID());
+					}
+					return null;
+				} else {
+					UkuElement res = (UkuElement) nextElement.toArray()[0];
+					if (res instanceof UkuGateway) {
+						UkuGateway g = (UkuGateway) res;
+
+						if (checkmatchedGateway((UkuGateway)start, g))
+							return wellformednessChecking3((UkuElement) g.getOutgoingEntity().get(0).getTargetEntity());
+					}
+					return null;
+				}
+			}
+		} else {
+			return null;
+		}
+	}
+
+	private boolean checkmatchedGateway(UkuGateway start, UkuGateway end) {
+		if (start.getOutgoingEntity().size() != end.getIncomingEntity().size())
+			return false;
+		if (start instanceof UkuExclusiveGateway
+				&& end instanceof UkuExclusiveGateway)
+			return true;
+		if (start instanceof UkuInclusiveGateway
+				&& end instanceof UkuInclusiveGateway)
+			return true;
+		if (start instanceof UkuParallelGateway
+				&& end instanceof UkuParallelGateway)
+			return true;
+		if (start instanceof UkuEventGateway
+				&& end instanceof UkuExclusiveGateway)
+			return true;
+		return false;
+	}
+
+	/*
+	 * require a workflow without cirle
+	 */
+	private UkuElement wellformednessChecking2(UkuElement start) {
+		if (start == null)
+			return null;
+		UkuElement tmp = start;
+		while (true) {
+			if (tmp instanceof UkuGateway) {
+				UkuGateway gate = (UkuGateway) tmp;
+
+				switch (gate.calculateType()) {
+				case 0:
+					return gate;
+				case 1:
+					Set<UkuElement> nextGateways = new HashSet<UkuElement>();
+					for (UkuSequenceFlow seq : gate.getOutgoingEntity()) {
+						UkuElement r = wellformednessChecking2((UkuElement) seq
+								.getTargetEntity());
+						if (r == null) {
+							System.err.println("couldn't found next gateway");
+						}
+						if (!(r instanceof UkuGateway)) {
+							// TODO add an error
+							return r;
+						} else if (((UkuGateway) r).calculateType() == 1) {
+							nextGateways.add(r);
+						} else {
+							System.err
+									.println("this statement will never be reached<UkuProcessValidation.wellformednessCheching2>");
+						}
+					}
+					switch (nextGateways.size()) {
+					case 0:
+						return null;
+					case 1:
+						return (UkuElement) nextGateways.toArray()[0];
+					default:
+
+					}
+				case 2:
+				case 3:
+				default:
+				}
+			} else if (tmp instanceof UkuActivity) {
+				if (tmp instanceof UkuEvent
+						&& ((UkuEvent) tmp).getType() == UkuConstants.END_EVENT) {
+					return tmp;
+				}
+			} else {
+
+			}
+		}
+		// return null;
+	}
+
+	private void wellformednessChecking() {
 		List<UkuGateway> converging = new LinkedList<UkuGateway>();
 		List<UkuGateway> diverging = new LinkedList<UkuGateway>();
 		for (UkuElement u : process.getElements()) {
@@ -119,18 +269,18 @@ public class UkuProcessValidation {
 					converging.add(g);
 				} else if (g.calculateType() == 2) {
 					diverging.add(g);
-				} else {				
-					//TODO
+				} else {
+					// TODO
 					g.addErrorMessage("this error shouldn't happend, please contact dangquochien@gmail.com");
 					return;
 				}
 			}
 		}
-		//int oldsize = diverging.size();
-		//List<UkuGateway> toRemove = new LinkedList<UkuGateway>();
+		// int oldsize = diverging.size();
+		// List<UkuGateway> toRemove = new LinkedList<UkuGateway>();
 		boolean done = false;
 		while (!done) {
-			done=true;
+			done = true;
 			for (UkuGateway g : diverging) {
 				UkuGateway to = null;
 				List<UkuGateway> lfrom = g.getNextGateways();
@@ -143,21 +293,21 @@ public class UkuProcessValidation {
 						System.out.println(g + " & " + to + " are skipped");
 						diverging.remove(g);
 						converging.remove(to);
-						done=false;
+						done = false;
 						break;
 					} else {
-						System.out.println("not match: " + g + " -> "
-								+ lfrom + "\n" + to + " -> " + lto);
+						System.out.println("not match: " + g + " -> " + lfrom
+								+ "\n" + to + " -> " + lto);
 					}
 				}
 			}
 		}
-		if(diverging.size()!=0||converging.size()!=0){
-			ErrorManager.getInstance().addError(process.name, "The process is not balanced");
+		if (diverging.size() != 0 || converging.size() != 0) {
+			ErrorManager.getInstance().addError(process.name,
+					"The process is not balanced");
 			System.err.println("workflow is not balanced");
 		}
 	}
-	
 
 	private void validate(UkuEvent event) {
 		switch (event.getType()) {
@@ -185,7 +335,7 @@ public class UkuProcessValidation {
 			task.addErrorMessage("A Script task must have exactly one incoming and one outgoing connection");
 		if (!task.hasScript()) {
 			task.addErrorMessage("has no script");
-		} else {
+		} else if (task.isValid()) {
 			for (TaskScriptFunction tsf : task.getStatements()) {
 				validate(task, tsf);
 			}
@@ -219,7 +369,7 @@ public class UkuProcessValidation {
 	private void validate(UkuSequenceFlow sef) {
 		if (sef.getSourceEntity() instanceof UkuGateway) {
 			UkuGateway sourceGway = (UkuGateway) sef.getSourceEntity();
-			if(sourceGway.calculateType() != 2)
+			if (sourceGway.calculateType() != 2)
 				return;
 			switch (sourceGway.getUkuType()) {
 			case UkuConstants.INCLUSIVE_DECISION_GATEWAY:

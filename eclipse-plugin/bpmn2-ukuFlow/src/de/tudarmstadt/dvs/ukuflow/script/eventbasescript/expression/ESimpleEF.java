@@ -20,6 +20,25 @@ public class ESimpleEF extends EventBaseOperator{
 	
 	@Override
 	public void accept(EventBaseVisitor visitor) {
-		
+		visitor.visit(this);
+	}
+	public void setConstraints(List<ESimpleFilterConstraint> cons){
+		this.constraints=cons;
+	}
+	public String toString(){
+		String s = "SEF ";
+		s+="[";
+		for(ESimpleFilterConstraint c : constraints){
+			s += c + ",";
+		}
+		s+="]-[";
+		for(String v : sourceVariable){
+			s+=v+",";
+		}
+		for(EventBaseOperator sd : sourceDirect){
+			s+=sd+",";
+		}
+		s+="]";
+		return s;
 	}
 }

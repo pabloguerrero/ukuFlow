@@ -13,12 +13,12 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleFilterConstraint;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ETopExpression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator;
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseScript;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
 
 public class EventBaseVisitorImpl implements EventBaseVisitor{
 	Vector<Byte> out = new Vector<Byte>();
 	@Override
-	public void visit(EventBaseScript eventBaseScript) {
+	public void visit(EEventBaseScript eventBaseScript) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -79,7 +79,6 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 
 	@Override
 	public void visit(EPeriodicEG ep) {
-		// TODO Auto-generated method stub
 		
 	}
 
