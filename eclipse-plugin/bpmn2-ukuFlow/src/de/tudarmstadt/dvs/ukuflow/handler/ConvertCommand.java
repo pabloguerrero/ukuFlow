@@ -1,8 +1,10 @@
 package de.tudarmstadt.dvs.ukuflow.handler;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -38,14 +40,21 @@ import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.misc.StatusUtil;
 import org.eclipse.ui.model.WorkbenchPartLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
+
+import de.tudarmstadt.dvs.ukuflow.converter.Activator;
+import de.tudarmstadt.dvs.ukuflow.preference.UkuPreference;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ScopeManager;
 import de.tudarmstadt.dvs.ukuflow.tools.Base64Converter;
 import de.tudarmstadt.dvs.ukuflow.tools.QuickFileReader;
@@ -68,20 +77,10 @@ public class ConvertCommand extends AbstractHandler {
 	private static BpmnLog log = BpmnLog.getInstance(ConvertCommand.class
 			.getSimpleName());
 	private static UkuConsole console = UkuConsole.getConsole();
-	/*
-	private void writeMarkers(IResource resource, String location, String msg) {
-		IMarker m = null;
-		try {
-			m = resource.createMarker(IMarker.PROBLEM);
-			m.setAttribute(IMarker.LOCATION, location);
-			m.setAttribute(IMarker.MESSAGE, msg);
-			m.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			m.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-	}
-	*/
+	/**
+	 * 
+	 * @param file
+	 */
 	private static void deleteMarker(IFile file) {
 		try {
 			file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
@@ -112,14 +111,16 @@ public class ConvertCommand extends AbstractHandler {
 		}
 		return null;
 	}
-	
 	public static boolean convert(IFile file, boolean saveOutput) {
+		//project = file.getProject();
+		//folder = file.getParent();
+		//System.out.println(folder);
 		deleteMarker(file);
 		boolean saved = saveAllResources(file);
 		if (!saved)
 			return false;
-		return convert(file.getLocation().toOSString(),
-				file.getFileExtension(), saveOutput);
+		
+		return convert(file, file.getLocation().toOSString(),file.getFileExtension(), saveOutput);
 
 	}
 
@@ -166,15 +167,16 @@ public class ConvertCommand extends AbstractHandler {
 		return true;
 	}
 
-	private static boolean convert(String oFileLocation, String extension,
-			boolean saveOutput) {		
+	private static boolean convert(IFile file, String oFileLocation, String extension,
+			boolean saveOutput) {
+		
 		// String extension = file.getFileExtension();
 		// String oFileLocation = file.getLocation().toOSString();
 		
-		String nfileLocation = oFileLocation + "\n";
-		String nfileLocation64 = oFileLocation + "\n";
-		nfileLocation = nfileLocation.replace(extension + "\n", "uku");
-		nfileLocation64 = nfileLocation64.replace(extension + "\n", "uku64");
+		//String nfileLocation = oFileLocation + "\n";
+		//String nfileLocation64 = oFileLocation + "\n";
+		//nfileLocation = nfileLocation.replace(extension + "\n", "uku");
+		//nfileLocation64 = nfileLocation64.replace(extension + "\n", "uku64");
 
 		if (extension.equals("bpmn") || extension.equals("bpmn2")) {
 			ErrorManager em = ErrorManager.getInstance();
@@ -206,14 +208,12 @@ public class ConvertCommand extends AbstractHandler {
 			}
 			/* set ID & visit & writing output to file */
 			if (saveOutput)
-				visiting(process, nfileLocation64, nfileLocation);
+				visiting(file, process);
 		}
 		return true;
 	}
 
-	private static void visiting(UkuProcess process, String nfileLocation64,
-			String nfileLocation) {
-		//console.info("generating output");
+	private static void visiting(IFile file, UkuProcess process) {		
 		/*
 		 * set workflow-element-id for each element this id will be used later
 		 * in the bytecode format output
@@ -229,28 +229,48 @@ public class ConvertCommand extends AbstractHandler {
 
 		visitor.reset();
 		process.accept(visitor);
+		InputStream istream = new ByteArrayInputStream(visitor.getOutputString64().getBytes());
 		console.info("Output", visitor.getOutputString64());
-		File f = new File(nfileLocation64);
-		FileWriter fwrite = null;
+		String fname = file.getName()+"\n";
+		String newfname = fname.replace(file.getFileExtension()+"\n","uku64");
+		String outputFolder = Activator.getDefault().getPreferenceStore().getString(UkuPreference.OUTPUT_DIR);
+		if(!outputFolder.matches("[a-zA-Z][a-zA-Z0-9]*"))
+			outputFolder = "";
 		try {
-			fwrite = new FileWriter(f);
-			fwrite.write(visitor.getOutputString64());
-			fwrite.flush();
-			fwrite.close();
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-
-		f = new File(nfileLocation);
-		fwrite = null;
-		try {
-			fwrite = new FileWriter(f);
-			for (byte b : visitor.getOutput())
-				fwrite.write(b + " ");
-			fwrite.flush();
-			fwrite.close();
-		} catch (IOException ex) {
-			ex.printStackTrace();
+			IFile newFile = null;
+			IContainer container = file.getParent();			
+			if(container instanceof IFolder){
+				IFolder folder = (IFolder)container;
+				if(outputFolder!=null && outputFolder != ""){
+					folder = folder.getFolder(outputFolder);
+					if(!folder.exists())
+						folder.create(true,true,new NullProgressMonitor());
+				}
+				newFile = folder.getFile(newfname);
+			} else if (container instanceof IProject){
+				IProject project = (IProject)container;				
+				if(outputFolder!=null && outputFolder != ""){
+					IFolder folder =null;
+					folder = project.getFolder(outputFolder);
+					if(!folder.exists())
+						folder.create(true, true, new NullProgressMonitor());
+					newFile = folder.getFile(newfname);
+				} else {
+					newFile = ((IProject)container).getFile(newfname);
+				}
+			} else {
+				console.error("SYSTEM","file container has type of "+container.getClass().getSimpleName() );
+			}
+			
+			if(!newFile.exists())
+				newFile.create(istream, IResource.FORCE, new NullProgressMonitor());
+			else {
+				newFile.delete(true,new NullProgressMonitor());
+				
+				newFile.create(istream, IResource.FORCE, new NullProgressMonitor());
+			}
+		} catch (CoreException e1) {
+			e1.printStackTrace();
 		}
 		visitor = null;
 	}

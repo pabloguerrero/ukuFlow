@@ -45,25 +45,27 @@ public interface ukuFlowScriptConstants {
   /** RegularExpression Id. */
   int HEX_LITERAL = 21;
   /** RegularExpression Id. */
-  int IDENTIFIER = 22;
+  int BINARY_LITERAL = 22;
   /** RegularExpression Id. */
-  int LETTER = 23;
+  int IDENTIFIER = 23;
   /** RegularExpression Id. */
-  int DIGIT = 24;
+  int LETTER = 24;
   /** RegularExpression Id. */
-  int EQUAL = 25;
+  int DIGIT = 25;
   /** RegularExpression Id. */
-  int UNEQUAL = 26;
+  int EQUAL = 26;
   /** RegularExpression Id. */
-  int GREATERTHAN = 27;
+  int UNEQUAL = 27;
   /** RegularExpression Id. */
-  int LESSTHAN = 28;
+  int GREATERTHAN = 28;
   /** RegularExpression Id. */
-  int GREATEROREQUAL = 29;
+  int LESSTHAN = 29;
   /** RegularExpression Id. */
-  int LESSOREQUAL = 30;
+  int GREATEROREQUAL = 30;
   /** RegularExpression Id. */
-  int STRING = 31;
+  int LESSOREQUAL = 31;
+  /** RegularExpression Id. */
+  int STRING = 32;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -92,6 +94,7 @@ public interface ukuFlowScriptConstants {
     "<INTEGER_LITERAL>",
     "<DECIMAL_LITERAL>",
     "<HEX_LITERAL>",
+    "<BINARY_LITERAL>",
     "<IDENTIFIER>",
     "<LETTER>",
     "<DIGIT>",

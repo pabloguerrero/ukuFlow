@@ -1,6 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.generalscript.expression;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
@@ -42,7 +43,15 @@ public class UkuConstant extends PrimaryExpression {
 			isBool = true;
 		} catch (Exception e) {
 			try {
-				int t = Integer.parseInt(s);
+				int radix = 10;
+				if(s.startsWith("0x")){
+					radix =16;
+					s = s.substring(2);
+				} else if(s.startsWith("0b")){
+					radix = 2;
+					s = s.substring(2);
+				}
+				int t = new BigInteger(s,radix).intValue();
 				setValue(t);
 				isBool = false;
 			} catch(InvalidConstantValueException ex){

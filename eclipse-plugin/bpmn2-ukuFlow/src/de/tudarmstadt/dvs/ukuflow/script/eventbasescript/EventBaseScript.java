@@ -316,44 +316,50 @@ void assigment_CEF():
     jj_consume_token(EVICTION);
   }
 
-  final public EEvaluableExpression AND_operator() throws ParseException {
-  EEvaluableExpression result = null;
-  EEvaluableExpression left = null;
-  EEvaluableExpression right = null;
-  String op = "AND";
-    left = OR_operator();
-    if (jj_2_25(2)) {
-      jj_consume_token(AND);
-      right = OR_operator();
-    } else {
-      ;
-    }
-    if (right == null) result = left;
-    else
-    {
-      result = new EComplexFilterBinaryExpression(op, left, right);
-    }
-    {if (true) return result;}
-    throw new Error("Missing return statement in function");
-  }
-
   final public EEvaluableExpression OR_operator() throws ParseException {
   EEvaluableExpression result = null;
   String op = "OR";
   EEvaluableExpression left = null;
   EEvaluableExpression right = null;
-    left = NOT_operator();
-    if (jj_2_26(2)) {
+    left = AND_operator();
+    label_6:
+    while (true) {
+      if (jj_2_25(2)) {
+        ;
+      } else {
+        break label_6;
+      }
       jj_consume_token(OR);
-      right = NOT_operator();
-    } else {
-      ;
-    }
-    if (right == null) result = left;
-    else
-    {
+      right = AND_operator();
+      if(result!=null)
+        left = result;
       result = new EComplexFilterBinaryExpression(op, left, right);
     }
+    if(result==null) result = left;
+    {if (true) return result;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public EEvaluableExpression AND_operator() throws ParseException {
+  EEvaluableExpression result = null;
+  EEvaluableExpression left = null;
+  EEvaluableExpression right = null;
+  String op = "AND";
+    left = NOT_operator();
+    label_7:
+    while (true) {
+      if (jj_2_26(2)) {
+        ;
+      } else {
+        break label_7;
+      }
+      jj_consume_token(AND);
+      right = NOT_operator();
+      if(result != null)
+        left = result;
+      result = new EComplexFilterBinaryExpression(op,left,right);
+    }
+    if (result == null) result = left;
     {if (true) return result;}
     throw new Error("Missing return statement in function");
   }
@@ -366,13 +372,11 @@ void assigment_CEF():
     {if (true) return exp;}
     } else if (jj_2_28(2)) {
       jj_consume_token(NOT);
-      jj_consume_token(34);
-      exp = AND_operator();
-      jj_consume_token(35);
+      exp = NOT_operator();
     {if (true) return new EComplexFilterUnaryExpression(op, exp);}
     } else if (jj_2_29(2)) {
       jj_consume_token(34);
-      exp = AND_operator();
+      exp = OR_operator();
       jj_consume_token(35);
     {if (true) return exp;}
     } else {
@@ -678,12 +682,12 @@ void assigment_CEF():
   }
 
   private boolean jj_3_25() {
-    if (jj_scan_token(AND)) return true;
-    if (jj_3R_15()) return true;
+    if (jj_scan_token(OR)) return true;
+    if (jj_3R_17()) return true;
     return false;
   }
 
-  private boolean jj_3R_9() {
+  private boolean jj_3R_11() {
     if (jj_scan_token(ADEG)) return true;
     if (jj_scan_token(SENSOR_TYPE)) return true;
     return false;
@@ -695,47 +699,47 @@ void assigment_CEF():
   }
 
   private boolean jj_3_19() {
-    if (jj_3R_9()) return true;
-    return false;
-  }
-
-  private boolean jj_3_12() {
     if (jj_3R_11()) return true;
     return false;
   }
 
+  private boolean jj_3_12() {
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
   private boolean jj_3_18() {
-    if (jj_3R_8()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_18() {
-    if (jj_3R_15()) return true;
-    return false;
-  }
-
-  private boolean jj_3_11() {
     if (jj_3R_10()) return true;
     return false;
   }
 
-  private boolean jj_3_17() {
-    if (jj_3R_7()) return true;
+  private boolean jj_3R_20() {
+    if (jj_3R_17()) return true;
     return false;
   }
 
-  private boolean jj_3_10() {
+  private boolean jj_3_11() {
+    if (jj_3R_12()) return true;
+    return false;
+  }
+
+  private boolean jj_3_17() {
     if (jj_3R_9()) return true;
     return false;
   }
 
+  private boolean jj_3_10() {
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
   private boolean jj_3_9() {
-    if (jj_3R_8()) return true;
+    if (jj_3R_10()) return true;
     return false;
   }
 
   private boolean jj_3_8() {
-    if (jj_3R_7()) return true;
+    if (jj_3R_9()) return true;
     return false;
   }
 
@@ -749,7 +753,7 @@ void assigment_CEF():
     return false;
   }
 
-  private boolean jj_3R_12() {
+  private boolean jj_3R_14() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_36()) {
@@ -760,47 +764,57 @@ void assigment_CEF():
   }
 
   private boolean jj_3_7() {
-    if (jj_3R_11()) return true;
+    if (jj_3R_13()) return true;
     return false;
   }
 
   private boolean jj_3_6() {
-    if (jj_3R_10()) return true;
+    if (jj_3R_12()) return true;
     return false;
   }
 
   private boolean jj_3_5() {
-    if (jj_3R_9()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_11() {
-    if (jj_scan_token(CEF)) return true;
-    if (jj_3R_18()) return true;
-    return false;
-  }
-
-  private boolean jj_3_4() {
-    if (jj_3R_8()) return true;
-    return false;
-  }
-
-  private boolean jj_3_3() {
-    if (jj_3R_7()) return true;
-    return false;
-  }
-
-  private boolean jj_3_35() {
     if (jj_3R_11()) return true;
     return false;
   }
 
-  private boolean jj_3_34() {
+  private boolean jj_3R_13() {
+    if (jj_scan_token(CEF)) return true;
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  private boolean jj_3_4() {
     if (jj_3R_10()) return true;
     return false;
   }
 
-  private boolean jj_3R_8() {
+  private boolean jj_3_35() {
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+  private boolean jj_3_3() {
+    if (jj_3R_9()) return true;
+    return false;
+  }
+
+  private boolean jj_3_34() {
+    if (jj_3R_12()) return true;
+    return false;
+  }
+
+  private boolean jj_3_33() {
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
+  private boolean jj_3_32() {
+    if (jj_3R_10()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_10() {
     if (jj_scan_token(APEG)) return true;
     if (jj_scan_token(SENSOR_TYPE)) return true;
     return false;
@@ -812,24 +826,8 @@ void assigment_CEF():
     return false;
   }
 
-  private boolean jj_3_33() {
-    if (jj_3R_9()) return true;
-    return false;
-  }
-
-  private boolean jj_3_32() {
-    if (jj_3R_8()) return true;
-    return false;
-  }
-
   private boolean jj_3_31() {
-    if (jj_3R_7()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_6() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    if (jj_scan_token(27)) return true;
+    if (jj_3R_9()) return true;
     return false;
   }
 
@@ -838,12 +836,13 @@ void assigment_CEF():
     return false;
   }
 
-  private boolean jj_3_24() {
-    if (jj_scan_token(SENSOR_TYPE)) return true;
+  private boolean jj_3R_8() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    if (jj_scan_token(27)) return true;
     return false;
   }
 
-  private boolean jj_3R_17() {
+  private boolean jj_3R_19() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_30()) {
@@ -865,8 +864,13 @@ void assigment_CEF():
     return false;
   }
 
+  private boolean jj_3_24() {
+    if (jj_scan_token(SENSOR_TYPE)) return true;
+    return false;
+  }
+
   private boolean jj_3_23() {
-    if (jj_3R_12()) return true;
+    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -875,7 +879,7 @@ void assigment_CEF():
     return false;
   }
 
-  private boolean jj_3R_14() {
+  private boolean jj_3R_16() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_22()) {
@@ -888,41 +892,36 @@ void assigment_CEF():
     return false;
   }
 
-  private boolean jj_3_2() {
-    if (jj_3R_6()) return true;
-    return false;
-  }
-
   private boolean jj_3_29() {
     if (jj_scan_token(34)) return true;
-    if (jj_3R_18()) return true;
+    if (jj_3R_20()) return true;
     return false;
   }
 
-  private boolean jj_3R_7() {
+  private boolean jj_3_2() {
+    if (jj_3R_8()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_9() {
     if (jj_scan_token(PEG)) return true;
     if (jj_scan_token(SENSOR_TYPE)) return true;
     return false;
   }
 
-  private boolean jj_3_15() {
-    if (jj_scan_token(31)) return true;
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
   private boolean jj_3_28() {
     if (jj_scan_token(NOT)) return true;
-    if (jj_scan_token(34)) return true;
+    if (jj_3R_18()) return true;
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_6()) return true;
+  private boolean jj_3_15() {
+    if (jj_scan_token(31)) return true;
+    if (jj_3R_15()) return true;
     return false;
   }
 
-  private boolean jj_3R_16() {
+  private boolean jj_3R_18() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_27()) {
@@ -936,30 +935,35 @@ void assigment_CEF():
   }
 
   private boolean jj_3_27() {
-    if (jj_3R_17()) return true;
+    if (jj_3R_19()) return true;
     return false;
   }
 
-  private boolean jj_3R_10() {
+  private boolean jj_3_1() {
+    if (jj_3R_8()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_12() {
     if (jj_scan_token(SEF)) return true;
     if (jj_scan_token(30)) return true;
     return false;
   }
 
   private boolean jj_3_21() {
-    if (jj_3R_14()) return true;
+    if (jj_3R_16()) return true;
     if (jj_scan_token(COMPARISON)) return true;
     return false;
   }
 
   private boolean jj_3_26() {
-    if (jj_scan_token(OR)) return true;
-    if (jj_3R_16()) return true;
+    if (jj_scan_token(AND)) return true;
+    if (jj_3R_18()) return true;
     return false;
   }
 
-  private boolean jj_3R_15() {
-    if (jj_3R_16()) return true;
+  private boolean jj_3R_17() {
+    if (jj_3R_18()) return true;
     return false;
   }
 
@@ -969,7 +973,7 @@ void assigment_CEF():
     return false;
   }
 
-  private boolean jj_3R_13() {
+  private boolean jj_3R_15() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_20()) {
@@ -980,7 +984,7 @@ void assigment_CEF():
   }
 
   private boolean jj_3_14() {
-    if (jj_3R_12()) return true;
+    if (jj_3R_14()) return true;
     return false;
   }
 
