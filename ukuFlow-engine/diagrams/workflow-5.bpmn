@@ -114,21 +114,21 @@ var5 = 1 + $var5;</bpmn2:script>
         <di:waypoint xsi:type="dc:Point" x="410.0" y="150.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="BPMNShape_ScriptTask_4" targetElement="BPMNShape_InclusiveGateway_2">
-        <di:waypoint xsi:type="dc:Point" x="520.0" y="245.0"/>
+        <di:waypoint xsi:type="dc:Point" x="520.0" y="235.0"/>
         <di:waypoint xsi:type="dc:Point" x="610.0" y="152.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_ScriptTask_4" bpmnElement="ScriptTask_4">
-        <dc:Bounds height="50.0" width="110.0" x="410.0" y="220.0"/>
+        <dc:Bounds height="50.0" width="110.0" x="410.0" y="210.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_9" sourceElement="BPMNShape_InclusiveGateway_1" targetElement="BPMNShape_ScriptTask_4">
         <di:waypoint xsi:type="dc:Point" x="323.0" y="150.0"/>
-        <di:waypoint xsi:type="dc:Point" x="410.0" y="245.0"/>
+        <di:waypoint xsi:type="dc:Point" x="410.0" y="235.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_1" bpmnElement="TextAnnotation_1">
         <dc:Bounds height="50.0" width="201.0" x="364.0" y="300.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_Association_1" bpmnElement="Association_1" sourceElement="BPMNShape_ScriptTask_4" targetElement="BPMNShape_TextAnnotation_1">
-        <di:waypoint xsi:type="dc:Point" x="465.0" y="270.0"/>
+        <di:waypoint xsi:type="dc:Point" x="465.0" y="260.0"/>
         <di:waypoint xsi:type="dc:Point" x="464.0" y="300.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

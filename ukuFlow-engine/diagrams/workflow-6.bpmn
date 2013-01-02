@@ -67,7 +67,7 @@ var6 = 1 + $var5;</bpmn2:script>
         <dc:Bounds height="36.0" width="36.0" x="800.0" y="180.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_ExclusiveGateway_2">
-        <di:waypoint xsi:type="dc:Point" x="590.0" y="94.0"/>
+        <di:waypoint xsi:type="dc:Point" x="590.0" y="95.0"/>
         <di:waypoint xsi:type="dc:Point" x="693.0" y="173.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
@@ -92,11 +92,11 @@ var6 = 1 + $var5;</bpmn2:script>
         <di:waypoint xsi:type="dc:Point" x="800.0" y="198.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
-        <dc:Bounds height="50.0" width="110.0" x="480.0" y="69.0"/>
+        <dc:Bounds height="50.0" width="110.0" x="480.0" y="70.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_5" sourceElement="BPMNShape_ExclusiveGateway_1" targetElement="BPMNShape_ScriptTask_2">
         <di:waypoint xsi:type="dc:Point" x="389.0" y="173.0"/>
-        <di:waypoint xsi:type="dc:Point" x="480.0" y="94.0"/>
+        <di:waypoint xsi:type="dc:Point" x="480.0" y="95.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_6" sourceElement="BPMNShape_ScriptTask_3" targetElement="BPMNShape_ExclusiveGateway_2">
         <di:waypoint xsi:type="dc:Point" x="590.0" y="199.0"/>

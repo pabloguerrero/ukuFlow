@@ -69,11 +69,11 @@ local blink 2;
         <di:waypoint xsi:type="dc:Point" x="450.0" y="105.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_1" bpmnElement="TextAnnotation_1">
-        <dc:Bounds height="51.0" width="121.0" x="450.0" y="180.0"/>
+        <dc:Bounds height="51.0" width="121.0" x="444.0" y="160.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_Association_1" bpmnElement="Association_1" sourceElement="BPMNShape_ScriptTask_3" targetElement="BPMNShape_TextAnnotation_1">
         <di:waypoint xsi:type="dc:Point" x="505.0" y="130.0"/>
-        <di:waypoint xsi:type="dc:Point" x="510.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="504.0" y="160.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
