@@ -7,3 +7,9 @@
 /obj_*
 /doc/html/*
 /.bpmn/*
+/tmpimage.ihex
+/contiki-z1.a
+/contiki-z1.map
+/ukuflow-serial.ihex
+/ukuflow-serial.sky
+/ukuflow-serial.z1

@@ -1,3 +1,33 @@
+/*
+ * Copyright (c) 2011, Hien Quoc Dang, TU Darmstadt, dangquochien@gmail.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER(s) AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT HOLDER(s) OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ */
+
 package de.tudarmstadt.dvs.ukuflow.xml;
 
 import java.io.BufferedInputStream;
@@ -6,6 +36,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -84,23 +115,13 @@ public class BPMN2XMLParser {
 
 		for (UkuProcess process : processes) {
 			// optimization
-			optimize(process);
+			//optimize(process);
+			
 			// set reference
 			for (UkuEntity entity : process.getEntities()) {
 				entity.setReference(reference);
 			}
-
-			/*
-			 * set workflow-element-id for each element this id will be used
-			 * later in the bytecode format output
-			 */
-			byte id = 0;
-			for (UkuEntity ue : process.getEntities()) {
-				if (ue instanceof UkuElement) {
-					((UkuElement) ue).setWorkflowElementID(id);
-					id++;
-				}
-			}
+						
 		}
 	}
 
@@ -283,15 +304,28 @@ public class BPMN2XMLParser {
 			}
 			return event;
 		case 4: // gateways
-			UkuGateway gway = new UkuGateway(id);
+			UkuGateway gway = null;
+			try {
+				gway = (UkuGateway) classifier.getGatewayClass(name).getConstructor(String.class).newInstance(id);
+			} catch (IllegalArgumentException e1) {
+				e1.printStackTrace();
+			} catch (SecurityException e1) {
+				e1.printStackTrace();
+			} catch (InstantiationException e1) {
+				e1.printStackTrace();
+			} catch (IllegalAccessException e1) {
+				e1.printStackTrace();
+			} catch (InvocationTargetException e1) {
+				e1.printStackTrace();
+			} catch (NoSuchMethodException e1) {
+				e1.printStackTrace();
+			}			
 			gway.setElementType(name);
 			String direction = e.getAttributeValue("gatewayDirection");
-			String defaultGway = e.getAttributeValue("default");
-			gway.setDefaultGway(defaultGway);
-			if (direction != null) {
-				gway.setDirection(direction);
-			}
-
+			String isdefaultGway = e.getAttributeValue("default");
+			gway.setDefaultGway(isdefaultGway);			
+			gway.setDirection(direction);
+			
 			for (Element child : e.getChildren()) {
 				String n = child.getName();
 				String n_id = child.getTextTrim();
@@ -329,7 +363,7 @@ public class BPMN2XMLParser {
 		return id;
 	}
 	private String fetchName(Element e){
-		String name = e.getAttributeValue("name");		
+		String name = e.getAttributeValue("name");
 		return name;
 	}
 
@@ -337,8 +371,8 @@ public class BPMN2XMLParser {
 	 * this function will search for a mixed gateway in a process and try to
 	 * split it in 2 simple gateway and also add a sequence flow between them
 	 * 
-	 * @param process
-	 * @need tests!
+	 * @param process 
+	 * @deprecated
 	 */
 	private void optimize(UkuProcess process) {
 		List<UkuEntity> tmp = new LinkedList<UkuEntity>();
@@ -384,13 +418,7 @@ public class BPMN2XMLParser {
 				}
 			}
 			done = true;
-		}
-		for(UkuEntity e : process.getElements()){
-			if(e instanceof UkuGateway){
-				((UkuGateway)e).selfValidate();
-			}
-		}
-
+		}		
 	}
 
 	private String generateID(String rootID) {

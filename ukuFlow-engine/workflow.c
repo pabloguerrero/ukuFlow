@@ -100,11 +100,11 @@ struct wf_generic_elem *workflow_get_wf_elem(struct workflow *wf,
 		/* was the element found? */
 		if (wf_elem_nr < wf->num_wf_elems)
 			// yes:
-			return wfe;
+			return (wfe);
 		//	else
 	}
 	// no:
-	return NULL;
+	return (NULL);
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -130,11 +130,11 @@ struct statement *workflow_get_statement(struct wf_ex_task *wf_ex,
 			st = (struct statement*) (((uint8_t*) st)
 					+ workflow_statement_size(st));
 		if (st_nr < wf_ex->num_statements)
-			return st;
+			return (st);
 		else
-			return NULL;
+			return (NULL);
 	} else
-		return NULL;
+		return (NULL);
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -143,7 +143,7 @@ struct statement *workflow_get_statement(struct wf_ex_task *wf_ex,
  * 				TODO
  */
 uint8_t *workflow_get_data_expression(struct computation_statement *cst) {
-	return ((uint8_t*) cst) + sizeof(struct computation_statement);
+	return (((uint8_t*) cst) + sizeof(struct computation_statement));
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -153,11 +153,11 @@ uint8_t *workflow_get_data_expression(struct computation_statement *cst) {
  */
 char *workflow_get_function_statement(struct statement *st) {
 	if (st->statement_type == LOCAL_FUNCTION_STATEMENT)
-		return ((char*) st) + sizeof(struct local_function_statement);
+		return (((char*) st) + sizeof(struct local_function_statement));
 	else if (st->statement_type == SCOPED_FUNCTION_STATEMENT)
-		return ((char*) st) + sizeof(struct scoped_function_statement);
+		return (((char*) st) + sizeof(struct scoped_function_statement));
 	else
-		return NULL;
+		return (NULL);
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -261,11 +261,11 @@ data_len_t workflow_wf_elem_size(struct wf_generic_elem *wfe) {
 		break;
 	}
 	default: {
-		return 0;
+		return (0);
 	}
 	} // switch
 
-	return size;
+	return (size);
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -336,7 +336,7 @@ data_len_t workflow_statement_size(struct statement *st) {
 		printf("for lfs|sfs %d, size: %d\n", param_num, statement_len);
 	} /* else */
 
-	return statement_len;
+	return (statement_len);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -353,7 +353,7 @@ struct event_operator_flow *workflow_get_event_operator_flow(
 		struct wf_eb_x_dec_gw* ebg, uint8_t outflow_nr) {
 
 	if (outflow_nr > ebg->num_out_flows)
-		return NULL;
+		return (NULL);
 
 	struct event_operator_flow *ev_op_flow =
 			(struct event_operator_flow *) ((uint8_t*) ebg
@@ -365,7 +365,7 @@ struct event_operator_flow *workflow_get_event_operator_flow(
 				+ sizeof(struct event_operator_flow)
 				+ ev_op_flow->total_event_operator_length);
 
-	return ev_op_flow;
+	return (ev_op_flow);
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -382,7 +382,7 @@ struct scope_info *workflow_get_scope_info(struct workflow *wf,
 	uint8_t *ptr = (uint8_t*) workflow_get_wf_elem(wf, wf->num_wf_elems - 1);
 
 	if (!ptr)
-		return NULL;
+		return (NULL);
 
 	/* now advance past the last wf_elem (should be an end event) */
 	ptr += workflow_wf_elem_size((struct wf_generic_elem*) ptr);
@@ -392,14 +392,14 @@ struct scope_info *workflow_get_scope_info(struct workflow *wf,
 	while (scope_nr < wf->num_scopes) {
 
 		if (s_i->scope_id == searched_scope_id)
-			return s_i;
+			return (s_i);
 		else {
 			s_i = (struct scope_info*) (((uint8_t*) s_i)
 					+ sizeof(struct scope_info) + s_i->scope_spec_len);
 			scope_nr++;
 		}
 	}
-	return NULL;
+	return (NULL);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -410,9 +410,9 @@ struct scope_info *workflow_get_scope_info(struct workflow *wf,
  */
 char *get_wf_elem_type_name(struct wf_generic_elem *wfe) {
 #ifdef WITH_WF_NAMES
-	return wf_elem_names[wfe->elem_type];
+	return (wf_elem_names[wfe->elem_type]);
 #else
-	return "";
+	return ("");
 #endif
 }
 /*---------------------------------------------------------------------------*/
@@ -423,9 +423,9 @@ char *get_wf_elem_type_name(struct wf_generic_elem *wfe) {
  */
 char *get_wf_statement_name(statement_type_t st) {
 #ifdef WITH_WF_NAMES
-	return wf_statement_names[st];
+	return (wf_statement_names[st]);
 #else
-	return "";
+	return ("");
 #endif
 }
 

@@ -56,6 +56,9 @@
 #include "workflow.h"
 #include "event.h"
 
+// for memcpy
+#include "string.h"
+
 #include "logger.h"
 
 #include "expression-eval.h"
@@ -294,7 +297,7 @@ struct generic_subscription *get_subscription(channel_id_t channel_id) {
 			!= channel_id))
 		subscription = subscription->next;
 
-	return subscription;
+	return (subscription);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -323,7 +326,7 @@ static struct global_subscription *alloc_global_subscription(
 		global_sub->ev_op_len = ev_op_len;
 		global_sub->main_ev_op = main_ev_op;
 	}
-	return global_sub;
+	return (global_sub);
 
 }
 
@@ -345,14 +348,14 @@ static struct local_subscription *alloc_local_subscription(
 			sizeof(struct local_subscription));
 
 	if (local_sub == NULL)
-		return NULL;
+		return (NULL);
 
 	/* Allocate memory for the entire event operator */
 	struct generic_event_operator *local_main_ev_op = malloc(ev_op_len);
 
 	if (local_main_ev_op == NULL) {
 		free(local_sub);
-		return NULL;
+		return (NULL);
 	}
 
 	memcpy(local_main_ev_op, main_ev_op, ev_op_len);
@@ -364,7 +367,7 @@ static struct local_subscription *alloc_local_subscription(
 			(void(*)(void *)) ukuflow_event_mgr_handle_unsubscription,
 			(void*) (&(local_main_ev_op->channel_id)));
 
-	return local_sub;
+	return (local_sub);
 
 }
 
@@ -383,11 +386,11 @@ static struct running_event_op *get_running_event_op(
 		if ((reo->geo != NULL) && //
 				(reo->geo->ev_op_type == geo->ev_op_type) && //
 				(reo->geo->channel_id == geo->channel_id))
-			return reo;
+			return (reo);
 		else
 			reo = reo->next;
 
-	return NULL;
+	return (NULL);
 
 }
 
@@ -406,7 +409,7 @@ static struct running_event_op *alloc_running_ev_op(
 	struct running_event_op *reo = malloc(sizeof(struct running_event_op));
 
 	if (reo == NULL)
-		return NULL;
+		return (NULL);
 
 	/** Set input channel: */
 	reo->input_channel_id = channel_id;
@@ -420,16 +423,15 @@ static struct running_event_op *alloc_running_ev_op(
 	/** Add local record to list */
 	list_add(running_event_ops, reo);
 
-	return reo;
+	return (reo);
 }
 
 /*---------------------------------------------------------------------------*/
 /**
  * \brief	Generic handling of subscriptions of event operators
  *
- *			TODO
- * @param[in] main_ev_op	TODO
- * @param[in] ev_op_len		TODO
+ * @param[in] main_ev_op	pointer to the subscription
+ * @param[in] ev_op_len		length of the entire subscription (sequence of event operators)
  */
 void ukuflow_event_mgr_handle_subscription(
 		struct generic_event_operator *main_ev_op, data_len_t ev_op_len) {
@@ -451,6 +453,7 @@ void ukuflow_event_mgr_handle_subscription(
 			list_add(subscriptions, generic_sub);
 
 	} else if (generic_sub->subscription_type == LOCAL_SUBSCRIPTION) {
+		/** Subscription is known, so reset timer */
 		PRINTF(3,"(EVENT-MGR) subscription exists locally, resetting timer\n");
 		struct local_subscription *local_sub =
 				(struct local_subscription*) generic_sub;
@@ -676,7 +679,7 @@ static void simple_filter_remove(struct generic_event_operator *geo) {
 /**
  *  \brief		Filters out events that don't pass the filter's expressions
  *
- *				Take the event and check whether it passes the filter.
+ *				Takes the event and checks whether it passes the filter.
  *				If the event does not pass the filter, discard it.
  *				If the event passes the filter, republish it with corresponding
  *				channel id, so that potential next event operator can process it.
@@ -690,19 +693,19 @@ static void simple_filter_merge(struct running_event_op *reo,
 
 	struct simple_filter *filter = (struct simple_filter*) reo->geo;
 
-	bool ok = TRUE;
+	bool filter_passed = TRUE;
 	uint8_t num_expression;
 	uint8_t *expression_pair = ((uint8_t*) reo) + sizeof(struct simple_filter);
 	uint8_t *expression_spec;
-	for (num_expression = 0; (ok) && (num_expression < filter->num_expressions); num_expression++) {
+	for (num_expression = 0; (filter_passed) && (num_expression < filter->num_expressions); num_expression++) {
 		data_len_t expr_len = *expression_pair;
 		expression_spec = expression_pair + sizeof(data_len_t);
 		expression_eval_set_custom_input(&event_custom_input_function,
 				(void*) event);
-		ok = expression_eval_evaluate(expression_spec, expr_len);
+		filter_passed = expression_eval_evaluate(expression_spec, expr_len);
 	}
 
-	if (ok) {
+	if (filter_passed) {
 		// republish
 		struct event *cloned_event = event_clone(event, event_payload_len
 				+ sizeof(struct event));
@@ -777,7 +780,7 @@ bool ukuflow_event_mgr_subscribe(//
 			sizeof(struct subscription_request));
 
 	if (!sub_request)
-		return FALSE;
+		return (FALSE);
 
 	sub_request->request_type = SUBSCRIPTION_REQUEST;
 	sub_request->main_ev_op = main_ev_op;
@@ -790,7 +793,7 @@ bool ukuflow_event_mgr_subscribe(//
 	process_post(&ukuflow_event_mgr_request_process,
 			event_mgr_request_ready_event, NULL);
 
-	return TRUE;
+	return (TRUE);
 
 }
 
@@ -829,7 +832,7 @@ bool ukuflow_event_mgr_unsubscribe(struct generic_event_operator *main_ev_op,
 			sizeof(struct unsubscription_request));
 
 	if (!unsub_request)
-		return FALSE;
+		return (FALSE);
 
 	unsub_request->request_type = UNSUBSCRIPTION_REQUEST;
 	unsub_request->main_ev_op = main_ev_op;
@@ -839,12 +842,12 @@ bool ukuflow_event_mgr_unsubscribe(struct generic_event_operator *main_ev_op,
 	process_post(&ukuflow_event_mgr_request_process,
 			event_mgr_request_ready_event, NULL);
 
-	return TRUE;
+	return (TRUE);
 }
 
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		Main protothread for processing subscription and unsubscription requests
+ * \brief		Protothread for processing subscription and unsubscription requests
  *
  * 				This protothread is in charge of executing subscription and unsubscriptions
  */
@@ -1088,6 +1091,7 @@ PROCESS_THREAD( ukuflow_event_mgr_request_process, ev, data) {
 
 							ukuflow_net_mgr_close_scope(g_egen->scope_id);
 
+							printf("closed\n");
 							PRINTF(
 									3,
 									"(EVENT-MGR) request-handler, closed scope %u, waiting some seconds\n",

@@ -1,5 +1,16 @@
+check.project.nature=true
 eclipse.preferences.version=1
+<<<<<<< Updated upstream
 expand.properties=true
+is.expanded=ALWAYS_TRUE
+is.horizontal=DEFAULT_TRUE
+is.marker.visible=DEFAULT_TRUE
+is.message.visible=ALWAYS_TRUE
+=======
+expand.properties=false
+>>>>>>> Stashed changes
 override.model.enablements=true
 show.advanced.properties=true
+show.descriptions=true
+show.id.attribute=false
 target.runtime=org.jboss.runtime.jbpm5

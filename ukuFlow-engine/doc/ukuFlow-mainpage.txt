@@ -40,9 +40,6 @@ doesn't get congested with event subscriptons, sensor events and action commands
 
 \section ukuflow-mainpage-getting-started Getting started with ukuFlow
 
-ukuFlow ...
-
-See \ref testbed-getting-started Getting started with ukuFlow at TUDuNet
-ukuFlow is being constantly tested on a testbed deployed at the TUD. For more information on this, please visit http://www.tudunet.tu-darmstadt.de
+ukuFlow is being constantly tested on TUDuNet, the testbeds deployed at the TUD. For more information on this, please visit http://www.tudunet.tu-darmstadt.de
 
 */

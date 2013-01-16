@@ -76,7 +76,7 @@
  * 				TODO
  */
 static void add_scope(scope_id_t scope_id) {
-	PRINTF(4,
+	PRINTF(1,
 			"[%u.%u:%10lu] %s::%s() : added scope: %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope_id);
 }
 
@@ -87,7 +87,7 @@ static void add_scope(scope_id_t scope_id) {
  * 				Tell to upper layers that a scope was removed in this node, so that necessary housekeeping can be done.
  */
 static void remove_scope(scope_id_t scope_id) {
-	PRINTF(4,
+	PRINTF(1,
 			"[%u.%u:%10lu] %s::%s() : removed scope: %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope_id);
 
 }
@@ -99,7 +99,7 @@ static void remove_scope(scope_id_t scope_id) {
  * 				TODO
  */
 static void join_scope(scope_id_t scope_id) {
-	PRINTF(4,
+	PRINTF(1,
 			"[%u.%u:%10lu] %s::%s() : joined scope: %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope_id);
 
 //#if DEBUG_DEPTH > 0
@@ -119,7 +119,7 @@ static void join_scope(scope_id_t scope_id) {
  * 				TODO
  */
 static void leave_scope(scope_id_t scope_id) {
-	PRINTF(4,
+	PRINTF(1,
 			"[%u.%u:%10lu] %s::%s() : left scope: %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope_id);
 
 //#if DEBUG_DEPTH > 0
@@ -139,12 +139,16 @@ static void leave_scope(scope_id_t scope_id) {
  * \brief		Invoked when a message arrives at node and is of interest
  * 				to the ukuFlow framework. This generic function forwards
  *
- * 				TODO
+ * @param[in] scope_id	the scope through which the message arrived
+ * @param[in] data		the message's payload
+ * @param[in] data_len	the length of the payload
+ * @param[in] to_creator	the direction of the message (towards root or towards scope members)
+ * @param[in] source	the id of the node who sent the message
  */
 void ukuflow_net_mgr_handler(scope_id_t scope_id, void *data,
 		data_len_t data_len, bool to_creator, const rimeaddr_t *source) {
 
-	PRINTF(2, "(NET-MGR) msg received, ");
+	PRINTF(1, "(NET-MGR) msg received, ");
 	PRINT_ARR(2, data, data_len);
 
 	struct ukuflow_generic_msg *msg = (struct ukuflow_generic_msg*) data;
@@ -206,11 +210,12 @@ void ukuflow_net_mgr_init() {
 bool ukuflow_net_mgr_open_scope(scope_id_t scope_id, void *specs,
 		data_len_t spec_len, scope_ttl_t ttl) {
 
-	PRINTF(3,
+	PRINTF(1,
 			"[%u.%u:%10lu] %s::%s() : Opening scope %u, len %u, ttl %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope_id, spec_len, ttl);
 
-	return scopes_open(UKUFLOW_SCOPES_SID, SCOPES_WORLD_SCOPE_ID, scope_id,
-			specs, spec_len, SCOPES_FLAG_INTERCEPT | SCOPES_FLAG_DYNAMIC, ttl); // alternatively, as flag SCOPES_FLAG_NONE could be used, but it wouldn't enable event processing at non-member nodes on the way towards the sink
+	return (scopes_open(UKUFLOW_SCOPES_SID, SCOPES_WORLD_SCOPE_ID, scope_id,
+			specs, spec_len, SCOPES_FLAG_INTERCEPT | SCOPES_FLAG_DYNAMIC, ttl));
+	// alternatively, as flag SCOPES_FLAG_NONE could be used, but it wouldn't enable event processing at non-member nodes on the way towards the sink
 }
 
 /*---------------------------------------------------------------------------*/
@@ -221,7 +226,7 @@ bool ukuflow_net_mgr_open_scope(scope_id_t scope_id, void *specs,
  */
 void ukuflow_net_mgr_close_scope(scope_id_t scope_id) {
 
-	PRINTF(3,
+	PRINTF(1,
 			"[%u.%u:%10lu] %s::%s() : Closing scope %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope_id);
 
 	scopes_close(UKUFLOW_SCOPES_SID, scope_id);

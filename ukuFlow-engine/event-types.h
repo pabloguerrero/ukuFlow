@@ -187,7 +187,7 @@ struct __attribute__((__packed__)) distribution_egen {
 /*---------------------------------------------------------------------------*/
 /**                                    Filters                               */
 /*---------------------------------------------------------------------------*/
-/** \brief		TODO				*/
+/** \brief		Structure for simple filters				*/
 struct __attribute__((__packed__)) simple_filter {
 	GENERIC_EVENT_OPERATOR_FIELDS
 	uint8_t num_expressions;
@@ -199,13 +199,7 @@ struct __attribute__((__packed__)) composite_filter {
 	GENERIC_EVENT_OPERATOR_FIELDS
 	uint16_t window;
 };
-/*
  struct __attribute__((__packed__)) logical_composite_filter {
- GENERIC_EVENT_OPERATOR_FIELDS
- // TODO: complete
- };
-
- struct __attribute__((__packed__)) temporal_composite_filter {
  GENERIC_EVENT_OPERATOR_FIELDS
  // TODO: complete
  };
@@ -215,6 +209,12 @@ struct __attribute__((__packed__)) composite_filter {
  GENERIC_EVENT_OPERATOR_FIELDS
  };
 
+ struct __attribute__((__packed__)) temporal_composite_filter {
+ GENERIC_EVENT_OPERATOR_FIELDS
+ // TODO: complete
+ };
+
+ /*
  struct __attribute__((__packed__)) increase_filter {
  GENERIC_EVENT_OPERATOR_FIELDS
  };
@@ -232,7 +232,7 @@ struct __attribute__((__packed__)) composite_filter {
 /*---------------------------------------------------------------------------*/
 /**                                   Events                                 */
 /*---------------------------------------------------------------------------*/
-/** \brief		Main structure for an event: */
+/** \brief		Main structure for an event for its network transport: */
 struct __attribute__((__packed__)) event {
 	channel_id_t channel_id;
 	uint8_t num_fields;

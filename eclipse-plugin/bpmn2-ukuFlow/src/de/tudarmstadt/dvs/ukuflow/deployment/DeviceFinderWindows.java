@@ -1,3 +1,33 @@
+/*
+ * Copyright (c) 2011, Hien Quoc Dang, TU Darmstadt, dangquochien@gmail.com
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER(s) AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT HOLDER(s) OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ */
+
 package de.tudarmstadt.dvs.ukuflow.deployment;
 
 import java.lang.reflect.InvocationTargetException;
@@ -9,9 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-
 public class DeviceFinderWindows {
-	
+
 	public static final int HKEY_CURRENT_USER = 0x80000001;
 	public static final int HKEY_LOCAL_MACHINE = 0x80000002;
 	public static final int REG_SUCCESS = 0;
@@ -189,8 +218,8 @@ public class DeviceFinderWindows {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	private static void writeStringValue(int hkey, String key, String valueName,
-			String value) throws IllegalArgumentException,
+	private static void writeStringValue(int hkey, String key,
+			String valueName, String value) throws IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
 		if (hkey == HKEY_LOCAL_MACHINE) {
 			writeStringValue(systemRoot, hkey, key, valueName, value);
@@ -310,7 +339,8 @@ public class DeviceFinderWindows {
 					new Integer(handles[0]), new Integer(index),
 					new Integer(maxlen + 1) });
 			String value = readString(hkey, key, new String(name));
-			//System.out.println(index + ":" + new String(name) + "->" + value);
+			// System.out.println(index + ":" + new String(name) + "->" +
+			// value);
 			results.put(new String(name).trim(), value);
 		}
 		regCloseKey.invoke(root, new Object[] { new Integer(handles[0]) });
@@ -374,6 +404,7 @@ public class DeviceFinderWindows {
 		result[str.length()] = 0;
 		return result;
 	}
+
 	/**
 	 * 
 	 * @param hkey
@@ -382,9 +413,10 @@ public class DeviceFinderWindows {
 	 * @deprecated
 	 */
 	public static void searchFor(int hkey, String value, String location) {
-		
+
 	}
-	public static HashMap<String,String> getZ1Devices(){
+
+	public static HashMap<String, String> getZ1Devices() {
 		HashMap<String, String> result = new HashMap<String, String>();
 		String keySet1 = "SYSTEM\\ControlSet001\\Enum\\USB\\VID_10C4&PID_EA60";
 		String keySet2 = "SYSTEM\\ControlSet002\\Enum\\USB\\VID_10C4&PID_EA60";
@@ -392,15 +424,19 @@ public class DeviceFinderWindows {
 		List<String> controlSet;
 		try {
 			controlSet = readStringSubKeys(HKEY_LOCAL_MACHINE, keySet1);
-			for(String dev : controlSet){
-				String comport = readString(HKEY_LOCAL_MACHINE, keySet1 + "\\"+dev+"\\"+postfixKey,"PortName");
-				result.put(comport, dev);
-			}
+			if (controlSet != null)
+				for (String dev : controlSet) {
+					String comport = readString(HKEY_LOCAL_MACHINE, keySet1
+							+ "\\" + dev + "\\" + postfixKey, "PortName");
+					result.put(comport, dev);
+				}
 			controlSet = readStringSubKeys(HKEY_LOCAL_MACHINE, keySet2);
-			for(String dev : controlSet){
-				String comport = readString(HKEY_LOCAL_MACHINE, keySet2 + "\\"+dev+"\\"+postfixKey,"PortName");
-				result.put(comport, dev);
-			}
+			if (controlSet != null)
+				for (String dev : controlSet) {
+					String comport = readString(HKEY_LOCAL_MACHINE, keySet2
+							+ "\\" + dev + "\\" + postfixKey, "PortName");
+					result.put(comport, dev);
+				}
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -410,7 +446,7 @@ public class DeviceFinderWindows {
 		}
 		return result;
 	}
-	
+
 	public static HashMap<String, String> getFTDIDevices() {
 		HashMap<String, String> result = new HashMap<String, String>();
 		String key1 = "SYSTEM\\ControlSet001\\Enum\\FTDIBUS";
@@ -418,29 +454,36 @@ public class DeviceFinderWindows {
 		String postfixKey = "\\0000\\Device Parameters";
 		try {
 
-			List<String> controlSet001 = readStringSubKeys(HKEY_LOCAL_MACHINE,key1);
-			for (String device : controlSet001) {
-				String comport = readString(HKEY_LOCAL_MACHINE, key1 + "\\"
-						+ device + postfixKey, "PortName");
-				String[] deviceName = device.split("[+]");
-				if (comport != null && deviceName.length == 3) {
-					result.put(comport, deviceName[2].substring(0,
-							deviceName[2].length() - 1));
-				} else
-					System.out.println("warning: null comport");
-			}
+			List<String> controlSet001 = readStringSubKeys(HKEY_LOCAL_MACHINE,
+					key1);
+			if (controlSet001 != null)
+				for (String device : controlSet001) {
+					String comport = readString(HKEY_LOCAL_MACHINE, key1 + "\\"
+							+ device + postfixKey, "PortName");
+					String[] deviceName = device.split("[+]");
+					if (comport != null && deviceName.length == 3) {
+						result.put(
+								comport,
+								deviceName[2].substring(0,
+										deviceName[2].length() - 1));
+					} else
+						System.out.println("warning: null comport");
+				}
 			List<String> controlSet002 = readStringSubKeys(HKEY_LOCAL_MACHINE,
 					"SYSTEM\\ControlSet002\\Enum\\FTDIBUS");
-			for (String device : controlSet002) {
-				String comport = readString(HKEY_LOCAL_MACHINE, key2 + "\\"
-						+ device + postfixKey, "PortName");
-				String[] deviceName = device.split("[+]");
-				if (comport != null && deviceName.length == 3) {
-					result.put(comport, deviceName[2].substring(0,
-							deviceName[2].length() - 1));
-				} else
-					System.out.println("warning: null comport");
-			}
+			if (controlSet002 != null)
+				for (String device : controlSet002) {
+					String comport = readString(HKEY_LOCAL_MACHINE, key2 + "\\"
+							+ device + postfixKey, "PortName");
+					String[] deviceName = device.split("[+]");
+					if (comport != null && deviceName.length == 3) {
+						result.put(
+								comport,
+								deviceName[2].substring(0,
+										deviceName[2].length() - 1));
+					} else
+						System.out.println("warning: null comport");
+				}
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -458,17 +501,17 @@ public class DeviceFinderWindows {
 		List<String> nextFolder = readStringSubKeys(HKEY_LOCAL_MACHINE, folder);
 		if (nextFolder != null && nextFolder.size() > 0)
 			for (String nkey : nextFolder) {
-				if(folder.equals(""))
+				if (folder.equals(""))
 					result.addAll(searchFor(key, nkey));
 				else
-				result.addAll(searchFor(key, folder + "\\"+nkey));
-			}		
-		Map<String,String> m = readStringValues(HKEY_LOCAL_MACHINE, folder);
-		if(m!= null)
-		for (String s : m.keySet()) {
-			if(m.get(s)!= null && m.get(s).equals(key))
-				result.add(folder + "//"+key);
-		}
+					result.addAll(searchFor(key, folder + "\\" + nkey));
+			}
+		Map<String, String> m = readStringValues(HKEY_LOCAL_MACHINE, folder);
+		if (m != null)
+			for (String s : m.keySet()) {
+				if (m.get(s) != null && m.get(s).equals(key))
+					result.add(folder + "//" + key);
+			}
 		return result;
 	}
 
@@ -482,11 +525,11 @@ public class DeviceFinderWindows {
 	 */
 	public static void main(String[] args) throws IllegalArgumentException,
 			IllegalAccessException, InvocationTargetException {
-		HashMap<String, String> hm = DeviceFinderWindows.getZ1Devices();//WindowsRegistry.getFTDIDevices();
+		HashMap<String, String> hm = DeviceFinderWindows.getZ1Devices();// WindowsRegistry.getFTDIDevices();
 		System.out.println(hm);
-		//List<String> l = searchFor("COM34", "");
-		//for(String s : l){
-		//	System.out.println(s);
-		//}
+		List<String> l = searchFor("COM4", "");
+		for (String s : l) {
+			System.out.println(s);
+		}
 	}
 }

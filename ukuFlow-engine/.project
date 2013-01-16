@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>ukuFlow - ukuFlow-engine</name>
+	<name>ukuFlowEngine</name>
 	<comment></comment>
 	<projects>
 		<project>ukuFlow - data-mgr</project>
@@ -77,5 +77,6 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 		<nature>org.eclipse.bpmn2.modeler.core.bpmn2Nature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
 	</natures>
 </projectDescription>

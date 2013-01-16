@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.bpmn2.modeler.runtime">
+      <runtime
+            class="de.tudarmstadt.dvs.ukuflow.runtime.ukuFlowRuntime"
+            description="BPMN2 Modeler customizations for the ukuFlow Process engine"
+            id="de.tudarmstadt.dvs.ukuflow.runtime.ukuflowprocess"
+            name="ukuFlow Process"
+            versions="1.0">
+      </runtime>
+      <modelEnablement
+            runtimeId="de.tudarmstadt.dvs.ukuflow.runtime.ukuflowprocess"
+            type="Process">
+            <disable object="all"/>
+            <enable object="ScriptTask"/>
+            
+            <enable object="InclusiveGateway"/>
+			<enable object="ExclusiveGateway"/>
+			<enable object="EventBasedGateway"/>
+			<enable object="ParallelGateway"/>
+			<enable object="SequenceFlow"/>
+			<enable object="TextAnnotation"/>			
+			<enable object="Association"/>
+			<enable object="IntermediateCatchEvent"/>
+			<enable object="TimerEventDefinition"/>
+			<enable object="Definitions"/>
+			<enable object="ReceiveTask"/>
+			
+			<disable object="Definitions" feature="typeLanguage"/>
+			<disable object="Definitions" feature="diagrams" />
+			<disable object="Task"/>
+			<disable object="ManualTask"/>
+			<disable object="UserTask"/>
+			<disable object="BusinessRuleTask"/>
+			<disable object="ServiceTask"/>
+			<disable object="SendTask"/>
+			<disable object="ChoreopgraphyTask"/>
+			<disable object="ThrowEvent"/>
+			<disable object="BoundaryEvent"/>
+			<disable object="ConditionalEventDefinition"/>
+			<disable object="SignalEventDefinition"/>
+			<disable object="MessageEventDefinition"/>
+			<disable object="EscalationEventDefinition"/>
+			<disable object="CompensateEventDefinition"/>
+			<disable object="LinkEventDefinition"/>
+			<disable object="ErrorEventDefinition"/>
+			<disable object="CancelEventDefinition"/>
+			<disable object="TerminateEventDefinition"/>
+			<disable object="DataInput"/>
+			<disable object="DataObject"/>
+			<disable object="DataOutput"/>
+			<disable object="DataStore"/>
+			<disable object="Lane"/>
+			<disable object="SubProcess"/>
+			<disable object="Transaction"/>
+			<disable object="Group"/>
+			<disable object="AdHocSubProcess"/>
+			<disable object="CallActivity"/>
+			<disable object="Message"/>
+			<disable object="Conversation"/>
+			<disable object="SubChoreography"/>
+			<disable object="CallChoreography"/>
+			<!--			
+			<disable object="Activity"/>
+			<disable object="Assignment"/>
+			<disable object="BaseElement"/>
+			<disable object="BoundaryEvent"/>
+			<disable object="CategoryValue"/>
+			<disable object="ConversationLink"/>
+			<disable object="DataInput"/>
+			<disable object="DataOutput"/>
+			
+			<disable object="DataInputAssociation"/>			
+			<disable object="DataOutputAssociation"/>
+			<disable object="Auditing"/>
+			<disable object="FlowElement"/>
+			<disable object="FlowNode"/>			
+			
+			<disable object="DataState"/>
+			<disable object="EventDefinition"/>
+			<disable object="Message"/>
+			<disable object="Documentation"/>
+			<disable object="Expression"/>
+			<disable object="ExtensionAttributeDefinition"/>
+			<disable object="ExtensionAttributeDefinition"/>
+			<disable object="FormalExpression"/>
+			<disable object="Import"/>
+			<disable object="InputOutputSpecification"/>
+			<disable object="InputSet"/>
+			<disable object="InteractionNode"/>
+			<disable object="ItemAwareElement"/>
+			<disable object="ItemDefinition"/>
+			<disable object="Lane"/>
+			<disable object="LaneSet"/>
+			<disable object="LoopCharacteristics"/>
+			<disable object="Monitoring"/>
+			<disable object="OutputSet"/>
+			<disable object="Resource"/>
+			<disable object="ResourceAssignmentExpression"/>
+			<disable object="ResourceParameter"/>
+			<disable object="ResourceParameterBinding"/>
+			<disable object="ResourceRole"/>
+			-->
+			<!--
+			<disable object="all" feature="anyAttribute"/>
+			<disable object="all" feature="auditing"/>
+			<disable object="all" feature="boundaryEventRefs"/>
+			<disable object="all" feature="categoryValueRef"/>
+			<disable object="all" feature="completionQuantity"/>
+			<disable object="all" feature="dataInputAssociations"/>
+			<disable object="all" feature="dataOutputAssociations"/>
+			<disable object="all" feature="default"/>
+			<disable object="all" feature="documentation"/>
+			<disable object="all" feature="extensionDefinitions"/>
+			<disable object="all" feature="extensionValues"/>			
+			<disable object="all" feature="incomingConversationLinks"/>
+			<disable object="all" feature="ioSpecification"/>
+			<disable object="all" feature="isForCompensation"/>
+			<disable object="all" feature="lanes"/>
+			<disable object="all" feature="loopCharacteristics"/>
+			<disable object="all" feature="monitoring"/>			
+			<disable object="all" feature="outgoingConversationLinks"/>
+			<disable object="all" feature="properties"/>
+			<disable object="all" feature="resources"/>
+			<disable object="all" feature="startQuantity"/>
+			<disable object="all" feature="isCollection"/>
+			<disable object="all" feature="dataState"/>
+			<disable object="all" feature="isImmediate"/>
+			-->
+      </modelEnablement>
+   </extension>
+
+</plugin>

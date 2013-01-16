@@ -154,8 +154,8 @@ struct eb_gw_token_state {
 };
 /*---------------------------------------------------------------------------*/
 void ukuflow_engine_init();
-void ukuflow_engine_register(struct workflow *wf);
-void ukuflow_engine_deregister(uint8_t workflow_id);
+bool ukuflow_engine_register(struct workflow *wf);
+struct workflow *ukuflow_engine_deregister(uint8_t workflow_id);
 void ukuflow_notify_unsubscription_ready(struct workflow_token *token);
 /*---------------------------------------------------------------------------*/
 

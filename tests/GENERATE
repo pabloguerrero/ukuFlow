@@ -1,6 +1,6 @@
 #!/bin/bash
 
-UKUFLOW_PATH="/home/pablo/workspace/ukuflow"
+UKUFLOW_PATH="/Users/guerrero/workspace/git/ukuflow"
 LOG=$UKUFLOW_PATH/tests/"BUILD-`date '+%F-%T'`.log"
 DO_CLEAN=0
 DO_PULL=0

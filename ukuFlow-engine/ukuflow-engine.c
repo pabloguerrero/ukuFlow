@@ -143,11 +143,11 @@ token_processor token_processors[] = { //
 				NULL, //&processor_publish_task, /*								 3 */
 				NULL, //&processor_subscribe_task, /*							 4 */
 				NULL, //&processor_subworkflow_task, /*							 5 */
-				NULL, //&processor_fork_gateway, /*								 6 */
-				NULL, //&processor_join_gateway, /*								 7 */
-				NULL, //&processor_inclusive_decision_gateway, /*				 8 */
-				NULL, //&processor_inclusive_join_gateway, /*					 9 */
-				/*NULL,//*/&processor_exclusive_decision_gateway, /*				10 */
+				&processor_fork_gateway, /*								 6 */
+				&processor_join_gateway, /*								 7 */
+				&processor_inclusive_decision_gateway, /*				 8 */
+				&processor_inclusive_join_gateway, /*					 9 */
+				&processor_exclusive_decision_gateway, /*				10 */
 				&processor_exclusive_merge_gateway, /*					11 */
 				&processor_event_based_exclusive_decision_gateway /*	12 */
 		};
@@ -226,11 +226,11 @@ static uint8_t find_free_instance_id() {
 				break;
 			}
 		if (!occupied) {
-			return instance_id;
+			return (instance_id);
 		}
 	}
 
-	return 0;
+	return (0);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -244,11 +244,11 @@ static struct workflow_node *lookup_workflow_id(uint8_t workflow_id) {
 	struct workflow_node *node;
 	for (node = list_head(wf_spawn_queue); node != NULL; node = node->next)
 		if (node->wf->workflow_id == workflow_id)
-			return node;
+			return (node);
 	for (node = list_head(wf_running_queue); node != NULL; node = node->next)
 		if (node->wf->workflow_id == workflow_id)
-			return node;
-	return NULL;
+			return (node);
+	return (NULL);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -264,7 +264,7 @@ static struct workflow_token *alloc_token(struct workflow_instance *wfi) {
 		token->wf_instance = wfi;
 	}
 
-	return token;
+	return (token);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -309,7 +309,7 @@ void ukuflow_engine_init() {
  *
  * 				TODO
  */
-void ukuflow_engine_register(struct workflow *wf) {
+bool ukuflow_engine_register(struct workflow *wf) {
 	/** check if there is already a workflow with the specified id */
 	if (!lookup_workflow_id(wf->workflow_id)) {
 		struct workflow_node *wfn = (struct workflow_node*) memb_alloc(
@@ -319,10 +319,13 @@ void ukuflow_engine_register(struct workflow *wf) {
 			list_add(wf_spawn_queue, wfn);
 			process_post(&ukuflow_long_term_scheduler_process,
 					workflow_ready_event, wfn);
+
+			return (TRUE);
 		} else PRINTF(3,
 				"(UKUFLOW-ENGINE) There is no space left for registering a new workflow!");
 	} else PRINTF(3,
 			"(UKUFLOW-ENGINE) A workflow with the specified id %u already exists!\n", wf->workflow_id);
+	return (FALSE);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -331,17 +334,22 @@ void ukuflow_engine_register(struct workflow *wf) {
  *
  * 				TODO
  */
-void ukuflow_engine_deregister(uint8_t workflow_id) {
+struct workflow *ukuflow_engine_deregister(uint8_t workflow_id) {
 
 	struct workflow_node *wfn;
+	struct workflow *deregistered_workflow;
 
-	/** check if there is a workflow with the specified id */
-	if (wfn = lookup_workflow_id(workflow_id)) {
+	/* check if there is a workflow with the specified id */
+	if ((wfn = lookup_workflow_id(workflow_id))) {
 		// there was one, so we now have to stop all running instances and tokens associated to it
-		// TODO
 
-	} else PRINTF(3,
+		deregistered_workflow = wfn->wf;
+		/** TODO: remove workflow */
+
+		return (deregistered_workflow);
+	} else PRINTF(1,
 			"(UKUFLOW-ENGINE) A workflow with the specified id %u doesn't exists!\n", workflow_id);
+	return (NULL);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -457,7 +465,7 @@ static void processor_execute_task(struct workflow_token *token,
 	}
 
 	PRINTF(1,
-			"(UKUFLOW-ENGINE) statement nr %d/%d\n", token_state->comp_ex_task_token_state.statement_nr,ex_task->num_statements);
+			"(UKUFLOW-ENGINE) statement nr %d/%d\n", token_state->comp_ex_task_token_state.statement_nr, ex_task->num_statements);
 
 	/** have we ran all the statements? */
 	if (token_state->comp_ex_task_token_state.statement_nr
@@ -479,7 +487,6 @@ static void processor_execute_task(struct workflow_token *token,
 
 		struct statement *st = workflow_get_statement(ex_task,
 				token_state->comp_ex_task_token_state.statement_nr);
-
 
 //		printf("type %d, ptr %p\n",st->statement_type, st);
 		PRINTF(3,
@@ -1205,6 +1212,7 @@ void ukuflow_notify_unsubscription_ready(struct workflow_token *token) {
 	}
 
 }
+
 /*---------------------------------------------------------------------------*/
 /**
  * \brief		TODO
@@ -1214,7 +1222,10 @@ void ukuflow_notify_unsubscription_ready(struct workflow_token *token) {
  *				type of start event, whether the workflow is 'spawned' and moved
  *				to the 'running' workflow queue, or it remains in the 'wf_spawn_queue'
  *
- */PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
+ */
+//
+PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
+
 	PROCESS_BEGIN()
 		;
 
@@ -1349,84 +1360,12 @@ PROCESS_END();
 
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		Listens for Contiki processes finishing their execution
+ * \brief		TODO
  *
  * 				TODO
  */
 
-PROCESS_THREAD( ukuflow_termination_listener_process, ev, data) {
-
-PROCESS_BEGIN()
-;
-
-do {
-	PRINTF(1, "(UKUFLOW-ENGINE) termination process, yielding\n");
-
-	/** This process needs to catch two types of events:
-	 * *: A task is ready for execution (task_ready_event)
-	 * *: A task finished execution (when a started process ends)
-	 * */
-
-	PROCESS_YIELD_UNTIL( //(ev == PROCESS_EVENT_EXIT) || //
-			(ev == PROCESS_EVENT_EXITED));
-
-	//		if (ev == PROCESS_EVENT_EXIT) {
-	//			// a process ended, so it needs to be exited
-	//			//			process_exit(child_command);
-	//			printf("notified about a process_event_exit, data is %p\n", data);
-	//		} else
-
-	struct workflow_token *unblock_token = NULL;
-
-	if (ev == PROCESS_EVENT_EXITED) {
-		//			printf(
-		//					"notified about a process_event_exited, data is %p, number of tokens blocked: %u\n",
-		//					data, list_length(blocked_token_queue));
-
-		/** now search for a process in the blocked queue such that it is of type wf_ex_task and has the associated ex_task_token_state */
-		struct workflow_token *token = list_head(blocked_token_queue);
-
-		while ((token != NULL) && (unblock_token == NULL)) {
-			//				printf("comparing blocked token %p, state is %p, type is %u, child %p, data %p\n", token, token->token_state, workflow_get_wf_elem(token->wf_instance->wfn->wf,
-			//						token->current_wf_elem_id)->elem_type, ((struct ex_task_token_state*) token->token_state)->child_command_process, data);
-			if ((token->token_state != NULL) && //
-					(workflow_get_wf_elem(token->wf_instance->wfn->wf,
-							token->current_wf_elem_id)->elem_type
-							== EXECUTE_TASK) && //
-					(((struct lfs_ex_task_token_state*) token->token_state)->child_command_process
-							== data)) {
-				unblock_token = token;
-//				printf("WOW\n");
-			} else
-				token = token->next;
-		}
-	}
-
-	if (unblock_token != NULL) {
-		// found token!
-		PRINTF(1,
-				"(UKUFLOW-ENGINE) termination process, blocked token finished its task, putting back to ready token queue\n");
-
-		list_remove(blocked_token_queue, unblock_token);
-		list_add(ready_token_queue, unblock_token);
-
-		/** Announce short-term-scheduler that a token became ready */
-		process_post(&ukuflow_short_term_scheduler_process, token_ready_event,
-				unblock_token);
-	} else PRINTF(3,
-			"(UKUFLOW-ENGINE) termination process, no blocked token found for the recently finished process\n");
-
-} while (1);
-
-PROCESS_END();
-}
-
-/*---------------------------------------------------------------------------*/
-/**
- * \brief		TODO
- *
- * 				TODO
- */PROCESS_THREAD( ukuflow_scoped_function_statement_process, ev, data) {
+PROCESS_THREAD( ukuflow_scoped_function_statement_process, ev, data) {
 
 static struct workflow_token *token = NULL;
 
@@ -1446,94 +1385,171 @@ PROCESS_BEGIN()
 ;
 
 do {
-PRINTF(1, "(UKUFLOW-ENGINE) sfs, yielding till an sfs needs to be ran\n");
+	PRINTF(1, "(UKUFLOW-ENGINE) sfs, yielding till an sfs needs to be ran\n");
 
-/** This process catches the event token_blocked_sfs_event, which is
- * posted whenever a scoped function statement needs to be ran. */
+	/** This process catches the event token_blocked_sfs_event, which is
+	 * posted whenever a scoped function statement needs to be ran. */
 
-PROCESS_YIELD_UNTIL(ev == token_blocked_sfs_event);
+	PROCESS_YIELD_UNTIL(ev == token_blocked_sfs_event);
 
-token = (struct workflow_token*) data;
-token_state = (union ex_task_token_state *) token->token_state;
+	token = (struct workflow_token*) data;
+	token_state = (union ex_task_token_state *) token->token_state;
 
-wfe = workflow_get_wf_elem(token->wf_instance->wfn->wf,
-		token->current_wf_elem_id);
+	wfe = workflow_get_wf_elem(token->wf_instance->wfn->wf,
+			token->current_wf_elem_id);
 
-wf_ex = (struct wf_ex_task*) wfe;
+	wf_ex = (struct wf_ex_task*) wfe;
 
-sfs = (struct scoped_function_statement *) workflow_get_statement(wf_ex,
-		token_state->sfs_ex_task_token_state.statement_nr);
+	sfs = (struct scoped_function_statement *) workflow_get_statement(wf_ex,
+			token_state->sfs_ex_task_token_state.statement_nr);
 
-s_i = workflow_get_scope_info(token->wf_instance->wfn->wf, sfs->scope_id);
+	s_i = workflow_get_scope_info(token->wf_instance->wfn->wf, sfs->scope_id);
 
-/** Test if scope information is available: */
-if (s_i == NULL) {
-	PRINTF(3, "(UKUFLOW-ENGINE) sfs, scope spec not found, halting!\n");
-	return PT_ENDED;
-}
+	/** Test if scope information is available: */
+	if (s_i == NULL) {
+		PRINTF(3, "(UKUFLOW-ENGINE) sfs, scope spec not found, halting!\n");
+		return (PT_ENDED);
+	}
 
-/** Now request a scope to be opened. In case opening the scope fails, it won't be possible to send through it */
-if (!ukuflow_net_mgr_open_scope(sfs->scope_id,
-		((uint8_t*) s_i) + sizeof(struct scope_info), s_i->scope_spec_len,
-		s_i->scope_ttl)) {
+	/** Now request a scope to be opened. In case opening the scope fails, it won't be possible to send through it */
+	if (!ukuflow_net_mgr_open_scope(sfs->scope_id,
+			((uint8_t*) s_i) + sizeof(struct scope_info), s_i->scope_spec_len,
+			s_i->scope_ttl)) {
 
-	PRINTF(3, "(UKUFLOW-ENGINE) sfs, problem opening scope!\n");
-	return PT_ENDED;
-}
+		PRINTF(3, "(UKUFLOW-ENGINE) sfs, problem opening scope!\n");
+		return (PT_ENDED);
+	}
 
-/** Now wait a bunch of seconds for the message to be disseminated */
-etimer_set(&control_timer, SCOPE_OPERATION_DELAY * CLOCK_SECOND);
-PRINTF(3, "(UKUFLOW-ENGINE) sfs, waiting 5 seconds...\n");
-PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&control_timer));
-
-/** Prepare message with command */
-struct statement_command *st_cmd = (struct statement_command*) (((uint8_t*) sfs)
-		+ sizeof(struct scoped_function_statement));
-token_state->sfs_ex_task_token_state.cmd_line =
-		ukuflow_cmd_runner_generate_command(st_cmd,
-				&token_state->sfs_ex_task_token_state.cmd_line_len,
-				token->wf_instance->repository_id);
-
-/** only proceed if a cmd line was built */
-if (token_state->sfs_ex_task_token_state.cmd_line != NULL
-		&& token_state->sfs_ex_task_token_state.cmd_line_len > 0) {
-
-	/** Prepare message with command */
-	struct sfs_msg *s_msg = malloc(
-			sizeof(struct sfs_msg)
-					+ token_state->sfs_ex_task_token_state.cmd_line_len);
-	s_msg->msg_type = SCOPED_FUNCTION_MSG;
-	s_msg->cmd_line_len = token_state->sfs_ex_task_token_state.cmd_line_len;
-	memcpy(((uint8_t*) s_msg) + sizeof(struct sfs_msg),
-			token_state->sfs_ex_task_token_state.cmd_line, s_msg->cmd_line_len);
-
-	/** Send command to scope members */
-	ukuflow_net_mgr_send_scope(sfs->scope_id, FALSE, s_msg,
-			sizeof(struct sfs_msg) + s_msg->cmd_line_len);
-
-	/** Wait a while (is this necessary?) */
-	etimer_set(&control_timer, CLOCK_SECOND * 20);
-	PRINTF(3, "(UKUFLOW-ENGINE) sfs, waiting 20 seconds...\n");
+	/** Now wait a bunch of seconds for the message to be disseminated */
+	etimer_set(&control_timer, SCOPE_OPERATION_DELAY * CLOCK_SECOND);
+	PRINTF(3, "(UKUFLOW-ENGINE) sfs, waiting 5 seconds...\n");
 	PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&control_timer));
 
-	/** Release memory of scoped function statement message */
-	free(s_msg);
+	/** Prepare message with command */
+	struct statement_command *st_cmd =
+			(struct statement_command*) (((uint8_t*) sfs)
+					+ sizeof(struct scoped_function_statement));
+	token_state->sfs_ex_task_token_state.cmd_line =
+			ukuflow_cmd_runner_generate_command(st_cmd,
+					&token_state->sfs_ex_task_token_state.cmd_line_len,
+					token->wf_instance->repository_id);
 
-	/** Now close the scope. If other workflow tasks/elements are using the same scope, it will not be closed but its usage counter decreased */
-	ukuflow_net_mgr_close_scope(sfs->scope_id);
+	/** only proceed if a cmd line was built */
+	if (token_state->sfs_ex_task_token_state.cmd_line != NULL
+			&& token_state->sfs_ex_task_token_state.cmd_line_len > 0) {
 
-	token_state->sfs_ex_task_token_state.statement_nr++;
+		/** Prepare message with command */
+		struct sfs_msg *s_msg = malloc(
+				sizeof(struct sfs_msg)
+						+ token_state->sfs_ex_task_token_state.cmd_line_len);
+		s_msg->msg_type = SCOPED_FUNCTION_MSG;
+		s_msg->cmd_line_len = token_state->sfs_ex_task_token_state.cmd_line_len;
+		memcpy(((uint8_t*) s_msg) + sizeof(struct sfs_msg),
+				token_state->sfs_ex_task_token_state.cmd_line,
+				s_msg->cmd_line_len);
 
-	PRINTF(3,
-			"(UKUFLOW-ENGINE) sfs, incremented statement_nr to %u\n", token_state->sfs_ex_task_token_state.statement_nr);
+		/** Send command to scope members */
+		ukuflow_net_mgr_send_scope(sfs->scope_id, FALSE, s_msg,
+				sizeof(struct sfs_msg) + s_msg->cmd_line_len);
 
-	/** move token to ready queue */
-	list_remove(blocked_token_queue, token);
-	list_add(ready_token_queue, token);
+		/** Wait a while (is this necessary?) */
+		etimer_set(&control_timer, CLOCK_SECOND * 20);
+		PRINTF(3, "(UKUFLOW-ENGINE) sfs, waiting 20 seconds...\n");
+		PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&control_timer));
 
-	process_post(&ukuflow_short_term_scheduler_process, token_ready_event,
-			token);
+		/** Release memory of scoped function statement message */
+		free(s_msg);
+
+		/** Now close the scope. If other workflow tasks/elements are using the same scope, it will not be closed but its usage counter decreased */
+		ukuflow_net_mgr_close_scope(sfs->scope_id);
+
+		token_state->sfs_ex_task_token_state.statement_nr++;
+
+		PRINTF(3,
+				"(UKUFLOW-ENGINE) sfs, incremented statement_nr to %u\n", token_state->sfs_ex_task_token_state.statement_nr);
+
+		/** move token to ready queue */
+		list_remove(blocked_token_queue, token);
+		list_add(ready_token_queue, token);
+
+		process_post(&ukuflow_short_term_scheduler_process, token_ready_event,
+				token);
+	}
+} while (1);
+
+PROCESS_END();
 }
+
+/*---------------------------------------------------------------------------*/
+/**
+ * \brief		Listens for Contiki processes finishing their execution
+ *
+ * 				TODO
+ */
+
+PROCESS_THREAD( ukuflow_termination_listener_process, ev, data) {
+
+PROCESS_BEGIN()
+;
+
+do {
+PRINTF(1, "(UKUFLOW-ENGINE) termination process, yielding\n");
+
+/** This process needs to catch two types of events:
+ * *: A task is ready for execution (task_ready_event)
+ * *: A task finished execution (when a started process ends)
+ * */
+
+PROCESS_YIELD_UNTIL( //(ev == PROCESS_EVENT_EXIT) || //
+		(ev == PROCESS_EVENT_EXITED));
+
+//		if (ev == PROCESS_EVENT_EXIT) {
+//			// a process ended, so it needs to be exited
+//			//			process_exit(child_command);
+//			printf("notified about a process_event_exit, data is %p\n", data);
+//		} else
+
+struct workflow_token *unblock_token = NULL;
+
+if (ev == PROCESS_EVENT_EXITED) {
+	//			printf(
+	//					"notified about a process_event_exited, data is %p, number of tokens blocked: %u\n",
+	//					data, list_length(blocked_token_queue));
+
+	/** now search for a process in the blocked queue such that it is of type wf_ex_task and has the associated ex_task_token_state */
+	struct workflow_token *token = list_head(blocked_token_queue);
+
+	while ((token != NULL) && (unblock_token == NULL)) {
+		//				printf("comparing blocked token %p, state is %p, type is %u, child %p, data %p\n", token, token->token_state, workflow_get_wf_elem(token->wf_instance->wfn->wf,
+		//						token->current_wf_elem_id)->elem_type, ((struct ex_task_token_state*) token->token_state)->child_command_process, data);
+		if ((token->token_state != NULL)
+				&& //
+				(workflow_get_wf_elem(token->wf_instance->wfn->wf,
+						token->current_wf_elem_id)->elem_type == EXECUTE_TASK)
+				&& //
+				(((struct lfs_ex_task_token_state*) token->token_state)->child_command_process
+						== data)) {
+			unblock_token = token;
+			//				printf("WOW\n");
+		} else
+			token = token->next;
+	}
+}
+
+if (unblock_token != NULL) {
+	// found token!
+	PRINTF(1,
+			"(UKUFLOW-ENGINE) termination process, blocked token finished its task, putting back to ready token queue\n");
+
+	list_remove(blocked_token_queue, unblock_token);
+	list_add(ready_token_queue, unblock_token);
+
+	/** Announce short-term-scheduler that a token became ready */
+	process_post(&ukuflow_short_term_scheduler_process, token_ready_event,
+			unblock_token);
+} else PRINTF(3,
+		"(UKUFLOW-ENGINE) termination process, no blocked token found for the recently finished process\n");
+
 } while (1);
 
 PROCESS_END();

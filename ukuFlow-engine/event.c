@@ -151,7 +151,7 @@ data_len_t event_operator_get_size(struct generic_event_operator *geo) {
 	}
 	} // switch
 
-	return size;
+	return (size);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -175,12 +175,12 @@ uint8_t* event_custom_input_function(data_len_t *data_len,
 	for (field_nr = 0; (field_nr < event->num_fields) && (!found); field_nr++) {
 		if (*fvp == requested_field) {
 			*data_len = event_field_width[requested_field];
-			return fvp + sizeof(uint8_t);
+			return (fvp + sizeof(uint8_t));
 		}
 		fvp += sizeof(uint8_t) + event_field_width[*fvp];
 	}
 
-	return NULL;
+	return (NULL);
 
 }
 /*---------------------------------------------------------------------------*/
@@ -212,7 +212,7 @@ struct event *event_alloc_raw(data_len_t *event_len) {
 
 	/* bail out if there was no space free*/
 	if (event == NULL)
-		return NULL;
+		return (NULL);
 
 	event->channel_id = 0;
 	event->num_fields = num_fields;
@@ -224,7 +224,7 @@ struct event *event_alloc_raw(data_len_t *event_len) {
 		fvp += sizeof(uint8_t) + event_field_width[field];
 	}
 
-	return event;
+	return (event);
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -246,11 +246,11 @@ struct event *event_clone(struct event *source_event,
 	struct event *event = malloc(source_event_len);
 
 	if (event == NULL)
-		return NULL;
+		return (NULL);
 
 	memcpy(event, source_event, source_event_len);
 
-	return event;
+	return (event);
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -306,7 +306,7 @@ data_len_t event_get_size(struct event *event) {
 		event_size += field_size;
 	}
 
-	return event_size;
+	return (event_size);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -352,9 +352,9 @@ static uint8_t *get_value_pointer(struct event *event, uint8_t searched_field) {
 	}
 
 	if ((field_nr < event->num_fields) && (*fvp == searched_field))
-		return fvp + sizeof(uint8_t);
+		return (fvp + sizeof(uint8_t));
 	else
-		return NULL;
+		return (NULL);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -380,7 +380,7 @@ void event_set_value(struct event *event, uint8_t searched_field, uint8_t *data)
  * 				TODO
  */
 uint8_t *event_get_value(struct event *event, uint8_t searched_field) {
-	return get_value_pointer(event, searched_field);
+	return (get_value_pointer(event, searched_field));
 }
 
 /*---------------------------------------------------------------------------*/
@@ -409,7 +409,7 @@ data_repository_id_t event_into_repo(struct event *event) {
 		}
 	}
 
-	return repo_id;
+	return (repo_id);
 }
 
 /** @} */

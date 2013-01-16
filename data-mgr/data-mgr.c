@@ -47,7 +47,7 @@
 
 #include "net/rime/rimeaddr.h"
 #include "logger.h"
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 #include "dev/sht11-sensor.h"
 #include "dev/light-sensor.h"
 #include "dev/battery-sensor.h"
@@ -70,7 +70,7 @@ static uint8_t initialized = 0;
  * \brief		TODO
  */
 static uint16_t sensor_light_par_raw(void) {
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	SENSORS_ACTIVATE(light_sensor);
 	int result = light_sensor.value(LIGHT_SENSOR_PHOTOSYNTHETIC);
 	SENSORS_DEACTIVATE(light_sensor);
@@ -86,7 +86,7 @@ static uint16_t sensor_light_par_raw(void) {
  * \brief		TODO
  */
 static uint16_t sensor_light_tsr_raw(void) {
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	SENSORS_ACTIVATE(light_sensor);
 	int result = light_sensor.value(LIGHT_SENSOR_TOTAL_SOLAR);
 	SENSORS_DEACTIVATE(light_sensor);
@@ -98,16 +98,11 @@ static uint16_t sensor_light_tsr_raw(void) {
 #endif
 }
 
-#ifdef CONTIKI_TARGET_SKY
-#else
-#ifdef CONTIKI_TARGET_Z1
-#endif
-#endif
 /**
  * \brief		TODO
  */
 static uint16_t sensor_temperature_raw(void) {
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	SENSORS_ACTIVATE(sht11_sensor);
 	int result = sht11_sensor.value(SHT11_SENSOR_TEMP);
 	SENSORS_DEACTIVATE(sht11_sensor);
@@ -123,7 +118,7 @@ static uint16_t sensor_temperature_raw(void) {
  * \brief		TODO
  */
 static uint16_t sensor_temperature_celsius(void) {
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	int result = sensor_temperature_raw();
 	return (-39.60 + 0.01 * result);
 #else
@@ -150,7 +145,7 @@ static uint16_t sensor_temperature_celsius(void) {
  * \brief		TODO
  */
 static uint16_t sensor_temperature_fahrenheit(void) {
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	int result = sensor_temperature_raw();
 	return (-39.60 + 0.01 * result) * 9 / 5 + 32;
 #else
@@ -164,7 +159,7 @@ static uint16_t sensor_temperature_fahrenheit(void) {
  * \brief		TODO
  */
 static uint16_t sensor_humidity_raw(void) {
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	SENSORS_ACTIVATE(sht11_sensor);
 	int result = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
 	SENSORS_DEACTIVATE(sht11_sensor);
@@ -180,7 +175,7 @@ static uint16_t sensor_humidity_raw(void) {
  * \brief		TODO
  */
 static uint16_t sensor_humidity_percent(void) {
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	SENSORS_ACTIVATE(sht11_sensor);
 	int result = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
 	SENSORS_DEACTIVATE(sht11_sensor);
@@ -197,7 +192,7 @@ static uint16_t sensor_humidity_percent(void) {
  * \brief		TODO
  */
 static uint16_t sensor_accm_x_axis(void) {
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	return (0);
 #else
 #ifdef CONTIKI_TARGET_Z1
@@ -211,7 +206,7 @@ static uint16_t sensor_accm_x_axis(void) {
  * \brief		TODO
  */
 static uint16_t sensor_accm_y_axis(void) {
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	return (0);
 #else
 #ifdef CONTIKI_TARGET_Z1
@@ -224,7 +219,7 @@ static uint16_t sensor_accm_y_axis(void) {
  * \brief		TODO
  */
 static uint16_t sensor_accm_z_axis(void) {
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	return 0;
 #else
 #ifdef CONTIKI_TARGET_Z1
@@ -237,7 +232,7 @@ static uint16_t sensor_accm_z_axis(void) {
  * \brief		TODO
  */
 static uint16_t sensor_voltage_raw(void) {
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	SENSORS_ACTIVATE(battery_sensor);
 	int result = battery_sensor.value(0);
 	SENSORS_DEACTIVATE(battery_sensor);
@@ -253,7 +248,7 @@ static uint16_t sensor_voltage_raw(void) {
  * \brief		TODO
  */
 static uint16_t sensor_co2_raw(void) {
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	// TODO
 #else
 #ifdef CONTIKI_TARGET_Z1
@@ -267,7 +262,7 @@ static uint16_t sensor_co2_raw(void) {
  * \brief		TODO
  */
 static uint16_t sensor_co_raw(void) {
-#ifdef CONTIKI_TARGET_SKY
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	// TODO
 #else
 #ifdef CONTIKI_TARGET_Z1

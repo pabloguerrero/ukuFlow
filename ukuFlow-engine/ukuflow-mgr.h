@@ -52,9 +52,9 @@
 /*---------------------------------------------------------------------------*/
 void ukuflow_mgr_init();
 /*---------------------------------------------------------------------------*/
-void ukuflow_mgr_register(struct workflow *wf);
+bool ukuflow_mgr_register(uint8_t *workflow_def, data_len_t workflow_def_len);
 /*---------------------------------------------------------------------------*/
-void ukuflow_mgr_deregister(uint8_t workflow_id);
+bool ukuflow_mgr_deregister(uint8_t workflow_id);
 /*---------------------------------------------------------------------------*/
 
 

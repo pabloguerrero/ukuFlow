@@ -51,6 +51,9 @@
 #include "logger.h"
 #include "stdlib.h"
 
+// for strlen
+#include "string.h"
+
 /** \brief		to have access to the serial line */
 #include "dev/serial-line.h"
 
@@ -60,7 +63,7 @@ enum wf_operations {
 	WF_DEREGISTER /*							 1 */
 };
 
-/** \brief		Defines the maximum lenght of the decoded data, in bytes				*/
+/** \brief		Defines the maximum length of the decoded data, in bytes				*/
 #define MAX_DECODED_DATA 255
 
 /** \brief		declaration of serial IO mgmt. process */
@@ -76,30 +79,27 @@ PROCESS_THREAD( ukuflow_serial_process, ev, data) {
 
 		static uint8_t *s_input = NULL;
 		static uint8_t decoded_data[MAX_DECODED_DATA];
-//		static uint8_t *last = NULL;
 		static uint8_t cmd_nr = 0;
 		static uint16_t data_len = 0;
-//		static uint8_t last_len = 0;
-
-		static uint8_t depl = 0;
 
 		while (1) {
 
-			PRINTF(1, "(SERIAL) Input %i-%d:\n", cmd_nr++, depl);
+			PRINTF(1, "(SERIAL) Input [%d]:\n", cmd_nr++);
 
 			PROCESS_WAIT_EVENT_UNTIL(
 					ev == serial_line_event_message && data != NULL);
 
 			data_len = strlen(data);
 
-			PRINTF(1, "(SERIAL) Input has length %d\n", strlen(data));
+			PRINTF(1, "(SERIAL) Input received, length %d\n", strlen(data));
 
-			PRINTF(1, "data: ");
+			PRINTF(1, "(SERIAL) Data: ");
 			{
 				PRINT_ARR(1, data, data_len);
 			}
 
-			data_len_t decoded_len = base64_decode((char*)data, decoded_data, MAX_DECODED_DATA);
+			data_len_t decoded_len = base64_decode((char*) data, decoded_data,
+					MAX_DECODED_DATA);
 
 			s_input = malloc(decoded_len);
 			memcpy(s_input, decoded_data, decoded_len);
@@ -109,52 +109,21 @@ PROCESS_THREAD( ukuflow_serial_process, ev, data) {
 				PRINT_ARR(1, s_input, decoded_len);
 			}
 
-
-			//			PRINTF(1, "last: ");
-//			{
-//				PRINT_ARR(1, last, last_len);
-//			}
-
 			if (s_input[0] == WF_REGISTER) {
-				depl = 1;
-				struct workflow *wf = malloc(s_input[1]);
-
-				if (wf) {
-
-					PRINTF(1, "(SERIAL) Registering wf with len %d...\n", s_input[1]);
-					// copy contents of workflow definition into memory:
-					memcpy(wf, s_input + 2, s_input[1]);
-
-					ukuflow_mgr_register(wf);
-				}
+				PRINTF(1,
+						"(SERIAL) Registering wf (id: %d, length %d)...\n", s_input[1], s_input[2]);
+				// copy contents of workflow definition into memory:
+				if (ukuflow_mgr_register(s_input + 2, s_input[1])) {
+					PRINTF(1, "(SERIAL) Registration successful!\n");
+				} else
+				PRINTF(1, "(SERIAL) Registration failed!\n");
 			} else if (s_input[0] == WF_DEREGISTER) {
-				ukuflow_mgr_deregister(s_input[1]);
-			} else if (s_input[0] == 'a') {
-				printf("aaaaaaaa\n");
-
-#define WORKFLOW_SPEC 2, /* workflow id */ \
-	5,  /* number of wf_elems*/ \
-	2,  /* number of scopes*/ \
-	0, START_EVENT, 1, /* first task, start event */ \
-	\
-	1, EXECUTE_TASK, 2, 2, /* second task, execute w. 2 computation statements */ \
-	COMPUTATION_STATEMENT, NODE_ID + 1, 5, OPERATOR_ADD, UINT8_VALUE, 1, UINT8_VALUE, 2, \
-	COMPUTATION_STATEMENT, NODE_ID + 2, 5, OPERATOR_ADD, UINT8_VALUE, 1, REPOSITORY_VALUE, NODE_ID + 1,  \
-	\
-	2, EXECUTE_TASK, 3, 3,  /* third task, execute with 2 local function statements:*/ \
-		LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, STRING_VALUE, 2, 49, 49, /*  'local blink 1' */ \
-		LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, REPOSITORY_VALUE, NODE_ID + 2, /*  'local blink $var2'  (equals 'local blink 4')*/ \
-		LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, STRING_VALUE, 2, 49, 49, /*  'local blink 1' */ \
-	\
-	3, EXECUTE_TASK, 4, 1,  /* fourth task, execute w. scoped function statement 'blink $var2', scope id 111*/ \
-		SCOPED_FUNCTION_STATEMENT, 222, 5, 1, 98, 108, 105, 110, 107, REPOSITORY_VALUE, NODE_ID + 2, \
-	\
-	4, END_EVENT, \
-	\
-	111, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3, /* scope id 111, ttl 60, length 5, spec */ \
-	222, 60, 0, 5, PREDICATE_GT, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3 /* scope id 222, ttl 60, length 5, spec */
-
-//				ukuflow_mgr_deregister
+				PRINTF(1,
+						"(SERIAL) Deregistering wf (id: %d)...\n", s_input[1]);
+				if (ukuflow_mgr_deregister(s_input[1])) {
+					PRINTF(1, "(SERIAL) Deregistration successful!\n");
+				} else
+				PRINTF(1, "(SERIAL) Deregistration failed!\n");
 			} else
 				printf("(SERIAL) Input invalid!\n");
 

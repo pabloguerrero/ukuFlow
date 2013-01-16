@@ -45,7 +45,6 @@
  * \date	Jul 14, 2011
  */
 
-
 #include "net/rime/rimeaddr.h"
 
 #include "ukuflow-mgr.h"
@@ -64,17 +63,17 @@
  */
 void ukuflow_mgr_init() {
 
-	PRINTF(3,"[%u.%u:%10lu] %s::%s() : Initializing ukuflow's manager\n",
-			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__);
+	PRINTF(3,
+			"[%u.%u:%10lu] %s::%s() : Initializing ukuflow's manager\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__);
 
-	// Initialize other components
-	// * ukuflow engine:
+	/* Initialize other components */
+	/* * ukuflow engine: */
 	ukuflow_engine_init();
-	// * command runner
+	/* * command runner */
 	ukuflow_cmd_runner_init();
-	// * network manager:
+	/* * network manager: */
 	ukuflow_net_mgr_init();
-	// * event manager:
+	/* * event manager: */
 	ukuflow_event_mgr_init();
 
 }
@@ -85,8 +84,17 @@ void ukuflow_mgr_init() {
  *
  * 				TODO
  */
-void ukuflow_mgr_register(struct workflow *wf) {
-	ukuflow_engine_register(wf);
+bool ukuflow_mgr_register(uint8_t *workflow_def, data_len_t workflow_def_len) {
+	struct workflow *wf = malloc(workflow_def_len);
+
+	if (wf) {
+		// copy contents of workflow definition into memory:
+		memcpy(wf, workflow_def, workflow_def_len);
+
+		return (ukuflow_engine_register(wf));
+
+	}
+	return (FALSE);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -95,10 +103,14 @@ void ukuflow_mgr_register(struct workflow *wf) {
  *
  * 				TODO
  */
-void ukuflow_mgr_deregister(uint8_t workflow_id){
-	ukuflow_engine_deregister(workflow_id);
+bool ukuflow_mgr_deregister(uint8_t workflow_id) {
+	struct workflow *wf = ukuflow_engine_deregister(workflow_id);
+	if (wf) {
+		free(wf);
+		return (TRUE);
+	}
+	return (FALSE);
 }
 /*---------------------------------------------------------------------------*/
-
 
 /** @} */

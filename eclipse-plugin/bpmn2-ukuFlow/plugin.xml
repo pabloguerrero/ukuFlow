@@ -7,6 +7,15 @@
             defaultHandler="de.tudarmstadt.dvs.ukuflow.handler.ConvertCommand"
             id="de.tudarmstadt.dvs.ukuflow.converterBase64"
             name="convertcmd">
+         <commandParameter
+               id="de.tudarmstadt.dvs.ukuflow.convert.validateonly"
+               name="name"
+               optional="false">
+         </commandParameter>
+      </command>
+      <command
+            id="de.tudarmstadt.dvs.ukuflow.validationCommand"
+            name="validation">
       </command>
    </extension>
    <extension
@@ -25,6 +34,13 @@
                <dynamic
                      class="de.tudarmstadt.dvs.ukuflow.deployment.DeploymentDynamicMenu"
                      id="de.tudarmstadt.dvs.ukuflow.deploymentDynamic">
+               </dynamic>
+            </menu>
+            <menu
+                  label="Undeploy..">
+               <dynamic
+                     class="de.tudarmstadt.dvs.ukuflow.deployment.UndeploymentCommand"
+                     id="de.tudarmstadt.dvs.ukuflow.undeploymentdymanic">
                </dynamic>
             </menu>
             <command
@@ -56,14 +72,11 @@
                      </iterate>
                   </with>
                </visibleWhen>
+               <parameter
+                     name="de.tudarmstadt.dvs.ukuflow.convert.validateonly"
+                     value="false">
+               </parameter>
             </command>
-            <menu
-                  label="Undeploy..">
-               <dynamic
-                     class="de.tudarmstadt.dvs.ukuflow.deployment.UndeploymentCommand"
-                     id="de.tudarmstadt.dvs.ukuflow.undeploymentdymanic">
-               </dynamic>
-            </menu>
             <visibleWhen
                   checkEnabled="false">
                <and>
@@ -100,6 +113,15 @@
                   </with>
                </and>
             </visibleWhen>
+            <command
+                  commandId="de.tudarmstadt.dvs.ukuflow.converterBase64"
+                  label="&amp;Validate"
+                  style="push">
+               <parameter
+                     name="de.tudarmstadt.dvs.ukuflow.convert.validateonly"
+                     value="true">
+               </parameter>
+            </command>
          </menu>
       </menuContribution>
    </extension>
@@ -159,6 +181,33 @@
             </iterate>
          </with>
       </definition>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="de.tudarmstadt.dvs.ukuflow.preference.UkuPreferencePageHome"
+            id="de.tudarmstadt.dvs.ukuflow.preferencePageMain"
+            name="ukuFlow">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="de.tudarmstadt.dvs.ukuflow.preference.UkuPreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="de.tudarmstadt.dvs.ukuflow.editorcategory"
+            name="ukuFLow">
+      </category>
+      <wizard
+            category="de.tudarmstadt.dvs.ukuflow.editorcategory"
+            class="de.tudarmstadt.dvs.ukuflow.NewWizard1"
+            id="de.tudarmstadt.dvs.ukuflow.wizarddiagram"
+            name="ukuFLow Diagram">
+      </wizard>
    </extension>
 
 </plugin>

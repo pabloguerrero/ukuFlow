@@ -47,6 +47,12 @@
 
 #include "ukuflow-cmd-runner.h"
 
+/* logging */
+#include "logger.h"
+
+/* for memcpy */
+#include "string.h"
+
 /** for access to STRING_VALUE and REPOSITORY_VALUE */
 #include "expression-eval.h"
 
@@ -84,7 +90,7 @@ char *ukuflow_cmd_runner_generate_command(struct statement_command *st_cmd,
 
 	char *result = (char*) malloc(CMD_LEN * sizeof(char));
 	if (result == NULL)
-		return NULL;
+		return (NULL);
 
 	data_len_t st_cmd_index;
 	uint8_t param_nr;
@@ -159,7 +165,7 @@ char *ukuflow_cmd_runner_generate_command(struct statement_command *st_cmd,
 //	result[(*result_len)++] = '\n';
 //	printf("len final: %d\n", *result_len);
 
-	return result;
+	return (result);
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -170,7 +176,7 @@ char *ukuflow_cmd_runner_generate_command(struct statement_command *st_cmd,
 int ukuflow_cmd_runner_run(char *command_line, data_len_t command_line_len,
 		struct process **started_process) {
 
-	return shell_start_command(command_line, command_line_len, NULL,
-			started_process);
+	return (shell_start_command(command_line, command_line_len, NULL,
+			started_process));
 }
 /** @} */
