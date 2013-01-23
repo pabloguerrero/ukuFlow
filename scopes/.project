@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>ukuFlow - scopes</name>
+	<name>ukuFlow - Scopes</name>
 	<comment></comment>
 	<projects>
 		<project>ukuFlow - data-repository</project>
@@ -9,6 +9,7 @@
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
+			<triggers>clean,full,incremental,</triggers>
 			<arguments>
 				<dictionary>
 					<key>?name?</key>
