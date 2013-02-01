@@ -80,9 +80,10 @@ void ukuflow_mgr_init() {
 
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		TODO
+ * \brief		Registers a workflow in this node.
  *
- * 				TODO
+ * 				Registers a workflow in this node. The node makes a copy of the workflow specification in dynamic memory.
+ *
  */
 bool ukuflow_mgr_register(uint8_t *workflow_def, data_len_t workflow_def_len) {
 	struct workflow *wf = malloc(workflow_def_len);

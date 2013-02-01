@@ -82,20 +82,21 @@ char *wf_statement_names[] = {"computation statement",
 struct wf_generic_elem *workflow_get_wf_elem(struct workflow *wf,
 		wf_elem_id_t wf_elem_id) {
 
-//	printf("searched: %u\n", wf_elem_id);
+	PRINTF(5,"searched: %u\n", wf_elem_id);
+	// was the number of the element required correct?
 	if (wf_elem_id < wf->num_wf_elems) {
 		wf_elem_id_t wf_elem_nr = 0;
 		struct wf_generic_elem *wfe = (struct wf_generic_elem*) ((uint8_t*) (wf)
 				+ sizeof(struct workflow));
 
 		while ((wf_elem_nr < wf->num_wf_elems) && (wfe->id != wf_elem_id)) {
-//			printf("found %u\n", wfe->id);
+			PRINTF(5,"found %u\n", wfe->id);
 			wfe = (struct wf_generic_elem*) (((uint8_t*) wfe)
 					+ workflow_wf_elem_size(wfe));
 			wf_elem_nr++;
 		}
 
-//		printf("found %u\n", wfe->id);
+		PRINTF(5,"found %u\n", wfe->id);
 
 		/* was the element found? */
 		if (wf_elem_nr < wf->num_wf_elems)
@@ -179,7 +180,7 @@ data_len_t workflow_wf_elem_size(struct wf_generic_elem *wfe) {
 	case EXECUTE_TASK: {
 
 		size = sizeof(struct wf_ex_task);
-		//		printf("exec task, size +4? %u\n", sizeof(struct wf_ex_task));
+		PRINTF(5,"exec task, size +4? %u\n", sizeof(struct wf_ex_task));
 		struct wf_ex_task *wf_ex = (struct wf_ex_task*) wfe;
 
 		struct statement *st = (struct statement*) ((((uint8_t*) wf_ex)
@@ -190,7 +191,7 @@ data_len_t workflow_wf_elem_size(struct wf_generic_elem *wfe) {
 		for (statement_nr = 0; statement_nr < wf_ex->num_statements;
 				statement_nr++) {
 			statement_size = workflow_statement_size(st);
-			//			printf("statement size %u\n", statement_size);
+			PRINTF(5,"statement size %u\n", statement_size);
 			size += statement_size;
 			st += statement_size;
 		}
@@ -302,7 +303,7 @@ data_len_t workflow_statement_size(struct statement *st) {
 				+ sizeof(struct statement_command) + st_cmd->cmd_len;
 
 		for (param_num = 0; param_num < st_cmd->num_params; param_num++) {
-			printf("param: %d %d %d st len %d \n", st_cmd_arr[cmd_index],
+			PRINTF(5,"param: %d %d %d st len %d \n", st_cmd_arr[cmd_index],
 					st_cmd_arr[cmd_index + 1], st_cmd_arr[cmd_index + 2],
 					statement_len);
 
@@ -333,7 +334,7 @@ data_len_t workflow_statement_size(struct statement *st) {
 			} /* case */
 			} /* switch */
 		} /* for */
-		printf("for lfs|sfs %d, size: %d\n", param_num, statement_len);
+		PRINTF(5,"for lfs|sfs %d, size: %d\n", param_num, statement_len);
 	} /* else */
 
 	return (statement_len);

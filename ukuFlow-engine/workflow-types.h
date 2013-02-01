@@ -66,8 +66,34 @@ typedef uint8_t statement_type_t;
 /** \brief		Main data structure for representing a workflow in memory */
 struct __attribute__((__packed__)) workflow {
 	uint8_t workflow_id;
+
+	/** \brief Number of workflow elements in this workflow specification */
 	uint8_t num_wf_elems;
+
+	/** \brief number of scopes that are found at the end of this workflow specification */
 	uint8_t num_scopes;
+
+	/** \brief defines the minimum number of instances that the workflow manager will try to keep
+	 * 			instantiated in parallel. At runtime, however, there might be less than this number
+	 * 			(e.g., because of missing resources). The lowest value for min_instances is 1 (i.e.,
+	 * 			the user can't require there to be 0 parallel instances). The highest value for
+	 * 			min_instances can be 255. */
+	uint8_t min_wf_instances;
+
+	/** \brief defines the maximum number of instances that the workflow manager will try to keep
+	 * 			instantiated in parallel. At runtime there will never be more instances in parallel
+	 * 			than those specified here. The lowest valid value for max_instances must be greater than
+	 * 			or equal min_instances (if this doesn't hold, it will be set by the workflow manager
+	 * 			to this value). The highest value for max_instances can be 255. */
+	uint8_t max_wf_instances;
+
+	/** \brief defines the looping properties. A workflow can be registered to be executed an infinite
+	 * 			number of times (in this case the value 0 is used). Alternatively, it can be specified exactly
+	 * 			how many times the workflow should be instantiated (in this case the looping value should
+	 * 			be greater than 0, i.e., the user can't require it not to be executed, and less than or
+	 * 			equal 255).*/
+	uint8_t looping;
+
 // followed by the workflow elements themselves
 // and then followed by the scope information
 };

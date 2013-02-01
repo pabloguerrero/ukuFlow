@@ -230,6 +230,9 @@
 #define WORKFLOW_SPEC_4 4, /* workflow id */ \
 	9,  /* 9 = number of wf_elems (0..8) */ \
 	0,  /* number of scopes*/ \
+	1,  /* minimum number of instances required */ \
+	1,  /* maximum number of instances required */ \
+	0,  /* looping (loop infinitely)*/ \
 	0, START_EVENT, 1, /* first task, start event */ \
 	\
 	1, FORK_GATEWAY, 2, /* second task, fork (AND-split) w. 2 outgoing flows */ \
@@ -260,9 +263,12 @@
  * \brief		This workflow tests the fork gateway and the join gateway.
  * 				Also the correct creation and removal of a data repository
  * 				per workflow instance is stress-tested */
-#define WORKFLOW_SPEC 3, /* workflow id */ \
+#define WORKFLOW_SPEC_3 3, /* workflow id */ \
 	6,  /* 6 = number of wf_elems (0..6) */ \
 	0,  /* number of scopes*/ \
+	1,  /* minimum number of instances required */ \
+	1,  /* maximum number of instances required */ \
+	0,  /* looping (loop infinitely)*/ \
 	0, START_EVENT, 1, /* first task, start event */ \
 	\
 	1, FORK_GATEWAY, 2, /* second task, fork (AND-split) w. 2 outgoing flows */ \
@@ -287,6 +293,9 @@
 #define WORKFLOW_SPEC_2 2, /* workflow id */ \
 	5,  /* number of wf_elems*/ \
 	2,  /* number of scopes*/ \
+	1,  /* minimum number of instances required */ \
+	1,  /* maximum number of instances required */ \
+	0,  /* looping (loop infinitely)*/ \
 	0, START_EVENT, 1, /* first task, start event */ \
 	\
 	1, EXECUTE_TASK, 2, 2, /* second task, execute w. 2 computation statements */ \
@@ -307,9 +316,12 @@
 	222, 60, 0, 5, PREDICATE_GT, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3 /* scope id 222, ttl 60, length 5, spec */
 
 /* This dummy workflow tests workflow and token instantiation */
-#define WORKFLOW_SPEC_1 1, /* workflow id */ \
+#define WORKFLOW_SPEC 1, /* workflow id */ \
 	2,  /* number of wf_elems*/ \
 	0,  /* number of scopes*/ \
+	1,  /* minimum number of instances required */ \
+	1,  /* maximum number of instances required */ \
+	50,  /* looping (loop infinitely)*/ \
 	0, START_EVENT, 1, /* first task, start event */ \
 	1, END_EVENT
 // ----
@@ -338,13 +350,13 @@ PROCESS_THREAD( tester_process, ev, data) {
 
 		if (node_id == ROOT_NODE_ID) {
 
-			PRINTF(1, "(UF-TESTER) About to register a workflow\n");
+			PRINTF(1, "(UF-TESTER) About to register a workflow: ");
 			PRINT_ARR(1, wf_spec, sizeof(wf_spec));
 
 			ukuflow_mgr_register(wf_spec, sizeof(wf_spec));
 
 			/* wait a while*/
-			static clock_time_t ww = CLOCK_SECOND * 600L;
+			static clock_time_t ww = 393;//CLOCK_SECOND * 3L;
 			etimer_set(&control_timer, ww);
 			PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&control_timer));
 			PRINTF(1, "(UF-TESTER) After %lu second timer\n", ww);

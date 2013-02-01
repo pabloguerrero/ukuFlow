@@ -53,12 +53,33 @@
 
 
 /*---------------------------------------------------------------------------*/
-/** \brief		TODO */
+/** \brief		Enumeration of workflow_node states */
+enum wf_node_state_type {
+	WFN_SPAWN /*								 0 */,
+	WFN_RUNNING/*								 1 */,
+	WFN_BLOCKED /*								 2 */,
+};
+/** \brief Type definition for workflow_node state type
+ * \warning there is an enum with name wf_elem_type too */
+typedef uint8_t wf_node_state_type_t;
+
+/** \brief		Structure to manage the execution of a workflow */
 struct workflow_node {
-	/** \brief TODO */
+	/** \brief Pointer to next element whenever this workflow node is inserted in a list */
 	struct workflow_node *next;
-	/** \brief TODO */
+
+	/** \brief Pointer to workflow specification */
 	struct workflow *wf;
+
+	/** \brief Keeps track of the number of currently running instances, associated to this workflow node */
+	uint8_t num_parallel_wf_instances;
+
+	/** \brief Keeps track of the state the workflow node is (i.e., in which queue/list it currently is located) */
+	wf_node_state_type_t state;
+
+	/** \brief Keeps track of the number of times that this workflow needs to get instantiated */
+	uint8_t num_loops_left;
+
 };
 /*---------------------------------------------------------------------------*/
 /** \brief		TODO */
@@ -70,12 +91,9 @@ struct workflow_instance {
 	struct workflow_node *wfn;
 
 	/** \brief TODO */
-	uint8_t instance_id;
-
-	/** \brief TODO */
 	data_repository_id_t repository_id;
 
-	/** \brief TODO */
+	/** \brief Keeps track of the number of tokens associated to this instance */
 	uint8_t num_tokens;
 };
 /*---------------------------------------------------------------------------*/

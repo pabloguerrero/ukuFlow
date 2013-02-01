@@ -52,7 +52,7 @@
 
 #include "contiki.h"
 #include "net/rime.h"
-#include "shell.h"
+#include "../apps/shell/shell.h"
 
 #include "ukuflow-engine.h"
 #include "ukuflow-event-mgr.h"
@@ -70,8 +70,11 @@
 /** \brief Maximum amount of workflows that can be registered at this node */
 #define MAX_REGISTERED_WORKFLOWS 5
 
-/** \brief Maximum amount of workflows that can be instantiated at this node */
-#define MAX_INSTANTIATED_WORKFLOWS 10
+/** \brief Maximum amount of workflow instances that can be handled at this node */
+#define MAX_WORKFLOW_INSTANCES 10
+
+/** \brief Maximum amount of workflow instances per workflow */
+#define MAX_INSTANCES_PER_WORKFLOW MAX_WORKFLOW_INSTANCES/MAX_REGISTERED_WORKFLOWS*2
 
 /** \brief Maximum amount of tokens that can be instantiated at this node */
 #define MAX_ACTIVE_TOKENS 20
@@ -83,7 +86,7 @@
 /**---------------------------------------------------------------------------*/
 /** Declaration of static processes */
 
-/** \brief Protothread for the long term scheduler*/
+/** \brief Protothread for the long term scheduler */
 PROCESS(ukuflow_long_term_scheduler_process, "long term scheduler");
 
 /** \brief Protothread for the short term scheduler*/
@@ -172,26 +175,31 @@ static process_event_t token_blocked_sfs_event;
 /**---------------------------------------------------------------------------*/
 /** Workflow management data structures: */
 
-/** \brief		List of workflows which are waiting to be spawned */
-LIST( wf_spawn_queue);
+/** \brief		List (used as queue) of workflow_nodes that have at least
+ * 				one instance that must be created */
+LIST( wf_n_spawn_queue);
 
-/** \brief		List of workflows that are currently running */
-LIST( wf_running_queue);
+/** \brief		List of workflow_nodes that are currently running and do
+ * 				not need any more parallel instances to be created */
+LIST( wf_n_running_list);
 
-/** \brief		Static memory block for storing pointers to workflow specifications */
+/** \brief		List (used as queue) of workflow_nodes that have at least
+ * 				one instance that must be created, but can't be
+ * 				instantiated because there are no resources available or
+ * 				the workflow has reached the maximum limit of instances per workflow */
+LIST( wf_n_blocked_queue);
+
+/** \brief		Static memory block workflow nodes (store pointers to workflow specifications) */
 MEMB(workflow_ptr_memb, struct workflow_node, MAX_REGISTERED_WORKFLOWS);
 
 /*---------------------------------------------------------------------------*/
-/* Workflow instance management structures */
-
-/** \brief		List of workflow instances */
-LIST( wf_instance_list);
+/** Workflow instance management data structures */
 
 /** \brief		Static memory block for storing pointers to workflow instances */
-MEMB(instance_memb, struct workflow_instance, MAX_INSTANTIATED_WORKFLOWS);
+MEMB(instance_memb, struct workflow_instance, MAX_WORKFLOW_INSTANCES);
 
 /*---------------------------------------------------------------------------*/
-/* Token management structures */
+/** Token management data structures */
 
 /** \brief		List of tokens waiting to be executed */
 LIST( ready_token_queue);
@@ -204,48 +212,20 @@ MEMB(token_memb, struct workflow_token, MAX_ACTIVE_TOKENS);
 
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		Searches for and returns the smallest free id that can be used
- * 				for a workflow instance.
- *
- * 				Tries to obtain an instance id that is not in use. If one is
- * 				found, its value is returned. Otherwise the value 0 is returned
- *
- * \return		a free instance id, or 0 if no one is found
- */
-static uint8_t find_free_instance_id() {
-
-	uint8_t instance_id;
-	bool occupied;
-	for (instance_id = 1; instance_id < 0xFF; instance_id++) {
-		struct workflow_instance *wfi;
-		occupied = FALSE;
-		for (wfi = list_head(wf_instance_list); (!occupied) && (wfi != NULL);
-				wfi = wfi->next)
-			if (wfi->instance_id == instance_id) {
-				occupied = TRUE;
-				break;
-			}
-		if (!occupied) {
-			return (instance_id);
-		}
-	}
-
-	return (0);
-}
-
-/*---------------------------------------------------------------------------*/
-/**
  * \brief		Given a workflow id, looks up the workflow node (container node) in
  * 				either the list of wfs. to be spawned, or the running wfs.
  *
  * 				TODO
  */
-static struct workflow_node *lookup_workflow_id(uint8_t workflow_id) {
+static struct workflow_node *lookup_workflow_node(uint8_t workflow_id) {
 	struct workflow_node *node;
-	for (node = list_head(wf_spawn_queue); node != NULL; node = node->next)
+	for (node = list_head(wf_n_spawn_queue); node != NULL; node = node->next)
 		if (node->wf->workflow_id == workflow_id)
 			return (node);
-	for (node = list_head(wf_running_queue); node != NULL; node = node->next)
+	for (node = list_head(wf_n_running_list); node != NULL; node = node->next)
+		if (node->wf->workflow_id == workflow_id)
+			return (node);
+	for (node = list_head(wf_n_blocked_queue); node != NULL; node = node->next)
 		if (node->wf->workflow_id == workflow_id)
 			return (node);
 	return (NULL);
@@ -253,7 +233,7 @@ static struct workflow_node *lookup_workflow_id(uint8_t workflow_id) {
 
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		TODO
+ * \brief		Allocates a token from the MEMB structure
  *
  * 				TODO
  */
@@ -269,7 +249,7 @@ static struct workflow_token *alloc_token(struct workflow_instance *wfi) {
 
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		TODO
+ * \brief		Initializes this workflow engine
  *
  * 				TODO
  */
@@ -278,8 +258,10 @@ void ukuflow_engine_init() {
 	PRINTF(3, "(UKUFLOW-ENGINE) Initializing ukuflow's workflow engine\n");
 
 	/** Initialize instance management lists */
-	list_init(wf_spawn_queue);
-	list_init(wf_running_queue);
+//	list_init(wf_instance_list);
+	list_init(wf_n_blocked_queue);
+	list_init(wf_n_spawn_queue);
+	list_init(wf_n_running_list);
 	memb_init(&workflow_ptr_memb);
 
 	/** Initialized token management lists */
@@ -305,32 +287,58 @@ void ukuflow_engine_init() {
 
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		TODO
+ * \brief		Registers a workflow at this node
  *
  * 				TODO
  */
 bool ukuflow_engine_register(struct workflow *wf) {
 	/** check if there is already a workflow with the specified id */
-	if (!lookup_workflow_id(wf->workflow_id)) {
-		struct workflow_node *wfn = (struct workflow_node*) memb_alloc(
-				&workflow_ptr_memb);
-		if (wfn != NULL) {
-			wfn->wf = wf;
-			list_add(wf_spawn_queue, wfn);
-			process_post(&ukuflow_long_term_scheduler_process,
-					workflow_ready_event, wfn);
+	if (lookup_workflow_node(wf->workflow_id)) {
+		PRINTF(3,
+				"(UKUFLOW-ENGINE) A workflow with the specified id %u already exists!\n", wf->workflow_id);
+		return (FALSE);
+	}
 
-			return (TRUE);
-		} else PRINTF(3,
+	struct workflow_node *wfn = (struct workflow_node*) memb_alloc(
+			&workflow_ptr_memb);
+	if (wfn == NULL) {
+		PRINTF(3,
 				"(UKUFLOW-ENGINE) There is no space left for registering a new workflow!");
-	} else PRINTF(3,
-			"(UKUFLOW-ENGINE) A workflow with the specified id %u already exists!\n", wf->workflow_id);
-	return (FALSE);
+		return (FALSE);
+	}
+
+	// all seems to be good...
+	// set the pointer to the workflow specification
+	wfn->wf = wf;
+	// initialize the number of parallel instances to 0
+	wfn->num_parallel_wf_instances = 0;
+	if (wf->looping != 0)
+		// this workflow is gonna be instantiated a fixed number of times --> copy that value to record
+		wfn->num_loops_left = wf->looping;
+	else
+		// this workflow is gonna be instantiated an infinite number of times --> simply put a zero there
+		wfn->num_loops_left = 0;
+
+	// Apply 2 workflow correction steps:
+	// 1: in case min_wf_instances is 0 (invalid), change it to 1.
+	if (wf->min_wf_instances == 0)
+		wf->min_wf_instances = 1;
+	// 2: in case max_wf_instances is wrong (less than min_wf_instances), set it to min_wf_instances
+	if (wf->max_wf_instances < wf->min_wf_instances)
+		wf->max_wf_instances = wf->min_wf_instances;
+
+	/** put workflow_node into the spawn queue */
+	wfn->state = WFN_SPAWN;
+	list_add(wf_n_spawn_queue, wfn);
+	process_post(&ukuflow_long_term_scheduler_process, workflow_ready_event,
+			wfn);
+
+	return (TRUE);
 }
 
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		TODO
+ * \brief		De-registers a workflow with a specified id from this node.
  *
  * 				TODO
  */
@@ -339,17 +347,55 @@ struct workflow *ukuflow_engine_deregister(uint8_t workflow_id) {
 	struct workflow_node *wfn;
 	struct workflow *deregistered_workflow;
 
-	/* check if there is a workflow with the specified id */
-	if ((wfn = lookup_workflow_id(workflow_id))) {
-		// there was one, so we now have to stop all running instances and tokens associated to it
+	/** Check if there is a workflow with the specified id */
+	if ((wfn = lookup_workflow_node(workflow_id)) == NULL) {
+		/** Workflow not found, abort */
+		PRINTF(1,
+				"(UKUFLOW-ENGINE) A workflow with the specified id %u doesn't exist!\n", workflow_id);
+		return (NULL);
+	}
 
-		deregistered_workflow = wfn->wf;
-		/** TODO: remove workflow */
+	/** There was one, so we now have to stop all running instances and tokens associated to it
+	 * Approach: the currently running instances can't be killed right away, they will
+	 * gracefully allowed to conclude, but we'll set immediately the number of loops left to 0,
+	 * simulating an end. */
 
-		return (deregistered_workflow);
-	} else PRINTF(1,
-			"(UKUFLOW-ENGINE) A workflow with the specified id %u doesn't exists!\n", workflow_id);
-	return (NULL);
+	deregistered_workflow = wfn->wf;
+
+	PRINTF(1,
+			"(UKUFLOW-ENGINE) Deregistering workflow with id %d (blocked: %d, running: %d, spawn: %d)!\n", workflow_id, list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+
+	/** Workflow needs to be deregistered. We have to consider the different states it can be in:
+	 *  * WFN_SPAWN: The workflow might have some instances running and it wants some more.
+	 *
+	 *  * WFN_BLOCKED:
+	 *
+	 *  * WFN_RUNNING:
+	 *
+	 **/
+	switch (wfn->state) {
+	case WFN_SPAWN: {
+		list_remove(wf_n_spawn_queue, wfn);
+		break;
+	}
+	case WFN_BLOCKED: {
+		list_remove(wf_n_blocked_queue, wfn);
+		break;
+	}
+	case WFN_RUNNING: {
+		list_remove(wf_n_running_list, wfn);
+		break;
+	}
+	}
+	// force stopping creating instances
+	wfn->wf->looping = 1;
+	wfn->num_loops_left = 0;
+
+	PRINTF(1,
+			"(UKUFLOW-ENGINE) Deregistration requested workflow stop (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+
+	return (deregistered_workflow);
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -364,13 +410,12 @@ struct workflow *ukuflow_engine_deregister(uint8_t workflow_id) {
  */
 static void processor_start_event(struct workflow_token *token,
 		struct wf_generic_elem *wfe) {
-	struct wf_start_event *wfs = (struct wf_start_event*) wfe;
-	PRINTF(3,
-			"(UKUFLOW-ENGINE) Start event, current wf_elem_id is %u, next is %u\n",
+	struct wf_start_event *wfe_se = (struct wf_start_event*) wfe;
+	PRINTF(1,
+			"(UKUFLOW-ENGINE) Start event, current wf_elem_id is %u, next is %u\n", token->current_wf_elem_id, wfe_se->next_id);
 
-			token->current_wf_elem_id, wfs->next_id);
 	token->prev_wf_elem_id = token->current_wf_elem_id;
-	token->current_wf_elem_id = wfs->next_id;
+	token->current_wf_elem_id = wfe_se->next_id;
 
 	/** Return token to ready queue */
 	list_add(ready_token_queue, token);
@@ -387,18 +432,17 @@ static void processor_start_event(struct workflow_token *token,
  */
 static void processor_end_event(struct workflow_token *token,
 		struct wf_generic_elem *wfe) {
-	PRINTF(1, "(UKUFLOW-ENGINE) End event, current wf_elem_id is %u\n",
-
-	token->current_wf_elem_id);
+	PRINTF(1,
+			"(UKUFLOW-ENGINE) End event, current wf_elem_id is %u\n", token->current_wf_elem_id);
 
 	/** Remove token from the workflow_instance's struct: */
 	struct workflow_instance *wfi = token->wf_instance;
-	wfi->num_tokens--;
 
 	/** Release memory for token: */
 	memb_free(&token_memb, token);
+	wfi->num_tokens--;
 
-	/** Announce that a token was released: */
+	/** Announce that a token was released, in case the long term scheduler was waiting for it: */
 	process_post(&ukuflow_long_term_scheduler_process, token_released_event,
 			NULL);
 
@@ -406,19 +450,44 @@ static void processor_end_event(struct workflow_token *token,
 	 * If it does not, remove the instance and put the workflow_node into the wf_spawn_queue */
 	if (wfi->num_tokens == 0) {
 
-		/** This was the last token belonging to this workflow instance! */
+		PRINTF(5,
+				"(UKUFLOW-ENGINE) End event, wf instance has no more tokens\n");
+
+		/** This was the last token belonging to this workflow instance */
 		struct workflow_node *wfn = wfi->wfn;
 
-		/** Move workflow node (which includes workflow specification) from running to spawn */
-		list_remove(wf_running_queue, wfn);
-		list_add(wf_spawn_queue, wfn);
+		/** Move workflow node from whatever list/queue it was, back to the spawn queue*/
+		switch (wfn->state) {
+		case WFN_RUNNING: {
+			list_remove(wf_n_running_list, wfn);
+			break;
+		}
+		case WFN_BLOCKED: {
+			list_remove(wf_n_blocked_queue, wfn);
+			break;
+		}
+		}
+
+		/** If there is one element in the blocked queue, append it to the spawn queue */
+		struct workflow_node *wfn_2;
+		if ((wfn_2 = list_pop(wf_n_blocked_queue)) != NULL) {
+			wfn_2->state = WFN_SPAWN;
+			list_add(wf_n_spawn_queue, wfn_2);
+			PRINTF(1, "popping another\n");
+		}
+
+		wfn->state = WFN_SPAWN;
+		list_add(wf_n_spawn_queue, wfn);
 
 		/** Remove data repository: */
 		data_mgr_remove(wfi->repository_id);
 
 		/** Remove workflow_instance */
-		/** 1: Release memory */
+		/** 1: Release memory and decrease number of parallel instances for the associated workflow node */
 		memb_free(&instance_memb, wfi);
+		wfn->num_parallel_wf_instances--;
+		PRINTF(1,
+				"(UKUFLOW-ENGINE) End Event, wfns (blocked: %d, running: %d, spawn: %d), loops left: %d\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue), wfn->num_loops_left);
 
 		/** 2: Announce that a workflow_instance was released: */
 		process_post(&ukuflow_long_term_scheduler_process,
@@ -569,7 +638,7 @@ static void processor_execute_task(struct workflow_token *token,
 			list_add(blocked_token_queue, token);
 
 			PRINTF(3,
-					"(UKUFLOW-ENGINE) Starting to execute an SFS, thus blocked token, (ready: %u/blocked: %u)\n", list_length(ready_token_queue), list_length(blocked_token_queue));
+					"(UKUFLOW-ENGINE) Starting to execute an SFS, thus blocked token, (tokens ready: %u/blocked: %u)\n", list_length(ready_token_queue), list_length(blocked_token_queue));
 
 			/** Post event indicating that a scoped function statement needs to be ran */
 			process_post(&ukuflow_scoped_function_statement_process,
@@ -617,8 +686,8 @@ static void processor_subscribe_task(struct workflow_token *token,
 		struct wf_generic_elem *wfe) {
 	/** \todo subscribe to event according to specs and do a wait until the event is received*/
 	struct wf_subscribe_task *wf2 = (struct wf_subscribe_task*) wfe;
-	//		printf("Subscribe task, current wf_elem_id is %u, next is %u\n",
-	//				token->current_wf_elem_id, wf2->next_id);
+//		printf("Subscribe task, current wf_elem_id is %u, next is %u\n",
+//				token->current_wf_elem_id, wf2->next_id);
 	token->prev_wf_elem_id = token->current_wf_elem_id;
 	token->current_wf_elem_id = wf2->next_id;
 
@@ -639,8 +708,8 @@ static void processor_subworkflow_task(struct workflow_token *token,
 		struct wf_generic_elem *wfe) {
 	/** TODO */
 	struct wf_subwf_task *wf2 = (struct wf_subwf_task*) wfe;
-	//		printf("Subworkflow, current wf_elem_id is %u, next is %u\n",
-	//				token->current_wf_elem_id, wf2->next_id);
+//		printf("Subworkflow, current wf_elem_id is %u, next is %u\n",
+//				token->current_wf_elem_id, wf2->next_id);
 	token->prev_wf_elem_id = token->current_wf_elem_id;
 	token->current_wf_elem_id = wf2->next_id;
 
@@ -1017,7 +1086,7 @@ static void processor_event_based_exclusive_decision_gateway(
 			(struct event_operator_flow *) ((uint8_t*) ebg
 					+ sizeof(struct wf_eb_x_dec_gw));
 
-	//printf("--\n");
+//printf("--\n");
 	/** Now each of the main event operators of the outgoing flows need to be subscribed.
 	 * Iterate through them and invoke ukuflow_event_mgr_subscribe() */
 	uint8_t current_flow_nr = 0;
@@ -1052,7 +1121,7 @@ static void processor_event_based_exclusive_decision_gateway(
 		list_add(ready_token_queue, token);
 
 	PRINTF(3,
-			"(UKUFLOW-ENGINE) Finished requesting subscription, (ready: %u/blocked: %u), all ok: %u\n", list_length(ready_token_queue), list_length(blocked_token_queue), all_ok);
+			"(UKUFLOW-ENGINE) Finished requesting subscription, (tokens ready: %u/blocked: %u), all ok: %u\n", list_length(ready_token_queue), list_length(blocked_token_queue), all_ok);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -1219,8 +1288,8 @@ void ukuflow_notify_unsubscription_ready(struct workflow_token *token) {
  *
  *				Goal of the long term scheduler is to determine for which of the
  *				registered workflows an instance is created, and depending on the
- *				type of start event, whether the workflow is 'spawned' and moved
- *				to the 'running' workflow queue, or it remains in the 'wf_spawn_queue'
+ *				type of looping properties, whether the workflow is instantiated and moved
+ *				to the 'running' workflow queue, or it remains in the 'wf_n_spawn_queue'
  *
  */
 //
@@ -1236,68 +1305,145 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 
 		while (1) {
 
-			if (list_length(wf_spawn_queue) == 0) {
+			if (list_length(wf_n_spawn_queue) == 0) {
 				/** block until a process posts the 'new workflow' event  (e.g. after registration) */
 				PRINTF(1,
-						"(UKUFLOW-ENGINE) lts, yielding till a workflow becomes ready\n");
+						"(UKUFLOW-ENGINE) lts, yielding till a wf_n arrives at spawn queue\n");
 				PROCESS_YIELD_UNTIL(ev == workflow_ready_event);
-				PRINTF(1, "(UKUFLOW-ENGINE) lts, a workflow became ready!\n");
+				PRINTF(1,
+						"(UKUFLOW-ENGINE) lts, a wf_n arrived at spawn queue\n");
 			}
 
-			/** Now iterate through the queue of workflow_nodes to be spawned and
-			 * check if an instance can be created for each. */
-			for (wfn = list_head(wf_spawn_queue); wfn != NULL; wfn =
-					wfn->next) {
+			/** get first ready workflow_node from the queue */
+			wfn = (struct workflow_node*) list_head(wf_n_spawn_queue);
 
-				/** get first wf_elem from the workflow, which should be a start event: */
-				wfe = workflow_get_wf_elem(wfn->wf, 0);
+			/** and remove it from the queue (we will see into which queue we put it later)*/
+			list_remove(wf_n_spawn_queue, wfn);
 
-				if (wfe->elem_type == START_EVENT) {
-					/** An instance must be created for this workflow.
-					 * Try to allocate one, or block until a running instance is terminated: */
-					wfi = NULL;
-					do {
-						if ((wfi = memb_alloc(&instance_memb)) == NULL)
-							PROCESS_WAIT_EVENT_UNTIL(
-									ev == instance_terminated_event);
-					} while (wfi == NULL);
+			/** Check if this workflow needs to be instantiated: */
+			if ((wfn->wf->looping != 0) && (wfn->num_loops_left == 0)) {
+				/** workflow doesn't need to be instantiated anymore,
+				 * since its looping property was not 'infinite' (i.e. 0),
+				 * or it has already been instantiated the
+				 * required amount of times. */
 
-					if (wfi != NULL) {
-						wfi->wfn = wfn;
-						wfi->instance_id = find_free_instance_id();
-						wfi->repository_id = data_mgr_create(CLOCK_SECOND * 10);
-						wfi->num_tokens = 0;
+				/** In this case, we check whether it has instances running
+				 * and if so we put it in the running queue */
+				if (wfn->num_parallel_wf_instances == 0) {
+					/** it has no instances running, so release resources */
 
-						/** Move workflow_node from spawn to running (this part is specific to a particular start event, others could leave the workflow_node in the spawn_queue) */
-						list_remove(wf_spawn_queue, wfn);
-						list_add(wf_running_queue, wfn);
+					memb_free(&workflow_ptr_memb, wfn);
 
-						/** Allocate a token and put it into the ready queue: */
+					PRINTF(1,
+							"(UKUFLOW-ENGINE) lts, wfn terminated (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+				} else {
+					/** it has instances running, so move the wfn
+					 * to the list of running workflow nodes */
+					list_add(wf_n_running_list, wfn);
+					wfn->state = WFN_RUNNING;
+					PRINTF(1,
+							"(UKUFLOW-ENGINE) lts, wfn to running (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+				}
+				continue;
+			}
 
-						do {
-							if ((token = alloc_token(wfi)) == NULL)
-								PROCESS_WAIT_EVENT_UNTIL(
-										ev == token_released_event);
-						} while (token == NULL);
+			/** This workflow needs to be instantiated, so lets now see if it can be
+			 * instantiated. We compare the actual number of parallel instances associated
+			 * with this workflow against the min/max number of instances desired: */
+			if ((wfn->num_parallel_wf_instances == wfn->wf->max_wf_instances)
+					|| (wfn->num_parallel_wf_instances
+							== MAX_INSTANCES_PER_WORKFLOW)) {
+				/** either this workflow has reached the maximum amount of instances
+				 * specified by the user, or it has reached the global maximum amount
+				 * of workflow instances per workflow.
+				 * In this case, we move the workflow_node to the blocked list */
+				list_add(wf_n_blocked_queue, wfn);
+				wfn->state = WFN_BLOCKED;
+				continue;
+			}
 
-						wfi->num_tokens = 1;
-						token->current_wf_elem_id = wfe->id;
-						list_add(ready_token_queue, token);
+			/** First wf_elem from the workflow should be a start event (!) */
 
-						/** Announce short-term-scheduler that a token became ready */
-						process_post(&ukuflow_short_term_scheduler_process,
-								token_ready_event, token);
+			/** An instance must be created for this workflow.
+			 *  Try to allocate one, or block until a running instance is terminated: */
+			wfi = NULL;
+			do {
+				if ((wfi = memb_alloc(&instance_memb)) == NULL)
+					PROCESS_WAIT_EVENT_UNTIL( ev == instance_terminated_event);
+			} while (wfi == NULL);
 
-						PRINTF(1,
-								"(UKUFLOW-ENGINE) lts, done my job, (ready: %u/blocked: %u)\n", list_length(ready_token_queue), list_length(blocked_token_queue));
-					}
+			wfi->wfn = wfn;
+			wfi->repository_id = data_mgr_create(CLOCK_SECOND * 10);
+			wfi->num_tokens = 0;
 
-				} // if it's START EVENT
+			/** Increase number of parallel instances of this workflow */
+			wfn->num_parallel_wf_instances++;
+			/** if appropriate, decrease the number of times that this workflow needs to be instantiated */
+			if (wfn->wf->looping != 0)
+				wfn->num_loops_left--;
 
-			} // for each workflow
+			/** Now decide where to put the workflow node.
+			 *  1) If it needs to be instantiated and it can be instantiated, we put it back into the spawn queue
+			 *  2) If it needs to be instantiated but it can not, we put it into the blocked queue
+			 *  3) If it doesn't need any more parallel instances, we put it into the running queue */
+
+			/**  Check if this workflow needs to be instantiated: */
+
+			if ((wfn->wf->looping == 0) || (wfn->num_loops_left > 0)) {
+
+				/** workflow node needs to be instantiated. Can it? */
+
+				if (wfn->num_parallel_wf_instances
+						== wfn->wf->max_wf_instances) {
+					// it doesn't need any more parallel instances, send workflow node to running
+					wfn->state = WFN_RUNNING;
+					list_add(wf_n_running_list, wfn);
+					PRINTF(1,
+							"(UKUFLOW-ENGINE) lts, wfn to running (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+
+				} else if (wfn->num_parallel_wf_instances
+						< MAX_INSTANCES_PER_WORKFLOW) {
+					// yes it can, so send workflow node to spawn
+					wfn->state = WFN_SPAWN;
+					list_add(wf_n_spawn_queue, wfn);
+					PRINTF(1,
+							"(UKUFLOW-ENGINE) lts, wfn to spawn (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+				} else {
+					// no it can not, so send workflow node to blocked
+					wfn->state = WFN_BLOCKED;
+					list_add(wf_n_blocked_queue, wfn);
+					PRINTF(1,
+							"(UKUFLOW-ENGINE) lts, wfn to blocked (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+				}
+			} else {
+				// it doesn't need any more parallel instances, send workflow node to running
+				wfn->state = WFN_RUNNING;
+				list_add(wf_n_running_list, wfn);
+				PRINTF(1,
+						"(UKUFLOW-ENGINE) lts, wfn to running (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+			}
+
+			/** Allocate a token and put it into the ready queue: */
+
+			do {
+				if ((token = alloc_token(wfi)) == NULL)
+					PROCESS_WAIT_EVENT_UNTIL( ev == token_released_event);
+			} while (token == NULL);
+
+			wfi->num_tokens = 1;
+			token->current_wf_elem_id = 0;
+			list_add(ready_token_queue, token);
+
+			/** Announce short-term-scheduler that a token became ready */
+			process_post(&ukuflow_short_term_scheduler_process,
+					token_ready_event, token);
+
+			PRINTF(1,
+					"(UKUFLOW-ENGINE) lts, dispatched wf_n, (tokens ready: %u/blocked: %u)\n", list_length(ready_token_queue), list_length(blocked_token_queue));
 
 		} // while (1)
-	PROCESS_END();
+	PROCESS_END()
+;
 }
 
 /*---------------------------------------------------------------------------*/
@@ -1325,34 +1471,20 @@ PROCESS_BEGIN()
 		}
 
 		PRINTF(1,
-				"(UKUFLOW-ENGINE) sts, finished yielding, (ready: %u/blocked: %u)\n", list_length(ready_token_queue), list_length(blocked_token_queue));
+				"(UKUFLOW-ENGINE) sts, finished yielding, (tokens ready: %u/blocked: %u)\n", list_length(ready_token_queue), list_length(blocked_token_queue));
 
 		/** get the token: */
 		wfe = workflow_get_wf_elem(token->wf_instance->wfn->wf,
 				token->current_wf_elem_id);
 
 		PRINTF(1,
-				"(UKUFLOW-ENGINE) sts, token number is %u, wfe number is %u, type is %u\n", token->current_wf_elem_id, wfe->id, wfe->elem_type);
+				"(UKUFLOW-ENGINE) sts, token wf elem number is %u, wfe number is %u, type is %u\n", token->current_wf_elem_id, wfe->id, wfe->elem_type);
 
 		/** Remove token from ready queue: */
 		list_remove(ready_token_queue, token);
 
-//		if (wfe->elem_type == END_EVENT) {
-//			static struct etimer delay_timer;
-//			static clock_time_t ww = CLOCK_SECOND*310;
-//			etimer_set(&delay_timer, ww);
-//			printf("waiting %ul \n", ww);
-//			PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&delay_timer));
-//			printf("waited %p\n", token_processors[wfe->elem_type]);
-//		}
-
 		/** Invoke the actual token processor function: */
-
-//		printf("fn. ptr %p ,[0]:%p, [1]:%p\n", token_processors[wfe->elem_type], token_processors[0], token_processors[1]);
 		token_processors[wfe->elem_type](token, wfe);
-//		if (wfe->elem_type == END_EVENT) {
-//			printf("processed end\n");
-//		}
 
 	} /** while (1) */
 PROCESS_END();
@@ -1512,16 +1644,16 @@ PROCESS_YIELD_UNTIL( //(ev == PROCESS_EVENT_EXIT) || //
 struct workflow_token *unblock_token = NULL;
 
 if (ev == PROCESS_EVENT_EXITED) {
-	//			printf(
-	//					"notified about a process_event_exited, data is %p, number of tokens blocked: %u\n",
-	//					data, list_length(blocked_token_queue));
+//			printf(
+//					"notified about a process_event_exited, data is %p, number of tokens blocked: %u\n",
+//					data, list_length(blocked_token_queue));
 
 	/** now search for a process in the blocked queue such that it is of type wf_ex_task and has the associated ex_task_token_state */
 	struct workflow_token *token = list_head(blocked_token_queue);
 
 	while ((token != NULL) && (unblock_token == NULL)) {
-		//				printf("comparing blocked token %p, state is %p, type is %u, child %p, data %p\n", token, token->token_state, workflow_get_wf_elem(token->wf_instance->wfn->wf,
-		//						token->current_wf_elem_id)->elem_type, ((struct ex_task_token_state*) token->token_state)->child_command_process, data);
+//				printf("comparing blocked token %p, state is %p, type is %u, child %p, data %p\n", token, token->token_state, workflow_get_wf_elem(token->wf_instance->wfn->wf,
+//						token->current_wf_elem_id)->elem_type, ((struct ex_task_token_state*) token->token_state)->child_command_process, data);
 		if ((token->token_state != NULL)
 				&& //
 				(workflow_get_wf_elem(token->wf_instance->wfn->wf,
@@ -1537,7 +1669,7 @@ if (ev == PROCESS_EVENT_EXITED) {
 }
 
 if (unblock_token != NULL) {
-	// found token!
+// found token!
 	PRINTF(1,
 			"(UKUFLOW-ENGINE) termination process, blocked token finished its task, putting back to ready token queue\n");
 
