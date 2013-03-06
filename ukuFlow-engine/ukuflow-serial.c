@@ -51,7 +51,7 @@
 #include "logger.h"
 #include "stdlib.h"
 
-// for strlen
+// for strlen and memcpy
 #include "string.h"
 
 /** \brief		to have access to the serial line */
@@ -82,6 +82,16 @@ PROCESS_THREAD( ukuflow_serial_process, ev, data) {
 		static uint8_t cmd_nr = 0;
 		static uint16_t data_len = 0;
 
+		/** Structure of serial commands:
+		 * [ x, y, ...], where:
+		 *   x is a command:
+		 *     0 == WF_REGISTER, for registration of a workflow
+		 *     1 == WF_DEREGISTER, for the deregistration
+		 *
+		 *   If the command is a registration, it must be followed by a byte with the length of the workflow specification
+		 *   If the command is a deregistration, it must be followed by a byte with the id of the workflow to be deregistered
+		 */
+
 		while (1) {
 
 			PRINTF(1, "(SERIAL) Input [%d]:\n", cmd_nr++);
@@ -101,10 +111,13 @@ PROCESS_THREAD( ukuflow_serial_process, ev, data) {
 			data_len_t decoded_len = base64_decode((char*) data, decoded_data,
 					MAX_DECODED_DATA);
 
-			s_input = malloc(decoded_len);
-			memcpy(s_input, decoded_data, decoded_len);
+			s_input = decoded_data;
+			if (s_input == NULL) {
+				PRINTF(1, "(SERIAL) --------- No more memory!\n");
+				continue;
+			}
 
-			PRINTF(1, "s_input: ");
+			PRINTF(1, "s_input (len: %d): ", decoded_len);
 			{
 				PRINT_ARR(1, s_input, decoded_len);
 			}
@@ -112,7 +125,6 @@ PROCESS_THREAD( ukuflow_serial_process, ev, data) {
 			if (s_input[0] == WF_REGISTER) {
 				PRINTF(1,
 						"(SERIAL) Registering wf (id: %d, length %d)...\n", s_input[1], s_input[2]);
-				// copy contents of workflow definition into memory:
 				if (ukuflow_mgr_register(s_input + 2, s_input[1])) {
 					PRINTF(1, "(SERIAL) Registration successful!\n");
 				} else
