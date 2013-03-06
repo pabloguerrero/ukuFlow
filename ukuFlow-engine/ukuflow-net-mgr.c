@@ -77,7 +77,7 @@
  */
 static void add_scope(scope_id_t scope_id) {
 	PRINTF(1,
-			"[%u.%u:%10lu] %s::%s() : added scope: %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope_id);
+			"(UF-NET-MGR) scope %d added\n", scope_id);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -88,7 +88,7 @@ static void add_scope(scope_id_t scope_id) {
  */
 static void remove_scope(scope_id_t scope_id) {
 	PRINTF(1,
-			"[%u.%u:%10lu] %s::%s() : removed scope: %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope_id);
+			"(UF-NET-MGR) scope %d removed\n", scope_id);
 
 }
 
@@ -100,7 +100,7 @@ static void remove_scope(scope_id_t scope_id) {
  */
 static void join_scope(scope_id_t scope_id) {
 	PRINTF(1,
-			"[%u.%u:%10lu] %s::%s() : joined scope: %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope_id);
+			"(UF-NET-MGR) joined scope: %u\n", scope_id);
 
 //#if DEBUG_DEPTH > 0
 	if (scope_id == 11)
@@ -120,7 +120,7 @@ static void join_scope(scope_id_t scope_id) {
  */
 static void leave_scope(scope_id_t scope_id) {
 	PRINTF(1,
-			"[%u.%u:%10lu] %s::%s() : left scope: %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope_id);
+			"(UF-NET-MGR) left scope %u\n", scope_id);
 
 //#if DEBUG_DEPTH > 0
 	if (scope_id == 11)
@@ -148,7 +148,7 @@ static void leave_scope(scope_id_t scope_id) {
 void ukuflow_net_mgr_handler(scope_id_t scope_id, void *data,
 		data_len_t data_len, bool to_creator, const rimeaddr_t *source) {
 
-	PRINTF(1, "(NET-MGR) msg received, ");
+	PRINTF(1, "(UF-NET-MGR)  msg received, ");
 	PRINT_ARR(2, data, data_len);
 
 	struct ukuflow_generic_msg *msg = (struct ukuflow_generic_msg*) data;
@@ -211,7 +211,7 @@ bool ukuflow_net_mgr_open_scope(scope_id_t scope_id, void *specs,
 		data_len_t spec_len, scope_ttl_t ttl) {
 
 	PRINTF(1,
-			"[%u.%u:%10lu] %s::%s() : Opening scope %u, len %u, ttl %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope_id, spec_len, ttl);
+			"(UF-NET-MGR) Opening scope %u, len %u, ttl %u\n", scope_id, spec_len, ttl);
 
 	return (scopes_open(UKUFLOW_SCOPES_SID, SCOPES_WORLD_SCOPE_ID, scope_id,
 			specs, spec_len, SCOPES_FLAG_INTERCEPT | SCOPES_FLAG_DYNAMIC, ttl));
@@ -227,7 +227,7 @@ bool ukuflow_net_mgr_open_scope(scope_id_t scope_id, void *specs,
 void ukuflow_net_mgr_close_scope(scope_id_t scope_id) {
 
 	PRINTF(1,
-			"[%u.%u:%10lu] %s::%s() : Closing scope %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope_id);
+			"(UF-NET-MGR) Closing scope %u\n", scope_id);
 
 	scopes_close(UKUFLOW_SCOPES_SID, scope_id);
 }
@@ -241,7 +241,7 @@ void ukuflow_net_mgr_close_scope(scope_id_t scope_id) {
 void ukuflow_net_mgr_send_scope(scope_id_t scope_id, bool to_creator,
 		void *data, data_len_t data_len) {
 	PRINTF(1,
-			"[%u.%u:%10lu] %s::%s() : Sending msg through scope %u, msg len %u, direction %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope_id, data_len, to_creator);
+			"(UF-NET-MGR) Sending msg through scope %u, msg len %u, direction %u\n", scope_id, data_len, to_creator);
 	scopes_send(UKUFLOW_SCOPES_SID, scope_id, to_creator, data, data_len);
 }
 /** @} */

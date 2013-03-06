@@ -86,16 +86,9 @@ void ukuflow_mgr_init() {
  *
  */
 bool ukuflow_mgr_register(uint8_t *workflow_def, data_len_t workflow_def_len) {
-	struct workflow *wf = malloc(workflow_def_len);
 
-	if (wf) {
-		// copy contents of workflow definition into memory:
-		memcpy(wf, workflow_def, workflow_def_len);
+	return (ukuflow_engine_register(workflow_def, workflow_def_len));
 
-		return (ukuflow_engine_register(wf));
-
-	}
-	return (FALSE);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -105,12 +98,7 @@ bool ukuflow_mgr_register(uint8_t *workflow_def, data_len_t workflow_def_len) {
  * 				TODO
  */
 bool ukuflow_mgr_deregister(uint8_t workflow_id) {
-	struct workflow *wf = ukuflow_engine_deregister(workflow_id);
-	if (wf) {
-		free(wf);
-		return (TRUE);
-	}
-	return (FALSE);
+	return ukuflow_engine_deregister(workflow_id);
 }
 /*---------------------------------------------------------------------------*/
 

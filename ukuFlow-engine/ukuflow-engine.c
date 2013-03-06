@@ -49,6 +49,7 @@
 
 /** for malloc and free: */
 #include "stdlib.h"
+#include "string.h"
 
 #include "contiki.h"
 #include "net/rime.h"
@@ -291,13 +292,28 @@ void ukuflow_engine_init() {
  *
  * 				TODO
  */
-bool ukuflow_engine_register(struct workflow *wf) {
+bool ukuflow_engine_register(uint8_t * wf_def, data_len_t wf_def_len) {
+
+	struct workflow *wf_def_ptr = (struct workflow*) wf_def;
+
 	/** check if there is already a workflow with the specified id */
-	if (lookup_workflow_node(wf->workflow_id)) {
+	if (lookup_workflow_node(wf_def_ptr->workflow_id)) {
 		PRINTF(3,
-				"(UKUFLOW-ENGINE) A workflow with the specified id %u already exists!\n", wf->workflow_id);
+				"(UKUFLOW-ENGINE) A workflow with the specified id %u already exists!\n", wf_def_ptr->workflow_id);
 		return (FALSE);
 	}
+
+	// allocate dynamic memory managed by engine, where workflow will be copied into:
+	struct workflow *wf = malloc(wf_def_len);
+
+	if (!wf) {
+		PRINTF(3,
+				"(UKUFLOW-ENGINE) There is no space left for registering a new workflow!");
+		return (FALSE);
+	}
+
+	// copy contents of workflow definition into memory:
+	memcpy(wf, wf_def, wf_def_len);
 
 	struct workflow_node *wfn = (struct workflow_node*) memb_alloc(
 			&workflow_ptr_memb);
@@ -342,17 +358,16 @@ bool ukuflow_engine_register(struct workflow *wf) {
  *
  * 				TODO
  */
-struct workflow *ukuflow_engine_deregister(uint8_t workflow_id) {
+bool ukuflow_engine_deregister(uint8_t workflow_id) {
 
 	struct workflow_node *wfn;
-	struct workflow *deregistered_workflow;
 
 	/** Check if there is a workflow with the specified id */
 	if ((wfn = lookup_workflow_node(workflow_id)) == NULL) {
 		/** Workflow not found, abort */
 		PRINTF(1,
 				"(UKUFLOW-ENGINE) A workflow with the specified id %u doesn't exist!\n", workflow_id);
-		return (NULL);
+		return (FALSE);
 	}
 
 	/** There was one, so we now have to stop all running instances and tokens associated to it
@@ -360,24 +375,18 @@ struct workflow *ukuflow_engine_deregister(uint8_t workflow_id) {
 	 * gracefully allowed to conclude, but we'll set immediately the number of loops left to 0,
 	 * simulating an end. */
 
-	deregistered_workflow = wfn->wf;
-
 	PRINTF(1,
 			"(UKUFLOW-ENGINE) Deregistering workflow with id %d (blocked: %d, running: %d, spawn: %d)!\n", workflow_id, list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
 
-	/** Workflow needs to be deregistered. We have to consider the different states it can be in:
-	 *  * WFN_SPAWN: The workflow might have some instances running and it wants some more.
-	 *
-	 *  * WFN_BLOCKED:
-	 *
-	 *  * WFN_RUNNING:
-	 *
+	/** Workflow needs to be deregistered. We have to consider the different states it
+	 *  can be in, since the workflow might have some instances running which can't be
+	 *  simply deleted.
 	 **/
 	switch (wfn->state) {
-	case WFN_SPAWN: {
-		list_remove(wf_n_spawn_queue, wfn);
-		break;
-	}
+//	case WFN_SPAWN: {
+//		list_remove(wf_n_spawn_queue, wfn);
+//		break;
+//	}
 	case WFN_BLOCKED: {
 		list_remove(wf_n_blocked_queue, wfn);
 		break;
@@ -394,7 +403,7 @@ struct workflow *ukuflow_engine_deregister(uint8_t workflow_id) {
 	PRINTF(1,
 			"(UKUFLOW-ENGINE) Deregistration requested workflow stop (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
 
-	return (deregistered_workflow);
+	return (TRUE);
 
 }
 
@@ -513,7 +522,7 @@ static void processor_end_event(struct workflow_token *token,
 static void processor_execute_task(struct workflow_token *token,
 		struct wf_generic_elem *wfe) {
 	struct wf_ex_task *ex_task = (struct wf_ex_task*) wfe;
-	PRINTF(3,
+	PRINTF(1,
 			"(UKUFLOW-ENGINE) Execute task, current wf_elem_id is %u, next will be %u\n", token->current_wf_elem_id, ex_task->next_id);
 
 	/** set up token state union for task execution: */
@@ -534,7 +543,7 @@ static void processor_execute_task(struct workflow_token *token,
 	}
 
 	PRINTF(1,
-			"(UKUFLOW-ENGINE) statement nr %d/%d\n", token_state->comp_ex_task_token_state.statement_nr, ex_task->num_statements);
+			"(UKUFLOW-ENGINE) Execute task, statement nr %d/%d\n", token_state->comp_ex_task_token_state.statement_nr, ex_task->num_statements);
 
 	/** have we ran all the statements? */
 	if (token_state->comp_ex_task_token_state.statement_nr
@@ -808,7 +817,7 @@ static void processor_join_gateway(struct workflow_token *token,
 	 * check if that was the last child token */
 	if ((--(parent_token_state->num_children_tokens)) == 0) {
 
-		/** Release memoryÊof token state */
+		/** Release memoryï¿½of token state */
 		free(parent_token_state);
 		parent_token->token_state = NULL;
 
@@ -955,7 +964,7 @@ static void processor_inclusive_join_gateway(struct workflow_token *token,
  * \brief		Processes an exclusive decision gateway.
  *
  * 				Exclusive decision gateways are used to create alternative paths.
- * 				This is basically the Òdiversion point in the roadÓ for a process.
+ * 				This is basically the ï¿½diversion point in the roadï¿½ for a process.
  * 				For a given instance of the process, only one of the paths can be
  * 				taken.
  *
@@ -1332,17 +1341,18 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 				if (wfn->num_parallel_wf_instances == 0) {
 					/** it has no instances running, so release resources */
 
+					free(wfn->wf);
 					memb_free(&workflow_ptr_memb, wfn);
 
 					PRINTF(1,
-							"(UKUFLOW-ENGINE) lts, wfn terminated (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+							"(UKUFLOW-ENGINE) lts, wf_n terminated (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
 				} else {
 					/** it has instances running, so move the wfn
 					 * to the list of running workflow nodes */
 					list_add(wf_n_running_list, wfn);
 					wfn->state = WFN_RUNNING;
 					PRINTF(1,
-							"(UKUFLOW-ENGINE) lts, wfn to running (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+							"(UKUFLOW-ENGINE) lts, wf_n to running (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
 				}
 				continue;
 			}
@@ -1399,7 +1409,7 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 					wfn->state = WFN_RUNNING;
 					list_add(wf_n_running_list, wfn);
 					PRINTF(1,
-							"(UKUFLOW-ENGINE) lts, wfn to running (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+							"(UKUFLOW-ENGINE) lts, wf_n to running (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
 
 				} else if (wfn->num_parallel_wf_instances
 						< MAX_INSTANCES_PER_WORKFLOW) {
@@ -1407,20 +1417,20 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 					wfn->state = WFN_SPAWN;
 					list_add(wf_n_spawn_queue, wfn);
 					PRINTF(1,
-							"(UKUFLOW-ENGINE) lts, wfn to spawn (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+							"(UKUFLOW-ENGINE) lts, wf_n to spawn (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
 				} else {
 					// no it can not, so send workflow node to blocked
 					wfn->state = WFN_BLOCKED;
 					list_add(wf_n_blocked_queue, wfn);
 					PRINTF(1,
-							"(UKUFLOW-ENGINE) lts, wfn to blocked (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+							"(UKUFLOW-ENGINE) lts, wf_n to blocked (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
 				}
 			} else {
 				// it doesn't need any more parallel instances, send workflow node to running
 				wfn->state = WFN_RUNNING;
 				list_add(wf_n_running_list, wfn);
 				PRINTF(1,
-						"(UKUFLOW-ENGINE) lts, wfn to running (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
+						"(UKUFLOW-ENGINE) lts, wf_n to running (blocked: %d, running: %d, spawn: %d)\n", list_length(wf_n_blocked_queue), list_length(wf_n_running_list), list_length(wf_n_spawn_queue));
 			}
 
 			/** Allocate a token and put it into the ready queue: */
