@@ -101,12 +101,16 @@ PROCESS_THREAD( ukuflow_serial_process, ev, data) {
 
 			data_len = strlen(data);
 
-			PRINTF(1, "(SERIAL) Input received, length %d\n", strlen(data));
+			if (data_len < 4) {
+				PRINTF(1, "(SERIAL) Input received too short!\n");
+				continue;
+			}
 
-			PRINTF(1, "(SERIAL) Data: ");
+			PRINTF(1, "(SERIAL) Input received (%d chars): ", strlen(data));
 			{
 				PRINT_ARR(1, data, data_len);
 			}
+
 
 			data_len_t decoded_len = base64_decode((char*) data, decoded_data,
 					MAX_DECODED_DATA);
