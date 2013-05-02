@@ -50,7 +50,14 @@ public class ESimpleFilterConstraint implements Visitable{
 		this.type = UkuConstants.getConstantWithName(type);		
 	}
 	public void setValue(String value){
-		int v = Integer.parseInt(value);
+		int v = UkuConstants.getConstantWithName(value);
+		if(v==-1)
+			try{
+				v = Integer.parseInt(value);
+			} catch (Exception e){
+				e.printStackTrace();
+				return;
+			}
 		this.value=v;
 	}
 	

@@ -57,6 +57,7 @@ import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuEvent;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuExecuteTask;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuGateway;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuProcess;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuReceiveTask;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuScope;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuSequenceFlow;
 
@@ -223,7 +224,11 @@ public class BPMN2XMLParser {
 		}
 		return result;
 	}
-
+	/**
+	 * 
+	 * @param e
+	 * @return null if element is not supported
+	 */
 	private UkuEntity fetchEntity(Element e) {
 		String name = e.getName();
 		int type = 0;
@@ -235,6 +240,9 @@ public class BPMN2XMLParser {
 			log.debug(name + " is not supported : " + e1.getMessage());
 			return null;
 		}
+		System.out.println("["+this.getClass().getSimpleName()+"]" +
+				"\t"+type);
+		
 		String id = fetchID(e);
 		switch (type) {
 		case 1:
@@ -351,12 +359,45 @@ public class BPMN2XMLParser {
 				}
 			}
 			return scope;
+		case 6: // Receive Task
+			//TODO UkuR
+			UkuReceiveTask rTask = new UkuReceiveTask(id);
+			for(Element ee : e.getChildren()){
+				String n = ee.getName();
+				String n_id = ee.getTextTrim();
+				if (n.equals("incoming")) {
+					rTask.addIncoming(n_id);
+				} else if (n.equals("outgoing")) {
+					rTask.addOutgoing(n_id);
+				}
+			}
+			String script = fetchEBScript(e);			
+			rTask.setScript(script);
+			return rTask;
 		default:
 			log.debug("WARNING, unknown element: " + type + "/" + e.getName());
 			return null;
 		}
 	}
-
+	private Element getChildwithName(Element e, String name){
+		for(Element ee : e.getChildren()){
+			if(ee.getName().equals(name))
+				return ee;
+		}
+		return null;
+	}
+	private String fetchEBScript(Element e){
+		Element dataInputA  = getChildwithName(e,"dataInputAssociation");
+		if(dataInputA == null)
+			return null;
+		Element assignment = getChildwithName(dataInputA,"assignment");
+		if(assignment == null)
+			return null;
+		Element from = getChildwithName(assignment,"from");
+		if(from == null)
+			return null;
+		return from.getTextTrim();
+	}
 	private String fetchID(Element e) {
 		String id = e.getAttributeValue("id");
 		idPool.add(id);

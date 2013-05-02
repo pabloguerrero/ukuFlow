@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="eventbase" nsURI="http://de/tudarmstadt/dvs/ukuflow/eventbase"
+    nsPrefix="de.tudarmstadt.dvs.ukuflow.eventbase">
+  <eClassifiers xsi:type="ecore:EClass" name="EventBaseOperator" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="incoming" ordered="false"
+        upperBound="-1" eType="#//ESequenceFlow" resolveProxies="false" eOpposite="#//ESequenceFlow/target"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="outgoing" ordered="false"
+        upperBound="-1" eType="#//ESequenceFlow" resolveProxies="false" eOpposite="#//ESequenceFlow/source"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ESequenceFlow">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" ordered="false"
+        lowerBound="1" eType="#//EventBaseOperator" resolveProxies="false" eOpposite="#//EventBaseOperator/outgoing"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" ordered="false"
+        lowerBound="1" eType="#//EventBaseOperator" resolveProxies="false" eOpposite="#//EventBaseOperator/incoming"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EPeriodicEG" eSuperTypes="#//EventBaseOperator">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EPatternedEG" eSuperTypes="#//EventBaseOperator">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EDistributionEG" eSuperTypes="#//EventBaseOperator">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="functionName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="parameters" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EByteArray"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ESimpleFilterConstraint">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ESimpleEF" eSuperTypes="#//EventBaseOperator">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constraints" lowerBound="1"
+        upperBound="-1" eType="#//ESimpleFilterConstraint"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceEvent" lowerBound="1"
+        eType="#//EventBaseOperator"/>
+  </eClassifiers>
+</ecore:EPackage>

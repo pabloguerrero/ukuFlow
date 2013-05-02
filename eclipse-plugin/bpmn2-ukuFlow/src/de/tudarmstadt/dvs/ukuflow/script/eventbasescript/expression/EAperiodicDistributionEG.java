@@ -54,7 +54,8 @@ public class EAperiodicDistributionEG extends EventGenerator{
 	@Override
 	public String toString(){
 		String s="";
-		s+= "[DISTRIBUTION="+functionName+"(";		
+		s+= "[DISTRIBUTION="+functionName+"(";	
+		if(parameters != null)
 		for(Integer i : parameters){
 			s+= i +",";
 		}
