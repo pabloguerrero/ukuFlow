@@ -6,22 +6,22 @@ import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>ESimple EF</b></em>'.
+ * A representation of the model object '<em><b>EF Simple</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link eventbase.ESimpleEF#getConstraints <em>Constraints</em>}</li>
- *   <li>{@link eventbase.ESimpleEF#getSourceEvent <em>Source Event</em>}</li>
+ *   <li>{@link eventbase.EFSimple#getConstraints <em>Constraints</em>}</li>
+ *   <li>{@link eventbase.EFSimple#getSourceEvent <em>Source Event</em>}</li>
  * </ul>
  * </p>
  *
- * @see eventbase.EventbasePackage#getESimpleEF()
+ * @see eventbase.EventbasePackage#getEFSimple()
  * @model
  * @generated
  */
-public interface ESimpleEF extends EventBaseOperator {
+public interface EFSimple extends EventBaseOperator {
 	/**
 	 * Returns the value of the '<em><b>Constraints</b></em>' reference list.
 	 * The list contents are of type {@link eventbase.ESimpleFilterConstraint}.
@@ -32,7 +32,7 @@ public interface ESimpleEF extends EventBaseOperator {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Constraints</em>' reference list.
-	 * @see eventbase.EventbasePackage#getESimpleEF_Constraints()
+	 * @see eventbase.EventbasePackage#getEFSimple_Constraints()
 	 * @model required="true"
 	 * @generated
 	 */
@@ -48,14 +48,14 @@ public interface ESimpleEF extends EventBaseOperator {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Source Event</em>' reference.
 	 * @see #setSourceEvent(EventBaseOperator)
-	 * @see eventbase.EventbasePackage#getESimpleEF_SourceEvent()
+	 * @see eventbase.EventbasePackage#getEFSimple_SourceEvent()
 	 * @model required="true"
 	 * @generated
 	 */
 	EventBaseOperator getSourceEvent();
 
 	/**
-	 * Sets the value of the '{@link eventbase.ESimpleEF#getSourceEvent <em>Source Event</em>}' reference.
+	 * Sets the value of the '{@link eventbase.EFSimple#getSourceEvent <em>Source Event</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Source Event</em>' reference.
@@ -64,4 +64,4 @@ public interface ESimpleEF extends EventBaseOperator {
 	 */
 	void setSourceEvent(EventBaseOperator value);
 
-} // ESimpleEF
+} // EFSimple

@@ -123,7 +123,7 @@ public class TutorialFeatureProvider extends DefaultFeatureProvider {
 			return new EAperiodicDistributionEGAddFeature(this);
 		} else if(newObject instanceof EPatternedEG){
 			return new EAperiodicPatternedEGAddFeature(this);
-		} else if(newObject instanceof ESimpleEF){
+		} else if(newObject instanceof EFSimple){
 			return new ESimpleEFAddFeature(this);
 		//} else if(newObject instanceof EComplexEF){
 		//	return new EComplexEFAddFeature(this);

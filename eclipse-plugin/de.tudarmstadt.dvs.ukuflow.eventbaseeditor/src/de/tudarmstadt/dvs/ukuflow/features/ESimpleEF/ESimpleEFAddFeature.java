@@ -35,7 +35,7 @@ public class ESimpleEFAddFeature extends AbstractAddShapeFeature{
 
 	public boolean canAdd(IAddContext context) {
 		final Object newObject = context.getNewObject();
-		if(newObject instanceof eventbase.ESimpleEF)
+		if(newObject instanceof eventbase.EFSimple)
 		if(context.getTargetContainer() instanceof Diagram){
 			return true;
 		}
@@ -43,7 +43,7 @@ public class ESimpleEFAddFeature extends AbstractAddShapeFeature{
 	}
 
 	public PictogramElement add(IAddContext context) {
-		final eventbase.ESimpleEF addedClass = (eventbase.ESimpleEF)context.getNewObject(); 
+		final eventbase.EFSimple addedClass = (eventbase.EFSimple)context.getNewObject(); 
 		final Diagram targetDiagram = (Diagram) context.getTargetContainer();
 		// CONTAINER SHAPE WITH ROUNDED RECTANGLE
 				final IPeCreateService peCreateService = Graphiti.getPeCreateService();

@@ -3,15 +3,12 @@
 package eventbase.provider;
 
 
-import eventbase.EventbasePackage;
-
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -20,13 +17,13 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 
 /**
- * This is the item provider adapter for a {@link eventbase.ESimpleEF} object.
+ * This is the item provider adapter for a {@link eventbase.EFStatusEvent} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class ESimpleEFItemProvider
-	extends EventBaseOperatorItemProvider
+public class EFStatusEventItemProvider
+	extends EFCompositeItemProvider
 	implements
 		IEditingDomainItemProvider,
 		IStructuredItemContentProvider,
@@ -39,7 +36,7 @@ public class ESimpleEFItemProvider
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ESimpleEFItemProvider(AdapterFactory adapterFactory) {
+	public EFStatusEventItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -54,65 +51,19 @@ public class ESimpleEFItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addConstraintsPropertyDescriptor(object);
-			addSourceEventPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
 
 	/**
-	 * This adds a property descriptor for the Constraints feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addConstraintsPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_ESimpleEF_constraints_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ESimpleEF_constraints_feature", "_UI_ESimpleEF_type"),
-				 EventbasePackage.Literals.ESIMPLE_EF__CONSTRAINTS,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Source Event feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addSourceEventPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_ESimpleEF_sourceEvent_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ESimpleEF_sourceEvent_feature", "_UI_ESimpleEF_type"),
-				 EventbasePackage.Literals.ESIMPLE_EF__SOURCE_EVENT,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This returns ESimpleEF.gif.
+	 * This returns EFStatusEvent.gif.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/ESimpleEF"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/EFStatusEvent"));
 	}
 
 	/**
@@ -123,7 +74,7 @@ public class ESimpleEFItemProvider
 	 */
 	@Override
 	public String getText(Object object) {
-		return getString("_UI_ESimpleEF_type");
+		return getString("_UI_EFStatusEvent_type");
 	}
 
 	/**

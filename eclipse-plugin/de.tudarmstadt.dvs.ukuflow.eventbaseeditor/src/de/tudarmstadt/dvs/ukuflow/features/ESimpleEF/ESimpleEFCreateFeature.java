@@ -23,7 +23,7 @@ public class ESimpleEFCreateFeature extends AbstractCreateFeature{
 	}
 
 	public Object[] create(ICreateContext context) {
-		eventbase.ESimpleEF newClass = eventbase.EventbaseFactory.eINSTANCE.createESimpleEF();
+		eventbase.EFSimple newClass = eventbase.EventbaseFactory.eINSTANCE.createEFSimple();
 
 		//		Use the following instead of the above line to store the model
 		//		data in a seperate file parallel to the diagram file

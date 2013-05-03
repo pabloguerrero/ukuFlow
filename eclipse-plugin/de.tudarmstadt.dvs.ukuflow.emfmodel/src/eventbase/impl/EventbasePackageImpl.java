@@ -3,12 +3,42 @@
 package eventbase.impl;
 
 import eventbase.EDistributionEG;
+import eventbase.EFChangeDecrease;
+import eventbase.EFChangeEvent;
+import eventbase.EFChangeIncrease;
+import eventbase.EFChangeRemain;
+import eventbase.EFComposite;
+import eventbase.EFLogic;
+import eventbase.EFLogicAnd;
+import eventbase.EFLogicNot;
+import eventbase.EFLogicOr;
+import eventbase.EFProcessing;
+import eventbase.EFProcessingAvg;
+import eventbase.EFProcessingCount;
+import eventbase.EFProcessingMax;
+import eventbase.EFProcessingMin;
+import eventbase.EFProcessingStDev;
+import eventbase.EFProcessingSum;
+import eventbase.EFSimple;
+import eventbase.EFStatusEvent;
+import eventbase.EFTemporal;
+import eventbase.EFTemporalSequence;
+import eventbase.EGAbsolute;
+import eventbase.EGDistribution;
+import eventbase.EGImmediate;
+import eventbase.EGNonRecurring;
+import eventbase.EGOffset;
+import eventbase.EGPatterned;
+import eventbase.EGPeriodic;
+import eventbase.EGRecurring;
+import eventbase.EGRelative;
 import eventbase.EPatternedEG;
 import eventbase.EPeriodicEG;
 import eventbase.ESequenceFlow;
-import eventbase.ESimpleEF;
 import eventbase.ESimpleFilterConstraint;
 import eventbase.EventBaseOperator;
+import eventbase.EventFilter;
+import eventbase.EventGenerator;
 import eventbase.EventbaseFactory;
 import eventbase.EventbasePackage;
 
@@ -73,7 +103,217 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass eSimpleEFEClass = null;
+	private EClass eventGeneratorEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass egNonRecurringEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass egImmediateEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass egAbsoluteEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass egOffsetEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass egRelativeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass egRecurringEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass egPeriodicEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass egPatternedEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass egDistributionEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass eventFilterEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efSimpleEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efCompositeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efStatusEventEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efLogicEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efProcessingEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efTemporalEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efLogicAndEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efLogicOrEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efLogicNotEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efProcessingMinEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efProcessingMaxEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efProcessingSumEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efProcessingCountEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efProcessingAvgEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efProcessingStDevEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efTemporalSequenceEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efChangeEventEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efChangeIncreaseEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efChangeDecreaseEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass efChangeRemainEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -303,8 +543,8 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getESimpleEF() {
-		return eSimpleEFEClass;
+	public EClass getEventGenerator() {
+		return eventGeneratorEClass;
 	}
 
 	/**
@@ -312,8 +552,8 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getESimpleEF_Constraints() {
-		return (EReference)eSimpleEFEClass.getEStructuralFeatures().get(0);
+	public EClass getEGNonRecurring() {
+		return egNonRecurringEClass;
 	}
 
 	/**
@@ -321,8 +561,350 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getESimpleEF_SourceEvent() {
-		return (EReference)eSimpleEFEClass.getEStructuralFeatures().get(1);
+	public EClass getEGImmediate() {
+		return egImmediateEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEGAbsolute() {
+		return egAbsoluteEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEGAbsolute_AbsoluteTime() {
+		return (EAttribute)egAbsoluteEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEGOffset() {
+		return egOffsetEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEGOffset_OffsetTime() {
+		return (EAttribute)egOffsetEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEGRelative() {
+		return egRelativeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEGRelative_DelayTime() {
+		return (EAttribute)egRelativeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEGRecurring() {
+		return egRecurringEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEGPeriodic() {
+		return egPeriodicEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEGPeriodic_Time() {
+		return (EAttribute)egPeriodicEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEGPatterned() {
+		return egPatternedEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEGPatterned_Time() {
+		return (EAttribute)egPatternedEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEGPatterned_Pattern() {
+		return (EAttribute)egPatternedEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEGDistribution() {
+		return egDistributionEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEGDistribution_Time() {
+		return (EAttribute)egDistributionEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEGDistribution_Function() {
+		return (EAttribute)egDistributionEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEventFilter() {
+		return eventFilterEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFSimple() {
+		return efSimpleEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEFSimple_Constraints() {
+		return (EReference)efSimpleEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEFSimple_SourceEvent() {
+		return (EReference)efSimpleEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFComposite() {
+		return efCompositeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFStatusEvent() {
+		return efStatusEventEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFLogic() {
+		return efLogicEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFProcessing() {
+		return efProcessingEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFTemporal() {
+		return efTemporalEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFLogicAnd() {
+		return efLogicAndEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFLogicOr() {
+		return efLogicOrEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFLogicNot() {
+		return efLogicNotEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFProcessingMin() {
+		return efProcessingMinEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFProcessingMax() {
+		return efProcessingMaxEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFProcessingSum() {
+		return efProcessingSumEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFProcessingCount() {
+		return efProcessingCountEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFProcessingAvg() {
+		return efProcessingAvgEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFProcessingStDev() {
+		return efProcessingStDevEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFTemporalSequence() {
+		return efTemporalSequenceEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFChangeEvent() {
+		return efChangeEventEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFChangeIncrease() {
+		return efChangeIncreaseEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFChangeDecrease() {
+		return efChangeDecreaseEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEFChangeRemain() {
+		return efChangeRemainEClass;
 	}
 
 	/**
@@ -377,9 +959,77 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		createEAttribute(eSimpleFilterConstraintEClass, ESIMPLE_FILTER_CONSTRAINT__VALUE);
 		createEAttribute(eSimpleFilterConstraintEClass, ESIMPLE_FILTER_CONSTRAINT__OPERATOR);
 
-		eSimpleEFEClass = createEClass(ESIMPLE_EF);
-		createEReference(eSimpleEFEClass, ESIMPLE_EF__CONSTRAINTS);
-		createEReference(eSimpleEFEClass, ESIMPLE_EF__SOURCE_EVENT);
+		eventGeneratorEClass = createEClass(EVENT_GENERATOR);
+
+		egNonRecurringEClass = createEClass(EG_NON_RECURRING);
+
+		egImmediateEClass = createEClass(EG_IMMEDIATE);
+
+		egAbsoluteEClass = createEClass(EG_ABSOLUTE);
+		createEAttribute(egAbsoluteEClass, EG_ABSOLUTE__ABSOLUTE_TIME);
+
+		egOffsetEClass = createEClass(EG_OFFSET);
+		createEAttribute(egOffsetEClass, EG_OFFSET__OFFSET_TIME);
+
+		egRelativeEClass = createEClass(EG_RELATIVE);
+		createEAttribute(egRelativeEClass, EG_RELATIVE__DELAY_TIME);
+
+		egRecurringEClass = createEClass(EG_RECURRING);
+
+		egPeriodicEClass = createEClass(EG_PERIODIC);
+		createEAttribute(egPeriodicEClass, EG_PERIODIC__TIME);
+
+		egPatternedEClass = createEClass(EG_PATTERNED);
+		createEAttribute(egPatternedEClass, EG_PATTERNED__TIME);
+		createEAttribute(egPatternedEClass, EG_PATTERNED__PATTERN);
+
+		egDistributionEClass = createEClass(EG_DISTRIBUTION);
+		createEAttribute(egDistributionEClass, EG_DISTRIBUTION__TIME);
+		createEAttribute(egDistributionEClass, EG_DISTRIBUTION__FUNCTION);
+
+		eventFilterEClass = createEClass(EVENT_FILTER);
+
+		efSimpleEClass = createEClass(EF_SIMPLE);
+		createEReference(efSimpleEClass, EF_SIMPLE__CONSTRAINTS);
+		createEReference(efSimpleEClass, EF_SIMPLE__SOURCE_EVENT);
+
+		efCompositeEClass = createEClass(EF_COMPOSITE);
+
+		efStatusEventEClass = createEClass(EF_STATUS_EVENT);
+
+		efLogicEClass = createEClass(EF_LOGIC);
+
+		efProcessingEClass = createEClass(EF_PROCESSING);
+
+		efTemporalEClass = createEClass(EF_TEMPORAL);
+
+		efLogicAndEClass = createEClass(EF_LOGIC_AND);
+
+		efLogicOrEClass = createEClass(EF_LOGIC_OR);
+
+		efLogicNotEClass = createEClass(EF_LOGIC_NOT);
+
+		efProcessingMinEClass = createEClass(EF_PROCESSING_MIN);
+
+		efProcessingMaxEClass = createEClass(EF_PROCESSING_MAX);
+
+		efProcessingSumEClass = createEClass(EF_PROCESSING_SUM);
+
+		efProcessingCountEClass = createEClass(EF_PROCESSING_COUNT);
+
+		efProcessingAvgEClass = createEClass(EF_PROCESSING_AVG);
+
+		efProcessingStDevEClass = createEClass(EF_PROCESSING_ST_DEV);
+
+		efTemporalSequenceEClass = createEClass(EF_TEMPORAL_SEQUENCE);
+
+		efChangeEventEClass = createEClass(EF_CHANGE_EVENT);
+
+		efChangeIncreaseEClass = createEClass(EF_CHANGE_INCREASE);
+
+		efChangeDecreaseEClass = createEClass(EF_CHANGE_DECREASE);
+
+		efChangeRemainEClass = createEClass(EF_CHANGE_REMAIN);
 	}
 
 	/**
@@ -413,7 +1063,37 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		ePeriodicEGEClass.getESuperTypes().add(this.getEventBaseOperator());
 		ePatternedEGEClass.getESuperTypes().add(this.getEventBaseOperator());
 		eDistributionEGEClass.getESuperTypes().add(this.getEventBaseOperator());
-		eSimpleEFEClass.getESuperTypes().add(this.getEventBaseOperator());
+		eventGeneratorEClass.getESuperTypes().add(this.getEventBaseOperator());
+		egNonRecurringEClass.getESuperTypes().add(this.getEventGenerator());
+		egImmediateEClass.getESuperTypes().add(this.getEGNonRecurring());
+		egAbsoluteEClass.getESuperTypes().add(this.getEGNonRecurring());
+		egOffsetEClass.getESuperTypes().add(this.getEGNonRecurring());
+		egRelativeEClass.getESuperTypes().add(this.getEGNonRecurring());
+		egRecurringEClass.getESuperTypes().add(this.getEventGenerator());
+		egPeriodicEClass.getESuperTypes().add(this.getEGRecurring());
+		egPatternedEClass.getESuperTypes().add(this.getEGRecurring());
+		egDistributionEClass.getESuperTypes().add(this.getEGRecurring());
+		eventFilterEClass.getESuperTypes().add(this.getEventBaseOperator());
+		efSimpleEClass.getESuperTypes().add(this.getEventBaseOperator());
+		efCompositeEClass.getESuperTypes().add(this.getEventFilter());
+		efStatusEventEClass.getESuperTypes().add(this.getEFComposite());
+		efLogicEClass.getESuperTypes().add(this.getEFStatusEvent());
+		efProcessingEClass.getESuperTypes().add(this.getEFStatusEvent());
+		efTemporalEClass.getESuperTypes().add(this.getEFStatusEvent());
+		efLogicAndEClass.getESuperTypes().add(this.getEFLogic());
+		efLogicOrEClass.getESuperTypes().add(this.getEFLogic());
+		efLogicNotEClass.getESuperTypes().add(this.getEFLogic());
+		efProcessingMinEClass.getESuperTypes().add(this.getEFProcessing());
+		efProcessingMaxEClass.getESuperTypes().add(this.getEFProcessing());
+		efProcessingSumEClass.getESuperTypes().add(this.getEFProcessing());
+		efProcessingCountEClass.getESuperTypes().add(this.getEFProcessing());
+		efProcessingAvgEClass.getESuperTypes().add(this.getEFProcessing());
+		efProcessingStDevEClass.getESuperTypes().add(this.getEFProcessing());
+		efTemporalSequenceEClass.getESuperTypes().add(this.getEFTemporal());
+		efChangeEventEClass.getESuperTypes().add(this.getEFComposite());
+		efChangeIncreaseEClass.getESuperTypes().add(this.getEFChangeEvent());
+		efChangeDecreaseEClass.getESuperTypes().add(this.getEFChangeEvent());
+		efChangeRemainEClass.getESuperTypes().add(this.getEFChangeEvent());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(eventBaseOperatorEClass, EventBaseOperator.class, "EventBaseOperator", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -440,9 +1120,77 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		initEAttribute(getESimpleFilterConstraint_Value(), ecorePackage.getEString(), "value", null, 1, 1, ESimpleFilterConstraint.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getESimpleFilterConstraint_Operator(), ecorePackage.getEInt(), "operator", null, 1, 1, ESimpleFilterConstraint.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(eSimpleEFEClass, ESimpleEF.class, "ESimpleEF", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getESimpleEF_Constraints(), this.getESimpleFilterConstraint(), null, "constraints", null, 1, -1, ESimpleEF.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getESimpleEF_SourceEvent(), this.getEventBaseOperator(), null, "sourceEvent", null, 1, 1, ESimpleEF.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(eventGeneratorEClass, EventGenerator.class, "EventGenerator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(egNonRecurringEClass, EGNonRecurring.class, "EGNonRecurring", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(egImmediateEClass, EGImmediate.class, "EGImmediate", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(egAbsoluteEClass, EGAbsolute.class, "EGAbsolute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getEGAbsolute_AbsoluteTime(), ecorePackage.getEInt(), "absoluteTime", null, 1, 1, EGAbsolute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(egOffsetEClass, EGOffset.class, "EGOffset", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getEGOffset_OffsetTime(), ecorePackage.getEInt(), "offsetTime", null, 1, 1, EGOffset.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(egRelativeEClass, EGRelative.class, "EGRelative", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getEGRelative_DelayTime(), ecorePackage.getEInt(), "delayTime", null, 1, 1, EGRelative.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(egRecurringEClass, EGRecurring.class, "EGRecurring", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(egPeriodicEClass, EGPeriodic.class, "EGPeriodic", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getEGPeriodic_Time(), ecorePackage.getEInt(), "time", null, 0, 1, EGPeriodic.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(egPatternedEClass, EGPatterned.class, "EGPatterned", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getEGPatterned_Time(), ecorePackage.getEInt(), "time", null, 0, 1, EGPatterned.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEGPatterned_Pattern(), ecorePackage.getEInt(), "pattern", null, 0, 1, EGPatterned.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(egDistributionEClass, EGDistribution.class, "EGDistribution", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getEGDistribution_Time(), ecorePackage.getEInt(), "time", null, 0, 1, EGDistribution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEGDistribution_Function(), ecorePackage.getEInt(), "function", null, 0, 1, EGDistribution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(eventFilterEClass, EventFilter.class, "EventFilter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efSimpleEClass, EFSimple.class, "EFSimple", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEFSimple_Constraints(), this.getESimpleFilterConstraint(), null, "constraints", null, 1, -1, EFSimple.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEFSimple_SourceEvent(), this.getEventBaseOperator(), null, "sourceEvent", null, 1, 1, EFSimple.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(efCompositeEClass, EFComposite.class, "EFComposite", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efStatusEventEClass, EFStatusEvent.class, "EFStatusEvent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efLogicEClass, EFLogic.class, "EFLogic", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efProcessingEClass, EFProcessing.class, "EFProcessing", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efTemporalEClass, EFTemporal.class, "EFTemporal", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efLogicAndEClass, EFLogicAnd.class, "EFLogicAnd", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efLogicOrEClass, EFLogicOr.class, "EFLogicOr", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efLogicNotEClass, EFLogicNot.class, "EFLogicNot", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efProcessingMinEClass, EFProcessingMin.class, "EFProcessingMin", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efProcessingMaxEClass, EFProcessingMax.class, "EFProcessingMax", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efProcessingSumEClass, EFProcessingSum.class, "EFProcessingSum", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efProcessingCountEClass, EFProcessingCount.class, "EFProcessingCount", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efProcessingAvgEClass, EFProcessingAvg.class, "EFProcessingAvg", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efProcessingStDevEClass, EFProcessingStDev.class, "EFProcessingStDev", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efTemporalSequenceEClass, EFTemporalSequence.class, "EFTemporalSequence", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efChangeEventEClass, EFChangeEvent.class, "EFChangeEvent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efChangeIncreaseEClass, EFChangeIncrease.class, "EFChangeIncrease", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efChangeDecreaseEClass, EFChangeDecrease.class, "EFChangeDecrease", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(efChangeRemainEClass, EFChangeRemain.class, "EFChangeRemain", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);

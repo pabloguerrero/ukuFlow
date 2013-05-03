@@ -2,18 +2,18 @@
  */
 package eventbase.tests;
 
-import eventbase.ESimpleEF;
+import eventbase.EFProcessingStDev;
 import eventbase.EventbaseFactory;
 
 import junit.textui.TestRunner;
 
 /**
  * <!-- begin-user-doc -->
- * A test case for the model object '<em><b>ESimple EF</b></em>'.
+ * A test case for the model object '<em><b>EF Processing St Dev</b></em>'.
  * <!-- end-user-doc -->
  * @generated
  */
-public class ESimpleEFTest extends EventBaseOperatorTest {
+public class EFProcessingStDevTest extends EFProcessingTest {
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -21,28 +21,28 @@ public class ESimpleEFTest extends EventBaseOperatorTest {
 	 * @generated
 	 */
 	public static void main(String[] args) {
-		TestRunner.run(ESimpleEFTest.class);
+		TestRunner.run(EFProcessingStDevTest.class);
 	}
 
 	/**
-	 * Constructs a new ESimple EF test case with the given name.
+	 * Constructs a new EF Processing St Dev test case with the given name.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ESimpleEFTest(String name) {
+	public EFProcessingStDevTest(String name) {
 		super(name);
 	}
 
 	/**
-	 * Returns the fixture for this ESimple EF test case.
+	 * Returns the fixture for this EF Processing St Dev test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override
-	protected ESimpleEF getFixture() {
-		return (ESimpleEF)fixture;
+	protected EFProcessingStDev getFixture() {
+		return (EFProcessingStDev)fixture;
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class ESimpleEFTest extends EventBaseOperatorTest {
 	 */
 	@Override
 	protected void setUp() throws Exception {
-		setFixture(EventbaseFactory.eINSTANCE.createESimpleEF());
+		setFixture(EventbaseFactory.eINSTANCE.createEFProcessingStDev());
 	}
 
 	/**
@@ -67,4 +67,4 @@ public class ESimpleEFTest extends EventBaseOperatorTest {
 		setFixture(null);
 	}
 
-} //ESimpleEFTest
+} //EFProcessingStDevTest

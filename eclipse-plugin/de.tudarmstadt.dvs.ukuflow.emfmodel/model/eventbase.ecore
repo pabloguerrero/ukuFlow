@@ -34,10 +34,57 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ESimpleEF" eSuperTypes="#//EventBaseOperator">
+  <eClassifiers xsi:type="ecore:EClass" name="EventGenerator" eSuperTypes="#//EventBaseOperator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EGNonRecurring" eSuperTypes="#//EventGenerator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EGImmediate" eSuperTypes="#//EGNonRecurring"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EGAbsolute" eSuperTypes="#//EGNonRecurring">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="absoluteTime" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EGOffset" eSuperTypes="#//EGNonRecurring">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="offsetTime" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EGRelative" eSuperTypes="#//EGNonRecurring">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="delayTime" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EGRecurring" eSuperTypes="#//EventGenerator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EGPeriodic" eSuperTypes="#//EGRecurring">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EGPatterned" eSuperTypes="#//EGRecurring">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EGDistribution" eSuperTypes="#//EGRecurring">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="function" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EventFilter" eSuperTypes="#//EventBaseOperator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFSimple" eSuperTypes="#//EventBaseOperator">
     <eStructuralFeatures xsi:type="ecore:EReference" name="constraints" lowerBound="1"
         upperBound="-1" eType="#//ESimpleFilterConstraint"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sourceEvent" lowerBound="1"
         eType="#//EventBaseOperator"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EFComposite" eSuperTypes="#//EventFilter"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFStatusEvent" eSuperTypes="#//EFComposite"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFLogic" eSuperTypes="#//EFStatusEvent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFProcessing" eSuperTypes="#//EFStatusEvent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFTemporal" eSuperTypes="#//EFStatusEvent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFLogicAnd" eSuperTypes="#//EFLogic"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFLogicOr" eSuperTypes="#//EFLogic"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFLogicNot" eSuperTypes="#//EFLogic"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFProcessingMin" eSuperTypes="#//EFProcessing"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFProcessingMax" eSuperTypes="#//EFProcessing"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFProcessingSum" eSuperTypes="#//EFProcessing"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFProcessingCount" eSuperTypes="#//EFProcessing"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFProcessingAvg" eSuperTypes="#//EFProcessing"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFProcessingStDev" eSuperTypes="#//EFProcessing"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFTemporalSequence" eSuperTypes="#//EFTemporal"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFChangeEvent" eSuperTypes="#//EFComposite"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFChangeIncrease" eSuperTypes="#//EFChangeEvent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFChangeDecrease" eSuperTypes="#//EFChangeEvent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFChangeRemain" eSuperTypes="#//EFChangeEvent"/>
 </ecore:EPackage>

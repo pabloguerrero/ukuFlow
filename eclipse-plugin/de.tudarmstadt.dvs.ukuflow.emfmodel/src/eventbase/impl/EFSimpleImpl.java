@@ -2,7 +2,7 @@
  */
 package eventbase.impl;
 
-import eventbase.ESimpleEF;
+import eventbase.EFSimple;
 import eventbase.ESimpleFilterConstraint;
 import eventbase.EventBaseOperator;
 import eventbase.EventbasePackage;
@@ -22,19 +22,19 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>ESimple EF</b></em>'.
+ * An implementation of the model object '<em><b>EF Simple</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link eventbase.impl.ESimpleEFImpl#getConstraints <em>Constraints</em>}</li>
- *   <li>{@link eventbase.impl.ESimpleEFImpl#getSourceEvent <em>Source Event</em>}</li>
+ *   <li>{@link eventbase.impl.EFSimpleImpl#getConstraints <em>Constraints</em>}</li>
+ *   <li>{@link eventbase.impl.EFSimpleImpl#getSourceEvent <em>Source Event</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class ESimpleEFImpl extends EventBaseOperatorImpl implements ESimpleEF {
+public class EFSimpleImpl extends EventBaseOperatorImpl implements EFSimple {
 	/**
 	 * The cached value of the '{@link #getConstraints() <em>Constraints</em>}' reference list.
 	 * <!-- begin-user-doc -->
@@ -60,7 +60,7 @@ public class ESimpleEFImpl extends EventBaseOperatorImpl implements ESimpleEF {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ESimpleEFImpl() {
+	protected EFSimpleImpl() {
 		super();
 	}
 
@@ -71,7 +71,7 @@ public class ESimpleEFImpl extends EventBaseOperatorImpl implements ESimpleEF {
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return EventbasePackage.Literals.ESIMPLE_EF;
+		return EventbasePackage.Literals.EF_SIMPLE;
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class ESimpleEFImpl extends EventBaseOperatorImpl implements ESimpleEF {
 	 */
 	public EList<ESimpleFilterConstraint> getConstraints() {
 		if (constraints == null) {
-			constraints = new EObjectResolvingEList<ESimpleFilterConstraint>(ESimpleFilterConstraint.class, this, EventbasePackage.ESIMPLE_EF__CONSTRAINTS);
+			constraints = new EObjectResolvingEList<ESimpleFilterConstraint>(ESimpleFilterConstraint.class, this, EventbasePackage.EF_SIMPLE__CONSTRAINTS);
 		}
 		return constraints;
 	}
@@ -97,7 +97,7 @@ public class ESimpleEFImpl extends EventBaseOperatorImpl implements ESimpleEF {
 			sourceEvent = (EventBaseOperator)eResolveProxy(oldSourceEvent);
 			if (sourceEvent != oldSourceEvent) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, EventbasePackage.ESIMPLE_EF__SOURCE_EVENT, oldSourceEvent, sourceEvent));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, EventbasePackage.EF_SIMPLE__SOURCE_EVENT, oldSourceEvent, sourceEvent));
 			}
 		}
 		return sourceEvent;
@@ -121,7 +121,7 @@ public class ESimpleEFImpl extends EventBaseOperatorImpl implements ESimpleEF {
 		EventBaseOperator oldSourceEvent = sourceEvent;
 		sourceEvent = newSourceEvent;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EventbasePackage.ESIMPLE_EF__SOURCE_EVENT, oldSourceEvent, sourceEvent));
+			eNotify(new ENotificationImpl(this, Notification.SET, EventbasePackage.EF_SIMPLE__SOURCE_EVENT, oldSourceEvent, sourceEvent));
 	}
 
 	/**
@@ -132,9 +132,9 @@ public class ESimpleEFImpl extends EventBaseOperatorImpl implements ESimpleEF {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case EventbasePackage.ESIMPLE_EF__CONSTRAINTS:
+			case EventbasePackage.EF_SIMPLE__CONSTRAINTS:
 				return getConstraints();
-			case EventbasePackage.ESIMPLE_EF__SOURCE_EVENT:
+			case EventbasePackage.EF_SIMPLE__SOURCE_EVENT:
 				if (resolve) return getSourceEvent();
 				return basicGetSourceEvent();
 		}
@@ -150,11 +150,11 @@ public class ESimpleEFImpl extends EventBaseOperatorImpl implements ESimpleEF {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case EventbasePackage.ESIMPLE_EF__CONSTRAINTS:
+			case EventbasePackage.EF_SIMPLE__CONSTRAINTS:
 				getConstraints().clear();
 				getConstraints().addAll((Collection<? extends ESimpleFilterConstraint>)newValue);
 				return;
-			case EventbasePackage.ESIMPLE_EF__SOURCE_EVENT:
+			case EventbasePackage.EF_SIMPLE__SOURCE_EVENT:
 				setSourceEvent((EventBaseOperator)newValue);
 				return;
 		}
@@ -169,10 +169,10 @@ public class ESimpleEFImpl extends EventBaseOperatorImpl implements ESimpleEF {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case EventbasePackage.ESIMPLE_EF__CONSTRAINTS:
+			case EventbasePackage.EF_SIMPLE__CONSTRAINTS:
 				getConstraints().clear();
 				return;
-			case EventbasePackage.ESIMPLE_EF__SOURCE_EVENT:
+			case EventbasePackage.EF_SIMPLE__SOURCE_EVENT:
 				setSourceEvent((EventBaseOperator)null);
 				return;
 		}
@@ -187,12 +187,12 @@ public class ESimpleEFImpl extends EventBaseOperatorImpl implements ESimpleEF {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case EventbasePackage.ESIMPLE_EF__CONSTRAINTS:
+			case EventbasePackage.EF_SIMPLE__CONSTRAINTS:
 				return constraints != null && !constraints.isEmpty();
-			case EventbasePackage.ESIMPLE_EF__SOURCE_EVENT:
+			case EventbasePackage.EF_SIMPLE__SOURCE_EVENT:
 				return sourceEvent != null;
 		}
 		return super.eIsSet(featureID);
 	}
 
-} //ESimpleEFImpl
+} //EFSimpleImpl

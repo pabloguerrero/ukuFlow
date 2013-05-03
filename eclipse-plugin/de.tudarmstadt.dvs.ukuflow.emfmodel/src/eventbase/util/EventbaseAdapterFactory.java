@@ -92,8 +92,128 @@ public class EventbaseAdapterFactory extends AdapterFactoryImpl {
 				return createESimpleFilterConstraintAdapter();
 			}
 			@Override
-			public Adapter caseESimpleEF(ESimpleEF object) {
-				return createESimpleEFAdapter();
+			public Adapter caseEventGenerator(EventGenerator object) {
+				return createEventGeneratorAdapter();
+			}
+			@Override
+			public Adapter caseEGNonRecurring(EGNonRecurring object) {
+				return createEGNonRecurringAdapter();
+			}
+			@Override
+			public Adapter caseEGImmediate(EGImmediate object) {
+				return createEGImmediateAdapter();
+			}
+			@Override
+			public Adapter caseEGAbsolute(EGAbsolute object) {
+				return createEGAbsoluteAdapter();
+			}
+			@Override
+			public Adapter caseEGOffset(EGOffset object) {
+				return createEGOffsetAdapter();
+			}
+			@Override
+			public Adapter caseEGRelative(EGRelative object) {
+				return createEGRelativeAdapter();
+			}
+			@Override
+			public Adapter caseEGRecurring(EGRecurring object) {
+				return createEGRecurringAdapter();
+			}
+			@Override
+			public Adapter caseEGPeriodic(EGPeriodic object) {
+				return createEGPeriodicAdapter();
+			}
+			@Override
+			public Adapter caseEGPatterned(EGPatterned object) {
+				return createEGPatternedAdapter();
+			}
+			@Override
+			public Adapter caseEGDistribution(EGDistribution object) {
+				return createEGDistributionAdapter();
+			}
+			@Override
+			public Adapter caseEventFilter(EventFilter object) {
+				return createEventFilterAdapter();
+			}
+			@Override
+			public Adapter caseEFSimple(EFSimple object) {
+				return createEFSimpleAdapter();
+			}
+			@Override
+			public Adapter caseEFComposite(EFComposite object) {
+				return createEFCompositeAdapter();
+			}
+			@Override
+			public Adapter caseEFStatusEvent(EFStatusEvent object) {
+				return createEFStatusEventAdapter();
+			}
+			@Override
+			public Adapter caseEFLogic(EFLogic object) {
+				return createEFLogicAdapter();
+			}
+			@Override
+			public Adapter caseEFProcessing(EFProcessing object) {
+				return createEFProcessingAdapter();
+			}
+			@Override
+			public Adapter caseEFTemporal(EFTemporal object) {
+				return createEFTemporalAdapter();
+			}
+			@Override
+			public Adapter caseEFLogicAnd(EFLogicAnd object) {
+				return createEFLogicAndAdapter();
+			}
+			@Override
+			public Adapter caseEFLogicOr(EFLogicOr object) {
+				return createEFLogicOrAdapter();
+			}
+			@Override
+			public Adapter caseEFLogicNot(EFLogicNot object) {
+				return createEFLogicNotAdapter();
+			}
+			@Override
+			public Adapter caseEFProcessingMin(EFProcessingMin object) {
+				return createEFProcessingMinAdapter();
+			}
+			@Override
+			public Adapter caseEFProcessingMax(EFProcessingMax object) {
+				return createEFProcessingMaxAdapter();
+			}
+			@Override
+			public Adapter caseEFProcessingSum(EFProcessingSum object) {
+				return createEFProcessingSumAdapter();
+			}
+			@Override
+			public Adapter caseEFProcessingCount(EFProcessingCount object) {
+				return createEFProcessingCountAdapter();
+			}
+			@Override
+			public Adapter caseEFProcessingAvg(EFProcessingAvg object) {
+				return createEFProcessingAvgAdapter();
+			}
+			@Override
+			public Adapter caseEFProcessingStDev(EFProcessingStDev object) {
+				return createEFProcessingStDevAdapter();
+			}
+			@Override
+			public Adapter caseEFTemporalSequence(EFTemporalSequence object) {
+				return createEFTemporalSequenceAdapter();
+			}
+			@Override
+			public Adapter caseEFChangeEvent(EFChangeEvent object) {
+				return createEFChangeEventAdapter();
+			}
+			@Override
+			public Adapter caseEFChangeIncrease(EFChangeIncrease object) {
+				return createEFChangeIncreaseAdapter();
+			}
+			@Override
+			public Adapter caseEFChangeDecrease(EFChangeDecrease object) {
+				return createEFChangeDecreaseAdapter();
+			}
+			@Override
+			public Adapter caseEFChangeRemain(EFChangeRemain object) {
+				return createEFChangeRemainAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -200,16 +320,436 @@ public class EventbaseAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link eventbase.ESimpleEF <em>ESimple EF</em>}'.
+	 * Creates a new adapter for an object of class '{@link eventbase.EventGenerator <em>Event Generator</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see eventbase.ESimpleEF
+	 * @see eventbase.EventGenerator
 	 * @generated
 	 */
-	public Adapter createESimpleEFAdapter() {
+	public Adapter createEventGeneratorAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EGNonRecurring <em>EG Non Recurring</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EGNonRecurring
+	 * @generated
+	 */
+	public Adapter createEGNonRecurringAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EGImmediate <em>EG Immediate</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EGImmediate
+	 * @generated
+	 */
+	public Adapter createEGImmediateAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EGAbsolute <em>EG Absolute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EGAbsolute
+	 * @generated
+	 */
+	public Adapter createEGAbsoluteAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EGOffset <em>EG Offset</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EGOffset
+	 * @generated
+	 */
+	public Adapter createEGOffsetAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EGRelative <em>EG Relative</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EGRelative
+	 * @generated
+	 */
+	public Adapter createEGRelativeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EGRecurring <em>EG Recurring</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EGRecurring
+	 * @generated
+	 */
+	public Adapter createEGRecurringAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EGPeriodic <em>EG Periodic</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EGPeriodic
+	 * @generated
+	 */
+	public Adapter createEGPeriodicAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EGPatterned <em>EG Patterned</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EGPatterned
+	 * @generated
+	 */
+	public Adapter createEGPatternedAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EGDistribution <em>EG Distribution</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EGDistribution
+	 * @generated
+	 */
+	public Adapter createEGDistributionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EventFilter <em>Event Filter</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EventFilter
+	 * @generated
+	 */
+	public Adapter createEventFilterAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFSimple <em>EF Simple</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFSimple
+	 * @generated
+	 */
+	public Adapter createEFSimpleAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFComposite <em>EF Composite</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFComposite
+	 * @generated
+	 */
+	public Adapter createEFCompositeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFStatusEvent <em>EF Status Event</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFStatusEvent
+	 * @generated
+	 */
+	public Adapter createEFStatusEventAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFLogic <em>EF Logic</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFLogic
+	 * @generated
+	 */
+	public Adapter createEFLogicAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFProcessing <em>EF Processing</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFProcessing
+	 * @generated
+	 */
+	public Adapter createEFProcessingAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFTemporal <em>EF Temporal</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFTemporal
+	 * @generated
+	 */
+	public Adapter createEFTemporalAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFLogicAnd <em>EF Logic And</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFLogicAnd
+	 * @generated
+	 */
+	public Adapter createEFLogicAndAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFLogicOr <em>EF Logic Or</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFLogicOr
+	 * @generated
+	 */
+	public Adapter createEFLogicOrAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFLogicNot <em>EF Logic Not</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFLogicNot
+	 * @generated
+	 */
+	public Adapter createEFLogicNotAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFProcessingMin <em>EF Processing Min</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFProcessingMin
+	 * @generated
+	 */
+	public Adapter createEFProcessingMinAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFProcessingMax <em>EF Processing Max</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFProcessingMax
+	 * @generated
+	 */
+	public Adapter createEFProcessingMaxAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFProcessingSum <em>EF Processing Sum</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFProcessingSum
+	 * @generated
+	 */
+	public Adapter createEFProcessingSumAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFProcessingCount <em>EF Processing Count</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFProcessingCount
+	 * @generated
+	 */
+	public Adapter createEFProcessingCountAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFProcessingAvg <em>EF Processing Avg</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFProcessingAvg
+	 * @generated
+	 */
+	public Adapter createEFProcessingAvgAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFProcessingStDev <em>EF Processing St Dev</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFProcessingStDev
+	 * @generated
+	 */
+	public Adapter createEFProcessingStDevAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFTemporalSequence <em>EF Temporal Sequence</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFTemporalSequence
+	 * @generated
+	 */
+	public Adapter createEFTemporalSequenceAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFChangeEvent <em>EF Change Event</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFChangeEvent
+	 * @generated
+	 */
+	public Adapter createEFChangeEventAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFChangeIncrease <em>EF Change Increase</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFChangeIncrease
+	 * @generated
+	 */
+	public Adapter createEFChangeIncreaseAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFChangeDecrease <em>EF Change Decrease</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFChangeDecrease
+	 * @generated
+	 */
+	public Adapter createEFChangeDecreaseAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link eventbase.EFChangeRemain <em>EF Change Remain</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eventbase.EFChangeRemain
+	 * @generated
+	 */
+	public Adapter createEFChangeRemainAdapter() {
 		return null;
 	}
 
