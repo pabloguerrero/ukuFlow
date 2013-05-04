@@ -87,4 +87,48 @@
   <eClassifiers xsi:type="ecore:EClass" name="EFChangeIncrease" eSuperTypes="#//EFChangeEvent"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFChangeDecrease" eSuperTypes="#//EFChangeEvent"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFChangeRemain" eSuperTypes="#//EFChangeEvent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RootDocument">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sequenceFlow" upperBound="-1"
+        eType="#//ESequenceFlow"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="egImmediate" upperBound="-1"
+        eType="#//EGImmediate"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="egAbsolute" upperBound="-1"
+        eType="#//EGAbsolute"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="egOffset" upperBound="-1"
+        eType="#//EGOffset"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="egRelative" upperBound="-1"
+        eType="#//EGRelative"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="egPeriodic" upperBound="-1"
+        eType="#//EGPeriodic"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="egPatterned" upperBound="-1"
+        eType="#//EGPatterned"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="egDistribution" upperBound="-1"
+        eType="#//EGDistribution"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="efLogicAnd" upperBound="-1"
+        eType="#//EFLogicAnd"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="efLogicOr" upperBound="-1"
+        eType="#//EFLogicOr"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="efLogicNot" upperBound="-1"
+        eType="#//EFLogicNot"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="efProcessingMin" upperBound="-1"
+        eType="#//EFProcessingMin"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="efProcessingMax" upperBound="-1"
+        eType="#//EFProcessingMax"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="efProcessingCount" upperBound="-1"
+        eType="#//EFProcessingCount"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="efProcessingSum" upperBound="-1"
+        eType="#//EFProcessingSum"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="efProcessingAvg" upperBound="-1"
+        eType="#//EFProcessingAvg"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="efProcessingStDev" upperBound="-1"
+        eType="#//EFProcessingStDev"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="efTemporalSeq" upperBound="-1"
+        eType="#//EFTemporalSequence"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="efIncrease" upperBound="-1"
+        eType="#//EFChangeIncrease"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="efDecrease" upperBound="-1"
+        eType="#//EFChangeDecrease"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="efRemain" upperBound="-1"
+        eType="#//EFChangeRemain"/>
+  </eClassifiers>
 </ecore:EPackage>

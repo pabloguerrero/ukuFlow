@@ -10,5 +10,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport
 Bundle-ActivationPolicy: lazy
-Export-Package: eventbase,
+Export-Package: de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase,
+ de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.util,
+ eventbase,
+ eventbase.impl,
  eventbase.util
