@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Combo;
 
 /**
  * A simple input dialog for soliciting an input string from the user.
@@ -43,7 +44,7 @@ public class UkuInputDialog extends Dialog {
     private String title;
 
     
-    Map<String,String> requests;
+    Map<String,Object> requests;
     /**
      * The input validator, or <code>null</code> if none.
      */
@@ -57,7 +58,7 @@ public class UkuInputDialog extends Dialog {
     /**
      * Input text widget.
      */
-    private Map<String,Text> texts;
+    private Map<String,Control> texts;
 
     /**
      * Error message label widget.
@@ -102,12 +103,12 @@ public class UkuInputDialog extends Dialog {
 		//}
         this.validator = validator;
     }
-    public UkuInputDialog(Shell parentShell, String dialogTitle, Map<String,String> requests,IInputValidator validator){
+    public UkuInputDialog(Shell parentShell, String dialogTitle, Map<String,Object> requests,IInputValidator validator){
     	super(parentShell);
     	this.title = dialogTitle;
     	this.validator = validator;
     	this.requests = requests;
-    	texts = new HashMap<String, Text>();
+    	texts = new HashMap<String, Control>();
     	
     }
 
@@ -117,7 +118,9 @@ public class UkuInputDialog extends Dialog {
     protected void buttonPressed(int buttonId) {
 		for (String key : texts.keySet())
 			if (buttonId == IDialogConstants.OK_ID) {
-				requests.put(key, texts.get(key).getText());//
+				Control tmp = texts.get(key);
+				if(tmp instanceof Text)
+				requests.put(key, ((Text)tmp).getText());//
 			} else {
 				requests.put(key, "");
 			}
@@ -153,8 +156,9 @@ public class UkuInputDialog extends Dialog {
         //texts.get("").setFocus();
         for(String key : requests.keySet())
         	if (requests.get(key)!= null) {
-        		texts.get(key).setText(requests.get(key));
-        		texts.get(key).selectAll();
+        		
+        		((Text)texts.get(key)).setText(requests.get(key).toString());
+        		((Text)texts.get(key)).selectAll();
         	}
     }
 
@@ -226,7 +230,7 @@ public class UkuInputDialog extends Dialog {
      * 
      * @return the text area
      */
-    protected Map<String,Text> getTexts() {
+    protected Map<String,Control> getTexts() {
         return texts;
     }
 
@@ -301,7 +305,7 @@ public class UkuInputDialog extends Dialog {
 	protected int getInputTextStyle() {
 		return SWT.SINGLE | SWT.BORDER;
 	}
-	public Map<String,String> getValues() {
+	public Map<String,Object> getValues() {
 		//for(String key : texts.keySet()){
 		//	requests.put(key, texts.get(key).getText());
 		//}

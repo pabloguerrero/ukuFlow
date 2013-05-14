@@ -16,12 +16,6 @@
 package de.tudarmstadt.dvs.ukuflow.features.Connection;
 
 
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EcoreFactory;
-import org.eclipse.emf.ecore.impl.EAttributeImpl;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
@@ -29,16 +23,16 @@ import org.eclipse.graphiti.features.impl.AbstractCreateConnectionFeature;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 
-import eventbase.ESequenceFlow;
-import eventbase.EventBaseOperator;
-import eventbase.EventbaseFactory;
-import eventbase.EventbasePackage;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESequenceFlow;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
+
 
 public class ukuCreateConnectionFeature extends AbstractCreateConnectionFeature {
 
 	public ukuCreateConnectionFeature(IFeatureProvider fp) {
 		// provide name and description for the UI, e.g. the palette
-		super(fp, "Connection", "Create EReference"); //$NON-NLS-1$ //$NON-NLS-2$
+		super(fp, "Connection", "Create SequenceFlow"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public boolean canCreate(ICreateConnectionContext context) {
@@ -46,8 +40,8 @@ public class ukuCreateConnectionFeature extends AbstractCreateConnectionFeature 
 		
 		// return true if both anchors belong to a EClass
 		// and those EClasses are not identical
-		eventbase.EventBaseOperator source = getEClass(context.getSourceAnchor());
-		eventbase.EventBaseOperator target = getEClass(context.getTargetAnchor());
+		EventBaseOperator source = getEClass(context.getSourceAnchor());
+		EventBaseOperator target = getEClass(context.getTargetAnchor());
 		//if(source instanceof EPeriodicEG && target instanceof EPeriodicEG)
 		//	return false;
 		
@@ -70,8 +64,8 @@ public class ukuCreateConnectionFeature extends AbstractCreateConnectionFeature 
 		Connection newConnection = null;
 
 		// get EClasses which should be connected
-		eventbase.EventBaseOperator source = getEClass(context.getSourceAnchor());
-		eventbase.EventBaseOperator target = getEClass(context.getTargetAnchor());
+		EventBaseOperator source = getEClass(context.getSourceAnchor());
+		EventBaseOperator target = getEClass(context.getTargetAnchor());
 
 		if (source != null && target != null) {
 			// create new business object
@@ -80,7 +74,7 @@ public class ukuCreateConnectionFeature extends AbstractCreateConnectionFeature 
 			AddConnectionContext addContext = new AddConnectionContext(context.getSourceAnchor(), context.getTargetAnchor());
 			addContext.setNewObject(eReference);
 			newConnection = (Connection) getFeatureProvider().addIfPossible(addContext);
-			link(newConnection, eReference);
+			//link(newConnection, eReference);
 		}
 		
 		return newConnection;
@@ -89,11 +83,11 @@ public class ukuCreateConnectionFeature extends AbstractCreateConnectionFeature 
 	/**
 	 * Returns the EClass belonging to the anchor, or null if not available.
 	 */
-	private eventbase.EventBaseOperator getEClass(Anchor anchor) {
+	private EventBaseOperator getEClass(Anchor anchor) {
 		if (anchor != null) {
 			Object obj = getBusinessObjectForPictogramElement(anchor.getParent());
-			if (obj instanceof eventbase.EventBaseOperator) {
-				return (eventbase.EventBaseOperator) obj;
+			if (obj instanceof EventBaseOperator) {
+				return (EventBaseOperator) obj;
 			}
 		}
 		return null;
@@ -102,9 +96,12 @@ public class ukuCreateConnectionFeature extends AbstractCreateConnectionFeature 
 	/**
 	 * Creates a EReference between two EClasses.
 	 */
-	private ESequenceFlow createEReference(eventbase.EventBaseOperator source, eventbase.EventBaseOperator target) {
+	private ESequenceFlow createEReference(EventBaseOperator source, EventBaseOperator target) {
 		//EReference eReference = EcoreFactory.eINSTANCE.createEReference();
 		ESequenceFlow eReference = EventbaseFactory.eINSTANCE.createESequenceFlow();//EventbasePackage.eINSTANCE.getESequenceFlow();//new EConnection((IEEvaluableExpression)source, (IEEvaluableExpression)target);
+		eReference.setSource(source);
+		eReference.setTarget(target);
+		
 		//eReference.setSource((EventBaseOperator) source);
 		//eReference.setTarget((EventBaseOperator) target);//setName("new connection"); //$NON-NLS-1$
 		//eReference.eSet(EventbasePackage.eINSTANCE.getESequenceFlow_Source(), source);

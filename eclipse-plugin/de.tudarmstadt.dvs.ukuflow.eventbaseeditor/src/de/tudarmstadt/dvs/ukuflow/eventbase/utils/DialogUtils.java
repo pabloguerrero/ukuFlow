@@ -9,7 +9,7 @@ import org.eclipse.ui.PlatformUI;
 
 public class DialogUtils {
 
-	public static Map<String,String> askString(String dialogTitle, Map<String,String> requests) {
+	public static Map<String,String> askString(String dialogTitle, Map<String,Object> requests) {
 		Map ret = null;
 		Shell shell = getShell();
 		//DialogPage dp;// = new Dialog

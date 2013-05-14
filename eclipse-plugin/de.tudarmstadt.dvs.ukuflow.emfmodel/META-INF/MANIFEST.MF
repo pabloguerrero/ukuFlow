@@ -12,6 +12,4 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Export-Package: de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase,
  de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.util,
- eventbase,
- eventbase.impl,
- eventbase.util
+ de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl

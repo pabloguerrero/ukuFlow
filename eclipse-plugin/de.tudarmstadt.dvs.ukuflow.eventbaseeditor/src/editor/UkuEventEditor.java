@@ -8,10 +8,11 @@ import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.graphiti.examples.tutorial.EventScriptResource;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.ui.IEditorInput;
+
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventScriptResource;
 
 public class UkuEventEditor extends DiagramEditor{
 

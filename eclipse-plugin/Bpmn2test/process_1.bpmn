@@ -3,7 +3,6 @@
   <process id="process_1" tns:version="1" tns:packageName="defaultPackage" tns:adHoc="false" name="Default Process" isExecutable="true">
     <eventBasedGateway id="EventBasedGateway_2" name="" gatewayDirection="Diverging">
       <outgoing>SequenceFlow_2</outgoing>
-      <outgoing>SequenceFlow_5</outgoing>
     </eventBasedGateway>
     <receiveTask id="ReceiveTask_2" name="Receive Task 2">
       <incoming>SequenceFlow_2</incoming>
@@ -16,20 +15,12 @@
       <dataInputAssociation id="DataInputAssociation_1">
         <targetRef>DataInput_1</targetRef>
         <assignment id="Assignment_1">
-          <from xsi:type="tFormalExpression" id="FormalExpression_1">test</from>
-          <to xsi:type="tFormalExpression">DataInput_1</to>
+          <from xsi:type="tFormalExpression" id="FormalExpression_1">testtestetest</from>
+          <to xsi:type="tFormalExpression" id="FormalExpression_2">DataInput_1</to>
         </assignment>
       </dataInputAssociation>
     </receiveTask>
-    <intermediateCatchEvent id="IntermediateCatchEvent_2" name="">
-      <incoming>SequenceFlow_5</incoming>
-      <timerEventDefinition id="TimerEventDefinition_2"/>
-    </intermediateCatchEvent>
     <sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="EventBasedGateway_2" targetRef="ReceiveTask_2"/>
-    <sequenceFlow id="SequenceFlow_5" tns:priority="1" name="" sourceRef="EventBasedGateway_2" targetRef="IntermediateCatchEvent_2"/>
-    <textAnnotation id="TextAnnotation_1">
-      <text>hienhienhien</text>
-    </textAnnotation>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Process Diagram">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process_1">
@@ -51,20 +42,10 @@
       <bpmndi:BPMNShape id="BPMNShape_ReceiveTask_2" bpmnElement="ReceiveTask_2">
         <dc:Bounds height="50.0" width="110.0" x="285.0" y="85.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_IntermediateCatchEvent_3" bpmnElement="IntermediateCatchEvent_2">
-        <dc:Bounds height="36.0" width="36.0" x="285.0" y="245.0"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_EventBasedGateway_2" targetElement="BPMNShape_ReceiveTask_2">
         <di:waypoint xsi:type="dc:Point" x="209.0" y="185.0"/>
         <di:waypoint xsi:type="dc:Point" x="285.0" y="110.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_5" sourceElement="BPMNShape_EventBasedGateway_2" targetElement="BPMNShape_IntermediateCatchEvent_3">
-        <di:waypoint xsi:type="dc:Point" x="209.0" y="185.0"/>
-        <di:waypoint xsi:type="dc:Point" x="285.0" y="263.0"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_1" bpmnElement="TextAnnotation_1">
-        <dc:Bounds height="100.0" width="100.0" x="470.0" y="230.0"/>
-      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
   <relationship id="Relationship_1">
@@ -85,22 +66,7 @@
               </tns:UnitCost>
             </tns:CostParameters>
           </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="IntermediateCatchEvent_2" id="ElementParameters_3">
-            <tns:TimeParameters xsi:type="tns:TimeParameters">
-              <tns:WaitTime xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="1.0"/>
-              </tns:WaitTime>
-              <tns:TimeUnit>s</tns:TimeUnit>
-            </tns:TimeParameters>
-          </tns:ElementParameters>
           <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="SequenceFlow_2" id="ElementParameters_4">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="SequenceFlow_5" id="ElementParameters_6">
             <tns:ControlParameters xsi:type="tns:ControlParameters">
               <tns:Probability xsi:type="tns:Parameter">
                 <tns:FloatingParameter value="100.0"/>
