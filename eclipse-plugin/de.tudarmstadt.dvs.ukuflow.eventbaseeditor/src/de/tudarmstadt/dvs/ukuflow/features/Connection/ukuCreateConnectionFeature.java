@@ -23,8 +23,10 @@ import org.eclipse.graphiti.features.impl.AbstractCreateConnectionFeature;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRelative;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESequenceFlow;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventGenerator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 
 
@@ -46,6 +48,16 @@ public class ukuCreateConnectionFeature extends AbstractCreateConnectionFeature 
 		//	return false;
 		
 		if (source != null && target != null && source != target) {
+			if(target instanceof EventGenerator){
+				if(!(target instanceof EGRelative)){
+					// Event generator should not have incoming!
+					return false;
+				} else {
+					if(!target.getIncoming().isEmpty())
+						// EG Relative should have only one incoming!
+						return false;
+				}
+			}
 			return true;
 		}
 		return false;

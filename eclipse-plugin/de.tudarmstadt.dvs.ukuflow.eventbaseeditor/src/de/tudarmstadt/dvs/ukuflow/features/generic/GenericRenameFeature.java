@@ -87,7 +87,7 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 				if (newTime != currentTime) {
 					this.hasDoneChanges = true;
 					eClass.setAbsoluteTime(newTime);
-					updatePictogramElement(pes[0]);
+					//updatePictogramElement(pes[0]);
 				}
 			} else if (bo instanceof EGOffset) {
 				EGOffset off = (EGOffset) bo;
@@ -101,7 +101,7 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 				if (newTime != currentTime) {
 					this.hasDoneChanges = true;
 					off.setOffsetTime(newTime);
-					updatePictogramElement(pes[0]);
+					//updatePictogramElement(pes[0]);
 				}
 			} else if (bo instanceof EGRelative) {
 				EGRelative off = (EGRelative) bo;
@@ -115,7 +115,7 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 				if (newTime != currentTime) {
 					this.hasDoneChanges = true;
 					off.setDelayTime(newTime);
-					updatePictogramElement(pes[0]);
+					//updatePictogramElement(pes[0]);
 				}
 			} else if (bo instanceof EGPeriodic) {
 				EGPeriodic off = (EGPeriodic) bo;
@@ -135,22 +135,22 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 				if (newTime != currentTime) {
 					this.hasDoneChanges = true;
 					off.setTime(newTime);
-					updatePictogramElement(pes[0]);
+					//updatePictogramElement(pes[0]);
 				}
 				
 				String scope= off.getScope();
 				String newScope= result.get(key2);
-				if (newScope.equals(scope)) {
+				if (!newScope.equals(scope)) {
 					this.hasDoneChanges = true;
 					off.setScope(newScope);
-					updatePictogramElement(pes[0]);
+					//updatePictogramElement(pes[0]);
 				}
 				String type= off.getSensorType();
 				String newType= result.get(key1);
-				if (newType.equals(type)) {
+				if (!newType.equals(type)) {
 					this.hasDoneChanges = true;
 					off.setSensorType(newType);
-					updatePictogramElement(pes[0]);
+					//updatePictogramElement(pes[0]);
 				}
 			} else if (bo instanceof EGPatterned) {
 				EGPatterned off = (EGPatterned) bo;
@@ -167,14 +167,14 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 				if (newTime != currentTime) {
 					this.hasDoneChanges = true;
 					off.setTime(newTime);
-					updatePictogramElement(pes[0]);
+					//updatePictogramElement(pes[0]);
 				}
 				String currentPattern = off.getPattern();
 				String newPattern = result.get(key2);
 				if(!newPattern.equals(currentPattern)){
 					this.hasDoneChanges = true;
 					off.setPattern(newPattern);
-					updatePictogramElement(pes[0]);
+					//updatePictogramElement(pes[0]);
 				}
 			}else if (bo instanceof EGDistribution) {
 				EGDistribution off = (EGDistribution) bo;
@@ -191,14 +191,14 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 				if (newTime != currentTime) {
 					this.hasDoneChanges = true;
 					off.setTime(newTime);
-					updatePictogramElement(pes[0]);
+					//updatePictogramElement(pes[0]);
 				}
 				String currentPattern = off.getFunction();
 				String newPattern = result.get(key2);
 				if(!newPattern.equals(currentPattern)){
 					this.hasDoneChanges = true;
 					off.setFunction(newPattern);
-					updatePictogramElement(pes[0]);
+					//updatePictogramElement(pes[0]);
 				}
 			} else if (bo instanceof EFSimple){
 				EFSimple efsimple = (EFSimple) bo;
@@ -241,10 +241,9 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 					off.setOperator(newOp);
 					
 				}
-				if(this.hasDoneChanges)
-					updatePictogramElement(pes[0]);
-
 			}
+			if(this.hasDoneChanges)
+				updatePictogramElement(pes[0]);
 		}
 	}
 

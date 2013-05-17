@@ -150,7 +150,7 @@ public class TutorialFeatureProvider extends DefaultFeatureProvider {
 	public IAddFeature getAddFeature(IAddContext context) {
 		// is object for add request a EClass or EReference?
 		final Object newObject = context.getNewObject();
-		if(newObject instanceof ESequenceFlow)
+		if (newObject instanceof ESequenceFlow)
 			return new SequenceFlowAddFeature(this);
 		/*
 		 * if (context.getNewObject() instanceof eventbase.ESequenceFlow) {
@@ -166,9 +166,10 @@ public class TutorialFeatureProvider extends DefaultFeatureProvider {
 		 * EComplexEFAddFeature(this); }
 		 */
 		FeatureContainer fc = null;
-		for( @SuppressWarnings("rawtypes") Class c : newObject.getClass().getInterfaces()){
+		for (@SuppressWarnings("rawtypes")
+		Class c : newObject.getClass().getInterfaces()) {
 			fc = containers.get(c);
-			if(fc != null)
+			if (fc != null)
 				break;
 		}
 		if (fc != null)
@@ -215,10 +216,12 @@ public class TutorialFeatureProvider extends DefaultFeatureProvider {
 	public IResizeShapeFeature getResizeShapeFeature(IResizeShapeContext context) {
 		Shape shape = context.getShape();
 		Object bo = getBusinessObjectForPictogramElement(shape);
-		FeatureContainer fc = containers.get(bo.getClass());
-		if (fc != null)
-			if (fc.getResizeFeature(this) != null)
-				return fc.getResizeFeature(this);
+		if (bo != null) {
+			FeatureContainer fc = containers.get(bo.getClass());
+			if (fc != null)
+				if (fc.getResizeFeature(this) != null)
+					return fc.getResizeFeature(this);
+		}
 		return super.getResizeShapeFeature(context);
 	}
 
@@ -259,9 +262,9 @@ public class TutorialFeatureProvider extends DefaultFeatureProvider {
 			IDirectEditingContext context) {
 		PictogramElement pe = context.getPictogramElement();
 		Object bo = getBusinessObjectForPictogramElement(pe);
-		if(bo == null)
+		if (bo == null)
 			return super.getDirectEditingFeature(context);
-		//TODO
+		// TODO
 		FeatureContainer fc = containers.get(bo.getClass());
 		if (fc != null)
 			if (fc.getDirectEditingFeature(this) != null)
