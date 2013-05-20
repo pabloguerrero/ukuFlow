@@ -13,7 +13,7 @@
  * </copyright>
  *
  *******************************************************************************/
-package de.tudarmstadt.dvs.ukuflow.features.Connection;
+package de.tudarmstadt.dvs.ukuflow.features.connection;
 
 
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -26,13 +26,14 @@ import org.eclipse.graphiti.mm.pictograms.Connection;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRelative;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESequenceFlow;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventFilter;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventGenerator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 
 
-public class ukuCreateConnectionFeature extends AbstractCreateConnectionFeature {
+public class SequenceFlowCreateFeature extends AbstractCreateConnectionFeature {
 
-	public ukuCreateConnectionFeature(IFeatureProvider fp) {
+	public SequenceFlowCreateFeature(IFeatureProvider fp) {
 		// provide name and description for the UI, e.g. the palette
 		super(fp, "Connection", "Create SequenceFlow"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
@@ -57,6 +58,8 @@ public class ukuCreateConnectionFeature extends AbstractCreateConnectionFeature 
 						// EG Relative should have only one incoming!
 						return false;
 				}
+			} else if(target instanceof EventFilter){
+				//TODO
 			}
 			return true;
 		}
@@ -81,10 +84,10 @@ public class ukuCreateConnectionFeature extends AbstractCreateConnectionFeature 
 
 		if (source != null && target != null) {
 			// create new business object
-			ESequenceFlow eReference = createEReference(source, target);			
+			ESequenceFlow seqFlow = createEReference(source, target);			
 			// add connection for business object
 			AddConnectionContext addContext = new AddConnectionContext(context.getSourceAnchor(), context.getTargetAnchor());
-			addContext.setNewObject(eReference);
+			addContext.setNewObject(seqFlow);
 			newConnection = (Connection) getFeatureProvider().addIfPossible(addContext);
 			//link(newConnection, eReference);
 		}

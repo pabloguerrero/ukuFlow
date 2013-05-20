@@ -13,7 +13,7 @@
  * </copyright>
  *
  *******************************************************************************/
-package de.tudarmstadt.dvs.ukuflow.features.Connection;
+package de.tudarmstadt.dvs.ukuflow.features.connection;
 
 //import org.eclipse.emf.ecore.EReference;
 import org.eclipse.graphiti.features.IFeatureProvider;

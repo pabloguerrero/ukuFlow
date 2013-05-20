@@ -61,9 +61,8 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGPatterned;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGPeriodic;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRelative;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESequenceFlow;
-import de.tudarmstadt.dvs.ukuflow.features.Connection.SequenceFlowAddFeature;
-import de.tudarmstadt.dvs.ukuflow.features.Connection.ukuCreateConnectionFeature;
-import de.tudarmstadt.dvs.ukuflow.features.ef.complex.EComplexEFAddFeature;
+import de.tudarmstadt.dvs.ukuflow.features.connection.SequenceFlowAddFeature;
+import de.tudarmstadt.dvs.ukuflow.features.connection.SequenceFlowCreateFeature;
 import de.tudarmstadt.dvs.ukuflow.features.ef.simple.EFSimpleFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.distribution.EGDistributionFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring.EGAbsoluteFeatureContainer;
@@ -247,7 +246,7 @@ public class TutorialFeatureProvider extends DefaultFeatureProvider {
 
 	@Override
 	public ICreateConnectionFeature[] getCreateConnectionFeatures() {
-		return new ICreateConnectionFeature[] { new ukuCreateConnectionFeature(
+		return new ICreateConnectionFeature[] { new SequenceFlowCreateFeature(
 				this) };
 	}
 
