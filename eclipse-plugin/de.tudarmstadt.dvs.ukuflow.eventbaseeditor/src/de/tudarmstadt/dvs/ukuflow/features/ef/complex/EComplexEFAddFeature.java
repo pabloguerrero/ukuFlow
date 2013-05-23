@@ -74,9 +74,9 @@ public class EComplexEFAddFeature extends AbstractAddShapeFeature{
 
 					// if addedClass has no resource we add it to the resource of the diagram
 					// in a real scenario the business model would have its own resource
-					if (addedClass.eResource() == null) {
-						getDiagram().eResource().getContents().add(addedClass);
-					}
+					//if (addedClass.eResource() == null) {
+					//	getDiagram().eResource().getContents().add(addedClass);
+					//}
 
 					// create link and wire it
 					link(containerShape, addedClass);
@@ -105,7 +105,7 @@ public class EComplexEFAddFeature extends AbstractAddShapeFeature{
 
 					// create link and wire it
 					link(shape, addedClass);
-					addedClass.setName(addedClass.getClass().getSimpleName());
+					//addedClass.setName(addedClass.getClass().getSimpleName());
 					updatePictogramElement(shape);
 					// provide information to support direct-editing directly
 					// after object creation (must be activated additionally)

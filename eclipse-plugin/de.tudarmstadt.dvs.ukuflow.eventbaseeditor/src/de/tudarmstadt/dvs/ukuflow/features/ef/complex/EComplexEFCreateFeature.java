@@ -24,7 +24,7 @@ public class EComplexEFCreateFeature extends AbstractCreateFeature{
 
 	public Object[] create(ICreateContext context) {
 		EComplexEF newClass = new EComplexEF();
-		getDiagram().eResource().getContents().add(newClass);
+		//getDiagram().eResource().getContents().add(newClass);
 
 		//		Use the following instead of the above line to store the model
 		//		data in a seperate file parallel to the diagram file

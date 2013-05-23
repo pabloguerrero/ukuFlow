@@ -40,7 +40,7 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Token;
  *
  */
 public class UkuReceiveTask extends UkuActivity {
-	EventBaseOperator topOperator;
+	public EventBaseOperator topOperator;
 	EEventBaseScript ebScript;
 	/**
 	 * @param id

@@ -40,7 +40,7 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.INonEMFEventbaseElement
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 import org.eclipse.emf.ecore.impl.EClassImpl;
-public class EEvaluableExpression extends EClassImpl implements INonEMFEventbaseElement,IEEvaluableExpression,Visitable {
+public class EEvaluableExpression implements INonEMFEventbaseElement,IEEvaluableExpression,Visitable {
 	private String nonEMF_ID;
 	private List<IEConnection> incomings;
 	private List<IEConnection> outgoings;

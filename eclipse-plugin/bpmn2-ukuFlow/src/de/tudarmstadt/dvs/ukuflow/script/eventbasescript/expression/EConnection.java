@@ -35,7 +35,7 @@ import org.eclipse.emf.ecore.impl.EReferenceImpl;
  * @author ”Hien Quoc Dang”
  *
  */
-public class EConnection extends EReferenceImpl implements IEConnection{
+public class EConnection implements IEConnection{
 
 	private IEEvaluableExpression source;
 	private IEEvaluableExpression target;

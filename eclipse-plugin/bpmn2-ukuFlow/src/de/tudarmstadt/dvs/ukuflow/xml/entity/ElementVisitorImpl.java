@@ -269,6 +269,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 			rTask.addWarningMessage("no script");
 			return;
 		}
+		rTask.topOperator.accept(eVisitor);
 		//TODO visit receive task
 		
 	}

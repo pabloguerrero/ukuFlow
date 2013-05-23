@@ -7,9 +7,11 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
+import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
+
 public class DialogUtils {
 
-	public static Map<String,String> askString(String dialogTitle, Map<String,Object> requests) {
+	public static Map<Integer,RequestContainer> askString(String dialogTitle, Map<Integer,RequestContainer> requests) {
 		Map ret = null;
 		Shell shell = getShell();
 		//DialogPage dp;// = new Dialog
@@ -23,6 +25,7 @@ public class DialogUtils {
 		//PopupDialog
 		return ret;
 	}
+	
 	/**
 	 * Returns the currently active Shell.
 	 * 
@@ -31,4 +34,5 @@ public class DialogUtils {
 	private static Shell getShell() {
 		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 	}
+	
 }

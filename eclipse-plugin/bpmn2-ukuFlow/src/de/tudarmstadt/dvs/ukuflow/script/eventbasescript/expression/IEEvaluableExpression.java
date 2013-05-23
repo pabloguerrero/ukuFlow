@@ -35,7 +35,7 @@ import java.util.List;
  * @author ”Hien Quoc Dang”
  *
  */
-public interface IEEvaluableExpression extends EClass{
+public interface IEEvaluableExpression {
 	
 	public List<IEConnection> getIncomings();
 	public List<IEConnection> getOutgoings();

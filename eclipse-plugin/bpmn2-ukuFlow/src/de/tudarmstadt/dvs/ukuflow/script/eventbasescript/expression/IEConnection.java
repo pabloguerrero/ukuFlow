@@ -35,7 +35,7 @@ import org.eclipse.emf.ecore.EReference;
  * @author ”Hien Quoc Dang”
  *
  */
-public interface IEConnection extends EReference{	
+public interface IEConnection{	
 	public IEEvaluableExpression getSource();
 	public IEEvaluableExpression getTarget();
 	public void setSource(IEEvaluableExpression source);

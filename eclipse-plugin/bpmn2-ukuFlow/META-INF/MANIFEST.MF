@@ -18,7 +18,8 @@ Bundle-ClassPath: lib/jdom-2.0.1.jar,
  .,
  lib/rxtx/RXTXcomm.jar,
  lib/commons-codec-1.6.jar
-Export-Package: de.tudarmstadt.dvs.ukuflow.script.eventbasescript,
+Export-Package: de.tudarmstadt.dvs.ukuflow.script,
+ de.tudarmstadt.dvs.ukuflow.script.eventbasescript,
  de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression,
  gnu.io,
  org.jdom2

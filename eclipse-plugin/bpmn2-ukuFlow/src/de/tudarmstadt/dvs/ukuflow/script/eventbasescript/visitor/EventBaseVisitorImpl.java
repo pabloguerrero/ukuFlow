@@ -32,6 +32,7 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor;
 
 import java.util.Vector;
 
+import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicDistributionEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicPatternedEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexEF;
@@ -91,8 +92,7 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 
 	@Override
 	public void visit(ETopExpression top) {
-		// TODO Auto-generated method stub
-		
+		//top.i
 	}
 
 	@Override
@@ -109,6 +109,17 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 
 	@Override
 	public void visit(EPeriodicEG ep) {
+		out.add((byte)UkuConstants.PERIODIC_E_GEN);
+		out.add(ChannelIDManager.getInstance().getChannelID(ep.getID()));
+		out.add((byte)ep.getSensorType());
+		byte code = 0;
+		if(ep.getScope() == null || ep.getScope().equals(""))
+			code = 0;
+		else 
+			code = (byte)ep.getScope().hashCode();
+		//TODO scope manager;
+		out.add(code);
+		//out.add(ep.get)
 		
 	}
 

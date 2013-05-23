@@ -31,9 +31,11 @@
 package de.tudarmstadt.dvs.ukuflow.script;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UkuConstants {
-	public class EGConstants{
+	public class EGConstants {
 		public static final int IMMEDIATE_E_GEN = 0;
 		public static final int ABSOLUTE_E_GEN = 1;
 		public static final int OFFSET_E_GEN = 2;
@@ -42,7 +44,8 @@ public class UkuConstants {
 		public static final int PATTERNED_E_GEN = 5;
 		public static final int DISTRIBUTED_E_GEN = 6;
 	}
-	public class EFConstants{
+
+	public class EFConstants {
 		/* Event Filter */
 		public static final int SIMPLE_FILTER = 7;
 		public static final int AND_COMPOSITION_FILTER = 8;
@@ -59,7 +62,8 @@ public class UkuConstants {
 		public static final int DECREASE_FILTER = 19;
 		public static final int REMAIN_FILTER = 20;
 	}
-	public class OperatorConstants{
+
+	public class OperatorConstants {
 		/* expression-types.h */
 		public static final int OPERATOR_AND = 0;
 		public static final int OPERATOR_OR = 1;
@@ -78,7 +82,8 @@ public class UkuConstants {
 		public static final int OPERATOR_MULT = 12;
 		public static final int OPERATOR_MOD = 13;
 	}
-	public class DataTypeConstants{
+
+	public class DataTypeConstants {
 		public static final int UINT8_VALUE = 14;
 		public static final int UINT16_VALUE = 15;
 		public static final int INT8_VALUE = 16;
@@ -90,7 +95,8 @@ public class UkuConstants {
 
 		public static final int CUSTOM_INPUT_VALUE = 20;
 	}
-	public class SensorTypeConstants{
+
+	public static class SensorTypeConstants {
 		public final static int SENSOR_LIGHT_PAR_RAW = 0;
 		public final static int SENSOR_LIGHT_TSR_RAW = 1;
 		public final static int SENSOR_TEMPERATURE_RAW = 2;
@@ -105,7 +111,25 @@ public class UkuConstants {
 		public final static int SENSOR_CO2 = 11;
 		public final static int SENSOR_CO = 12;
 		public final static int NODE_ID = 13;
+		public static List<String> sensor_types = new ArrayList<String>();
+		static {
+			sensor_types.add("SENSOR_LIGHT_PAR_RAW");
+			sensor_types.add("SENSOR_LIGHT_TSR_RAW");
+			sensor_types.add("SENSOR_TEMPERATURE_RAW");
+			sensor_types.add("SENSOR_TEMPERATURE_CELSIUS");
+			sensor_types.add("SENSOR_TEMPERATURE_FAHRENHEIT");
+			sensor_types.add("SENSOR_HUMIDITY_RAW");
+			sensor_types.add("SENSOR_HUMIDITY_PERCENT");
+			sensor_types.add("SENSOR_ACCM_X_AXIS");
+			sensor_types.add("SENSOR_ACCM_Y_AXIS");
+			sensor_types.add("SENSOR_ACCM_Z_AXIS");
+			sensor_types.add("SENSOR_VOLTAGE_RAW");
+			sensor_types.add("SENSOR_CO2");
+			sensor_types.add("SENSOR_CO");
+			sensor_types.add("NODE_ID");
+		}
 	}
+
 	/* event-types.h */
 	/* Event Generator */
 	public static final int IMMEDIATE_E_GEN = 0;
@@ -204,8 +228,7 @@ public class UkuConstants {
 	public static final int COMPUTATION_STATEMENT = 0;
 	public static final int LOCAL_FUNCTION_STATEMENT = 1;
 	public static final int SCOPED_FUNCTION_STATEMENT = 2;
-	
-	
+
 	public static int getConstantWithName(String name, Class clazz) {
 		int r = -1;
 		try {

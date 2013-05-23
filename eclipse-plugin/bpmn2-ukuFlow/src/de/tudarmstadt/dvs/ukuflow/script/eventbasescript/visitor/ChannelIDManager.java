@@ -59,6 +59,9 @@ public class ChannelIDManager {
 	public void removeAllRegisteredChannel(){
 		reg = new HashMap<String, Byte>();
 	}
+	public void register(String key, byte id){
+		reg.put(key,id);
+	}
 	
 	public byte getChannelID(String regs){
 		if(reg.containsKey(regs))
