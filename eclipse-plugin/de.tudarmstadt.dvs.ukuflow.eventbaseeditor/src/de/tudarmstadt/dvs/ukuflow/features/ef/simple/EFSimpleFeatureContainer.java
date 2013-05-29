@@ -33,6 +33,7 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeCreateService;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.ModelUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram.TutorialFeatureProvider;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple;
@@ -159,6 +160,9 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 
 		public PictogramElement add(IAddContext context) {
 			final EFSimple addedClass = (EFSimple)context.getNewObject(); 
+			String oldName = addedClass.getElementName();
+			String newname = ModelUtil.setName(addedClass);
+			System.out.println(oldName + " -> new: " + newname);
 			final Diagram targetDiagram = (Diagram) context.getTargetContainer();
 			// CONTAINER SHAPE WITH ROUNDED RECTANGLE
 					final IPeCreateService peCreateService = Graphiti.getPeCreateService();

@@ -241,6 +241,7 @@ public class UkuInputDialog extends Dialog {
 				}
 				combo.setItems(a);
 				combo.select(selectIndex);
+				combo.setEditable(false);
 				text = combo;
 			}
 			texts.put(message, text);

@@ -66,11 +66,23 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 		}
 		return ret;
 	}
-
+	private String getQuestion(Object o){
+		String question = "";
+		if(o instanceof EventGenerator)
+			question += "EG ";
+		else
+			question += "EF ";
+		question += ((EventBaseOperator) o).getElementName();
+		question = "Properties of "+question;
+		return question;
+	}
 	public void execute(ICustomContext context) {
 		PictogramElement[] pes = context.getPictogramElements();
 		if (pes != null && pes.length == 1) {
 			Object bo = getBusinessObjectForPictogramElement(pes[0]);
+			String question = getQuestion(bo);
+			
+			
 			Map<Integer, RequestContainer> properties = new HashMap<Integer, RequestContainer>();
 			Map<Integer, RequestContainer> result = null;
 			if (bo instanceof EventGenerator) {
@@ -78,13 +90,13 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 				properties.put(EventbasePackage.EVENT_GENERATOR__SENSOR_TYPE,
 						new RequestContainer(null,
 								UkuConstants.SensorTypeConstants.sensor_types,
-								"Sensor Type", eg.getSensorType()));
+								"Sensor type", eg.getSensorType()));
 				properties.put(EventbasePackage.EVENT_GENERATOR__SCOPE,
 						new RequestContainer(null, (eg.getScope()==null?"":eg.getScope()),
-								"Scope (optional)"));
+								"Scope identifier (optional):"));
 				System.out.println(properties);
 				if (bo instanceof EGImmediate) {
-					// nothing todo
+					// nothing to do
 				} else if (bo instanceof EGAbsolute) {
 					EGAbsolute eClass = (EGAbsolute) bo;
 					int currentTime = eClass.getAbsoluteTime();
@@ -93,7 +105,7 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 									new RequestContainer.IntegerValidator(), "" + currentTime,
 									"Absolute Time"));
 
-					result = DialogUtils.askString("Properties", properties);
+					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
 
@@ -110,7 +122,7 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 							new RequestContainer(
 									new RequestContainer.IntegerValidator(), off.getOffsetTime() + "",
 									"Offset Time"));
-					result = DialogUtils.askString("Properties", properties);
+					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
 					int currentTime = off.getOffsetTime();
@@ -127,7 +139,7 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 							new RequestContainer(
 									new RequestContainer.IntegerValidator(), "" + off.getDelayTime(),
 									"Delay time"));
-					result = DialogUtils.askString("Properties", properties);
+					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
 					int currentTime = off.getDelayTime();
@@ -145,9 +157,9 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 					properties.put(EventbasePackage.EG_PERIODIC__TIME,
 							new RequestContainer(
 									new RequestContainer.IntegerValidator(),"" + off.getTime(),
-									"Period time" ));
+									"Period duration (in seconds)" ));
 
-					result = DialogUtils.askString("Properties", properties);
+					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
 					int currentTime = off.getTime();
@@ -171,7 +183,7 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 					properties.put(key2, new RequestContainer(
 							new RequestContainer.BinaryValidator(),
 							"" + off.getPattern(), "Pattern"));
-					result = DialogUtils.askString("Properties", properties);
+					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
 					int currentTime = off.getTime();
@@ -195,7 +207,7 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 							"Time unit"));// TODO
 					properties.put(key2, new RequestContainer(null,
 							off.getFunction(), "Function"));// off.getFunction());
-					result = DialogUtils.askString("Properties", properties);
+					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
 					int currentTime = off.getTime();
@@ -250,7 +262,8 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 					// properties.put(key1, off.getType());
 					// properties.put(key2, off.getOperator());
 					// properties.put(key3, off.getValue());
-					result = DialogUtils.askString("Properties", properties);
+					
+					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
 					String oldType = off.getType();

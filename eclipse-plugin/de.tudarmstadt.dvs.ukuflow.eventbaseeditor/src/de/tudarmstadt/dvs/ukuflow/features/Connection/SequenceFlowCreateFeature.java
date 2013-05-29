@@ -15,6 +15,8 @@
  *******************************************************************************/
 package de.tudarmstadt.dvs.ukuflow.features.connection;
 
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICreateConnectionContext;
@@ -30,7 +32,6 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventFilter;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventGenerator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 
-
 public class SequenceFlowCreateFeature extends AbstractCreateConnectionFeature {
 
 	public SequenceFlowCreateFeature(IFeatureProvider fp) {
@@ -38,28 +39,55 @@ public class SequenceFlowCreateFeature extends AbstractCreateConnectionFeature {
 		super(fp, "Connection", "Create SequenceFlow"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
+	private boolean containCircle(EventBaseOperator source,
+			EventBaseOperator target) {
+		Set<EventBaseOperator> pool = new HashSet<EventBaseOperator>();
+		pool.add(source);
+		return cr(pool, target);
+	}
+
+	private boolean cr(Set<EventBaseOperator> pool, EventBaseOperator target) {
+		if (pool.contains(target))
+			return true;
+		pool.add(target);
+		if (target.getOutgoing() != null)
+			for (ESequenceFlow sq : target.getOutgoing()) {
+				EventBaseOperator next = sq.getTarget();
+				if (next != null)
+					if (cr(pool, next))
+						return true;
+			}
+		return false;
+	}
+
 	public boolean canCreate(ICreateConnectionContext context) {
-		//TODO: checking ukuflow rule here!!
-		
+		// TODO: checking ukuflow rule here!!
+
 		// return true if both anchors belong to a EClass
 		// and those EClasses are not identical
 		EventBaseOperator source = getEClass(context.getSourceAnchor());
 		EventBaseOperator target = getEClass(context.getTargetAnchor());
-		//if(source instanceof EPeriodicEG && target instanceof EPeriodicEG)
-		//	return false;
+		// if(source instanceof EPeriodicEG && target instanceof EPeriodicEG)
+		// return false;
 		
 		if (source != null && target != null && source != target) {
-			if(target instanceof EventGenerator){
-				if(!(target instanceof EGRelative)){
+			if (target.getIncoming().size() >= 2)
+				return false;
+			if (containCircle(source, target)) {
+				return false;
+			}
+			if (target instanceof EventGenerator) {
+				if (!(target instanceof EGRelative)) {
 					// Event generator should not have incoming!
 					return false;
 				} else {
-					if(!target.getIncoming().isEmpty())
+					if (!target.getIncoming().isEmpty())
 						// EG Relative should have only one incoming!
 						return false;
 				}
-			} else if(target instanceof EventFilter){
-				//TODO
+			} else if (target instanceof EventFilter) {
+				System.out.println(target.getIncoming().size());
+				return ((EventFilter) target).getIncoming().size() < 2;
 			}
 			return true;
 		}
@@ -69,7 +97,7 @@ public class SequenceFlowCreateFeature extends AbstractCreateConnectionFeature {
 	public boolean canStartConnection(ICreateConnectionContext context) {
 		// return true if start anchor belongs to a EClass
 		if (getEClass(context.getSourceAnchor()) != null) {
-			//TODO checking
+			// TODO checking
 			return true;
 		}
 		return false;
@@ -84,14 +112,16 @@ public class SequenceFlowCreateFeature extends AbstractCreateConnectionFeature {
 
 		if (source != null && target != null) {
 			// create new business object
-			ESequenceFlow seqFlow = createEReference(source, target);			
+			ESequenceFlow seqFlow = createEReference(source, target);
 			// add connection for business object
-			AddConnectionContext addContext = new AddConnectionContext(context.getSourceAnchor(), context.getTargetAnchor());
+			AddConnectionContext addContext = new AddConnectionContext(
+					context.getSourceAnchor(), context.getTargetAnchor());
 			addContext.setNewObject(seqFlow);
-			newConnection = (Connection) getFeatureProvider().addIfPossible(addContext);
-			//link(newConnection, eReference);
+			newConnection = (Connection) getFeatureProvider().addIfPossible(
+					addContext);
+			// link(newConnection, eReference);
 		}
-		
+
 		return newConnection;
 	}
 
@@ -100,7 +130,8 @@ public class SequenceFlowCreateFeature extends AbstractCreateConnectionFeature {
 	 */
 	private EventBaseOperator getEClass(Anchor anchor) {
 		if (anchor != null) {
-			Object obj = getBusinessObjectForPictogramElement(anchor.getParent());
+			Object obj = getBusinessObjectForPictogramElement(anchor
+					.getParent());
 			if (obj instanceof EventBaseOperator) {
 				return (EventBaseOperator) obj;
 			}
@@ -111,25 +142,33 @@ public class SequenceFlowCreateFeature extends AbstractCreateConnectionFeature {
 	/**
 	 * Creates a EReference between two EClasses.
 	 */
-	private ESequenceFlow createEReference(EventBaseOperator source, EventBaseOperator target) {
-		//EReference eReference = EcoreFactory.eINSTANCE.createEReference();
-		ESequenceFlow eReference = EventbaseFactory.eINSTANCE.createESequenceFlow();//EventbasePackage.eINSTANCE.getESequenceFlow();//new EConnection((IEEvaluableExpression)source, (IEEvaluableExpression)target);
+	private ESequenceFlow createEReference(EventBaseOperator source,
+			EventBaseOperator target) {
+		// EReference eReference = EcoreFactory.eINSTANCE.createEReference();
+		ESequenceFlow eReference = EventbaseFactory.eINSTANCE
+				.createESequenceFlow();// EventbasePackage.eINSTANCE.getESequenceFlow();//new
+										// EConnection((IEEvaluableExpression)source,
+										// (IEEvaluableExpression)target);
 		eReference.setSource(source);
 		eReference.setTarget(target);
-		
-		//eReference.setSource((EventBaseOperator) source);
+
+		// eReference.setSource((EventBaseOperator) source);
 		//eReference.setTarget((EventBaseOperator) target);//setName("new connection"); //$NON-NLS-1$
-		//eReference.eSet(EventbasePackage.eINSTANCE.getESequenceFlow_Source(), source);
-		//eReference.eSet(EventbasePackage.eINSTANCE.getESequenceFlow_Target(), target);
-		
-		//EList<ESequenceFlow> ins = target.getIncoming();
-		//ins.add(eReference);
-		//target.eSet(EventbasePackage.eINSTANCE.getEventBaseOperator_Incoming(), ins);
-		//EList<ESequenceFlow> outs = source.getOutgoing();
-		//outs.add(eReference);
-		//source.eSet(EventbasePackage.eINSTANCE.getEventBaseOperator_Outgoing(), outs);
-		//source
-		//addGraphicalRepresentation(context, newObject)
+		// eReference.eSet(EventbasePackage.eINSTANCE.getESequenceFlow_Source(),
+		// source);
+		// eReference.eSet(EventbasePackage.eINSTANCE.getESequenceFlow_Target(),
+		// target);
+
+		// EList<ESequenceFlow> ins = target.getIncoming();
+		// ins.add(eReference);
+		// target.eSet(EventbasePackage.eINSTANCE.getEventBaseOperator_Incoming(),
+		// ins);
+		// EList<ESequenceFlow> outs = source.getOutgoing();
+		// outs.add(eReference);
+		// source.eSet(EventbasePackage.eINSTANCE.getEventBaseOperator_Outgoing(),
+		// outs);
+		// source
+		// addGraphicalRepresentation(context, newObject)
 		return eReference;
 	}
 
