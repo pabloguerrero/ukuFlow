@@ -33,18 +33,24 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor;
 import java.util.Vector;
 
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAbsoluteEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicDistributionEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicPatternedEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilterBinaryExpression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilterPolicy;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilterUnaryExpression;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EImmediateEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EOffsetEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EPeriodicEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleFilterConstraint;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ETopExpression;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EVariable;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventGenerator;
 
 public class EventBaseVisitorImpl implements EventBaseVisitor{
 	Vector<Byte> out = new Vector<Byte>();
@@ -74,26 +80,31 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 
 	@Override
 	public void visit(EComplexFilterUnaryExpression exp) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(ESimpleEF sef) {
-		// TODO Auto-generated method stub
-		
+		out.add((byte)UkuConstants.SIMPLE_FILTER);
+		out.add(sef.getChannel());
+		out.add((byte)sef.getConstraints().size());
+		for(ESimpleFilterConstraint c : sef.getConstraints()){
+			visit(c);
+		}
 	}
 
 	@Override
 	public void visit(ESimpleFilterConstraint sec) {
-		// TODO Auto-generated method stub
+		int length = out.size();
+		out.add((byte) 0);
+		out.add((byte)sec.comparator);
+		if(sec.isValueFirst()){
+			out.add()
+		
 		
 	}
 
-	@Override
-	public void visit(ETopExpression top) {
-		//top.i
-	}
+	
 
 	@Override
 	public void visit(EAperiodicDistributionEG a) {
@@ -106,11 +117,21 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		// TODO Auto-generated method stub
 		
 	}
-
+	private byte getScope(EventGenerator e){
+		String scope = e.getScope();
+		byte result = 0;
+		if(scope != null){
+			while(result == 0){
+				result = (byte)scope.hashCode();
+				scope += "_";
+			}
+		}
+		return result;
+	}
 	@Override
 	public void visit(EPeriodicEG ep) {
 		out.add((byte)UkuConstants.PERIODIC_E_GEN);
-		out.add(ChannelIDManager.getInstance().getChannelID(ep.getID()));
+		out.add(ep.getChannel());
 		out.add((byte)ep.getSensorType());
 		byte code = 0;
 		if(ep.getScope() == null || ep.getScope().equals(""))
@@ -123,13 +144,69 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		
 	}
 
-	@Override
-	public void visit(EventBaseOperator op) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	@Override
 	public void reset(){
 		out.clear();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAbsoluteEG)
+	 */
+	@Override
+	public void visit(EAbsoluteEG e) {
+		out.add((byte)UkuConstants.ABSOLUTE_E_GEN);
+		out.add(e.getChannel());
+		out.add(e.getSensorType());
+		out.add(getScope(e));
+		out.addAll(e.getTime().getValue());
+		
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EImmediateEG)
+	 */
+	@Override
+	public void visit(EImmediateEG e) {
+		out.add((byte)UkuConstants.IMMEDIATE_E_GEN);
+		out.add(e.getChannel());
+		out.add(e.getSensorType());
+		out.add(getScope(e));
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EOffsetEG)
+	 */
+	@Override
+	public void visit(EOffsetEG e) {
+		out.add((byte)UkuConstants.OFFSET_E_GEN);
+		out.add(e.getChannel());
+		out.add(e.getSensorType());
+		out.add(getScope(e));
+		out.addAll(e.getTimeExpression().getValue());
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG)
+	 */
+	@Override
+	public void visit(ERelativeEG e) {
+		out.add((byte)UkuConstants.IMMEDIATE_E_GEN);
+		out.add(e.getChannel());
+		out.add(e.getSensorType()); // TODO ????
+		out.add(getScope(e));  /// TODO???
+		out.addAll(e.getTimeExpression().getValue());
+		out.add(e.getSource().getChannel());
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EVariable)
+	 */
+	@Override
+	public void visit(EVariable e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

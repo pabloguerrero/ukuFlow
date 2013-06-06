@@ -240,8 +240,8 @@ public class TutorialFeatureProvider extends DefaultFeatureProvider {
 		return new ICustomFeature[] { new GenericRenameFeature(this),
 				new TutorialDrillDownEClassFeature(this),
 				new TutorialAssociateDiagramEClassFeature(this),
-				new TutorialCollapseDummyFeature(this),
-				new TutorialChangeColorEClassFeature(this) };
+				new TutorialCollapseDummyFeature(this)
+		/*,new TutorialChangeColorEClassFeature(this)*/ };
 	}
 
 	@Override

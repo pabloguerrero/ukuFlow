@@ -29,17 +29,19 @@
  */
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
-import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
-public class EAperiodicPatternedEG extends EventGenerator{	
-	int time = 1;
+public class EAperiodicPatternedEG extends ERecurringEG{	
+	public TimeExpression time = null;
 	String pattern = "";	
-	public void setTime(int time){
+	
+	public void setTime(TimeExpression time){
 		this.time = time;
 	}
+	
 	public void setPattern(String pattern){
 		if(!pattern.matches("[0-1]+")){
+			//double check?! too much?
 			this.pattern = pattern;
 			//TODO
 			return;
@@ -49,7 +51,7 @@ public class EAperiodicPatternedEG extends EventGenerator{
 	
 	@Override
 	public void accept(EventBaseVisitor visitor) {
-		// TODO Auto-generated method stub
+		visitor.visit(this);
 		
 	}
 	@Override

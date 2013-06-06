@@ -27,55 +27,36 @@
  * SUCH DAMAGE.
  *
  */
+package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
+import java.util.EventObject;
 
-package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EVariable;
-
-public class ChannelIDManager {
-	private static ChannelIDManager instance = null;
-	byte id = 0;
-	private Map<String, Byte> reg = new HashMap<String, Byte>();
-	public static Map<String,EVariable> variableMapping = new HashMap<String,EVariable>();
-	private ChannelIDManager(){	
-		//nothing todo;
-	}
-	public static ChannelIDManager getInstance(){
-		if(instance==null)
-			instance = new ChannelIDManager();
-		return instance;
-	}
-	/**
-	 * reset everything to initiation state
-	 */
-	public void reset(){
-		id = 0;
-		reg = new HashMap<String, Byte>();
-	}
-	/**
-	 * keep the used ids, but remove all registered channel.
-	 * 
-	 */
-	public void removeAllRegisteredChannel(){
-		reg = new HashMap<String, Byte>();
+/**
+ * @author ”Hien Quoc Dang”
+ *
+ */
+public class ERelativeEG extends ENonRecurringEG {
+	EventBaseOperator source;
+	TimeExpression time;
+	public void setSource(EventBaseOperator source){
+		this.source = source;
 	}
 	
-	public byte generateID(){
-		id++;
-		return (byte)(id-1);
-	}
-	public void register(String key, byte id){
-		reg.put(key,id);
+	public EventBaseOperator getSource(){
+		return source;
 	}
 	
-	public byte getChannelID(String regs){
-		if(reg.containsKey(regs))
-			return reg.get(regs);
-		reg.put(regs,id);
-		id++;
-		return reg.get(regs);
+	public void setTimeExpression(TimeExpression time){
+		this.time = time;
+	}
+	
+	public TimeExpression getTimeExpression(){
+		return time;
+	}
+	@Override
+	public void accept(EventBaseVisitor visitor) {
+		visitor.visit(this);
+		
 	}
 }

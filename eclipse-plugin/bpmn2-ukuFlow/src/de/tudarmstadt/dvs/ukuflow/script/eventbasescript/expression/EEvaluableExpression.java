@@ -40,18 +40,11 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.INonEMFEventbaseElement
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 import org.eclipse.emf.ecore.impl.EClassImpl;
-public class EEvaluableExpression implements INonEMFEventbaseElement,IEEvaluableExpression,Visitable {
+public abstract class EEvaluableExpression implements INonEMFEventbaseElement,IEEvaluableExpression,Visitable {
 	private String nonEMF_ID;
 	private List<IEConnection> incomings;
 	private List<IEConnection> outgoings;
-	/* (non-Javadoc)
-	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable#accept(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor)
-	 */
-	@Override
-	public void accept(EventBaseVisitor visitor) {	
-		//visitor.visit(this);
-		System.err.println("EEvaluableExpression" + " visit");
-	}
+	
 
 	/* (non-Javadoc)
 	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.INonEMFEventbaseElement#getID()

@@ -28,54 +28,66 @@
  *
  */
 
-package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor;
+package de.tudarmstadt.dvs.ukuflow.script.eventbasescript;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EVariable;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.ChannelExistException;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.ChannelNotFoundException;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyChannelException;
 
-public class ChannelIDManager {
-	private static ChannelIDManager instance = null;
-	byte id = 0;
-	private Map<String, Byte> reg = new HashMap<String, Byte>();
-	public static Map<String,EVariable> variableMapping = new HashMap<String,EVariable>();
-	private ChannelIDManager(){	
-		//nothing todo;
+public class ChannelIDManager___dropped {
+	private Map<String, Integer> channelMap;// = new HashMap<String, Integer>();
+	private List<Integer> availableID = new ArrayList<Integer>();
+	private static ChannelIDManager___dropped instance = null;
+
+	private void init() {
+		for (int i = 0; i < 256; i++)
+			availableID.add(i);
+		channelMap = new HashMap<String, Integer>();
 	}
-	public static ChannelIDManager getInstance(){
-		if(instance==null)
-			instance = new ChannelIDManager();
+
+	public static ChannelIDManager___dropped getInstance() {
+		if (instance == null)
+			instance = new ChannelIDManager___dropped();
 		return instance;
 	}
-	/**
-	 * reset everything to initiation state
-	 */
-	public void reset(){
-		id = 0;
-		reg = new HashMap<String, Byte>();
-	}
-	/**
-	 * keep the used ids, but remove all registered channel.
-	 * 
-	 */
-	public void removeAllRegisteredChannel(){
-		reg = new HashMap<String, Byte>();
+	
+	private ChannelIDManager___dropped() {
+		init();
 	}
 	
-	public byte generateID(){
-		id++;
-		return (byte)(id-1);
-	}
-	public void register(String key, byte id){
-		reg.put(key,id);
+	public int registerChannel(String ch) throws ChannelExistException,
+			TooManyChannelException {
+		if (channelMap.containsKey(ch))
+			throw new ChannelExistException();
+		if (availableID.size() == 0)
+			throw new TooManyChannelException();
+		int t = Math.abs(ch.hashCode()) % availableID.size();
+		return availableID.remove(t);
 	}
 	
-	public byte getChannelID(String regs){
-		if(reg.containsKey(regs))
-			return reg.get(regs);
-		reg.put(regs,id);
-		id++;
-		return reg.get(regs);
+	public int getChannelID(String ch) throws ChannelNotFoundException {
+		if(channelMap.containsKey(ch)){
+			return channelMap.get(ch);
+		}
+		throw new ChannelNotFoundException();
+	}
+
+	/**
+	 * reset the mapping data but the used channel ids will still be retained
+	 */
+	public void resetMap() {
+		channelMap = new HashMap<String, Integer>();
+	}
+
+	/**
+	 * reset all the mapping data and the used channel id data
+	 */
+	public void resetAll() {
+		init();
 	}
 }

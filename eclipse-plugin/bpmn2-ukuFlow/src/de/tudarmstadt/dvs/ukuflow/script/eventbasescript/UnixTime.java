@@ -27,67 +27,35 @@
  * SUCH DAMAGE.
  *
  */
-
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import de.tudarmstadt.dvs.ukuflow.tools.exception.ChannelExistException;
-import de.tudarmstadt.dvs.ukuflow.tools.exception.ChannelNotFoundException;
-import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyChannelException;
-
-public class ChannelIDManager {
-	private Map<String, Integer> channelMap;// = new HashMap<String, Integer>();
-	private List<Integer> availableID = new ArrayList<Integer>();
-	private ChannelIDManager instance = null;
-
-	private void init() {
-		for (int i = 0; i < 256; i++)
-			availableID.add(i);
-		channelMap = new HashMap<String, Integer>();
-	}
-
-	public ChannelIDManager getInstance() {
-		if (instance == null)
-			instance = new ChannelIDManager();
-		return instance;
-	}
-
-	private ChannelIDManager() {
-		init();
-	}
-
-	public int registerChannel(String ch) throws ChannelExistException,
-			TooManyChannelException {
-		if (channelMap.containsKey(ch))
-			throw new ChannelExistException();
-		if (availableID.size() == 0)
-			throw new TooManyChannelException();
-		int t = Math.abs(ch.hashCode()) % availableID.size();
-		return availableID.remove(t);
-	}
-
-	public int getChannelID(String ch) throws ChannelNotFoundException {
-		if(channelMap.containsKey(ch)){
-			return channelMap.get(ch);
+/**
+ * @author ”Hien Quoc Dang”
+ *
+ */
+public class UnixTime {
+	public static void main(String[] args) {
+		//Date date = new Date();
+		//date.
+		//date.setYear(2000);
+		String t = "1990-03-12 03:39:44";
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			Date d = formatter.parse(t);
+			long time = d.getTime()/1000L;
+			System.out.println(time);
+			System.out.println(d.getYear());
+			System.out.println(d.getMonth());
+			d.setTime(System.currentTimeMillis()/1000L);
+			String s = formatter.format(d);
+			System.out.println(s);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		throw new ChannelNotFoundException();
-	}
-
-	/**
-	 * reset the mapping data but the used channel ids will still be retained
-	 */
-	public void resetMap() {
-		channelMap = new HashMap<String, Integer>();
-	}
-
-	/**
-	 * reset all the mapping data and the used channel id data
-	 */
-	public void resetAll() {
-		init();
 	}
 }

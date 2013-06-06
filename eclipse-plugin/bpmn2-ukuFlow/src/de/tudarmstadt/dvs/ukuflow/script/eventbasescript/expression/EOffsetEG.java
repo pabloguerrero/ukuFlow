@@ -27,55 +27,25 @@
  * SUCH DAMAGE.
  *
  */
+package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
-package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EVariable;
-
-public class ChannelIDManager {
-	private static ChannelIDManager instance = null;
-	byte id = 0;
-	private Map<String, Byte> reg = new HashMap<String, Byte>();
-	public static Map<String,EVariable> variableMapping = new HashMap<String,EVariable>();
-	private ChannelIDManager(){	
-		//nothing todo;
+/**
+ * @author ”Hien Quoc Dang”
+ *
+ */
+public class EOffsetEG extends ENonRecurringEG {
+	TimeExpression time;
+	public void setTimeExpression(TimeExpression time){
+		this.time = time;
 	}
-	public static ChannelIDManager getInstance(){
-		if(instance==null)
-			instance = new ChannelIDManager();
-		return instance;
+	public TimeExpression getTimeExpression(){
+		return time;
 	}
-	/**
-	 * reset everything to initiation state
-	 */
-	public void reset(){
-		id = 0;
-		reg = new HashMap<String, Byte>();
-	}
-	/**
-	 * keep the used ids, but remove all registered channel.
-	 * 
-	 */
-	public void removeAllRegisteredChannel(){
-		reg = new HashMap<String, Byte>();
-	}
-	
-	public byte generateID(){
-		id++;
-		return (byte)(id-1);
-	}
-	public void register(String key, byte id){
-		reg.put(key,id);
-	}
-	
-	public byte getChannelID(String regs){
-		if(reg.containsKey(regs))
-			return reg.get(regs);
-		reg.put(regs,id);
-		id++;
-		return reg.get(regs);
+	@Override
+	public void accept(EventBaseVisitor visitor) {
+		visitor.visit(this);
+		
 	}
 }

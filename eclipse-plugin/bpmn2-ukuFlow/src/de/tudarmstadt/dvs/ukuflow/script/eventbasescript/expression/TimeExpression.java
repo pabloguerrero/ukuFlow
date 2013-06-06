@@ -27,55 +27,67 @@
  * SUCH DAMAGE.
  *
  */
+package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
-package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 
-import java.util.HashMap;
-import java.util.Map;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EVariable;
-
-public class ChannelIDManager {
-	private static ChannelIDManager instance = null;
-	byte id = 0;
-	private Map<String, Byte> reg = new HashMap<String, Byte>();
-	public static Map<String,EVariable> variableMapping = new HashMap<String,EVariable>();
-	private ChannelIDManager(){	
-		//nothing todo;
+/**
+ * @author ”Hien Quoc Dang”
+ *
+ */
+public class TimeExpression extends EEvaluableExpression {
+	
+	public int year = 0;
+	public int month = 0 ;
+	public int day = 0;
+	public int hour = 0;
+	public int minute = 0;
+	public int second = 0;
+	public int minisecond = 0;
+	
+	@Override
+	public String toString(){
+		String r = "";		
+		r += day + ":"+month+":" +year + " "+hour+":"+minute+":"+second+":"+minisecond;
+		
+		return r;
 	}
-	public static ChannelIDManager getInstance(){
-		if(instance==null)
-			instance = new ChannelIDManager();
-		return instance;
-	}
-	/**
-	 * reset everything to initiation state
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable#accept(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor)
 	 */
-	public void reset(){
-		id = 0;
-		reg = new HashMap<String, Byte>();
+	@Override
+	public void accept(EventBaseVisitor visitor) {
+		// TODO Auto-generated method stub
+		
 	}
+
 	/**
-	 * keep the used ids, but remove all registered channel.
-	 * 
+	 * @return
 	 */
-	public void removeAllRegisteredChannel(){
-		reg = new HashMap<String, Byte>();
+	public Collection<? extends Byte> getValue() {
+		Collection<Byte> result = new ArrayList<Byte>();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String date = String.format("%04d-%02d-%02d %02d:%02d:%02d", year,month,day,hour,minute,second);
+		try {
+			Date d = format.parse(date);
+			long seconds = d.getTime()/1000L;
+			result.add((byte)(seconds/(256*256*256)));
+			result.add((byte)(seconds/(256*256)));
+			result.add((byte)(seconds/(256)));
+			result.add((byte)(seconds%(256)));
+			return result;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
-	public byte generateID(){
-		id++;
-		return (byte)(id-1);
-	}
-	public void register(String key, byte id){
-		reg.put(key,id);
-	}
-	
-	public byte getChannelID(String regs){
-		if(reg.containsKey(regs))
-			return reg.get(regs);
-		reg.put(regs,id);
-		id++;
-		return reg.get(regs);
-	}
 }
