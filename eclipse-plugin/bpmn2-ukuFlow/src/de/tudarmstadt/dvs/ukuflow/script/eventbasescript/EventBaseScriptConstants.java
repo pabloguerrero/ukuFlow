@@ -55,15 +55,19 @@ public interface EventBaseScriptConstants {
   /** RegularExpression Id. */
   int SENSOR_TYPE = 26;
   /** RegularExpression Id. */
-  int BINARY = 27;
+  int POSITIVE_NUMBER = 27;
   /** RegularExpression Id. */
-  int NUMBER = 28;
+  int BINARY = 28;
   /** RegularExpression Id. */
-  int IDENTIFIER = 29;
+  int PATTERN = 29;
   /** RegularExpression Id. */
-  int LETTER = 30;
+  int REPETITION = 30;
   /** RegularExpression Id. */
-  int DIGIT = 31;
+  int IDENTIFIER = 31;
+  /** RegularExpression Id. */
+  int LETTER = 32;
+  /** RegularExpression Id. */
+  int DIGIT = 33;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -91,14 +95,16 @@ public interface EventBaseScriptConstants {
     "\"RELATIVE_EG\"",
     "\"FUNCTIONAL_EG\"",
     "\"PERIODIC_EG\"",
-    "\"PATTERNED_EG\"",
+    "\"PATTERN_EG\"",
     "\"DISTRIBUTION_EG\"",
     "\"SIMPLE_EF\"",
     "\"COMPLEX_EF\"",
     "\"TOP\"",
     "<SENSOR_TYPE>",
+    "<POSITIVE_NUMBER>",
     "<BINARY>",
-    "<NUMBER>",
+    "<PATTERN>",
+    "<REPETITION>",
     "<IDENTIFIER>",
     "<LETTER>",
     "<DIGIT>",
@@ -107,8 +113,9 @@ public interface EventBaseScriptConstants {
     "\"(\"",
     "\")\"",
     "\"^\"",
-    "\"-\"",
     "\":\"",
+    "\"-\"",
+    "\"i\"",
     "\"{\"",
     "\",\"",
     "\"}\"",

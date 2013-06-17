@@ -651,13 +651,22 @@ public interface EventbasePackage extends EPackage {
 	int EG_RECURRING__SCOPE = EVENT_GENERATOR__SCOPE;
 
 	/**
+	 * The feature id for the '<em><b>Repetition</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EG_RECURRING__REPETITION = EVENT_GENERATOR_FEATURE_COUNT + 0;
+
+	/**
 	 * The number of structural features of the '<em>EG Recurring</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EG_RECURRING_FEATURE_COUNT = EVENT_GENERATOR_FEATURE_COUNT + 0;
+	int EG_RECURRING_FEATURE_COUNT = EVENT_GENERATOR_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EGPeriodicImpl <em>EG Periodic</em>}' class.
@@ -713,6 +722,15 @@ public interface EventbasePackage extends EPackage {
 	 * @ordered
 	 */
 	int EG_PERIODIC__SCOPE = EG_RECURRING__SCOPE;
+
+	/**
+	 * The feature id for the '<em><b>Repetition</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EG_PERIODIC__REPETITION = EG_RECURRING__REPETITION;
 
 	/**
 	 * The feature id for the '<em><b>Time</b></em>' attribute.
@@ -786,6 +804,15 @@ public interface EventbasePackage extends EPackage {
 	 * @ordered
 	 */
 	int EG_PATTERNED__SCOPE = EG_RECURRING__SCOPE;
+
+	/**
+	 * The feature id for the '<em><b>Repetition</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EG_PATTERNED__REPETITION = EG_RECURRING__REPETITION;
 
 	/**
 	 * The feature id for the '<em><b>Time</b></em>' attribute.
@@ -868,6 +895,15 @@ public interface EventbasePackage extends EPackage {
 	 * @ordered
 	 */
 	int EG_DISTRIBUTION__SCOPE = EG_RECURRING__SCOPE;
+
+	/**
+	 * The feature id for the '<em><b>Repetition</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EG_DISTRIBUTION__REPETITION = EG_RECURRING__REPETITION;
 
 	/**
 	 * The feature id for the '<em><b>Time</b></em>' attribute.
@@ -959,7 +995,7 @@ public interface EventbasePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EF_SIMPLE__INCOMING = EVENT_BASE_OPERATOR__INCOMING;
+	int EF_SIMPLE__INCOMING = EVENT_FILTER__INCOMING;
 
 	/**
 	 * The feature id for the '<em><b>Outgoing</b></em>' reference list.
@@ -968,7 +1004,7 @@ public interface EventbasePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EF_SIMPLE__OUTGOING = EVENT_BASE_OPERATOR__OUTGOING;
+	int EF_SIMPLE__OUTGOING = EVENT_FILTER__OUTGOING;
 
 	/**
 	 * The feature id for the '<em><b>Element Name</b></em>' attribute.
@@ -977,7 +1013,7 @@ public interface EventbasePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EF_SIMPLE__ELEMENT_NAME = EVENT_BASE_OPERATOR__ELEMENT_NAME;
+	int EF_SIMPLE__ELEMENT_NAME = EVENT_FILTER__ELEMENT_NAME;
 
 	/**
 	 * The feature id for the '<em><b>Constraints</b></em>' reference list.
@@ -986,7 +1022,7 @@ public interface EventbasePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EF_SIMPLE__CONSTRAINTS = EVENT_BASE_OPERATOR_FEATURE_COUNT + 0;
+	int EF_SIMPLE__CONSTRAINTS = EVENT_FILTER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Source Event</b></em>' reference.
@@ -995,7 +1031,7 @@ public interface EventbasePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EF_SIMPLE__SOURCE_EVENT = EVENT_BASE_OPERATOR_FEATURE_COUNT + 1;
+	int EF_SIMPLE__SOURCE_EVENT = EVENT_FILTER_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>EF Simple</em>' class.
@@ -1004,7 +1040,7 @@ public interface EventbasePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int EF_SIMPLE_FEATURE_COUNT = EVENT_BASE_OPERATOR_FEATURE_COUNT + 2;
+	int EF_SIMPLE_FEATURE_COUNT = EVENT_FILTER_FEATURE_COUNT + 2;
 
 	/**
 	 * The meta object id for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EFCompositeImpl <em>EF Composite</em>}' class.
@@ -2333,6 +2369,17 @@ public interface EventbasePackage extends EPackage {
 	EClass getEGRecurring();
 
 	/**
+	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRecurring#getRepetition <em>Repetition</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Repetition</em>'.
+	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRecurring#getRepetition()
+	 * @see #getEGRecurring()
+	 * @generated
+	 */
+	EAttribute getEGRecurring_Repetition();
+
+	/**
 	 * Returns the meta object for class '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGPeriodic <em>EG Periodic</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3115,6 +3162,14 @@ public interface EventbasePackage extends EPackage {
 		 * @generated
 		 */
 		EClass EG_RECURRING = eINSTANCE.getEGRecurring();
+
+		/**
+		 * The meta object literal for the '<em><b>Repetition</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EG_RECURRING__REPETITION = eINSTANCE.getEGRecurring_Repetition();
 
 		/**
 		 * The meta object literal for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EGPeriodicImpl <em>EG Periodic</em>}' class.

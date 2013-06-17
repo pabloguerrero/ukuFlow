@@ -21,7 +21,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface EFSimple extends EventBaseOperator {
+public interface EFSimple extends EventFilter {
 	/**
 	 * Returns the value of the '<em><b>Constraints</b></em>' reference list.
 	 * The list contents are of type {@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESimpleFilterConstraint}.

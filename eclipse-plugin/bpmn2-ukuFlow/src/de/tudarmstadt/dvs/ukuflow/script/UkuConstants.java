@@ -228,7 +228,36 @@ public class UkuConstants {
 	public static final int COMPUTATION_STATEMENT = 0;
 	public static final int LOCAL_FUNCTION_STATEMENT = 1;
 	public static final int SCOPED_FUNCTION_STATEMENT = 2;
-
+	public static String[] getConstantWithValue(int value, Class clazz){
+		List<String> rs = new ArrayList<String>();
+		for(Field f : clazz.getFields()){
+			
+			String name = f.getName();
+			if(name.startsWith("SENSOR_")|| name.startsWith("NODE_") ){
+				
+			} else{
+				continue;
+			}
+				
+				
+			int v;
+			try {
+				v = f.getInt(clazz.newInstance());
+				if(v==value){
+					rs.add(name);
+				}
+			} catch (IllegalArgumentException | IllegalAccessException
+					| InstantiationException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		String[] result = new String[rs.size()];
+		result = (String[]) rs.toArray(new String[rs.size()]);
+		return result;
+	}
+	
 	public static int getConstantWithName(String name, Class clazz) {
 		int r = -1;
 		try {

@@ -180,6 +180,7 @@ public class EventbaseSwitch<T> extends Switch<T> {
 			case EventbasePackage.EF_SIMPLE: {
 				EFSimple efSimple = (EFSimple)theEObject;
 				T result = caseEFSimple(efSimple);
+				if (result == null) result = caseEventFilter(efSimple);
 				if (result == null) result = caseEventBaseOperator(efSimple);
 				if (result == null) result = defaultCase(theEObject);
 				return result;

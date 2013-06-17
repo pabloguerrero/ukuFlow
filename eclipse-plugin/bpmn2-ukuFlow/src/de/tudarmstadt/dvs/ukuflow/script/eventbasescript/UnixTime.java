@@ -31,7 +31,9 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * @author ”Hien Quoc Dang”
@@ -39,18 +41,33 @@ import java.util.Date;
  */
 public class UnixTime {
 	public static void main(String[] args) {
+		Calendar cal = new GregorianCalendar();
+		cal.setTimeInMillis(0);
+		
+		//cal.set(0, 0, 0);
+		//cal.set(1970,1,1,0,0,1);
+		
+		System.out.print(cal.get(Calendar.YEAR) + "-");
+		
+		System.out.print(cal.get(Calendar.MONTH)+ "-");
+		System.out.println(cal.get(Calendar.DAY_OF_MONTH));
+		System.out.print(cal.get(Calendar.HOUR_OF_DAY)+ ":");
+		System.out.print(cal.get(Calendar.MINUTE)+ ":");
+		System.out.println(cal.get(Calendar.SECOND));
+		System.out.println(cal.getTimeInMillis()/1000L);
 		//Date date = new Date();
 		//date.
 		//date.setYear(2000);
 		String t = "1990-03-12 03:39:44";
+		String t1 = "1970-01-01 01:00:01";
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
-			Date d = formatter.parse(t);
+			Date d = formatter.parse(t1);
 			long time = d.getTime()/1000L;
 			System.out.println(time);
-			System.out.println(d.getYear());
-			System.out.println(d.getMonth());
-			d.setTime(System.currentTimeMillis()/1000L);
+			//System.out.println(d.getYear());
+			//System.out.println(d.getMonth());
+			d.setTime(0L);
 			String s = formatter.format(d);
 			System.out.println(s);
 		} catch (ParseException e) {

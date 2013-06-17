@@ -34,7 +34,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  *
  * @generated
  */
-public class EFSimpleImpl extends EventBaseOperatorImpl implements EFSimple {
+public class EFSimpleImpl extends EventFilterImpl implements EFSimple {
 	/**
 	 * The cached value of the '{@link #getConstraints() <em>Constraints</em>}' reference list.
 	 * <!-- begin-user-doc -->

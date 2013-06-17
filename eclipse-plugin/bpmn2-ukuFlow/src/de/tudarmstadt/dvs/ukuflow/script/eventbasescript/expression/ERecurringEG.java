@@ -31,12 +31,17 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
 /**
  * @author ”Hien Quoc Dang”
- *
+ * 
  */
 public abstract class ERecurringEG extends EventGenerator {
 
-	/* (non-Javadoc)
-	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator#toString()
+	protected byte repetition = 0;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.
+	 * EventBaseOperator#toString()
 	 */
 	@Override
 	public String toString() {
@@ -44,4 +49,22 @@ public abstract class ERecurringEG extends EventGenerator {
 		return null;
 	}
 
+	public void setRepetition(int rep) {
+		if (rep < 0) {
+			rep = 0;
+		}
+		if (rep > 256)
+			rep = 256;
+
+		repetition = (byte) rep;
+	}
+
+	/**
+	 * return the number of repetition of the event generator
+	 * 
+	 * @return
+	 */
+	public byte getRepetition() {
+		return repetition;
+	}
 }

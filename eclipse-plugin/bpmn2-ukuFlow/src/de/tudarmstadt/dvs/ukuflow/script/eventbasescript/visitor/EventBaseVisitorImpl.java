@@ -30,6 +30,7 @@
 
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor;
 
+import java.util.Collection;
 import java.util.Vector;
 
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
@@ -98,8 +99,9 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		int length = out.size();
 		out.add((byte) 0);
 		out.add((byte)sec.comparator);
-		if(sec.isValueFirst()){
-			out.add()
+		//TODO
+		//if(sec.isValueFirst()){
+		//	out.add(sec.)
 		
 		
 	}
@@ -108,19 +110,29 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 
 	@Override
 	public void visit(EAperiodicDistributionEG a) {
-		// TODO Auto-generated method stub
+		out.add((byte)UkuConstants.DISTRIBUTED_E_GEN);
+		out.add(a.getChannel());
+		out.add(a.getSensorType());
+		out.add(getScope(a));
+		
+		out.add(a.getRepetition());
+		
+		//TODO:
+		//1. period length(2bytes in seconds)
+		//2. evaluation frequency (2 bytes, in seconds)
+		//3. mathematical function (1 byte)
+		
+		//4. list of parameters
+		for(int param : a.getParameters()){
+			out.add((byte)param);
+		}
 		
 	}
 
-	@Override
-	public void visit(EAperiodicPatternedEG a) {
-		// TODO Auto-generated method stub
-		
-	}
 	private byte getScope(EventGenerator e){
 		String scope = e.getScope();
 		byte result = 0;
-		if(scope != null){
+		if(scope != null && !scope.equals("")){
 			while(result == 0){
 				result = (byte)scope.hashCode();
 				scope += "_";
@@ -128,20 +140,35 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		}
 		return result;
 	}
+
+	@Override
+	public void visit(EAperiodicPatternedEG a) {
+		out.add((byte)UkuConstants.PATTERNED_E_GEN);
+		out.add(a.getChannel());
+		out.add((byte)a.getSensorType());
+		out.add(getScope(a));
+		
+		out.add(a.getRepetition());
+		//period length
+		out.addAll(a.getTime().getValue(2));
+		// pattern
+		Collection<? extends Byte> pattern = a.getPatternInByte();
+		out.add(a.getPatternLength());
+		out.addAll(pattern);
+	}
+	
 	@Override
 	public void visit(EPeriodicEG ep) {
 		out.add((byte)UkuConstants.PERIODIC_E_GEN);
 		out.add(ep.getChannel());
 		out.add((byte)ep.getSensorType());
-		byte code = 0;
-		if(ep.getScope() == null || ep.getScope().equals(""))
-			code = 0;
-		else 
-			code = (byte)ep.getScope().hashCode();
-		//TODO scope manager;
+		byte code = getScope(ep);
 		out.add(code);
-		//out.add(ep.get)
 		
+		out.add(ep.getRepetition());
+		// period length (2 bytes)
+		out.addAll(ep.getTime().getValue(2));
+		//done
 	}
 
 	
@@ -160,7 +187,7 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		out.add(e.getSensorType());
 		out.add(getScope(e));
 		out.addAll(e.getTime().getValue());
-		
+		//done
 	}
 	
 
@@ -173,7 +200,7 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		out.add(e.getChannel());
 		out.add(e.getSensorType());
 		out.add(getScope(e));
-		
+		//done
 	}
 
 	/* (non-Javadoc)
@@ -185,7 +212,8 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		out.add(e.getChannel());
 		out.add(e.getSensorType());
 		out.add(getScope(e));
-		out.addAll(e.getTimeExpression().getValue());
+		out.addAll(e.getTimeExpression().getValue(2));
+		//done
 	}
 
 	/* (non-Javadoc)
@@ -195,10 +223,11 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	public void visit(ERelativeEG e) {
 		out.add((byte)UkuConstants.IMMEDIATE_E_GEN);
 		out.add(e.getChannel());
-		out.add(e.getSensorType()); // TODO ????
-		out.add(getScope(e));  /// TODO???
-		out.addAll(e.getTimeExpression().getValue());
+		out.add(e.getSensorType()); 
+		out.add(getScope(e)); 
+		out.addAll(e.getTimeExpression().getValue(2));
 		out.add(e.getSource().getChannel());
+		//done
 	}
 
 	/* (non-Javadoc)

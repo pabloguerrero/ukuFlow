@@ -40,7 +40,9 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="delayTime" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EGRecurring" eSuperTypes="#//EventGenerator"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EGRecurring" eSuperTypes="#//EventGenerator">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="repetition" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EGPeriodic" eSuperTypes="#//EGRecurring">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
@@ -53,7 +55,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="function" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EventFilter" eSuperTypes="#//EventBaseOperator"/>
-  <eClassifiers xsi:type="ecore:EClass" name="EFSimple" eSuperTypes="#//EventBaseOperator">
+  <eClassifiers xsi:type="ecore:EClass" name="EFSimple" eSuperTypes="#//EventFilter">
     <eStructuralFeatures xsi:type="ecore:EReference" name="constraints" lowerBound="1"
         upperBound="-1" eType="#//ESimpleFilterConstraint"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sourceEvent" lowerBound="1"

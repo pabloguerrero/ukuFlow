@@ -67,21 +67,46 @@ public class TimeExpression extends EEvaluableExpression {
 		// TODO Auto-generated method stub
 		
 	}
-
+	public int getValueInt(){
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String date = String.format("%04d-%02d-%02d %02d:%02d:%02d", year,month,day,hour,minute,second);
+		
+			Date d;
+			try {
+				d = format.parse(date);
+				long seconds = (int) (d.getTime()/1000L);
+				if(seconds < 0)
+					seconds = (60*hour+minute)*60 +second;
+				return (int)seconds;
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		return 0;
+	}
+	public Collection<? extends Byte> getValue(){
+		return getValue(4);
+	}
 	/**
+	 * return the time in bytes of seconds
 	 * @return
 	 */
-	public Collection<? extends Byte> getValue() {
+	public Collection<? extends Byte> getValue(int length) {
 		Collection<Byte> result = new ArrayList<Byte>();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String date = String.format("%04d-%02d-%02d %02d:%02d:%02d", year,month,day,hour,minute,second);
 		try {
 			Date d = format.parse(date);
 			long seconds = d.getTime()/1000L;
-			result.add((byte)(seconds/(256*256*256)));
-			result.add((byte)(seconds/(256*256)));
-			result.add((byte)(seconds/(256)));
-			result.add((byte)(seconds%(256)));
+			if(seconds < 0)
+				seconds = (hour*60+minute)*60 + second;
+			if(length==4)
+			result.add((byte)(seconds / (256*256*256)));
+			if(length>=3)
+			result.add((byte)(seconds / (256*256)));
+			if(length>=2)
+			result.add((byte)(seconds / (256)));
+			if(length>=1)
+			result.add((byte)(seconds % (256)));
 			return result;
 		} catch (ParseException e) {
 			e.printStackTrace();

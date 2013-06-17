@@ -44,6 +44,9 @@ public class EPeriodicEG extends ERecurringEG{
 	public void accept(EventBaseVisitor visitor) {
 		visitor.visit(this);
 	}
+	public TimeExpression getTime(){
+		return time;
+	}
 	@Override
 	public String toString(){
 		String s="";

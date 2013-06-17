@@ -572,6 +572,15 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getEGRecurring_Repetition() {
+		return (EAttribute)egRecurringEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getEGPeriodic() {
 		return egPeriodicEClass;
 	}
@@ -1104,6 +1113,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		createEAttribute(egRelativeEClass, EG_RELATIVE__DELAY_TIME);
 
 		egRecurringEClass = createEClass(EG_RECURRING);
+		createEAttribute(egRecurringEClass, EG_RECURRING__REPETITION);
 
 		egPeriodicEClass = createEClass(EG_PERIODIC);
 		createEAttribute(egPeriodicEClass, EG_PERIODIC__TIME);
@@ -1223,7 +1233,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		egPatternedEClass.getESuperTypes().add(this.getEGRecurring());
 		egDistributionEClass.getESuperTypes().add(this.getEGRecurring());
 		eventFilterEClass.getESuperTypes().add(this.getEventBaseOperator());
-		efSimpleEClass.getESuperTypes().add(this.getEventBaseOperator());
+		efSimpleEClass.getESuperTypes().add(this.getEventFilter());
 		efCompositeEClass.getESuperTypes().add(this.getEventFilter());
 		efStatusEventEClass.getESuperTypes().add(this.getEFComposite());
 		efLogicEClass.getESuperTypes().add(this.getEFStatusEvent());
@@ -1277,6 +1287,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		initEAttribute(getEGRelative_DelayTime(), ecorePackage.getEInt(), "delayTime", null, 1, 1, EGRelative.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(egRecurringEClass, EGRecurring.class, "EGRecurring", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getEGRecurring_Repetition(), ecorePackage.getEInt(), "repetition", null, 0, 1, EGRecurring.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(egPeriodicEClass, EGPeriodic.class, "EGPeriodic", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getEGPeriodic_Time(), ecorePackage.getEInt(), "time", null, 0, 1, EGPeriodic.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

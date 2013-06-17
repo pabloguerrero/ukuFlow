@@ -21,7 +21,6 @@ package de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase;
  * @generated
  */
 public interface EventGenerator extends EventBaseOperator {
-
 	/**
 	 * Returns the value of the '<em><b>Sensor Type</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -73,4 +72,5 @@ public interface EventGenerator extends EventBaseOperator {
 	 * @generated
 	 */
 	void setScope(String value);
+
 } // EventGenerator
