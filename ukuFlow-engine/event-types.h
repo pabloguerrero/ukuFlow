@@ -59,42 +59,41 @@ typedef uint8_t channel_id_t;
 enum event_operator_type {
 	// * Event generators
 	// ** non-recurring:
-	IMMEDIATE_E_GEN /** 			 0 */,
-	ABSOLUTE_E_GEN /**				 1 */,
-	OFFSET_E_GEN /**				 2 */,
-	RELATIVE_E_GEN /**				 3 */,
+	IMMEDIATE_EG, /** 							 0 */
+	ABSOLUTE_EG, /**							 1 */
+	OFFSET_EG, /**								 2 */
+	RELATIVE_EG, /**							 3 */
 
 	// ** recurring:
-	PERIODIC_E_GEN /**				 4 */,
-	// *** aperiodic:
-	PATTERNED_E_GEN /**				 5 */,
-	DISTRIBUTED_E_GEN /**			 6 */,
+	PERIODIC_EG, /**							 4 */
+	PATTERN_EG, /**								 5 */
+	FUNCTIONAL_EG, /**							 6 */
 
 	// * Filters:
 	// ** Simple event filter:
-	SIMPLE_FILTER /**				 7 */,
+	SIMPLE_EF, /**								 7 */
 
 	// ** Composite event operators:
 	// *** Logical filters:
-	AND_COMPOSITION_FILTER /**		 8 */,
-	OR_COMPOSITION_FILTER /**		 9 */,
-	NOT_COMPOSITION_FILTER /**		10 */,
+	AND_COMPOSITION_EF, /**						 8 */
+	OR_COMPOSITION_EF, /**						 9 */
+	NOT_COMPOSITION_EF, /**						10 */
 	// *** Temporal filters:
-	SEQUENCE_COMPOSITION_FILTER /**	11 */,
+	SEQUENCE_COMPOSITION_EF, /**				11 */
 	// *** Processing functions
-	MIN_COMPOSITION_FILTER /**		12 */,
-	MAX_COMPOSITION_FILTER /**		13 */,
-	COUNT_COMPOSITION_FILTER /**	14 */,
-	SUM_COMPOSITION_FILTER /**		15 */,
-	AVG_COMPOSITION_FILTER /**		16 */,
+	MIN_COMPOSITION_EF, /**						12 */
+	MAX_COMPOSITION_EF, /**						13 */
+	COUNT_COMPOSITION_EF, /**					14 */
+	SUM_COMPOSITION_EF, /**						15 */
+	AVG_COMPOSITION_EF, /**						16 */
 	//MEDIAN?
-	STDEV_COMPOSITION_FILTER /**	17 */,
+	STDEV_COMPOSITION_EF, /**					17 */
 	//HISTOGRAM?
 
 	// *** Change event filters:
-	INCREASE_FILTER /**				18 */,
-	DECREASE_FILTER /**				19 */,
-	REMAIN_FILTER /**				20 */,
+	INCREASE_EF, /**							18 */
+	DECREASE_EF, /**							19 */
+	REMAIN_EF /**								20 */
 };
 
 /** \brief		TODO				*/
@@ -116,12 +115,18 @@ struct __attribute__((__packed__)) generic_event_operator {
 
 #define GENERIC_EVENT_GENERATOR_FIELDS					\
 	GENERIC_EVENT_OPERATOR_FIELDS						\
-	/** Sensor which will be read */					\
-	/** (corresponds to enum repository_fields */		\
-	/** in data-repository.h) */						\
-	uint8_t sensor;               						\
-	/** Id of scope whose members will participate */ 	\
+	/** \brief Source sensor which will be read */		\
+	/* (corresponds to enum repository_fields */		\
+	/* in data-repository.h) */							\
+	uint8_t source;               						\
+	/* Id of scope whose members will participate */ 	\
 	scope_id_t scope_id;
+
+/** \brief		Abstract definition for recurrent event generators	*/
+#define RECURRENT_EVENT_GENERATOR_FIELDS				\
+	GENERIC_EVENT_GENERATOR_FIELDS						\
+	/** \brief	Number of repetitions (or 0 for infinite) */	\
+	uint8_t repetitions;
 
 /** \brief		TODO				*/
 struct __attribute__((__packed__)) generic_egen {
@@ -136,51 +141,66 @@ struct __attribute__((__packed__)) immediate_egen {
 /** \brief		TODO				*/
 struct __attribute__((__packed__)) absolute_egen {
 	GENERIC_EVENT_GENERATOR_FIELDS
+	/** \brief	TODO */
 	clock_time_t when;
 };
 
 /** \brief		TODO				*/
 struct __attribute__((__packed__)) offset_egen {
 	GENERIC_EVENT_GENERATOR_FIELDS
+	/** \brief	TODO */
 	clock_time_t offset;
 };
 
 /** \brief		TODO				*/
 struct __attribute__((__packed__)) relative_egen {
 	GENERIC_EVENT_GENERATOR_FIELDS
-// TODO: complete
+	/** \brief	TODO */
+	clock_time_t offset;
+// followed by expression to which this event is relative
+};
+
+/** \brief		TODO				*/
+struct __attribute__((__packed__)) recurrent_egen {
+	RECURRENT_EVENT_GENERATOR_FIELDS
 };
 
 /** \brief		TODO				*/
 struct __attribute__((__packed__)) periodic_egen {
-	GENERIC_EVENT_GENERATOR_FIELDS
+	RECURRENT_EVENT_GENERATOR_FIELDS
 	/** \brief Period for generating the events, in seconds */
 	uint16_t period;
 };
 
 /** \brief		TODO				*/
 struct __attribute__((__packed__)) patterned_egen {
-	GENERIC_EVENT_GENERATOR_FIELDS
-	clock_time_t period;
+	RECURRENT_EVENT_GENERATOR_FIELDS
+	/** \brief	TODO */
+	uint16_t period;
+	/** \brief	TODO */
 	uint8_t pattern_len; // the length of the pattern is expressed in number of bits
 // followed by as many bytes as ceiling([pattern_len]/8)
 };
 
 /** \brief		TODO				*/
-typedef uint8_t probability_distribution_function_t;
+typedef uint8_t functional_generator_t;
+
 /** \brief		TODO				*/
-enum probability_distribution_function {
-	NORMAL_DISTRIBUTION = 0, // http://en.wikipedia.org/wiki/Normal_distribution
-	CHI_SQUARE_DISTRIBUTION = 1, // http://en.wikipedia.org/wiki/Chi-square_distribution
-	PARETO_DISTRIBUTION = 2 // http://en.wikipedia.org/wiki/Pareto_distribution
-	//
+enum functional_generator {
+	GAUSSIAN_DISTRIBUTION = 0, /*    http://en.wikipedia.org/wiki/Gaussian_distribution */
+	CHI_SQUARE_DISTRIBUTION = 1, /*  http://en.wikipedia.org/wiki/Chi-square_distribution */
+	PARETO_DISTRIBUTION = 2 /*       http://en.wikipedia.org/wiki/Pareto_distribution */
+//
 };
 
 /** \brief		TODO				*/
-struct __attribute__((__packed__)) distribution_egen {
-	GENERIC_EVENT_GENERATOR_FIELDS
+struct __attribute__((__packed__)) functional_egen {
+	RECURRENT_EVENT_GENERATOR_FIELDS
+	/** \brief	TODO */
 	uint16_t period;
-	probability_distribution_function_t pdf_type;
+	/** \brief	TODO */
+	functional_generator_t generator_function;
+// followed by parameters to generator function
 };
 
 /*---------------------------------------------------------------------------*/
@@ -190,6 +210,7 @@ struct __attribute__((__packed__)) distribution_egen {
 /** \brief		Structure for simple filters				*/
 struct __attribute__((__packed__)) simple_filter {
 	GENERIC_EVENT_OPERATOR_FIELDS
+	/** \brief	TODO */
 	uint8_t num_expressions;
 // followed by pairs of <expression length, the expression itself>
 };
@@ -197,24 +218,25 @@ struct __attribute__((__packed__)) simple_filter {
 /** \brief		TODO				*/
 struct __attribute__((__packed__)) composite_filter {
 	GENERIC_EVENT_OPERATOR_FIELDS
-	uint16_t window;
+	/** \brief	TODO */
+	uint16_t window_size;
 };
- struct __attribute__((__packed__)) logical_composite_filter {
- GENERIC_EVENT_OPERATOR_FIELDS
- // TODO: complete
- };
+struct __attribute__((__packed__)) logical_composite_filter {
+	GENERIC_EVENT_OPERATOR_FIELDS
+	// TODO: complete
+};
 
- // TODO: replace with corresponding processing functions
- struct __attribute__((__packed__)) processing_function_filter {
- GENERIC_EVENT_OPERATOR_FIELDS
- };
+// TODO: replace with corresponding processing functions
+struct __attribute__((__packed__)) processing_function_filter {
+	GENERIC_EVENT_OPERATOR_FIELDS
+};
 
- struct __attribute__((__packed__)) temporal_composite_filter {
- GENERIC_EVENT_OPERATOR_FIELDS
- // TODO: complete
- };
+struct __attribute__((__packed__)) temporal_composite_filter {
+	GENERIC_EVENT_OPERATOR_FIELDS
+	// TODO: complete
+};
 
- /*
+/*
  struct __attribute__((__packed__)) increase_filter {
  GENERIC_EVENT_OPERATOR_FIELDS
  };
@@ -242,12 +264,20 @@ struct __attribute__((__packed__)) event {
 /** \brief		Types of event */
 typedef uint8_t event_type_t;
 
+/** \brief		Enumeration for event types */
+enum event_type {
+//	/** \brief	TODO */
+	SIMPLE_EVENT = 0,
+	/** \brief	TODO */
+	COMPOSITE_EVENT
+};
+
 /** \brief		Enumeration for event fields */
 enum event_field {
 //	/** \brief	TODO */
-//	EVENT_TYPE = 0,
-	/** \brief	Valid values for the SENSOR field are those from the 'enum repository_fields' in data-mgr.h */
-	SENSOR,
+	EVENT_TYPE = 0,
+	/** \brief	Valid values for the SOURCE field are those from the 'enum repository_fields' in data-mgr.h */
+	SOURCE,
 	/** \brief	TODO */
 	MAGNITUDE,
 	/** \brief	TODO */

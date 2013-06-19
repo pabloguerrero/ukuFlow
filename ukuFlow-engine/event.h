@@ -48,11 +48,11 @@
 struct event *event_alloc_raw(data_len_t *event_len);
 struct event *event_clone(struct event *source_event,
 		data_len_t source_event_len);
-data_len_t event_get_size(struct event *event);
+data_len_t event_get_len(struct event *event);
 uint8_t *event_get_value(struct event *event, uint8_t searched_field);
 data_len_t event_operator_get_size(struct generic_event_operator *geo);
 void event_populate(struct event *event, struct generic_egen *g_egen);
-void event_print(struct event *event, data_len_t event_payload_len);
+void event_print(struct event *event, data_len_t event_len);
 void
 event_set_value(struct event *event, uint8_t searched_field, uint8_t *data);
 uint8_t* event_custom_input_function(data_len_t *data_len,

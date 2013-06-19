@@ -51,14 +51,14 @@
 /** \brief Delay to use after invoking a scope operation (open a scope / close a scope / send data through a scope) */
 #define SCOPE_OPERATION_DELAY 5
 
-
 /*---------------------------------------------------------------------------*/
 /** \brief		Enumeration of workflow_node states */
 enum wf_node_state_type {
-	WFN_SPAWN /*								 0 */,
-	WFN_RUNNING/*								 1 */,
-	WFN_BLOCKED /*								 2 */,
+	WFN_SPAWN, /*								 0 */
+	WFN_RUNNING, /*								 1 */
+	WFN_BLOCKED /*								 2 */
 };
+
 /** \brief Type definition for workflow_node state type
  * \warning there is an enum with name wf_elem_type too */
 typedef uint8_t wf_node_state_type_t;

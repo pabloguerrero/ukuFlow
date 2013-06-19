@@ -48,9 +48,9 @@
 /*---------------------------------------------------------------------------*/
 /** \brief		Size of event fields. These correspond to the enumeration 'event_field' in event-types.h */
 data_len_t event_field_width[] = { //
-//		/** \brief EVENT_TYPE */
-//		sizeof(event_type_t),
-		/** \brief SENSOR */
+		/** \brief EVENT_TYPE */
+		sizeof(event_type_t),
+		/** \brief SOURCE */
 		sizeof(uint8_t),
 		/** \brief MAGNITUDE */
 		sizeof(int16_t),
@@ -65,8 +65,8 @@ data_len_t event_field_width[] = { //
 /*---------------------------------------------------------------------------*/
 /** \brief		Names of event fields. These correspond to the enumeration 'event_field' */
 char *event_field_names[] = { //
-		//"event type",
-				"sensor",//
+		"event type", //
+				"source", //
 				"magnitude", //
 				"timestamp", //
 				"source node", //
@@ -80,38 +80,38 @@ char *event_field_names[] = { //
 data_len_t event_operator_get_size(struct generic_event_operator *geo) {
 	data_len_t size = 0;
 	switch (geo->ev_op_type) {
-	case IMMEDIATE_E_GEN: {
+	case IMMEDIATE_EG: {
 		size = sizeof(struct immediate_egen);
 		break;
 	}
-	case ABSOLUTE_E_GEN: {
+	case ABSOLUTE_EG: {
 		size = sizeof(struct absolute_egen);
 		break;
 	}
-	case OFFSET_E_GEN: {
+	case OFFSET_EG: {
 		size = sizeof(struct offset_egen);
 		break;
 	}
-	case RELATIVE_E_GEN: {
-		// TODO: complete
+	case RELATIVE_EG: {
+		size = sizeof(struct offset_egen);
 		break;
 	}
-	case PERIODIC_E_GEN: {
+	case PERIODIC_EG: {
 		size = sizeof(struct periodic_egen);
 		break;
 	}
-	case PATTERNED_E_GEN: {
+	case PATTERN_EG: {
 		size = sizeof(struct patterned_egen);
 
 		// now we calculate ceiling(pattern_len/8) using uint8_t arithmetic:
 		size += (((struct patterned_egen*) geo)->pattern_len + 7) / 8;
 		break;
 	}
-	case DISTRIBUTED_E_GEN: {
-		size = sizeof(struct distribution_egen);
+	case FUNCTIONAL_EG: {
+		size = sizeof(struct functional_egen);
 		break;
 	}
-	case SIMPLE_FILTER: {
+	case SIMPLE_EF: {
 		size = sizeof(struct simple_filter);
 		uint8_t i;
 		struct simple_filter *sf = (struct simple_filter*) geo;
@@ -123,25 +123,25 @@ data_len_t event_operator_get_size(struct generic_event_operator *geo) {
 		}
 		break;
 	}
-	case AND_COMPOSITION_FILTER:
+	case AND_COMPOSITION_EF:
 		// intentionally left blank
-	case OR_COMPOSITION_FILTER:
+	case OR_COMPOSITION_EF:
 		// intentionally left blank
-	case NOT_COMPOSITION_FILTER:
+	case NOT_COMPOSITION_EF:
 		// intentionally left blank
-	case SEQUENCE_COMPOSITION_FILTER:
+	case SEQUENCE_COMPOSITION_EF:
 		// intentionally left blank
-	case AVG_COMPOSITION_FILTER:
+	case AVG_COMPOSITION_EF:
 		// intentionally left blank
-	case MIN_COMPOSITION_FILTER:
+	case MIN_COMPOSITION_EF:
 		// intentionally left blank
-	case MAX_COMPOSITION_FILTER:
+	case MAX_COMPOSITION_EF:
 		// intentionally left blank
-	case INCREASE_FILTER:
+	case INCREASE_EF:
 		// intentionally left blank
-	case DECREASE_FILTER:
+	case DECREASE_EF:
 		// intentionally left blank
-	case REMAIN_FILTER: {
+	case REMAIN_EF: {
 		size = sizeof(struct composite_filter);
 		break;
 	}
@@ -199,7 +199,7 @@ uint8_t* event_custom_input_function(data_len_t *data_len,
 struct event *event_alloc_raw(data_len_t *event_len) {
 	uint8_t field;
 	// determine event payload size
-	*event_len = 0;
+	*event_len = sizeof(struct event);
 
 	uint8_t num_fields = sizeof(event_field_width) / sizeof(uint8_t);
 
@@ -262,25 +262,28 @@ struct event *event_clone(struct event *source_event,
  * 				(which is passed as parameter), the respective data item from the
  * 				repository is fetched.
  *
- * @param[in] event	the event to populate
- * @param[in] g_egen
+ * @param[in] event the event to populate
+ * @param[in] g_egen the event generator which indicates the data source from where to get the magnitude
  */
 void event_populate(struct event *event, struct generic_egen *g_egen) {
 
 	data_len_t data_len;
 	uint16_t *temp_data_ptr, temp_data;
 
-	temp_data_ptr = (uint16_t*) data_mgr_get_data(0, g_egen->sensor, &data_len);
+	temp_data_ptr = (uint16_t*) data_mgr_get_data(0, g_egen->source, &data_len);
 
 	if (temp_data_ptr == NULL)
 		return;
 	temp_data = *temp_data_ptr;
 
 	clock_time_t time = clock_time();
-	PRINTF(3,
-			"(EVENT) time %lu, sensor %u, value %u\n", time, g_egen->sensor, temp_data);
+	PRINTF(3, "(EVENT) time %lu, source %u, value %u\n", time, g_egen->source,
+			temp_data);
 	event->channel_id = g_egen->channel_id;
-	event_set_value(event, SENSOR, &g_egen->sensor);
+	event_type_t *ev_type;
+	*ev_type = SIMPLE_EVENT;
+	event_set_value(event, EVENT_TYPE, (uint8_t*) &ev_type);
+	event_set_value(event, SOURCE, &g_egen->source);
 	event_set_value(event, MAGNITUDE, (uint8_t*) &temp_data);
 	event_set_value(event, TIMESTAMP, (uint8_t*) &time);
 	event_set_value(event, SOURCE_NODE, (uint8_t*) &rimeaddr_node_addr);
@@ -294,8 +297,9 @@ void event_populate(struct event *event, struct generic_egen *g_egen) {
  * 				Calculates the size of the event, including the main structure
  * 				and the size of the individual fields-value-pairs. The returned
  * 				value is expressed in bytes.
+ * @param[in] event the event from which the length will be calculated
  */
-data_len_t event_get_size(struct event *event) {
+data_len_t event_get_len(struct event *event) {
 	data_len_t event_size = sizeof(struct event);
 	data_len_t field_size;
 	uint8_t field;
@@ -315,11 +319,12 @@ data_len_t event_get_size(struct event *event) {
  *
  *  			TODO
  *  @param[in]	event Structure containing the event
- *  @param[in]	event_payload_len Length, in bytes, of the event's payload
+ *  @param[in]	event_len Length, in bytes, of the event
  */
-void event_print(struct event *event, data_len_t event_payload_len) {
+void event_print(struct event *event, data_len_t event_len) {
 	PRINTF(1,
-			"Event - channel id %u, number of fields: %u, payload len: %u\n", event->channel_id, event->num_fields, event_payload_len);
+			"(EVENT) Event info: mem: %p, channel id %u, number of fields: %u, len: %u\n",
+			event, event->channel_id, event->num_fields, event_len);
 
 	uint8_t field_nr, field;
 
@@ -368,8 +373,9 @@ void event_set_value(struct event *event, uint8_t searched_field, uint8_t *data)
 	uint8_t *fvp = get_value_pointer(event, searched_field);
 
 	// if the field was found, copy
-	if (fvp != NULL)
+	if (fvp != NULL) {
 		memcpy(fvp, data, event_field_width[searched_field]);
+	}
 	// else, the field was not found in this event!
 }
 
