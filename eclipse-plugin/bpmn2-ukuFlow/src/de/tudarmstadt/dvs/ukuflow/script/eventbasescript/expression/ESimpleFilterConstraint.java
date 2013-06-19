@@ -30,14 +30,17 @@
 
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
 public class ESimpleFilterConstraint implements Visitable{
-	int type = -1;
-	int value = -1;
-	int comparator = -1;
+	public int type = -1;
+	public int value = -1;
+	public int comparator = -1;
 	boolean valueFirst;
 	public ESimpleFilterConstraint(String type , String op, String value,boolean valueFirst){
 		setType(type);
@@ -45,12 +48,23 @@ public class ESimpleFilterConstraint implements Visitable{
 		setComparator(op);
 		this.valueFirst = valueFirst;
 	}
-	
+	public Collection<? extends Byte> getValues(){
+		ArrayList<Byte> result = new ArrayList<Byte>();
+		
+		return null;
+	}
 	public void setType(String type){
 		this.type = UkuConstants.getConstantWithName(type);		
 	}
 	public void setValue(String value){
-		int v = Integer.parseInt(value);
+		int v = UkuConstants.getConstantWithName(value);
+		if(v==-1)
+			try{
+				v = Integer.parseInt(value);
+			} catch (Exception e){
+				e.printStackTrace();
+				return;
+			}
 		this.value=v;
 	}
 	
@@ -62,8 +76,7 @@ public class ESimpleFilterConstraint implements Visitable{
 	}
 	@Override
 	public void accept(EventBaseVisitor visitor) {
-		// TODO Auto-generated method stub
-		
+		visitor.visit(this);	
 	}
 	
 }

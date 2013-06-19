@@ -30,8 +30,92 @@
 
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable;
 
-public abstract class EEvaluableExpression implements Visitable {
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+
+
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.INonEMFEventbaseElement;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
+import org.eclipse.emf.ecore.impl.EClassImpl;
+public abstract class EEvaluableExpression implements INonEMFEventbaseElement,IEEvaluableExpression,Visitable {
+	private String nonEMF_ID;
+	private List<IEConnection> incomings;
+	private List<IEConnection> outgoings;
 	
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.INonEMFEventbaseElement#getID()
+	 */
+	@Override
+	public String getID() {
+		if(nonEMF_ID == null) {
+			nonEMF_ID = UUID.randomUUID().toString();
+		}
+		return nonEMF_ID;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.INonEMFEventbaseElement#setID(java.lang.String)
+	 */
+	@Override
+	public void setID(String id) {
+		nonEMF_ID = id;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.IEEvaluableExpression#getIncomings()
+	 */
+	@Override
+	public List<IEConnection> getIncomings() {
+		return incomings;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.IEEvaluableExpression#getOutgoings()
+	 */
+	@Override
+	public List<IEConnection> getOutgoings() {
+		return outgoings;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.IEEvaluableExpression#addIncoming(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.IEConnection)
+	 */
+	@Override
+	public void addIncoming(IEConnection in) {
+		if(incomings == null)
+			incomings = new LinkedList<IEConnection>();
+		incomings.add(in);
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.IEEvaluableExpression#addOutgoing(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.IEConnection)
+	 */
+	@Override
+	public void addOutgoing(IEConnection out) {
+		if(outgoings == null)
+			outgoings = new LinkedList<IEConnection>();
+		outgoings.add(out);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.IEEvaluableExpression#setIncomings(java.util.List)
+	 */
+	@Override
+	public void setIncomings(List<IEConnection> ins) {
+		incomings = ins;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.IEEvaluableExpression#setOutgoings(java.util.List)
+	 */
+	@Override
+	public void setOutgoings(List<IEConnection> outs) {
+		outgoings = outs;
+	}
+
 }

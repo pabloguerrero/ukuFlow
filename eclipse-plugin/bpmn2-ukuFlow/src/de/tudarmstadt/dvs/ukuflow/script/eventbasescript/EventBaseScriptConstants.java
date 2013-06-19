@@ -31,29 +31,43 @@ public interface EventBaseScriptConstants {
   /** RegularExpression Id. */
   int FALSE = 14;
   /** RegularExpression Id. */
-  int PEG = 15;
+  int immediate_EG = 15;
   /** RegularExpression Id. */
-  int APEG = 16;
+  int absolute_EG = 16;
   /** RegularExpression Id. */
-  int ADEG = 17;
+  int offset_EG = 17;
   /** RegularExpression Id. */
-  int SEF = 18;
+  int relative_EG = 18;
   /** RegularExpression Id. */
-  int CEF = 19;
+  int functional_EG = 19;
   /** RegularExpression Id. */
-  int TOP = 20;
+  int PEG = 20;
   /** RegularExpression Id. */
-  int SENSOR_TYPE = 21;
+  int APEG = 21;
   /** RegularExpression Id. */
-  int BINARY = 22;
+  int ADEG = 22;
   /** RegularExpression Id. */
-  int NUMBER = 23;
+  int SEF = 23;
   /** RegularExpression Id. */
-  int IDENTIFIER = 24;
+  int CEF = 24;
   /** RegularExpression Id. */
-  int LETTER = 25;
+  int TOP = 25;
   /** RegularExpression Id. */
-  int DIGIT = 26;
+  int SENSOR_TYPE = 26;
+  /** RegularExpression Id. */
+  int POSITIVE_NUMBER = 27;
+  /** RegularExpression Id. */
+  int BINARY = 28;
+  /** RegularExpression Id. */
+  int PATTERN = 29;
+  /** RegularExpression Id. */
+  int REPETITION = 30;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 31;
+  /** RegularExpression Id. */
+  int LETTER = 32;
+  /** RegularExpression Id. */
+  int DIGIT = 33;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -75,27 +89,37 @@ public interface EventBaseScriptConstants {
     "<BOOLEAN>",
     "<TRUE>",
     "<FALSE>",
+    "\"IMMEDIATE_EG\"",
+    "\"ABSOLUTE_EG\"",
+    "\"OFFSET_EG\"",
+    "\"RELATIVE_EG\"",
+    "\"FUNCTIONAL_EG\"",
     "\"PERIODIC_EG\"",
-    "\"PATTERNED_EG\"",
+    "\"PATTERN_EG\"",
     "\"DISTRIBUTION_EG\"",
     "\"SIMPLE_EF\"",
     "\"COMPLEX_EF\"",
     "\"TOP\"",
     "<SENSOR_TYPE>",
+    "<POSITIVE_NUMBER>",
     "<BINARY>",
-    "<NUMBER>",
+    "<PATTERN>",
+    "<REPETITION>",
     "<IDENTIFIER>",
     "<LETTER>",
     "<DIGIT>",
     "\"=\"",
-    "\"^\"",
     "\"@s\"",
+    "\"(\"",
+    "\")\"",
+    "\"^\"",
+    "\":\"",
+    "\"-\"",
+    "\"i\"",
     "\"{\"",
     "\",\"",
     "\"}\"",
     "\"/\"",
-    "\"(\"",
-    "\")\"",
   };
 
 }

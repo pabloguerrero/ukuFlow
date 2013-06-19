@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/de.tudarmstadt.dvs.ukuflow.emfmodel/src" modelPluginID="de.tudarmstadt.dvs.ukuflow.emfmodel"
+    modelName="Eventbase" importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0"
+    copyrightFields="false">
+  <foreignModel>eventbase.ecore</foreignModel>
+  <genPackages prefix="Eventbase" basePackage="de.tudarmstadt.dvs.ukuflow.eventmodel"
+      disposableProviderFactory="true" ecorePackage="eventbase.ecore#/">
+    <genClasses image="false" ecoreClass="eventbase.ecore#//EventBaseOperator">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference eventbase.ecore#//EventBaseOperator/incoming"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference eventbase.ecore#//EventBaseOperator/outgoing"/>
+    </genClasses>
+    <genClasses ecoreClass="eventbase.ecore#//ESequenceFlow">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference eventbase.ecore#//ESequenceFlow/source"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference eventbase.ecore#//ESequenceFlow/target"/>
+    </genClasses>
+    <genClasses ecoreClass="eventbase.ecore#//EPeriodicEG">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//EPeriodicEG/time"/>
+    </genClasses>
+    <genClasses ecoreClass="eventbase.ecore#//EPatternedEG">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//EPatternedEG/time"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//EPatternedEG/pattern"/>
+    </genClasses>
+    <genClasses ecoreClass="eventbase.ecore#//EDistributionEG">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//EDistributionEG/functionName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//EDistributionEG/parameters"/>
+    </genClasses>
+    <genClasses ecoreClass="eventbase.ecore#//ESimpleFilterConstraint">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//ESimpleFilterConstraint/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//ESimpleFilterConstraint/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//ESimpleFilterConstraint/operator"/>
+    </genClasses>
+    <genClasses ecoreClass="eventbase.ecore#//EventGenerator"/>
+    <genClasses ecoreClass="eventbase.ecore#//EGNonRecurring"/>
+    <genClasses ecoreClass="eventbase.ecore#//EGImmediate"/>
+    <genClasses ecoreClass="eventbase.ecore#//EGAbsolute">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//EGAbsolute/absoluteTime"/>
+    </genClasses>
+    <genClasses ecoreClass="eventbase.ecore#//EGOffset">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//EGOffset/offsetTime"/>
+    </genClasses>
+    <genClasses ecoreClass="eventbase.ecore#//EGRelative">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//EGRelative/delayTime"/>
+    </genClasses>
+    <genClasses ecoreClass="eventbase.ecore#//EGRecurring"/>
+    <genClasses ecoreClass="eventbase.ecore#//EGPeriodic">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//EGPeriodic/time"/>
+    </genClasses>
+    <genClasses ecoreClass="eventbase.ecore#//EGPatterned">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//EGPatterned/time"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//EGPatterned/pattern"/>
+    </genClasses>
+    <genClasses ecoreClass="eventbase.ecore#//EGDistribution">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//EGDistribution/time"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute eventbase.ecore#//EGDistribution/function"/>
+    </genClasses>
+    <genClasses ecoreClass="eventbase.ecore#//EventFilter"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFSimple">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference eventbase.ecore#//EFSimple/constraints"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference eventbase.ecore#//EFSimple/sourceEvent"/>
+    </genClasses>
+    <genClasses ecoreClass="eventbase.ecore#//EFComposite"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFStatusEvent"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFLogic"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFProcessing"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFTemporal"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFLogicAnd"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFLogicOr"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFLogicNot"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFProcessingMin"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFProcessingMax"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFProcessingSum"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFProcessingCount"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFProcessingAvg"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFProcessingStDev"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFTemporalSequence"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFChangeEvent"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFChangeIncrease"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFChangeDecrease"/>
+    <genClasses ecoreClass="eventbase.ecore#//EFChangeRemain"/>
+  </genPackages>
+</genmodel:GenModel>

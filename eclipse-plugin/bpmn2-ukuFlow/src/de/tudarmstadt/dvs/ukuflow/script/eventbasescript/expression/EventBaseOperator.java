@@ -30,22 +30,28 @@
 
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.ChannelIDManager;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
 public abstract class EventBaseOperator extends EEvaluableExpression {
 	private String variable = null;
-
+	private byte channel;
+	
+	public EventBaseOperator(){
+		channel = ChannelIDManager.getInstance().generateID();
+	}
+	@Deprecated
 	public void setVariable(String var) {
 		this.variable = var;
 	}
-
+	
+	@Deprecated
 	public String getVariable() {
 		return variable;
 	}
-
-	@Override
-	public void accept(EventBaseVisitor visitor) {
-		visitor.visit(this);
+	
+	public byte getChannel(){
+		return channel;
 	}
 	public abstract String toString();
 }

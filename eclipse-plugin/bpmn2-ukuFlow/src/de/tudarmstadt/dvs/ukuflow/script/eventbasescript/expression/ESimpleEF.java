@@ -35,7 +35,7 @@ import java.util.List;
 
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
-public class ESimpleEF extends EventBaseOperator{
+public class ESimpleEF extends EEventFilter{
 	List<ESimpleFilterConstraint> constraints = new ArrayList<ESimpleFilterConstraint>();
 	List<String> sourceVariable = new ArrayList<String>();
 	List<EventBaseOperator> sourceDirect = new ArrayList<EventBaseOperator>();
@@ -54,6 +54,9 @@ public class ESimpleEF extends EventBaseOperator{
 	}
 	public void setConstraints(List<ESimpleFilterConstraint> cons){
 		this.constraints=cons;
+	}
+	public List<ESimpleFilterConstraint> getConstraints(){
+		return constraints;
 	}
 	public String toString(){
 		String s = "SEF ";

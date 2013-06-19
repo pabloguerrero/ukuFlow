@@ -93,6 +93,8 @@ public class UkuProcessValidation {
 				validate((UkuSequenceFlow) e);
 			} else if (e instanceof UkuGateway) {
 				validate((UkuGateway) e);
+			} else if (e instanceof UkuReceiveTask){
+				validate((UkuReceiveTask)e);
 			} else {
 				System.err.println(e);
 			}
@@ -122,6 +124,14 @@ public class UkuProcessValidation {
 				System.err.println("workflow is not well-formed "+ last);
 		}
 
+	}
+
+	/**
+	 * @param e
+	 */
+	private void validate(UkuReceiveTask e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**

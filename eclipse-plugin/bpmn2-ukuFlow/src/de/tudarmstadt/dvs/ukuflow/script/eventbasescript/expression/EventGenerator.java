@@ -37,17 +37,28 @@ public abstract class EventGenerator extends EventBaseOperator {
 	protected String scope = null;
 	protected int sensorType = -1;
 	
+	/**
+	 * return scope of the event generator 
+	 * @return
+	 */
 	public String getScope() {
 		return scope;
 	}
+	
 	public void setScope(String scope) {
 		this.scope = scope;
 	}
-	public int getSensorType() {
-		return sensorType;
+	
+	/**
+	 * get the type of sensor (source) that should be generated
+	 * @return
+	 */
+	public byte getSensorType() {
+		return(byte) sensorType;
 	}
 	public void setSensorType(String sensorType) {
 		this.sensorType = UkuConstants.getConstantWithName(sensorType);
 	}
 	
+
 }

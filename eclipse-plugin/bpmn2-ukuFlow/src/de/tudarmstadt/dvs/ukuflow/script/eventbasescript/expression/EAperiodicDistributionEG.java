@@ -33,7 +33,7 @@ import java.util.List;
 
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
-public class EAperiodicDistributionEG extends EventGenerator{
+public class EAperiodicDistributionEG extends ERecurringEG{
 	private String functionName;
 	private List<Integer> parameters;
 	public void setFunction(String name, List<Integer> params){
@@ -54,7 +54,8 @@ public class EAperiodicDistributionEG extends EventGenerator{
 	@Override
 	public String toString(){
 		String s="";
-		s+= "[DISTRIBUTION="+functionName+"(";		
+		s+= "[DISTRIBUTION="+functionName+"(";	
+		if(parameters != null)
 		for(Integer i : parameters){
 			s+= i +",";
 		}

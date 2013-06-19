@@ -29,32 +29,74 @@
  */
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
-import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
-public class EAperiodicPatternedEG extends EventGenerator{	
-	int time = 1;
+public class EAperiodicPatternedEG extends ERecurringEG{	
+	public TimeExpression time = null;
 	String pattern = "";	
-	public void setTime(int time){
+	
+	public void setTime(TimeExpression time){
 		this.time = time;
 	}
+	
+	public TimeExpression getTime(){
+		return time;
+	}
+	public String getPattern(){
+		return pattern;
+	}
+	public byte getPatternLength(){
+		return (byte)pattern.length();
+	}
+	/**
+	 * return the pattern of this event generator in byte
+	 * ex "00001010" -> 10
+	 * @return
+	 */
+	public Collection<? extends Byte> getPatternInByte(){
+		if(pattern == null)
+			return null;
+		try{
+			int length = pattern.length()/8 + 1;
+			int t =  Integer.parseInt(pattern, 2);
+			List<Byte> result = new ArrayList<Byte>(length);
+			for(int i = 0; i < length; i++){
+				byte tmp = (byte) (t % 256);
+				result.add(length-i-1,tmp);
+			}
+			return result;
+		} catch (Exception e){
+			return null;
+		}
+	}
 	public void setPattern(String pattern){
+		if(pattern.startsWith("p"))
+			pattern = pattern.substring(1);
 		if(!pattern.matches("[0-1]+")){
+			//double check?! too much?
 			this.pattern = pattern;
 			//TODO
 			return;
 		}
-		this.pattern = pattern;
 	}
 	
 	@Override
 	public void accept(EventBaseVisitor visitor) {
-		// TODO Auto-generated method stub
+		visitor.visit(this);
 		
 	}
 	@Override
 	public String toString(){
 		String s ="[PATTERNED="+pattern+"("+time+"s)]";		
 		return getVariable()+"PEG_"+getSensorType()+"_"+s+"@"+getScope();
+	}
+	public static void main(String[] args) {
+		String pattern = "00001010";
+		int num = Integer.parseInt(pattern, 2);
+		System.out.println(num);
 	}
 }

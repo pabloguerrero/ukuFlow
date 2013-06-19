@@ -32,17 +32,20 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
-public class EPeriodicEG extends EventGenerator{
-	int time;	
+public class EPeriodicEG extends ERecurringEG{
+	TimeExpression time;	
 	public EPeriodicEG(){
 		
 	}	
-	public void setTime(int time){
+	public void setTime(TimeExpression time){
 		this.time = time;
 	}
 	@Override
 	public void accept(EventBaseVisitor visitor) {
 		visitor.visit(this);
+	}
+	public TimeExpression getTime(){
+		return time;
 	}
 	@Override
 	public String toString(){

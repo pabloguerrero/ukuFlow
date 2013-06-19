@@ -30,12 +30,29 @@
 
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
+
 public class EVariable extends EventBaseOperator {
 	String variable = null;
-	public EVariable(String v){
+	EventBaseOperator reference;
+	public EVariable(){
+		
+	}
+	public EVariable(String v,EventBaseOperator ref){
 		this.variable = v.trim();
+		reference = ref;
 	}
 	public String toString(){
 		return variable;
+	}
+
+	@Override
+	public byte getChannel(){
+		return reference.getChannel();
+	}
+	@Override
+	public void accept(EventBaseVisitor visitor) {
+		visitor.visit(this);
+		
 	}
 }

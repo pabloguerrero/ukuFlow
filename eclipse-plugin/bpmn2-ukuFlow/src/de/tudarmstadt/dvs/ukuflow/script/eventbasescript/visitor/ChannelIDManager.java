@@ -33,10 +33,13 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EVariable;
+
 public class ChannelIDManager {
 	private static ChannelIDManager instance = null;
 	byte id = 0;
 	private Map<String, Byte> reg = new HashMap<String, Byte>();
+	public static Map<String,EVariable> variableMapping = new HashMap<String,EVariable>();
 	private ChannelIDManager(){	
 		//nothing todo;
 	}
@@ -58,6 +61,14 @@ public class ChannelIDManager {
 	 */
 	public void removeAllRegisteredChannel(){
 		reg = new HashMap<String, Byte>();
+	}
+	
+	public byte generateID(){
+		id++;
+		return (byte)(id-1);
+	}
+	public void register(String key, byte id){
+		reg.put(key,id);
 	}
 	
 	public byte getChannelID(String regs){

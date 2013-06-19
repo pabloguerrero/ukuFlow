@@ -260,4 +260,18 @@ public class ElementVisitorImpl implements ElementVisitor {
 		out.addAll(sVisitor.getOutput());
 	}
 
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.xml.entity.ElementVisitor#visit(de.tudarmstadt.dvs.ukuflow.xml.entity.UkuReceiveTask)
+	 */
+	@Override
+	public void visit(UkuReceiveTask rTask) {
+		if(!rTask.hasScript()){
+			rTask.addWarningMessage("no script");
+			return;
+		}
+		rTask.topOperator.accept(eVisitor);
+		//TODO visit receive task
+		
+	}
+
 }

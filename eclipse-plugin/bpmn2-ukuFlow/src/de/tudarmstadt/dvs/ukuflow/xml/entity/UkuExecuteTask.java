@@ -66,7 +66,8 @@ public class UkuExecuteTask extends UkuActivity {
 
 	public void setScript(String script) {
 		// this.script = script;
-		if (script == null || script.equals("")) {			
+		if (script == null || script.equals("")) {
+			System.out.println(this.getClass().getSimpleName() + "\t no script");
 			return;
 		}
 		hasScript = true;

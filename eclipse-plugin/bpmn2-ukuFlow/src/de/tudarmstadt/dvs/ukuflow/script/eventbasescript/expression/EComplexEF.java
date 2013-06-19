@@ -31,17 +31,24 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
-public class EComplexEF extends EventBaseOperator{
-
+public class EComplexEF extends EEventFilter{
+	private EEvaluableExpression condition;
+	
 	@Override
 	public void accept(EventBaseVisitor visitor) {
 		visitor.visit(this);
 	}
-
+	
+	public void setCondition(EEvaluableExpression exp){
+		this.condition = exp;
+	}
+	
 	@Override
 	public String toString() {
-		String s;
-		return null;
+		//String s;
+		if(condition==null)
+			return null;
+		return condition.toString();
 	}
 	
 }

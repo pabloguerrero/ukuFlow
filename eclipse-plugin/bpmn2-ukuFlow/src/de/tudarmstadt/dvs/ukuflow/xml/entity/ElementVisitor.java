@@ -42,4 +42,6 @@ public interface ElementVisitor {
 	public abstract void visit(UkuProcess p);
 
 	public abstract void visit(UkuScope s);
+	
+	public abstract void visit(UkuReceiveTask rTask);
 }

@@ -51,6 +51,7 @@ public class TypeClassifier {
 	private Set<String> gateways = new HashSet<String>();
 	private Set<String> events = new HashSet<String>();
 	private Set<String> textAnnotation = new HashSet<String>();
+	private Set<String> receiveTask = new HashSet<String>();
 	private static TypeClassifier INSTANCE = null;
 	private Map<String, Class> gatewayClass = new HashMap<String, Class>();
 	BpmnLog log = BpmnLog.getInstance(TypeClassifier.class.getSimpleName());
@@ -78,6 +79,8 @@ public class TypeClassifier {
 		gatewayClass.put("inclusiveGateway", UkuInclusiveGateway.class);
 		gatewayClass.put("exclusiveGateway", UkuExclusiveGateway.class);
 		gatewayClass.put("eventBasedGateway", UkuEventGateway.class);
+		
+		receiveTask.add("receiveTask");
 	}
 
 	public static TypeClassifier getInstance() {
@@ -147,6 +150,8 @@ public class TypeClassifier {
 			return 4;
 		if (textAnnotation.contains(name))
 			return 5;
+		if (receiveTask.contains(name))
+			return 6;
 
 		throw new UnsupportedElementException(name);
 	}
