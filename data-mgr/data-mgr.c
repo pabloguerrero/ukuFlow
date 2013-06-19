@@ -72,14 +72,16 @@ static uint8_t initialized = 0;
 static uint16_t sensor_light_par_raw(void) {
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	SENSORS_ACTIVATE(light_sensor);
+	// no op to cause delay
+	PRINTF(1,"\t");
 	int result = light_sensor.value(LIGHT_SENSOR_PHOTOSYNTHETIC);
 	SENSORS_DEACTIVATE(light_sensor);
-	return result;
 #else
 #ifdef CONTIKI_TARGET_Z1
-	return (0);
+	int result = 0;
 #endif
 #endif
+	return (result);
 }
 
 /**
@@ -90,12 +92,12 @@ static uint16_t sensor_light_tsr_raw(void) {
 	SENSORS_ACTIVATE(light_sensor);
 	int result = light_sensor.value(LIGHT_SENSOR_TOTAL_SOLAR);
 	SENSORS_DEACTIVATE(light_sensor);
-	return (result);
 #else
 #ifdef CONTIKI_TARGET_Z1
-	return (0);
+	int result = 0;
 #endif
 #endif
+	return (result);
 }
 
 /**
@@ -124,17 +126,17 @@ static uint16_t sensor_temperature_celsius(void) {
 #else
 #ifdef CONTIKI_TARGET_Z1
 	int16_t raw = tmp102_read_temp_raw();
-	//printf("RAW is %d\n", raw);
+	//PRINTF(3,"RAW is %d\n", raw);
 	uint16_t absraw;
 	int16_t sign = 1;
-    if(raw < 0) {		// Perform 2C's if sensor returned negative data
-      absraw = (raw ^ 0xFFFF) + 1;
-      sign = -1;
-    }
-    else absraw=raw;
-    int16_t temp_integer_part = (absraw >> 8) * sign;
-    //uint16_t temp_fractional_part = ((absraw >> 4) % 16) * 625;	// Info in 1/10000 of degree
-	//printf("INT.FRAC is %d,%u \n", temp_integer_part, temp_fractional_part);
+	if (raw < 0) {		// Perform 2C's if sensor returned negative data
+		absraw = (raw ^ 0xFFFF) + 1;
+		sign = -1;
+	} else
+		absraw = raw;
+	int16_t temp_integer_part = (absraw >> 8) * sign;
+	//uint16_t temp_fractional_part = ((absraw >> 4) % 16) * 625;	// Info in 1/10000 of degree
+	//PRINTF(3,"INT.FRAC is %d,%u \n", temp_integer_part, temp_fractional_part);
 
 	return (temp_integer_part);
 #endif
@@ -272,8 +274,6 @@ static uint16_t sensor_co_raw(void) {
 	return (0);
 }
 
-
-
 /**
  * \brief		Searches for a repository with a given id
  *
@@ -292,30 +292,35 @@ data_mgr_lookup(data_repository_id_t id) {
  */
 static struct repository_entry *
 repository_entry_lookup(struct repository* repo, entry_id_t entry_id) {
-	PRINTF(3,"searching %d\n", entry_id);
+	PRINTF(3, "searching %d\n", entry_id);
 	struct repository_entry *entry = list_head(repo->entry_list);
 	while ((entry != NULL) && (entry->entry_id != entry_id)) {
 		entry = entry->next;
-		PRINTF(3,"entry %d\n", entry->entry_id);
+		PRINTF(3, "entry %d\n", entry->entry_id);
 	}
-	PRINTF(3,"-*-*- %d\n", entry->entry_id);
+	PRINTF(3, "-*-*- %d\n", entry->entry_id);
 	return (entry);
 }
 
 /**
- * \brief		Searches for the shortest ttl, and assigns it to the common repository
+ * \brief		Searches for the shortest ttl among all active repositories,
+ * 				and assigns it to the common repository
  **/
 static void adjust_ttl_common_repository() {
-	// initialize value to maximum signed integer value
-	clock_time_t ttl = -1;
-	struct repository *repo;
-	for (repo = list_head(repository_list); repo != NULL; repo = repo->next)
-		if ((repo->id != COMMON_REPOSITORY_ID) && (repo->ttl != 0)
-				&& (repo->ttl < ttl))
-			ttl = repo->ttl;
-	repo = data_mgr_lookup(COMMON_REPOSITORY_ID);
-	if (repo != NULL) {
-		repo->ttl = ttl;
+	// initialize value to maximum unsigned integer value
+	clock_time_t min_ttl = -1;
+	PRINTF(3,"initial max = %lu\n", min_ttl);
+	struct repository *repo, *common_repo;
+	common_repo = data_mgr_lookup(COMMON_REPOSITORY_ID);
+	if (list_length(repository_list) == 1) {
+		common_repo->ttl = 0;
+	} else {
+		for (repo = list_head(repository_list); repo != NULL; repo = repo->next)
+			if ((repo->id != COMMON_REPOSITORY_ID) && (repo->ttl != 0)
+					&& (repo->ttl < min_ttl))
+				min_ttl = repo->ttl;
+		common_repo->ttl = min_ttl;
+		PRINTF(3,"found: %lu\n", min_ttl);
 	}
 }
 
@@ -368,10 +373,9 @@ static void data_mgr_init() {
 						break;
 					case SENSOR_TEMPERATURE_RAW:
 #ifdef CONTIKI_TARGET_Z1
-					  tmp102_init();
+						tmp102_init();
 #endif
 						entry->updater = sensor_temperature_raw;
-
 						break;
 					case SENSOR_TEMPERATURE_CELSIUS:
 						entry->updater = sensor_temperature_celsius;
@@ -422,7 +426,6 @@ static void data_mgr_init() {
 
 				// set entry data length
 				entry->data_len = sizeof(uint16_t);
-
 
 				// set value
 				uint16_t *value = (uint16_t*) (((uint8_t*) entry)
@@ -655,6 +658,7 @@ void data_mgr_set_updater(data_repository_id_t id, entry_id_t entry_id,
 		}
 	}
 }
+
 /**
  *  \brief		Returns a pointer to a byte array with the data requested, or NULL if the
  *				specified entry didn't exist. Also the length of the array is returned via the
@@ -688,7 +692,7 @@ data_mgr_get_data(data_repository_id_t repo_id_param, entry_id_t entry_id,
 	// ok, repository exists (whether it is the common repository or a user-specific one)
 	struct repository_entry *entry = repository_entry_lookup(repo, entry_id);
 
-	PRINTF(3,"getting field %d, entry %p\n", entry_id, entry);
+	PRINTF(3, "getting field %u, entry %p\n", entry_id, entry);
 
 	if (entry == NULL)
 		return (NULL);
@@ -705,14 +709,16 @@ data_mgr_get_data(data_repository_id_t repo_id_param, entry_id_t entry_id,
 		uint16_t *value = (uint16_t*) (((uint8_t*) a_entry)
 				+ sizeof(struct auto_repository_entry));
 
-		// since this is an automatically updated entry, check whether it is outdated:
-		// calculate age:
+		// calculate age of entry:
 		clock_time_t now = clock_time(), age = now - a_entry->timestamp;
 
-		// if there is an updater function, invoke it:
+		// since this is an automatically updated entry, check whether the entry is outdated
+		// and if there is an updater function, invoke it:
+		PRINTF(3,"entry age: %lu, repo ttl: %lu\n", age, repo->ttl);
 		if ((age > repo->ttl) && (a_entry->updater != NULL)) {
 			// value must be updated
 			a_entry->timestamp = now;
+			PRINTF(3,"entry old, updating!\n");
 
 			*value = a_entry->updater();
 		}
