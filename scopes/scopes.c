@@ -351,22 +351,24 @@ void scopes_send(subscriber_id_t subscriber_id, scope_id_t scope_id,
 	PRINT_ARR(3, data, data_len);
 	/* check if the application is subscribed */
 	if (subscriber != NULL && !IS_SUBSCRIBED(subscriber)) {
-		PRINTF(3, "application not subscribed or found\n");
+		PRINTF(3, "(SCOPES) application not subscribed or found\n");
 		return;
 	}
 
 	/* check if the scope is known */
 	scope = lookup_scope_id(scope_id);
 	if (scope == NULL) {
-		PRINTF(3, "scope does not exist: %u\n", scope_id);
+		PRINTF(3, "(SCOPES) scope does not exist: %u\n", scope_id);
 		return;
 	}
 
-	/* check if a message may be sent to this scope */
-	if (!HAS_STATUS(scope, SCOPES_STATUS_MEMBER)) {
-		PRINTF(3, "not allowed to send to scope: %u\n", scope->scope_id);
-		return;
-	}
+	/** The following check was removed in order to enable ukuFlow to send data messages
+	 * towards the root regardless of whether the node is member of the scope or not */
+//	/* check if a message may be sent to this scope */
+//	if (!HAS_STATUS(scope, SCOPES_STATUS_MEMBER)) {
+//		PRINTF(1, "(SCOPES) not allowed to send to scope: %u\n", scope->scope_id);
+//		return;
+//	}
 
 	/* reset the contents of the message buffer */
 	routing->buffer_clear(to_creator);
