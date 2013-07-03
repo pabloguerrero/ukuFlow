@@ -317,13 +317,13 @@ struct __attribute__((__packed__)) wf_eb_x_dec_gw {
 };
 
 /*---------------------------------------------------------------------------*/
-/** \brief	TODO */
+/** \brief	Part of a workflow specification concerning a scope */
 struct __attribute__((__packed__)) scope_info {
-	/** \brief	TODO */
+	/** \brief	Id of the scope */
 	scope_id_t scope_id;
-	/** \brief	TODO */
+	/** \brief	Time to live of the scope */
 	scope_ttl_t scope_ttl;
-	/** \brief	TODO */
+	/** \brief	Length of the scope */
 	data_len_t scope_spec_len;
 // followed by the scope specification
 };
