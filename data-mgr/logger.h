@@ -62,7 +62,7 @@
  * \brief		printf macro for outputting an entire array
  */
 #define PRINT_ARR(x, data, length)				\
-	uint8_t *data2 = data;						\
+	uint8_t *data2 = (uint8_t *)data;			\
 	PRINTF(x,"[");								\
 	int XX = 0;									\
 	for (XX = 0; XX < length; XX++)				\
