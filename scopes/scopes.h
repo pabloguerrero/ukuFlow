@@ -86,9 +86,6 @@
 /** \brief Constant specifying the frequency (in seconds) with which dynamic scopes will be checked */
 #define SCOPES_TIMER_DURATION 2
 
-/** \brief Constant specifying the scope id of the world scope (the universe) */
-#define SCOPES_WORLD_SCOPE_ID 0
-
 /** \brief Constant specifying the factor for re announcements of scopes (compared to a scope's TTL)*/
 #define SCOPES_REANNOUNCE_FACTOR 0.3
 
