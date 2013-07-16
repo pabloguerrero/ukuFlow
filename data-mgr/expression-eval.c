@@ -50,7 +50,7 @@ static uint8_t *bytecode;
 static uint8_t invalid_input;
 static data_repository_id_t repo_id;
 
-static custom_input_function_t *custom_input_function;
+static custom_input_function_t custom_input_function;
 static void *custom_input;
 /*---------------------------------------------------------------------------*/
 /* Function prototypes */
@@ -143,7 +143,7 @@ static void eval_binary(long int *operand1, long int *operand2) {
 
 	if (IS_VALID(code)) {
 		*operand1 = evaluator[code]();
-		//		printf("binary, op1 %li\n", *operand1);
+		PRINTF(5, "binary, op1 %li\n", *operand1);
 
 	} else {
 		invalid_input = 1;
@@ -154,7 +154,7 @@ static void eval_binary(long int *operand1, long int *operand2) {
 
 	if (IS_VALID(code)) {
 		*operand2 = evaluator[code]();
-		//		printf("binary, op2 %li\n", *operand2);
+		PRINTF(5, "binary, op2 %li\n", *operand2);
 	} else {
 		invalid_input = 1;
 	}
@@ -163,7 +163,6 @@ static void eval_binary(long int *operand1, long int *operand2) {
 /*---------------------------------------------------------------------------*/
 /* Processing perators */
 static long int eval_operator_and(void) {
-	//	LOG("AND(");
 
 	/* evaluate operands */
 	long int op1, op2;
@@ -172,14 +171,11 @@ static long int eval_operator_and(void) {
 	/* calculate result */
 	long int result = (op1 && op2);
 
-	//	LOG(")");
-
 	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_operator_or(void) {
-	//	LOG("OR(");
 
 	/* evaluate operands */
 	long int op1, op2;
@@ -188,14 +184,11 @@ static long int eval_operator_or(void) {
 	/* calculate result */
 	long int result = (op1 || op2);
 
-	//	LOG(")");
-
 	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_operator_add(void) {
-	//	LOG("ADD(");
 
 	/* evaluate operands */
 	long int op1, op2;
@@ -204,14 +197,11 @@ static long int eval_operator_add(void) {
 	/* calculate result */
 	long int result = (op1 + op2);
 
-	//	LOG(")");
-
 	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_operator_sub(void) {
-	//	LOG("SUB(");
 
 	/* evaluate operands */
 	long int op1, op2;
@@ -220,14 +210,11 @@ static long int eval_operator_sub(void) {
 	/* calculate result */
 	long int result = (op1 - op2);
 
-	//	LOG(")");
-
 	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_operator_div(void) {
-	//	LOG("DIV(");
 
 	/* evaluate operands */
 	long int op1, op2;
@@ -236,14 +223,11 @@ static long int eval_operator_div(void) {
 	/* calculate result */
 	long int result = (op1 / op2);
 
-	//	LOG(")");
-
 	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_operator_mult(void) {
-	//	LOG("MULT(");
 
 	/* evaluate operands */
 	long int op1, op2;
@@ -252,14 +236,11 @@ static long int eval_operator_mult(void) {
 	/* calculate result */
 	long int result = (op1 * op2);
 
-	//	LOG(")");
-
 	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_operator_mod(void) {
-	//	LOG("MOD(");
 
 	/* evaluate operands */
 	long int op1, op2;
@@ -268,14 +249,11 @@ static long int eval_operator_mod(void) {
 	/* calculate result */
 	long int result = (op1 % op2);
 
-	//	LOG(")");
-
 	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_operator_not(void) {
-	//	LOG("NOT(");
 
 	/* evaluate operand */
 	long int op = 0;
@@ -284,15 +262,12 @@ static long int eval_operator_not(void) {
 	/* calculate result */
 	long int result = !op;
 
-	//	LOG(")");
-
 	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
 /* Predicate functions  */
 static long int eval_predicate_eq(void) {
-	//	LOG("EQ(");
 
 	/* evaluate operands */
 	long int op1, op2;
@@ -301,14 +276,11 @@ static long int eval_predicate_eq(void) {
 	/* calculate result */
 	long int result = (op1 == op2);
 
-	//	LOG(")");
-
 	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_predicate_neq(void) {
-	//	LOG("!");
 
 	long int result = !eval_predicate_eq();
 
@@ -317,40 +289,35 @@ static long int eval_predicate_neq(void) {
 
 /*---------------------------------------------------------------------------*/
 static long int eval_predicate_lt(void) {
-	//	LOG("LT(");
 
 	/* evaluate operands */
 	long int op1, op2;
 	eval_binary(&op1, &op2);
 
+	PRINTF(5, "comparing %lu with %lu\n", op1, op2);
+
 	/* calculate result */
 	long int result = (op1 < op2);
-
-	//	LOG(")");
 
 	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_predicate_gt(void) {
-	//	LOG("GT(");
 
 	/* evaluate operands */
 	long int op1, op2;
 	eval_binary(&op1, &op2);
 
-	//	printf("op1:%li, op2: %li\n", op1, op2);
+	PRINTF(5, "op1:%li, op2: %li\n", op1, op2);
 	/* calculate result */
 	long int result = (op1 > op2);
-
-	//	LOG(")");
 
 	return (result);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_predicate_let(void) {
-	//	LOG("!");
 
 	long int result = !eval_predicate_gt();
 
@@ -359,7 +326,6 @@ static long int eval_predicate_let(void) {
 
 /*---------------------------------------------------------------------------*/
 static long int eval_predicate_get(void) {
-	//	LOG("!");
 
 	long int result = !eval_predicate_lt();
 
@@ -372,7 +338,7 @@ static long int eval_uint8_value(void) {
 	uint8_t value = read_byte();
 
 	long int result = value;
-	//	printf("uint8 converted value is %li\n", result);
+	PRINTF(5, "uint8 converted value is %li\n", result);
 	return (result);
 }
 
@@ -382,7 +348,6 @@ static long int eval_uint16_value(void) {
 	value <<= 8;
 	value |= read_byte();
 
-	//	LOG("%d", value);
 	long int result = value;
 	return (result);
 }
@@ -435,11 +400,11 @@ static long int eval_repository_value(void) {
 		if (data != NULL) {
 			uint16_t result = *((uint16_t*) data);
 
-			PRINTF(5,"(EXPRESSION-EVAL) repo value: %u\n", result);
+			PRINTF(5, "(EXPRESSION-EVAL) repo value: %u\n", result);
 
 			return (result);
 		}
-		PRINTF(5,"(EXPRESSION-EVAL) Repository entry not found!\n");
+		PRINTF(5, "(EXPRESSION-EVAL) Repository entry not found!\n");
 	}
 	return (0);
 }
@@ -448,24 +413,39 @@ static long int eval_repository_value(void) {
 static long int eval_custom_input_value(void) {
 	int index;
 
+	long int result = 0;
 	if ((index = read_byte()) != NO_MORE_INPUT) {
 
 		data_len_t data_len;
 
 		/* read value from repository */
+		if (custom_input_function == NULL)
+			return (0);
+
 		uint8_t *data = (*custom_input_function)(&data_len, /*requested_field:*/
-				index, custom_input);
+		index, custom_input);
 
 		if (data != NULL) {
-			uint16_t result = *((uint16_t*) data);
+			switch (data_len) {
+			case (sizeof(uint8_t)): {
+				result = *((uint8_t*) data);
+				break;
+			}
+			case (sizeof(uint16_t)): {
+				result = *((uint16_t*) data);
+				break;
+			}
+			case (sizeof(clock_time_t)): {
+				result = *((clock_time_t*) data);
+				break;
+			}
+			} // switch
+			PRINTF(5, "output value: %lu\n", result);
 
-			//		printf("repo value: %u\n", result);
-
-			return (result);
-		}
+		} // if
 	}
-	//	printf("repo entry not found!\n");
-	return (0);
+	PRINTF(5, "custom input can't be obtained because expression is malformed!\n");
+	return (result);
 }
 
 /**
@@ -478,10 +458,10 @@ void expression_eval_set_repository(data_repository_id_t id) {
 /**
  * \brief		Sets a custom input function
  */
-void expression_eval_set_custom_input(custom_input_function_t *function,
+void expression_eval_set_custom_input(custom_input_function_t function,
 		void *input) {
-	custom_input_function = function;
 	custom_input = input;
+	custom_input_function = function;
 }
 
 /**
@@ -504,11 +484,9 @@ long int expression_eval_evaluate(uint8_t *expression_spec, data_len_t spec_len)
 	if (IS_VALID(code)) {
 		/* call evaluator */
 		long int value = evaluator[code]();
-		//		LOG("=%d\n", value);
 
 		/* check if invalid input flag is set */
 		if (!invalid_input) {
-			//			LOG("evaluated input is valid\n");
 			result = value;
 		}
 	}
