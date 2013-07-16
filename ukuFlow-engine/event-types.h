@@ -113,20 +113,26 @@ struct __attribute__((__packed__)) generic_event_operator {
 /**                             Event Generators                             */
 /*---------------------------------------------------------------------------*/
 
+/** \brief Macro definition for the case of a local event generator */
+#define LOCAL_EVENT_GENERATOR 0
+
+/** \brief Generic event generator fields */
 #define GENERIC_EVENT_GENERATOR_FIELDS					\
 	GENERIC_EVENT_OPERATOR_FIELDS						\
-	/** \brief Source sensor which will be read */		\
+	/** \brief Source from which data will be read */	\
 	/* (corresponds to enum repository_fields */		\
-	/* in data-repository.h) */							\
+	/* in data-mgr.h) */								\
 	uint8_t source;               						\
-	/* Id of scope whose members will participate */ 	\
+	/* Id of scope whose members will participate, or LOCAL_EVENT_GENERATOR if only local */ 	\
 	scope_id_t scope_id;
 
 /** \brief		Abstract definition for recurrent event generators	*/
-#define RECURRENT_EVENT_GENERATOR_FIELDS				\
-	GENERIC_EVENT_GENERATOR_FIELDS						\
+#define RECURRENT_EVENT_GENERATOR_FIELDS						\
+	GENERIC_EVENT_GENERATOR_FIELDS								\
 	/** \brief	Number of repetitions (or 0 for infinite) */	\
-	uint8_t repetitions;
+	uint8_t repetitions;										\
+	/** \brief Period for generating the events, in seconds */	\
+	uint16_t period;
 
 /** \brief		TODO				*/
 struct __attribute__((__packed__)) generic_egen {
@@ -149,7 +155,7 @@ struct __attribute__((__packed__)) absolute_egen {
 struct __attribute__((__packed__)) offset_egen {
 	GENERIC_EVENT_GENERATOR_FIELDS
 	/** \brief	TODO */
-	clock_time_t offset;
+	uint16_t offset;
 };
 
 /** \brief		TODO				*/
@@ -168,17 +174,13 @@ struct __attribute__((__packed__)) recurrent_egen {
 /** \brief		TODO				*/
 struct __attribute__((__packed__)) periodic_egen {
 	RECURRENT_EVENT_GENERATOR_FIELDS
-	/** \brief Period for generating the events, in seconds */
-	uint16_t period;
 };
 
 /** \brief		TODO				*/
-struct __attribute__((__packed__)) patterned_egen {
+struct __attribute__((__packed__)) pattern_egen {
 	RECURRENT_EVENT_GENERATOR_FIELDS
-	/** \brief	TODO */
-	uint16_t period;
-	/** \brief	TODO */
-	uint8_t pattern_len; // the length of the pattern is expressed in number of bits
+	/** \brief	The length of the pattern, expressed in number of bits */
+	uint8_t pattern_len;
 // followed by as many bytes as ceiling([pattern_len]/8)
 };
 
@@ -190,14 +192,11 @@ enum functional_generator {
 	GAUSSIAN_DISTRIBUTION = 0, /*    http://en.wikipedia.org/wiki/Gaussian_distribution */
 	CHI_SQUARE_DISTRIBUTION = 1, /*  http://en.wikipedia.org/wiki/Chi-square_distribution */
 	PARETO_DISTRIBUTION = 2 /*       http://en.wikipedia.org/wiki/Pareto_distribution */
-//
 };
 
 /** \brief		TODO				*/
 struct __attribute__((__packed__)) functional_egen {
 	RECURRENT_EVENT_GENERATOR_FIELDS
-	/** \brief	TODO */
-	uint16_t period;
 	/** \brief	TODO */
 	functional_generator_t generator_function;
 // followed by parameters to generator function
@@ -283,9 +282,9 @@ enum event_field {
 	/** \brief	TODO */
 	TIMESTAMP,
 	/** \brief	TODO */
-	SOURCE_NODE,
+	ORIGIN_NODE,
 	/** \brief	TODO */
-	SOURCE_SCOPE
+	ORIGIN_SCOPE
 };
 
 #endif /** __EVENTTYPES_H__ */
