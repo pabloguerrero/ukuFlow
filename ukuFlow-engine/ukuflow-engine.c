@@ -1114,6 +1114,10 @@ static void processor_event_based_exclusive_decision_gateway(
 
 	struct wf_eb_x_dec_gw *ebg = (struct wf_eb_x_dec_gw*) wfe;
 
+	PRINTF(1,
+			"(UF-ENGINE) Event-based gateway, current wf_elem_id: %u, num. out flows: %u\n",
+			token->current_wf_elem_id, ebg->num_out_flows);
+
 	/** Allocate state for token-specific data */
 	struct eb_gw_token_state *gw_token_state = malloc(
 			sizeof(struct eb_gw_token_state));
@@ -1361,10 +1365,10 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 			if (list_length(wf_n_spawn_queue) == 0) {
 				/** block until a process posts the 'new workflow' event  (e.g. after registration) */
 				PRINTF(1,
-						"(UF-ENGINE) lts, yielding till a wf_n arrives at spawn queue\n");
+						"(UF-ENGINE) lts pt, yielding till a wf_n arrives at spawn queue\n");
 				PROCESS_YIELD_UNTIL(ev == workflow_ready_event);
 				PRINTF(1,
-						"(UF-ENGINE) lts, a wf_n arrived at spawn queue\n");
+						"(UF-ENGINE) lts pt, a wf_n arrived at spawn queue\n");
 			}
 
 			/** get the first ready workflow_node from the queue */
@@ -1392,7 +1396,7 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 					memb_free(&workflow_ptr_memb, wfn);
 
 					PRINTF(1,
-							"(UF-ENGINE) lts, wf_n terminated (blocked: %d, running: %d, spawn: %d)\n",
+							"(UF-ENGINE) lts pt, wf_n terminated (blocked: %d, running: %d, spawn: %d)\n",
 							list_length(wf_n_blocked_queue),
 							list_length(wf_n_running_list),
 							list_length(wf_n_spawn_queue));
@@ -1402,7 +1406,7 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 					list_add(wf_n_running_list, wfn);
 					wfn->state = WFN_RUNNING;
 					PRINTF(1,
-							"(UF-ENGINE) lts, wf_n to running (blocked: %d, running: %d, spawn: %d)\n",
+							"(UF-ENGINE) lts pt, wf_n to running (blocked: %d, running: %d, spawn: %d)\n",
 							list_length(wf_n_blocked_queue),
 							list_length(wf_n_running_list),
 							list_length(wf_n_spawn_queue));
@@ -1462,7 +1466,7 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 					wfn->state = WFN_RUNNING;
 					list_add(wf_n_running_list, wfn);
 					PRINTF(1,
-							"(UF-ENGINE) lts, wf_n to running (blocked: %d, running: %d, spawn: %d)\n",
+							"(UF-ENGINE) lts pt, wf_n to running (blocked: %d, running: %d, spawn: %d)\n",
 							list_length(wf_n_blocked_queue),
 							list_length(wf_n_running_list),
 							list_length(wf_n_spawn_queue));
@@ -1473,7 +1477,7 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 					wfn->state = WFN_SPAWN;
 					list_add(wf_n_spawn_queue, wfn);
 					PRINTF(1,
-							"(UF-ENGINE) lts, wf_n to spawn (blocked: %d, running: %d, spawn: %d)\n",
+							"(UF-ENGINE) lts pt, wf_n to spawn (blocked: %d, running: %d, spawn: %d)\n",
 							list_length(wf_n_blocked_queue),
 							list_length(wf_n_running_list),
 							list_length(wf_n_spawn_queue));
@@ -1482,7 +1486,7 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 					wfn->state = WFN_BLOCKED;
 					list_add(wf_n_blocked_queue, wfn);
 					PRINTF(1,
-							"(UF-ENGINE) lts, wf_n to blocked (blocked: %d, running: %d, spawn: %d)\n",
+							"(UF-ENGINE) lts pt, wf_n to blocked (blocked: %d, running: %d, spawn: %d)\n",
 							list_length(wf_n_blocked_queue),
 							list_length(wf_n_running_list),
 							list_length(wf_n_spawn_queue));
@@ -1492,7 +1496,7 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 				wfn->state = WFN_RUNNING;
 				list_add(wf_n_running_list, wfn);
 				PRINTF(1,
-						"(UF-ENGINE) lts, wf_n to running (blocked: %d, running: %d, spawn: %d)\n",
+						"(UF-ENGINE) lts pt, wf_n to running (blocked: %d, running: %d, spawn: %d)\n",
 						list_length(wf_n_blocked_queue),
 						list_length(wf_n_running_list),
 						list_length(wf_n_spawn_queue));
@@ -1514,7 +1518,7 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 					token_ready_event, token);
 
 			PRINTF(1,
-					"(UF-ENGINE) lts, dispatched wf_n, (tokens ready: %u/blocked: %u)\n",
+					"(UF-ENGINE) lts pt, dispatched wf_n, (tokens ready: %u/blocked: %u)\n",
 					list_length(ready_token_queue),
 					list_length(blocked_token_queue));
 
@@ -1542,13 +1546,13 @@ PROCESS_BEGIN()
 
 		while ((token = list_head(ready_token_queue)) == NULL) {
 			PRINTF(1,
-					"(UF-ENGINE) sts, yielding till a token becomes ready\n");
+					"(UF-ENGINE) sts pt, yielding till a token becomes ready\n");
 			PROCESS_WAIT_EVENT_UNTIL(ev == token_ready_event);
 
 		}
 
 		PRINTF(1,
-				"(UF-ENGINE) sts, finished yielding, (tokens ready: %u/blocked: %u)\n",
+				"(UF-ENGINE) sts pt, finished yielding, (tokens ready: %u/blocked: %u)\n",
 				list_length(ready_token_queue),
 				list_length(blocked_token_queue));
 
@@ -1557,7 +1561,7 @@ PROCESS_BEGIN()
 				token->current_wf_elem_id);
 
 		PRINTF(1,
-				"(UF-ENGINE) sts, token wf_elem_id is %u, wfe_id is %u, type is %u\n",
+				"(UF-ENGINE) sts pt, token wf_elem_id is %u, wfe_id is %u, type is %u\n",
 				token->current_wf_elem_id, wfe->id, wfe->elem_type);
 
 		/** Remove token from ready queue: */
@@ -1592,7 +1596,7 @@ PROCESS_BEGIN()
 ;
 
 do {
-	PRINTF(1, "(UF-ENGINE) sfs, yielding till an sfs needs to be ran\n");
+	PRINTF(1, "(UF-ENGINE) sfs pt, yielding till an sfs needs to be ran\n");
 
 	/** This process catches the event token_blocked_sfs_event, which is
 	 * posted whenever a scoped function statement needs to be ran. */
@@ -1614,7 +1618,7 @@ do {
 
 	/** Test if scope information is available: */
 	if (s_i == NULL) {
-		PRINTF(3, "(UF-ENGINE) sfs, scope spec not found, halting!\n");
+		PRINTF(3, "(UF-ENGINE) sfs pt, scope spec not found, halting!\n");
 		return (PT_ENDED);
 	}
 
@@ -1623,13 +1627,13 @@ do {
 			((uint8_t*) s_i) + sizeof(struct scope_info), s_i->scope_spec_len,
 			s_i->scope_ttl)) {
 
-		PRINTF(3, "(UF-ENGINE) sfs, problem opening scope!\n");
+		PRINTF(3, "(UF-ENGINE) sfs pt, problem opening scope!\n");
 		return (PT_ENDED);
 	}
 
 	/** Now wait a bunch of seconds for the message to be disseminated */
 	etimer_set(&control_timer, SCOPE_OPERATION_DELAY * CLOCK_SECOND);
-	PRINTF(3, "(UF-ENGINE) sfs, waiting 5 seconds...\n");
+	PRINTF(3, "(UF-ENGINE) sfs pt, waiting 5 seconds...\n");
 	PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&control_timer));
 
 	/** Prepare message with command */
@@ -1664,7 +1668,7 @@ do {
 
 			/** Wait a while (is this necessary?) */
 			etimer_set(&control_timer, CLOCK_SECOND * 20);
-			PRINTF(3, "(UF-ENGINE) sfs, waiting 20 seconds...\n");
+			PRINTF(3, "(UF-ENGINE) sfs pt, waiting 20 seconds...\n");
 			PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&control_timer));
 
 			/** Release memory of scoped function statement message */
@@ -1675,7 +1679,7 @@ do {
 
 		token_state->sfs_ex_task_token_state.statement_nr++;
 
-		PRINTF(3, "(UF-ENGINE) sfs, incremented statement_nr to %u\n",
+		PRINTF(3, "(UF-ENGINE) sfs pt, incremented statement_nr to %u\n",
 				token_state->sfs_ex_task_token_state.statement_nr);
 
 		/** move token to ready queue */
@@ -1703,7 +1707,7 @@ PROCESS_BEGIN()
 ;
 
 do {
-PRINTF(1, "(UF-ENGINE) termination process, yielding\n");
+PRINTF(1, "(UF-ENGINE) termination pt, yielding\n");
 
 /** This process needs to catch two types of events:
  * *: A task is ready for execution (task_ready_event)
@@ -1749,7 +1753,7 @@ if (ev == PROCESS_EVENT_EXITED) {
 if (unblock_token != NULL) {
 // found token!
 	PRINTF(1,
-			"(UF-ENGINE) termination process, blocked token finished its task, putting back to ready token queue\n");
+			"(UF-ENGINE) termination pt, blocked token finished its task, putting back to ready token queue\n");
 
 	list_remove(blocked_token_queue, unblock_token);
 	list_add(ready_token_queue, unblock_token);
@@ -1758,7 +1762,7 @@ if (unblock_token != NULL) {
 	process_post(&ukuflow_short_term_scheduler_process, token_ready_event,
 			unblock_token);
 } else PRINTF(3,
-		"(UF-ENGINE) termination process, no blocked token found for the recently finished process\n");
+		"(UF-ENGINE) termination pt, no blocked token found for the recently finished process\n");
 
 } while (1);
 
