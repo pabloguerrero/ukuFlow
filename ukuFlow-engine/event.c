@@ -65,12 +65,13 @@ data_len_t event_field_width[] = { //
 /*---------------------------------------------------------------------------*/
 /** \brief		Names of event fields. These correspond to the enumeration 'event_field' */
 char *event_field_names[] = { //
-		"event type", //
-				"source", //
-				"magnitude", //
-				"timestamp", //
-				"source node", //
-				"source scope" };
+		"event type", /** 		EVENT_TYPE*/
+		"source", /** 			SOURCE*/
+		"magnitude", /** 		MAGNITUDE*/
+		"timestamp", /** 		TIMESTAMP*/
+		"origin node", /** 		SOURCE_NODE*/
+		"origin scope" /** 		SOURCE_SCOPE*/
+		};
 /*---------------------------------------------------------------------------*/
 /**
  * \brief		TODO
@@ -101,10 +102,10 @@ data_len_t event_operator_get_size(struct generic_event_operator *geo) {
 		break;
 	}
 	case PATTERN_EG: {
-		size = sizeof(struct patterned_egen);
+		size = sizeof(struct pattern_egen);
 
 		// now we calculate ceiling(pattern_len/8) using uint8_t arithmetic:
-		size += (((struct patterned_egen*) geo)->pattern_len + 7) / 8;
+		size += (((struct pattern_egen*) geo)->pattern_len + 7) / 8;
 		break;
 	}
 	case FUNCTIONAL_EG: {
@@ -118,8 +119,9 @@ data_len_t event_operator_get_size(struct generic_event_operator *geo) {
 		uint8_t *expression_ptr = ((uint8_t*) geo) + size;
 		for (i = 0; i < sf->num_expressions; i++) {
 			data_len_t expression_len = *expression_ptr;
-			size += expression_len;
-			expression_ptr += sizeof(data_len_t) + expression_len;
+			size = size + sizeof(data_len_t) + expression_len;
+			expression_ptr = expression_ptr + sizeof(data_len_t)
+					+ expression_len;
 		}
 		break;
 	}
@@ -169,6 +171,7 @@ uint8_t* event_custom_input_function(data_len_t *data_len,
 		uint8_t requested_field, void *custom_input) {
 	struct event *event = (struct event*) custom_input;
 
+	PRINTF(5, "getting event field %u\n", requested_field);
 	uint8_t field_nr;
 	bool found = FALSE;
 	uint8_t *fvp = ((uint8_t*) event) + sizeof(struct event);
@@ -219,7 +222,7 @@ struct event *event_alloc_raw(data_len_t *event_len) {
 
 	/* enter the field names already, but leave the values blank */
 	uint8_t *fvp = ((uint8_t*) event) + sizeof(struct event);
-	for (field = 0; field <= SOURCE_SCOPE; field++) {
+	for (field = 0; field <= ORIGIN_SCOPE; field++) {
 		*fvp = field;
 		fvp += sizeof(uint8_t) + event_field_width[field];
 	}
@@ -276,8 +279,8 @@ void event_populate(struct event *event, struct generic_egen *g_egen) {
 		return;
 	temp_data = *temp_data_ptr;
 
-	clock_time_t time = clock_time();
-	PRINTF(3, "(EVENT) time %lu, source %u, value %u\n", time, g_egen->source,
+	clock_time_t curr_time = clock_time() / CLOCK_SECOND;
+	PRINTF(3, "(EVENT) time %lu, source %u, value %u\n", curr_time, g_egen->source,
 			temp_data);
 	event->channel_id = g_egen->channel_id;
 	event_type_t *ev_type;
@@ -285,9 +288,9 @@ void event_populate(struct event *event, struct generic_egen *g_egen) {
 	event_set_value(event, EVENT_TYPE, (uint8_t*) &ev_type);
 	event_set_value(event, SOURCE, &g_egen->source);
 	event_set_value(event, MAGNITUDE, (uint8_t*) &temp_data);
-	event_set_value(event, TIMESTAMP, (uint8_t*) &time);
-	event_set_value(event, SOURCE_NODE, (uint8_t*) &rimeaddr_node_addr);
-	event_set_value(event, SOURCE_SCOPE, &g_egen->scope_id);
+	event_set_value(event, TIMESTAMP, (uint8_t*) &curr_time);
+	event_set_value(event, ORIGIN_NODE, (uint8_t*) &rimeaddr_node_addr);
+	event_set_value(event, ORIGIN_SCOPE, &g_egen->scope_id);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -317,7 +320,8 @@ data_len_t event_get_len(struct event *event) {
 /**
  * \brief		Pretty prints an event's information
  *
- *  			TODO
+ *  			Prints the content's of an event in a pretty fashion :)
+ *
  *  @param[in]	event Structure containing the event
  *  @param[in]	event_len Length, in bytes, of the event
  */
