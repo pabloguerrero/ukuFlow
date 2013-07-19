@@ -71,7 +71,7 @@ struct scopes_application {
 extern void scopes_init(struct scopes_routing *routing,
 		struct scopes_membership *membership);
 
-extern int scopes_register(subscriber_id_t id,
+extern void scopes_register(subscriber_id_t id,
 		struct scopes_application *application);
 
 extern void scopes_unregister(subscriber_id_t subscriber_id);

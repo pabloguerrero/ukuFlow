@@ -95,7 +95,7 @@ static struct scopes_subscriber *lookup_subscriber_id(subscriber_id_t id);
 /* function declarations (functions used externally) */
 void scopes_init(struct scopes_routing *routing,
 		struct scopes_membership *membership);
-int scopes_register(subscriber_id_t id, struct scopes_application *application);
+void scopes_register(subscriber_id_t id, struct scopes_application *application);
 void scopes_unregister(subscriber_id_t subscriber_id);
 bool scopes_open(subscriber_id_t subscriber_id, scope_id_t super_scope,
 		scope_id_t scope_id, void *specs, data_len_t spec_len,
@@ -113,9 +113,9 @@ MEMB(subscribers_mem, struct scopes_subscriber, SCOPES_MAX_SUBSCRIBER);
 
 /* data structures for scope and subscriber management */
 /** \brief List of scope entries */
-LIST( scopes);
+LIST(scopes);
 /** \brief List of subscribing applications */
-LIST( subscribers);
+LIST(subscribers);
 
 /** \brief Scopes routing parameterization component */
 static struct scopes_routing *routing;
@@ -131,8 +131,7 @@ static struct ctimer anndelay_timer;
 /* external function definitions */
 /** \brief Initializer of the Scopes framework */
 void scopes_init(struct scopes_routing *r, struct scopes_membership *m) {
-	PRINTF(3,
-			"[%u.%u:%10lu] %s::%s() : initializing scopes...\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__);
+	PRINTF(3, "(SCOPES) Initializing scopes...\n");
 
 	/* initialize static memory for scopes structures */
 	memb_init(&scopes_mem);
@@ -153,14 +152,12 @@ void scopes_init(struct scopes_routing *r, struct scopes_membership *m) {
 	list_add(scopes, &world_scope);
 
 	/* set and initialize routing */
-	PRINTF(3,
-			"[%u.%u:%10lu] %s::%s() : using routing: %s\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, r->name);
+	PRINTF(3, "(SCOPES) using routing: %s\n", r->name);
 	routing = r;
 	routing->init();
 
 	/* set and initialize membership checker */
-	PRINTF(3,
-			"[%u.%u:%10lu] %s::%s() : using membership: %s\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, m->name);
+	PRINTF(3, "(SCOPES) using membership: %s\n", m->name);
 	membership = m;
 	membership->init();
 
@@ -169,14 +166,14 @@ void scopes_init(struct scopes_routing *r, struct scopes_membership *m) {
 }
 
 /** \brief TODO */
-int scopes_register(subscriber_id_t id, struct scopes_application *application) {
+void scopes_register(subscriber_id_t id, struct scopes_application *application) {
 	/* first make sure that the subscriber hasn't subscribed before and
 	 that the id is unused */
 	struct scopes_subscriber *s;
 	for (s = list_head(subscribers); s != NULL; s = s->next) {
 		if (s->id == id) {
-			PRINTF(3, "process is already subscribed to scopes\n");
-			return (0);
+			PRINTF(3, "(SCOPES) process is already subscribed to scopes\n");
+			return;
 		}
 	}
 
@@ -185,7 +182,7 @@ int scopes_register(subscriber_id_t id, struct scopes_application *application) 
 
 	if (subscriber == NULL) {
 		PRINTF(3, "Could not allocate memory for subscriber %d.\n", id);
-		return (0);
+		return;
 	}
 
 	/* set id, status, application and process */
@@ -196,9 +193,8 @@ int scopes_register(subscriber_id_t id, struct scopes_application *application) 
 
 	/* add the subscriber */
 	list_add(subscribers, subscriber);
-	PRINTF(3,
-			"[%u.%u:%10lu] %s::%s() : added subscriber: %s (sid=%u)\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, subscriber->process->name, subscriber->id);
-	return (1);
+	PRINTF(3, "(SCOPES) added subscriber: %s (sid=%u)\n",
+			subscriber->process->name, subscriber->id);
 }
 
 /** \brief TODO */
@@ -206,14 +202,14 @@ void scopes_unregister(subscriber_id_t subscriber_id) {
 	/* check if the super scope is known */
 	struct scopes_subscriber *subscriber = lookup_subscriber_id(subscriber_id);
 	if (subscriber == NULL) {
-		PRINTF(3, "subscriber does not exist: %u\n", subscriber_id);
+		PRINTF(3, "(SCOPES) subscriber does not exist: %u\n", subscriber_id);
 		return;
 	}
 
 	/* remove the subscriber */
 	list_remove(subscribers, subscriber);
-	PRINTF(3,
-			"removed subscriber: %s (sid=%u)\n", subscriber->process->name, subscriber->id);
+	PRINTF(3, "(SCOPES) removed subscriber: %s (sid=%u)\n",
+			subscriber->process->name, subscriber->id);
 	memb_free(&subscribers_mem, subscriber);
 }
 
@@ -238,13 +234,14 @@ bool scopes_open(subscriber_id_t subscriber_id, scope_id_t super_scope_id,
 
 	/* check if the application is subscribed */
 	if (subscriber != NULL && !IS_SUBSCRIBED(subscriber)) {
-		PRINTF(3, "application not subscribed or not found\n");
+		PRINTF(3, "(SCOPES) application not subscribed or not found\n");
 		return (FALSE);
 	}
 
 	/* check if the scope id is already known */
 	if ((scope = lookup_scope_id(scope_id)) != NULL) {
-		//		printf("increasing, %u\n",scope->use_counter);
+		PRINTF(3, "(SCOPES) increasing scope use counter to %u\n",
+				scope->use_counter);
 		scope->use_counter++;
 		//		PRINTF(3,"scope id already in use: %u\n", scope_id);
 		//		return FALSE;
@@ -254,14 +251,14 @@ bool scopes_open(subscriber_id_t subscriber_id, scope_id_t super_scope_id,
 	/* check if the super scope is known */
 	super_scope = lookup_scope_id(super_scope_id);
 	if (super_scope == NULL) {
-		PRINTF(3, "super scope does not exist: %u\n", super_scope_id);
+		PRINTF(3, "(SCOPES) super scope does not exist: %u\n", super_scope_id);
 		return (FALSE);
 	}
 
 	/* check if memory is available */
 	scope = allocate_scope(spec_len);
 	if (scope == NULL) {
-		PRINTF(3, "can't get memory for scope: %u\n", scope_id);
+		PRINTF(3, "(SCOPES) can't alloc memory for scope: %u\n", scope_id);
 		return (FALSE);
 	}
 
@@ -311,26 +308,27 @@ void scopes_close(subscriber_id_t subscriber_id, scope_id_t scope_id) {
 
 	/* check if the application is subscribed */
 	if (subscriber != NULL && !IS_SUBSCRIBED(subscriber)) {
-		PRINTF(3, "application not subscribed or not found\n");
+		PRINTF(3, "(SCOPES) application not subscribed or not found\n");
 		return;
 	}
 
 	/* check if the scope is known */
 	scope = lookup_scope_id(scope_id);
 	if (scope == NULL) {
-		PRINTF(3, "scope does not exist: %u\n", scope_id);
+		PRINTF(3, "(SCOPES) scope does not exist: %u\n", scope_id);
 		return;
 	}
 
 	/* check if this scope may be deleted */
 	if (!HAS_STATUS(scope, SCOPES_STATUS_CREATOR)
 			|| !IS_OWNER(scope, subscriber)) {
-		PRINTF(3, "not allowed to delete scope: %u\n", scope->scope_id);
+		PRINTF(3, "(SCOPES) not allowed to delete scope: %u\n",
+				scope->scope_id);
 		return;
 	}
 
-	//	printf("count: %u\n", scope->use_counter);
-	//	printf("ttl: %u\n", scope->ttl);
+	//	PRINTF(3, "(SCOPES) count: %u\n", scope->use_counter);
+	//	PRINTF(3, "(SCOPES) ttl: %u\n", scope->ttl);
 	if (--scope->use_counter == 0) {
 
 		/* announce the deletion of the scope on the network */
@@ -369,7 +367,6 @@ void scopes_send(subscriber_id_t subscriber_id, scope_id_t scope_id,
 //		PRINTF(1, "(SCOPES) not allowed to send to scope: %u\n", scope->scope_id);
 //		return;
 //	}
-
 	/* reset the contents of the message buffer */
 	routing->buffer_clear(to_creator);
 
@@ -408,7 +405,9 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 				(struct scopes_msg_open *) (struct scopes_msg_data *) gmsg;
 
 		PRINTF(3,
-				"[%u.%u:%10lu] %s::%s() : SCOPES_MSG_OPEN: scope-id=%u, subscope-id=%u, owner-sid=%u, ttl=%u, flags=%u, spec-len=%u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, msg->scope_id, msg->sub_scope_id, msg->owner_sid, msg->ttl, msg->flags, msg->spec_len);
+				"(SCOPES) SCOPES_MSG_OPEN: scope-id=%u, subscope-id=%u, owner-sid=%u, ttl=%u, flags=%u, spec-len=%u\n",
+				msg->scope_id, msg->sub_scope_id, msg->owner_sid, msg->ttl,
+				msg->flags, msg->spec_len);
 
 		struct scope *super_scope = lookup_scope_id(msg->scope_id);
 		struct scope *new_scope = lookup_scope_id(msg->sub_scope_id);
@@ -428,8 +427,8 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 		/* check membership */
 		int should_be_member = membership->check(specs_msg_ptr, msg->spec_len);
 
-		PRINTF(5,
-				"(SCOPES) Membership evaluation result: %d\n", should_be_member);
+		PRINTF(5, "(SCOPES) Membership evaluation result: %d\n",
+				should_be_member);
 
 		/* check if the new scope is known in this node */
 		if (new_scope == NULL) {
@@ -488,7 +487,8 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 				/* check if the timer should be reset */
 				if (should_be_member || (msg->flags & SCOPES_FLAG_DYNAMIC)) {
 					PRINTF(3,
-							"[%u.%u:%10lu] %s::%s() : received re-announcement for scope: %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, new_scope->scope_id);
+							"(SCOPES) received re-announcement for scope: %u\n",
+							new_scope->scope_id);
 					/* reset the sub scope's TTL timer */
 					reset_scope_timer(new_scope);
 
@@ -505,8 +505,8 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 		/* cast the message to the correct type */
 		struct scopes_msg_close *msg = (struct scopes_msg_close *) gmsg;
 
-		PRINTF(3,
-				"(SCOPES) SCOPES_MSG_CLOSE, scope-id=%u, subscope-id=%u\n", msg->scope_id, msg->sub_scope_id);
+		PRINTF(3, "(SCOPES) SCOPES_MSG_CLOSE, scope-id=%u, subscope-id=%u\n",
+				msg->scope_id, msg->sub_scope_id);
 
 		struct scope *super_scope = lookup_scope_id(msg->scope_id);
 		struct scope *sub_scope = lookup_scope_id(msg->sub_scope_id);
@@ -518,8 +518,8 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 			/* remove the scope */
 			PRINTF(3, "(SCOPES) had %d scopes\n", list_length(scopes));
 			remove_scope(sub_scope);
-			PRINTF(3,
-					"(SCOPES) removed %d, now only %d scopes!\n", sub_scope->scope_id, list_length(scopes));
+			PRINTF(3, "(SCOPES) removed %d, now only %d scopes!\n",
+					sub_scope->scope_id, list_length(scopes));
 		}
 		break;
 	}
@@ -528,7 +528,9 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 		struct scopes_msg_data *msg = (struct scopes_msg_data *) gmsg;
 
 		PRINTF(3,
-				"[%u.%u:%10lu] %s::%s() : SCOPES_MSG_DATA, scope-id=%u, to-creator=%u, source=[%u.%u], data-len=%u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, msg->scope_id, msg->to_creator, msg->source.u8[0], msg->source.u8[1], msg->data_len);
+				"(SCOPES) SCOPES_MSG_DATA, scope-id=%u, to-creator=%u, source=[%u.%u], data-len=%u\n",
+				msg->scope_id, msg->to_creator, msg->source.u8[0],
+				msg->source.u8[1], msg->data_len);
 
 		struct scope *scope = lookup_scope_id(msg->scope_id);
 
@@ -565,8 +567,7 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 		break;
 	}
 	default:
-		PRINTF(3,
-				"[%u.%u:%10lu] %s::%s() : Unknown message type received: %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, gmsg->type);
+		PRINTF(3, "(SCOPES) Unknown message type received: %u\n", gmsg->type);
 		break;
 	}
 }
@@ -622,8 +623,10 @@ static void add_scope(struct scope *scope) {
 
 	PRINTF(3, "(SCOPES) Added scope %u\n", scope->scope_id);
 
-	PRINTF(3,
-			"[%u.%u:%10lu] %s::%s() : scope-id=%u, super-scope-id=%u, owner-sid=%u, ttl=%lu, flags=%u, status=%u, spec-len=%u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope->scope_id, scope->super_scope_id, scope->owner->id, timer_remaining(&(scope->ttl_timer.etimer.timer)) / CLOCK_SECOND, scope->flags, scope->status, scope->spec_len);
+	PRINTF(3, "(SCOPES) scope-id=%u, super-scope-id=%u, owner-sid=%u, ttl=%lu, flags=%u, status=%u, spec-len=%u\n", scope->scope_id, scope->super_scope_id,
+			scope->owner->id,
+			timer_remaining(&(scope->ttl_timer.etimer.timer)) / CLOCK_SECOND,
+			scope->flags, scope->status, scope->spec_len);
 
 	/* inform the routing processes */
 	routing->add(scope->scope_id, HAS_STATUS(scope, SCOPES_STATUS_CREATOR));
@@ -683,8 +686,7 @@ static void remove_single_scope(struct scope *scope) {
 	/* remove the scope */
 	list_remove(scopes, scope);
 
-	PRINTF(3,
-			"[%u.%u:%10lu] %s::%s() : Removed scope %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope->scope_id);
+	PRINTF(3, "(SCOPES) Removed scope %u\n", scope->scope_id);
 
 	/* stop the scope's TTL timer */
 	ctimer_stop(&(scope->ttl_timer));
@@ -698,8 +700,7 @@ static void join_scope(struct scope *scope) {
 	/* set member status */
 	scope->status |= SCOPES_STATUS_MEMBER;
 
-	PRINTF(3,
-			"[%u.%u:%10lu] %s::%s() : Joined scope %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope->scope_id);
+	PRINTF(3, "(SCOPES) Joined scope %u\n", scope->scope_id);
 
 	/* inform the routing processes */
 	routing->join(scope->scope_id);
@@ -710,8 +711,7 @@ static void join_scope(struct scope *scope) {
 
 /** \brief Invoked when the scope is being removed AND the node was member of the scope  */
 static void leave_scope(struct scope *scope) {
-	PRINTF(3,
-			"[%u.%u:%10lu] %s::%s() : Left scope %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, scope->scope_id);
+	PRINTF(3, "(SCOPES) Left scope %u\n", scope->scope_id);
 
 	/* inform the owner */
 	CALLBACK(scope->owner, leave(scope->scope_id));
@@ -765,8 +765,9 @@ static void reset_scope_timer(struct scope *scope) {
 	}
 
 	/* reset the timer */
-	PRINTF(3,
-			"(SCOPES) Resetting scope %d's timer to %d, left was %lu\n", scope->scope_id, scope->ttl, timer_remaining(&(scope->ttl_timer.etimer.timer)));
+	PRINTF(3, "(SCOPES) Resetting scope %d's timer to %d, left was %lu\n",
+			scope->scope_id, scope->ttl,
+			timer_remaining(&(scope->ttl_timer.etimer.timer)));
 
 	ctimer_set(&(scope->ttl_timer), timeout,
 			(void (*)(void *)) handle_scope_timeout, scope);
@@ -842,8 +843,7 @@ PROCESS_THREAD( scopes_process, ev, data) {
 	PROCESS_BEGIN()
 		;
 
-		PRINTF(3,
-				"[%u.%u:%10lu] %s::%s() : scopes process started\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__);
+	PRINTF(3, "(SCOPES) scopes process started\n");
 
 		/* create and start an event timer */
 		static struct etimer scopes_timer;
@@ -857,7 +857,7 @@ PROCESS_THREAD( scopes_process, ev, data) {
 			struct scope *s;
 
 			/* check memberships of dynamic scopes */
-			//			PRINTF(3,"checking dynamic scope memberships\n");
+			//			PRINTF(3, "(SCOPES) checking dynamic scope memberships\n");
 			for (s = list_head(scopes); s != NULL; s = s->next) {
 				/* only check scopes not created by the local node */
 				if (HAS_FLAG(s, SCOPES_FLAG_DYNAMIC)
@@ -866,8 +866,8 @@ PROCESS_THREAD( scopes_process, ev, data) {
 					int should_be_member = membership->check(s->specs,
 							s->spec_len);
 
-					PRINTF(3,
-							"[%u.%u:%10lu] %s::%s() : should be member: %u\n", rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, should_be_member);
+					PRINTF(3, "(SCOPES) should be member: %u\n",
+							should_be_member);
 
 					/* decide action */
 					if (should_be_member
@@ -883,12 +883,12 @@ PROCESS_THREAD( scopes_process, ev, data) {
 			}
 
 			//			/* print scopes information */
-			//			PRINTF(3,"known scopes:\n");
+			//			PRINTF(3, "(SCOPES) known scopes:\n");
 			//			PRINTF(3,"-------------\n");
 			//			for (s = list_head(scopes); s != NULL; s = s->next) {
 			//				PRINT_SCOPE(3, s);
 			//			}
-			//			PRINTF(3,"-------------\n");
+			//			PRINTF(3, "(SCOPES) -------------\n");
 
 		} while (1);
 
