@@ -108,9 +108,9 @@ static eval_func evaluator[] = {
 static int read_byte(void) {
 	/* check if there is input left */
 	if (pos < length) {
-		uint8_t value = bytecode[pos];
+		uint8_t retval = bytecode[pos];
 		pos++;
-		return (value);
+		return (retval);
 	}
 
 	/* no more input */
@@ -169,9 +169,9 @@ static long int eval_operator_and(void) {
 	eval_binary(&op1, &op2);
 
 	/* calculate result */
-	long int result = (op1 && op2);
+	long int retval = (op1 && op2);
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -182,9 +182,9 @@ static long int eval_operator_or(void) {
 	eval_binary(&op1, &op2);
 
 	/* calculate result */
-	long int result = (op1 || op2);
+	long int retval = (op1 || op2);
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -195,9 +195,9 @@ static long int eval_operator_add(void) {
 	eval_binary(&op1, &op2);
 
 	/* calculate result */
-	long int result = (op1 + op2);
+	long int retval = (op1 + op2);
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -208,9 +208,9 @@ static long int eval_operator_sub(void) {
 	eval_binary(&op1, &op2);
 
 	/* calculate result */
-	long int result = (op1 - op2);
+	long int retval = (op1 - op2);
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -221,9 +221,9 @@ static long int eval_operator_div(void) {
 	eval_binary(&op1, &op2);
 
 	/* calculate result */
-	long int result = (op1 / op2);
+	long int retval = (op1 / op2);
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -234,9 +234,9 @@ static long int eval_operator_mult(void) {
 	eval_binary(&op1, &op2);
 
 	/* calculate result */
-	long int result = (op1 * op2);
+	long int retval = (op1 * op2);
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -247,9 +247,9 @@ static long int eval_operator_mod(void) {
 	eval_binary(&op1, &op2);
 
 	/* calculate result */
-	long int result = (op1 % op2);
+	long int retval = (op1 % op2);
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -260,9 +260,9 @@ static long int eval_operator_not(void) {
 	eval_unary(&op);
 
 	/* calculate result */
-	long int result = !op;
+	long int retval = !op;
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -274,17 +274,17 @@ static long int eval_predicate_eq(void) {
 	eval_binary(&op1, &op2);
 
 	/* calculate result */
-	long int result = (op1 == op2);
+	long int retval = (op1 == op2);
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_predicate_neq(void) {
 
-	long int result = !eval_predicate_eq();
+	long int retval = !eval_predicate_eq();
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -297,9 +297,9 @@ static long int eval_predicate_lt(void) {
 	PRINTF(5, "comparing %lu with %lu\n", op1, op2);
 
 	/* calculate result */
-	long int result = (op1 < op2);
+	long int retval = (op1 < op2);
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -311,63 +311,56 @@ static long int eval_predicate_gt(void) {
 
 	PRINTF(5, "op1:%li, op2: %li\n", op1, op2);
 	/* calculate result */
-	long int result = (op1 > op2);
+	long int retval = (op1 > op2);
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_predicate_let(void) {
 
-	long int result = !eval_predicate_gt();
+	long int retval = !eval_predicate_gt();
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_predicate_get(void) {
 
-	long int result = !eval_predicate_lt();
+	long int retval = !eval_predicate_lt();
 
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
 /* values */
 static long int eval_uint8_value(void) {
-	uint8_t value = read_byte();
+	uint8_t retval = read_byte();
 
-	long int result = value;
-	PRINTF(5, "uint8 converted value is %li\n", result);
-	return (result);
+	PRINTF(5, "uint8 converted value is %li\n", retval);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_uint16_value(void) {
-	uint16_t value = read_byte();
-	value <<= 8;
-	value |= read_byte();
+	uint16_t v1 = read_byte(), v2 = read_byte(), retval = (v2 << 8 | v1);
 
-	long int result = value;
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_int8_value(void) {
 	int8_t value = read_byte();
 
-	long int result = value;
-	return (result);
+	long int retval = value;
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
 static long int eval_int16_value(void) {
-	int16_t value = read_byte();
-	value <<= 8;
-	value |= read_byte();
+	int16_t v1 = read_byte(), v2 = read_byte(), retval = v2<<8 | v1;
 
-	long int result = value;
-	return (result);
+	return (retval);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -398,11 +391,11 @@ static long int eval_repository_value(void) {
 				&data_len);
 
 		if (data != NULL) {
-			uint16_t result = *((uint16_t*) data);
+			uint16_t retval = *((uint16_t*) data);
 
-			PRINTF(5, "(EXPRESSION-EVAL) repo value: %u\n", result);
+			PRINTF(5, "(EXPRESSION-EVAL) repo value: %u\n", retval);
 
-			return (result);
+			return (retval);
 		}
 		PRINTF(5, "(EXPRESSION-EVAL) Repository entry not found!\n");
 	}
@@ -413,7 +406,7 @@ static long int eval_repository_value(void) {
 static long int eval_custom_input_value(void) {
 	int index;
 
-	long int result = 0;
+	long int retval = 0;
 	if ((index = read_byte()) != NO_MORE_INPUT) {
 
 		data_len_t data_len;
@@ -428,24 +421,24 @@ static long int eval_custom_input_value(void) {
 		if (data != NULL) {
 			switch (data_len) {
 			case (sizeof(uint8_t)): {
-				result = *((uint8_t*) data);
+				retval = *((uint8_t*) data);
 				break;
 			}
 			case (sizeof(uint16_t)): {
-				result = *((uint16_t*) data);
+				retval = *((uint16_t*) data);
 				break;
 			}
 			case (sizeof(clock_time_t)): {
-				result = *((clock_time_t*) data);
+				retval = *((clock_time_t*) data);
 				break;
 			}
 			} // switch
-			PRINTF(5, "output value: %lu\n", result);
+			PRINTF(5, "output value: %lu\n", retval);
 
 		} // if
 	}
 	PRINTF(5, "custom input can't be obtained because expression is malformed!\n");
-	return (result);
+	return (retval);
 }
 
 /**
