@@ -139,8 +139,8 @@ static void sensor_temperature_celsius(void *data) {
 	} else
 		absraw = raw;
 	int16_t temp_integer_part = (absraw >> 8) * sign;
-	//uint16_t temp_fractional_part = ((absraw >> 4) % 16) * 625;	// Info in 1/10000 of degree
-	//PRINTF(3,"INT.FRAC is %d,%u \n", temp_integer_part, temp_fractional_part);
+	uint16_t temp_fractional_part = ((absraw >> 4) % 16) * 625;	// Info in 1/10000 of degree
+	PRINTF(5,"(DATA-MGR) Temperature is %d,%u \n", temp_integer_part, temp_fractional_part);
 
 	*data16 = temp_integer_part;
 #endif
