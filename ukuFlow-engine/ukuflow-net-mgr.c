@@ -167,12 +167,12 @@ void ukuflow_net_mgr_handler(scope_id_t scope_id, void *data,
 		ukuflow_event_mgr_handle_subscription(
 				(struct generic_event_operator*) (((uint8_t*) data)
 						+ sizeof(struct ukuflow_generic_msg)),
-				data_len - sizeof(struct ukuflow_generic_msg));
+				data_len - sizeof(struct ukuflow_generic_msg), FALSE);
 		break;
 	}
 	case SCOPED_EVENT_OPERATOR_UNSUB_MSG: {
 		struct ukuflow_unsub_msg *msg = (struct ukuflow_unsub_msg*) data;
-		ukuflow_event_mgr_handle_unsubscription(&(msg->main_ev_op_channel_id));
+		ukuflow_event_mgr_handle_unsubscription(msg->main_ev_op_channel_id, FALSE);
 		break;
 	}
 	case SCOPED_EVENT_MSG: {
