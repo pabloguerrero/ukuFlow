@@ -88,7 +88,7 @@ struct __attribute__((__packed__)) sfs_msg {
  * \brief	Header for event operator subscription messages
  */
 struct __attribute__((__packed__)) ukuflow_sub_msg {
-	/** \brief TODO */
+	/** \brief Indication of the message type */
 	ukuflow_msg_type_t msg_type;
 // followed by byte array with entire event operator(s) expression
 };
