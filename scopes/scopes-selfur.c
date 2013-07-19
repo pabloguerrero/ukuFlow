@@ -305,7 +305,7 @@ static void receive_unicast_data(struct unicast_conn *c, const rimeaddr_t *from)
 	/* Call scopes */
 	scopes_receive(gmsg);
 
-	PRINTF(1, "(SCOPES-SELFUR) Data passed to scopes_received ()\n");
+	PRINTF(3, "(SCOPES-SELFUR) Data passed to scopes_received ()\n");
 
 	/* Remaining code commented out to avoid forwarding the message automatically.
 	 * Instead, the upper layer will request the reforwarding based on its processing.
