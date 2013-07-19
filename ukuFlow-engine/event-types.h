@@ -113,7 +113,7 @@ struct __attribute__((__packed__)) generic_event_operator {
 /**                             Event Generators                             */
 /*---------------------------------------------------------------------------*/
 
-/** \brief Macro definition for the case of a local event generator */
+/** \brief Macro definition for the case of a scope id of local event generator */
 #define LOCAL_EVENT_GENERATOR 0
 
 /** \brief Generic event generator fields */
