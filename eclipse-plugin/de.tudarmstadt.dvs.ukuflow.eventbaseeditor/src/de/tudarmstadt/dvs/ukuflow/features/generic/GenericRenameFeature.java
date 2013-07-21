@@ -26,6 +26,7 @@ import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.jface.dialogs.IInputValidator;
 
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.TimeUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.utils.DialogUtils;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.*;
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
@@ -86,6 +87,10 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 			Map<Integer, RequestContainer> properties = new HashMap<Integer, RequestContainer>();
 			Map<Integer, RequestContainer> result = null;
 			if (bo instanceof EventGenerator) {
+				if(bo instanceof EGRecurring){
+					properties.put(EventbasePackage.EG_RECURRING__REPETITION, 
+							new RequestContainer(new RequestContainer.IntegerValidator(), ((EGRecurring) bo).getRepetition()+"","Number of repetitions"));
+				}
 				EventGenerator eg = (EventGenerator) bo;
 				properties.put(EventbasePackage.EVENT_GENERATOR__SENSOR_TYPE,
 						new RequestContainer(null,
@@ -99,20 +104,18 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 					// nothing to do
 				} else if (bo instanceof EGAbsolute) {
 					EGAbsolute eClass = (EGAbsolute) bo;
-					int currentTime = eClass.getAbsoluteTime();
+					String currentTime = eClass.getAbsoluteTime();
 					properties.put(EventbasePackage.EG_ABSOLUTE__ABSOLUTE_TIME,
 							new RequestContainer(
-									new RequestContainer.IntegerValidator(), "" + currentTime,
-									"Absolute Time"));
+									new RequestContainer.AbsoluteTimeValidator(), "" + currentTime,
+									"Absolute Time(dd-MM-yyy hh:mm:ss"));
 
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
 
-					int newTime = Integer
-							.parseInt(result
-									.get(EventbasePackage.EG_ABSOLUTE__ABSOLUTE_TIME).result);
-					if (newTime != currentTime) {
+					String newTime =result.get(EventbasePackage.EG_ABSOLUTE__ABSOLUTE_TIME).result;
+					if (!newTime.equals(currentTime)) {
 						this.hasDoneChanges = true;
 						eClass.setAbsoluteTime(newTime);
 					}
@@ -156,15 +159,15 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 					EGPeriodic off = (EGPeriodic) bo;
 					properties.put(EventbasePackage.EG_PERIODIC__TIME,
 							new RequestContainer(
-									new RequestContainer.IntegerValidator(),"" + off.getTime(),
-									"Period duration (in seconds)" ));
+									new RequestContainer.DatePatternValidator(TimeUtil.SHORT_TIME_PATTERN),"" + off.getTime(),
+									"Period duration (mm:ss)" ));
 
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
-					int currentTime = off.getTime();
-					int newTime = Integer.parseInt(result
-							.get(EventbasePackage.EG_PERIODIC__TIME).result);
+					String currentTime = off.getTime();
+					String newTime = result
+							.get(EventbasePackage.EG_PERIODIC__TIME).result;
 					if (newTime != currentTime) {
 						this.hasDoneChanges = true;
 						off.setTime(newTime);
@@ -227,7 +230,7 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 				}
 
 				// ///
-
+				
 				String scope = eg.getScope();
 				String newScope = result
 						.get(EventbasePackage.EVENT_GENERATOR__SCOPE).result;
@@ -240,51 +243,40 @@ public class GenericRenameFeature extends AbstractCustomFeature {
 				if (!newType.equals(type))
 					this.hasDoneChanges = true;
 				eg.setSensorType(newType);
+				// repetation
+				if(bo instanceof EGRecurring){
+					int newRepetition = Integer.parseInt(result.get(EventbasePackage.EG_RECURRING__REPETITION).result);
+					if(((EGRecurring) bo).getRepetition() != newRepetition){
+						this.hasDoneChanges = true;
+					}
+					((EGRecurring) bo).setRepetition(newRepetition);
+				}
 
 			} else if (bo instanceof EventFilter) {
 				if (bo instanceof EFSimple) {
 					EFSimple efsimple = (EFSimple) bo;
-					EList<ESimpleFilterConstraint> offs = efsimple
-							.getConstraints();
-					ESimpleFilterConstraint off;
-					if (offs.size() > 0)
-						off = offs.get(0);
-					else {
-						off = EventbaseFactory.eINSTANCE
-								.createESimpleFilterConstraint();
-						off.setType("type");
-						off.setOperator(0);
-						off.setValue("value");
-					}
-					String key1 = "Type";
-					String key2 = "Operation";
-					String key3 = "Value";
-					// properties.put(key1, off.getType());
-					// properties.put(key2, off.getOperator());
-					// properties.put(key3, off.getValue());
+					String currentConstraints = "";
+					boolean multiple = false;
+					for(ESimpleFilterConstraint c: efsimple.getConstraints()){
+						currentConstraints += c.getType() + c.getOperator()+c.getValue() + ",";
+						multiple = true;
+					}					
+					if(multiple)
+						currentConstraints = currentConstraints.substring(0, currentConstraints.length()-1);
+					properties.put(EventbasePackage.EF_SIMPLE__CONSTRAINTS, new RequestContainer(null, currentConstraints, "Filter's constraints"));
+					
 					
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
-					String oldType = off.getType();
-					String nType = result.get(key1).result;// Integer.parseInt(result.get(key1));
-					if (!oldType.equals(nType)) {
-						this.hasDoneChanges = true;
-						off.setType(nType);
+					String newConstraint = result.get(EventbasePackage.EF_SIMPLE__CONSTRAINTS).result;
+					if(!newConstraint.equals(currentConstraints)){
+						this.hasDoneChanges= true;
+						for(String x : newConstraint.split(",")){
+							System.out.println(x);
+						}
 					}
-					String oldValue = off.getValue();
-					String newValue = result.get(key3).result;
-					if (!newValue.equals(oldValue)) {
-						this.hasDoneChanges = true;
-						off.setValue(newValue);
-					}
-					int oldOp = off.getOperator();
-					int newOp = Integer.parseInt(result.get(key2).result);
-					if (newOp != oldOp) {
-						this.hasDoneChanges = true;
-						off.setOperator(newOp);
-
-					}
+					
 				} else {
 					System.err.println("this element is not implemented yet");
 				}

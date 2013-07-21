@@ -34,8 +34,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.TimeZone;
 
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
+import de.tudarmstadt.dvs.ukuflow.tools.TimeUtil;
 
 /**
  * @author ”Hien Quoc Dang”
@@ -70,7 +72,7 @@ public class TimeExpression extends EEvaluableExpression {
 	public int getValueInt(){
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String date = String.format("%04d-%02d-%02d %02d:%02d:%02d", year,month,day,hour,minute,second);
-		
+		format.setTimeZone(TimeZone.getTimeZone("UTC"));
 			Date d;
 			try {
 				d = format.parse(date);
@@ -83,6 +85,10 @@ public class TimeExpression extends EEvaluableExpression {
 			}
 		return 0;
 	}
+	/**
+	 * 
+	 * @return
+	 */
 	public Collection<? extends Byte> getValue(){
 		return getValue(4);
 	}
@@ -91,28 +97,20 @@ public class TimeExpression extends EEvaluableExpression {
 	 * @return
 	 */
 	public Collection<? extends Byte> getValue(int length) {
-		Collection<Byte> result = new ArrayList<Byte>();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Collection<Byte> result = new ArrayList<Byte>();		
 		String date = String.format("%04d-%02d-%02d %02d:%02d:%02d", year,month,day,hour,minute,second);
-		try {
-			Date d = format.parse(date);
-			long seconds = d.getTime()/1000L;
-			if(seconds < 0)
-				seconds = (hour*60+minute)*60 + second;
-			if(length==4)
-			result.add((byte)(seconds / (256*256*256)));
-			if(length>=3)
-			result.add((byte)(seconds / (256*256)));
-			if(length>=2)
-			result.add((byte)(seconds / (256)));
-			if(length>=1)
-			result.add((byte)(seconds % (256)));
-			return result;
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
+		long seconds = TimeUtil.convert(TimeUtil.FULL_PATTERN, date);
+		if (seconds < 0)
+			seconds = (hour * 60 + minute) * 60 + second;
+		if (length == 4)
+			result.add((byte) (seconds / (256 * 256 * 256)));
+		if (length >= 3)
+			result.add((byte) (seconds / (256 * 256)));
+		if (length >= 2)
+			result.add((byte) (seconds / (256)));
+		if (length >= 1)
+			result.add((byte) (seconds % (256)));
+		return result;
 	}
 	
 }

@@ -97,6 +97,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 
 	@Override
 	public void visit(UkuEvent event) {
+		log.debug("visiting " + event);
 		if (event.hasElementID())
 			out.add(event.getWorkflowElementID());
 
@@ -123,6 +124,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 		out.add(task.getWorkflowElementID());
 		out.add(toByte(UkuConstants.EXECUTE_TASK));
 		if (task.getOutgoingEntity().size() != 1) {
+			throw new NullPointerException("outgoing size is != 1");
 		} else {
 			UkuEntity outg = task.getOutgoingEntity().get(0);
 			if (outg instanceof UkuSequenceFlow) {
@@ -146,6 +148,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 
 	@Override
 	public void visit(UkuGateway gateway) {
+		log.debug("visiting " + gateway);
 		out.add(gateway.getWorkflowElementID());
 
 		switch (gateway.getUkuType()) {
@@ -205,14 +208,23 @@ public class ElementVisitorImpl implements ElementVisitor {
 			}
 			out.add(toByte(gateway.getIncomingEntity().size()));
 			for (UkuEntity sq : gateway.getIncomingEntity()) {
-				byte previous_id = ((UkuElement)((UkuSequenceFlow) sq).getSourceEntity())
-						.getWorkflowElementID();
+				UkuElement provious_e = ((UkuElement)((UkuSequenceFlow) sq).getSourceEntity());
+				if(provious_e instanceof UkuReceiveTask){
+					provious_e = (UkuElement)provious_e.getIncomingEntity().get(0).getSourceEntity();
+				}
+				byte previous_id = provious_e.getWorkflowElementID();
 				out.add(previous_id);
 			}
 			break;
 
 		case UkuConstants.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY:
-			// TODO need more info!
+			out.add(toByte(UkuConstants.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY));
+			out.add(toByte(gateway.getOutgoingEntity().size()));
+			for (UkuEntity sq : gateway.getOutgoingEntity()){
+				UkuEntity entity = ((UkuSequenceFlow)sq).getTargetEntity();
+				if(entity instanceof UkuReceiveTask)
+					visit((UkuReceiveTask)entity);
+			}
 			break;
 		}
 
@@ -221,6 +233,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 	@Override
 	public void visit(UkuSequenceFlow task) {
 		out.add(((UkuElement)task.getTargetEntity()).getWorkflowElementID());
+		
 		if (task.hasCondition()) {
 			sVisitor.reset();
 			task.getConditionExp().accept(sVisitor);
@@ -238,6 +251,8 @@ public class ElementVisitorImpl implements ElementVisitor {
 		out.add((byte) p.getElements().size());
 		out.add(p.getNumberOfScope());
 		for (UkuElement e : p.getElements()) {
+			if(e instanceof UkuReceiveTask)
+				continue;
 			e.accept(this);
 		}
 		
@@ -260,7 +275,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 		out.addAll(sVisitor.getOutput());
 	}
 
-	/* (non-Javadoc)
+	/* 
 	 * @see de.tudarmstadt.dvs.ukuflow.xml.entity.ElementVisitor#visit(de.tudarmstadt.dvs.ukuflow.xml.entity.UkuReceiveTask)
 	 */
 	@Override
@@ -269,9 +284,20 @@ public class ElementVisitorImpl implements ElementVisitor {
 			rTask.addWarningMessage("no script");
 			return;
 		}
+		if (rTask.getOutgoingEntity().size() != 1) {
+			throw new NullPointerException("outgoing size is != 1");
+		} else {
+			UkuEntity outg = rTask.getOutgoingEntity().get(0);
+			if (outg instanceof UkuSequenceFlow) {
+				byte next = ((UkuElement)((UkuSequenceFlow) outg).getTargetEntity())
+						.getWorkflowElementID();
+				out.add(next);
+			}
+		}
+		eVisitor.reset();
 		rTask.topOperator.accept(eVisitor);
-		//TODO visit receive task
-		
+		out.add(toByte(eVisitor.getOutput().size()));
+		out.addAll(eVisitor.getOutput());
 	}
 
 }

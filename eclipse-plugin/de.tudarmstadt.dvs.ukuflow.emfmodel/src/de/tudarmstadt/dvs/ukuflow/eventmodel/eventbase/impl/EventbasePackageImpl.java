@@ -1278,7 +1278,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		initEClass(egImmediateEClass, EGImmediate.class, "EGImmediate", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(egAbsoluteEClass, EGAbsolute.class, "EGAbsolute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getEGAbsolute_AbsoluteTime(), ecorePackage.getEInt(), "absoluteTime", null, 1, 1, EGAbsolute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEGAbsolute_AbsoluteTime(), ecorePackage.getEString(), "absoluteTime", null, 1, 1, EGAbsolute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(egOffsetEClass, EGOffset.class, "EGOffset", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getEGOffset_OffsetTime(), ecorePackage.getEInt(), "offsetTime", null, 1, 1, EGOffset.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1290,7 +1290,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		initEAttribute(getEGRecurring_Repetition(), ecorePackage.getEInt(), "repetition", null, 0, 1, EGRecurring.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(egPeriodicEClass, EGPeriodic.class, "EGPeriodic", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getEGPeriodic_Time(), ecorePackage.getEInt(), "time", null, 0, 1, EGPeriodic.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEGPeriodic_Time(), ecorePackage.getEString(), "time", null, 0, 1, EGPeriodic.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(egPatternedEClass, EGPatterned.class, "EGPatterned", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getEGPatterned_Time(), ecorePackage.getEInt(), "time", null, 0, 1, EGPatterned.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

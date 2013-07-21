@@ -54,6 +54,7 @@ import de.tudarmstadt.dvs.ukuflow.validation.ErrorManager;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuElement;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuEntity;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuEvent;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuEventGateway;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuExecuteTask;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuGateway;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuProcess;
@@ -160,12 +161,11 @@ public class BPMN2XMLParser {
 
 	private Element loadXML(InputStream in) {
 		SAXBuilder builder = new SAXBuilder();
-		// builder.setValidation(false);
+
 		builder.setIgnoringElementContentWhitespace(true);
 		try {
 			Document doc = builder.build(in);
 			Element root = doc.getRootElement();
-
 			return root;
 		} catch (JDOMException e) {
 			e.printStackTrace();
@@ -240,8 +240,7 @@ public class BPMN2XMLParser {
 			log.debug(name + " is not supported : " + e1.getMessage());
 			return null;
 		}
-		System.out.println("["+this.getClass().getSimpleName()+"]" +
-				"\t"+type);
+		log.debug("["+this.getClass().getSimpleName()+"]" +"\t"+type);
 		
 		String id = fetchID(e);
 		switch (type) {
@@ -304,6 +303,7 @@ public class BPMN2XMLParser {
 									+ " -> ignored");
 				}
 			}
+			
 			try {
 				event.setType(classifier.getEventType(name));
 			} catch (UnsupportedElementException e1) {
@@ -371,7 +371,8 @@ public class BPMN2XMLParser {
 					rTask.addOutgoing(n_id);
 				}
 			}
-			String script = fetchEBScript(e);			
+			String script = fetchEBScript(e);
+			log.debug("fetching script of " + e + " is "+ script);
 			rTask.setScript(script);
 			return rTask;
 		default:

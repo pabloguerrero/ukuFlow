@@ -264,9 +264,9 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 			EventBaseOperator eClass = (EventBaseOperator) bo;
 			String name = eClass.getElementName();
 			if (name != null && name.length() > 0 && !(name.charAt(0) >= 'A' && name.charAt(0) <= 'Z')) {
-				IDecorator imageRenderingDecorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_WARNING_TSK);
-				imageRenderingDecorator.setMessage("Name should start with upper case letter"); //$NON-NLS-1$
-				return new IDecorator[] { imageRenderingDecorator };
+				//IDecorator imageRenderingDecorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_WARNING_TSK);
+				//imageRenderingDecorator.setMessage("Name should start with upper case letter"); //$NON-NLS-1$
+				//return new IDecorator[] { imageRenderingDecorator };
 			}
 		}
 

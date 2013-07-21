@@ -9,7 +9,7 @@
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
             uri="http://de/tudarmstadt/dvs/ukuflow/eventbase"
-            class="eventbase.EventbasePackage"
+            class="de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage"
             genModel="model/eventbase.genmodel"/>
    </extension>
 

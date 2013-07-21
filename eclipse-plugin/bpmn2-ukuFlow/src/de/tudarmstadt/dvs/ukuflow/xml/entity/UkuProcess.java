@@ -117,7 +117,7 @@ public class UkuProcess implements VisitableElement {
 		final List<UkuElement> elements = new LinkedList<UkuElement>();
 		for (UkuEntity e : entities) {
 			// ref.put(e.getID(), e);
-			if (e instanceof UkuElement) {
+			if (e instanceof UkuElement && !(e instanceof UkuReceiveTask)) {
 				elements.add((UkuElement) e);
 			}
 		}

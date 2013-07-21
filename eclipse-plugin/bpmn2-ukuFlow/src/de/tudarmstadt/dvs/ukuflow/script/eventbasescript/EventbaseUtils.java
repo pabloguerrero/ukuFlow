@@ -72,7 +72,7 @@ public class EventbaseUtils {
 			if (ebo instanceof ENonRecurringEG) {
 				if (ebo instanceof EAbsoluteEG) {
 					result = factory.createEGAbsolute();
-					((EGAbsolute)result).setAbsoluteTime(((EAbsoluteEG) ebo).getTime().getValueInt());
+					((EGAbsolute)result).setAbsoluteTime(((EAbsoluteEG) ebo).getTime().toString());
 				} else if (ebo instanceof EImmediateEG) {
 					result = factory.createEGImmediate();
 				} else if (ebo instanceof EOffsetEG) {
@@ -84,7 +84,7 @@ public class EventbaseUtils {
 					//((EGRelative)result).set
 				}
 				///
-				
+				 
 			} else if (ebo instanceof ERecurringEG) {
 				if (ebo instanceof EAperiodicDistributionEG) {
 					result = factory.createEGDistribution();
@@ -95,7 +95,7 @@ public class EventbaseUtils {
 					((EGPatterned)result).setTime(((EAperiodicPatternedEG) ebo).getTime().getValueInt());
 				} else if (ebo instanceof EPeriodicEG) {
 					result = factory.createEGPeriodic();
-					((EGPeriodic)result).setTime(((EPeriodicEG) ebo).getTime().getValueInt());
+					((EGPeriodic)result).setTime(((EPeriodicEG) ebo).getTime().toString());
 				}
 				ERecurringEG rec = (ERecurringEG)ebo;
 				((EGRecurring)result).setRepetition(rec.getRepetition());

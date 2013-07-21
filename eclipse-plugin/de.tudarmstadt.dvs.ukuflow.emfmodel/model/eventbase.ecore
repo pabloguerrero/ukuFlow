@@ -30,7 +30,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="EGImmediate" eSuperTypes="#//EGNonRecurring"/>
   <eClassifiers xsi:type="ecore:EClass" name="EGAbsolute" eSuperTypes="#//EGNonRecurring">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="absoluteTime" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EGOffset" eSuperTypes="#//EGNonRecurring">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="offsetTime" lowerBound="1"
@@ -44,7 +44,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="repetition" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EGPeriodic" eSuperTypes="#//EGRecurring">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EGPatterned" eSuperTypes="#//EGRecurring">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>

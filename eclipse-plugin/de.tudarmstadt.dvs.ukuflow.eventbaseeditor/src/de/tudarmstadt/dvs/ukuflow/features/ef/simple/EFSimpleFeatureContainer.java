@@ -196,17 +196,7 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 						// create link and wire it
 						link(containerShape, addedClass);
 					}
-
-					// SHAPE WITH LINE
-					{
-						// create shape for line
-						final Shape shape = peCreateService.createShape(containerShape, false);
-
-						// create and set graphics algorithm
-						final Polygon polyline = gaService.createPlainPolygon(shape,new int[]{0,0,width,height/2,0,height});
-						//final Polyline polyline = gaService.createPlainPolyline(shape, new int[] { 0,0,0, 20, width, 10 });
-						polyline.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
-					}
+					
 
 					// SHAPE WITH TEXT
 					{
@@ -216,7 +206,7 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 						// create and set text graphics algorithm
 						final Text text = gaService.createPlainText(shape, addedClass.getClass().getSimpleName());
 						text.setStyle(StyleUtil.getStyleForEClassText(getDiagram()));
-						gaService.setLocationAndSize(text, 0, 0, width, 20);
+						gaService.setLocationAndSize(text, 2, 10, width, 20);
 
 						// create link and wire it
 						link(shape, addedClass);
@@ -251,12 +241,12 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 					// anchor is located on the right border of the visible rectangle
 					// and touches the border of the invisible rectangle
 					final int w = INVISIBLE_RECT_RIGHT;
-					gaService.setLocationAndSize(ellipse, -w, -w, 2 * w, 2 * w);
+					gaService.setLocationAndSize(ellipse, 50, 25, 2 * w, 2 * w);
 					ellipse.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
 
 					
-					ChopboxAnchor chopboxAnchor = peCreateService.createChopboxAnchor(containerShape);				
-					TutorialFeatureProvider tfp = (TutorialFeatureProvider)getFeatureProvider();
+					//ChopboxAnchor chopboxAnchor = peCreateService.createChopboxAnchor(containerShape);				
+					//TutorialFeatureProvider tfp = (TutorialFeatureProvider)getFeatureProvider();
 					
 					// call the layout feature
 					layoutPictogramElement(containerShape);

@@ -29,43 +29,39 @@
  */
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
-import java.util.List;
-
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
-public class EAperiodicDistributionEG extends ERecurringEG{
-	private String functionName;
-	private List<Integer> parameters;
-	private EDistributionFunction function;
-	public void setFunction(String name, List<Integer> params){
-		this.functionName = name;
-		this.parameters = params;
-	}
-	public void setFunction(EDistributionFunction f){
-		function = f;
-	}
-	public EDistributionFunction getFunction(){
-		return function;
-	}
-	
-	public List<Integer> getParameters(){
-		return parameters;
-	}
+/**
+ * @author ”Hien Quoc Dang”
+ *
+ */
+public class EGausianFunction extends EDistributionFunction {
+	private int m;
+	private int v;
+	private int a;
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable#accept(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor)
+	 */
 	@Override
 	public void accept(EventBaseVisitor visitor) {
 		visitor.visit(this);
 	}
-	
-	@Override
-	public String toString(){
-		String s="";
-		s+= "[DISTRIBUTION="+functionName+"(";	
-		if(parameters != null)
-		for(Integer i : parameters){
-			s+= i +",";
-		}
-		s+="__";
-		s= s.replace(",__",")");
-		return getVariable()+"PEG_"+getSensorType()+"_"+s+"@"+getScope();
+	public int getM(){
+		return m;
+	}
+	public int getV(){
+		return v;
+	}
+	public int getA(){
+		return a;
+	}
+	public void setM(int m){
+		this.m = m;
+	}
+	public void setA(int a){
+		this.a = a;
+	}
+	public void setV(int v){
+		this.v = v;
 	}
 }

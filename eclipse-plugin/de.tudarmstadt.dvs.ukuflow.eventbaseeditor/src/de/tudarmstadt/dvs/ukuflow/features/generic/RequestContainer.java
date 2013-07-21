@@ -1,6 +1,10 @@
 package de.tudarmstadt.dvs.ukuflow.features.generic;
 
+import java.text.SimpleDateFormat;
+
 import org.eclipse.jface.dialogs.IInputValidator;
+
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.TimeUtil;
 
 public class RequestContainer{
 	public IInputValidator validator;
@@ -25,7 +29,36 @@ public class RequestContainer{
 	public static IntegerValidator getIntValidator(){
 		return new RequestContainer.IntegerValidator();
 	}
-	
+	public static class AbsoluteTimeValidator implements IInputValidator {
+		public String isValid(String newText){
+			if(newText == null || newText.equals(""))
+				return "Empty input";
+			try {
+				SimpleDateFormat format = new SimpleDateFormat(TimeUtil.FULL_PATTERN);
+				format.parse(newText);
+				return null;
+			} catch(Exception e){
+				return "expecting absolute time in format of \""+TimeUtil.FULL_PATTERN+"\"";
+			}
+		}
+	}
+	public static class DatePatternValidator implements IInputValidator{
+		String pattern = "";
+		public DatePatternValidator(String pattern) {
+			this.pattern = pattern;
+		}
+		public String isValid(String newText){
+			if(newText == null || newText.equals(""))
+				return "Empty input";
+			try{
+				SimpleDateFormat format = new SimpleDateFormat(pattern);
+				format.parse(newText);
+				return null;
+			}catch (Exception e){
+				return "expecting input in format of \""+pattern + "\"!";
+			}
+		}
+	}
 	public static class IntegerValidator implements IInputValidator{
 		public String isValid(String newText){
 			if(newText == null || newText.equals(""))

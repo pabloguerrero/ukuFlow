@@ -63,11 +63,27 @@ public interface EventBaseScriptConstants {
   /** RegularExpression Id. */
   int REPETITION = 30;
   /** RegularExpression Id. */
-  int IDENTIFIER = 31;
+  int M = 31;
   /** RegularExpression Id. */
-  int LETTER = 32;
+  int V = 32;
   /** RegularExpression Id. */
-  int DIGIT = 33;
+  int A = 33;
+  /** RegularExpression Id. */
+  int K = 34;
+  /** RegularExpression Id. */
+  int I = 35;
+  /** RegularExpression Id. */
+  int GAUSSIAN_DISTRIBUTION = 36;
+  /** RegularExpression Id. */
+  int CHI_SQUARE_DISTRIBUTION = 37;
+  /** RegularExpression Id. */
+  int PARETO_DISTRIBUTION = 38;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 39;
+  /** RegularExpression Id. */
+  int LETTER = 40;
+  /** RegularExpression Id. */
+  int DIGIT = 41;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -105,6 +121,14 @@ public interface EventBaseScriptConstants {
     "<BINARY>",
     "<PATTERN>",
     "<REPETITION>",
+    "\"m\"",
+    "\"v\"",
+    "\"a\"",
+    "\"k\"",
+    "\"i\"",
+    "\"GAUSSIAN_DISTRIBUTION\"",
+    "\"CHI_SQUARE_DISTRIBUTION\"",
+    "\"PARETO_DISTRIBUTION\"",
     "<IDENTIFIER>",
     "<LETTER>",
     "<DIGIT>",
@@ -115,7 +139,6 @@ public interface EventBaseScriptConstants {
     "\"^\"",
     "\":\"",
     "\"-\"",
-    "\"i\"",
     "\"{\"",
     "\",\"",
     "\"}\"",

@@ -29,12 +29,12 @@ public interface EGPeriodic extends EGRecurring {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Time</em>' attribute.
-	 * @see #setTime(int)
+	 * @see #setTime(String)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEGPeriodic_Time()
 	 * @model
 	 * @generated
 	 */
-	int getTime();
+	String getTime();
 
 	/**
 	 * Sets the value of the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGPeriodic#getTime <em>Time</em>}' attribute.
@@ -44,6 +44,6 @@ public interface EGPeriodic extends EGRecurring {
 	 * @see #getTime()
 	 * @generated
 	 */
-	void setTime(int value);
+	void setTime(String value);
 
 } // EGPeriodic
