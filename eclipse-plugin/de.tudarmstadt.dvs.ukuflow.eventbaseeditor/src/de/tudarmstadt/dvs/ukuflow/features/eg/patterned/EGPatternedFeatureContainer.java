@@ -177,8 +177,7 @@ public class EGPatternedFeatureContainer extends EGFeatureContainer {
 					.getHeight();
 
 			final IGaService gaService = Graphiti.getGaService();
-			int xy[] = new int[] { 0, 25, 20, 0, 80, 0, 100, 25, 80, 50, 20,
-					50, };
+			int xy[] = new int[] { 0, 0, 90, 0, 100, 25, 90, 50, 0, 50, };
 			Polygon polygon;
 			{
 				// create invisible outer rectangle expanded by

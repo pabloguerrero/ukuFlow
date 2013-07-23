@@ -177,8 +177,8 @@ public class EGRelativeFeatureContainer extends EGFeatureContainer {
 					.getHeight();
 
 			final IGaService gaService = Graphiti.getGaService();
-			int xy[] = new int[] { 0, 25, 20, 0, 80, 0, 100, 25, 80, 50, 20,
-					50, };
+			//int xy[] = new int[] { 5, 0, 95, 0, 100, 25, 95, 50, 5, 50, 0,25};
+			int xy[] = new int[] { EG_OFFSET,25,0, 0, EG_WIDTH-EG_OFFSET, 0, EG_WIDTH, EG_HEIGHT/2, EG_WIDTH-EG_OFFSET, EG_HEIGHT, 0, EG_HEIGHT, };
 			Polygon polygon;
 			{
 				// create invisible outer rectangle expanded by

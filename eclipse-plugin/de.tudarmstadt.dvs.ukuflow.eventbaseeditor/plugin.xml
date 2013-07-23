@@ -39,7 +39,7 @@
                id="de.tudarmstadt.dvs.ukuflow.eventbaseDiagramType">
          </diagramType>
          <imageProvider
-               id="org.eclipse.graphiti.examples.tutorial.TutorialImageProvider">
+               id="de.tudarmstadt.dvs.ukuflow.EventImageProvider">
          </imageProvider>
          <imageProvider
                id="org.eclipse.graphiti.examples.common.ExampleImageProvider">
@@ -50,8 +50,8 @@
    <extension
          point="org.eclipse.graphiti.ui.imageProviders">
       <imageProvider
-            class="de.tudarmstadt.dvs.ukuflow.eventbase.core.TutorialImageProvider"
-            id="org.eclipse.graphiti.examples.tutorial.TutorialImageProvider">
+            class="de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider"
+            id="de.tudarmstadt.dvs.ukuflow.EventImageProvider">
       </imageProvider>
    </extension>
  

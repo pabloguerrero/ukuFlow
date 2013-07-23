@@ -177,8 +177,7 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 					.getHeight();
 
 			final IGaService gaService = Graphiti.getGaService();
-			int xy[] = new int[] { 10, 0, 70, 20, 100, 20, 100, 30, 70, 30, 10,
-					50, };
+			int xy[] = new int[] { 0, 0, 90, 0, 100, 25, 90, 50, 0, 50, };
 			Polygon polygon;
 			Ellipse ellipse_funnel;
 			{
@@ -196,11 +195,11 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 				polygon = gaService.createPolygon(invisibleRectangle, xy);
 				polygon.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
 				gaService.setLocationAndSize(polygon, 0, 0, width, height);
-				
+				/**
 				ellipse_funnel= gaService.createPlainEllipse(invisibleRectangle);
 				gaService.setLocationAndSize(ellipse_funnel, 0, 0, 20, 50);
 				ellipse_funnel.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
-				
+				*/
 				// if addedClass has no resource we add it to the resource of
 				// the diagram
 				// in a real scenario the business model would have its own

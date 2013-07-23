@@ -17,7 +17,9 @@ import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
+import org.eclipse.graphiti.mm.GraphicsAlgorithmContainer;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
+import org.eclipse.graphiti.mm.algorithms.Image;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
@@ -33,6 +35,7 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeCreateService;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram.TutorialFeatureProvider;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution;
@@ -151,16 +154,16 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 			super(fp);
 		}
 
-		public boolean canAdd(IAddContext context) {
+		public boolean canAdd(IAddContext context) {			
 			final Object newObject = context.getNewObject();
 			if (newObject instanceof EGDistribution)
 				if (context.getTargetContainer() instanceof Diagram) {
 					return true;
-				}
+				}			
 			return false;
 		}
 
-		public PictogramElement add(IAddContext context) {
+		public PictogramElement add(IAddContext context) {			
 			final EGDistribution addedClass = (EGDistribution) context.getNewObject();
 			final Diagram targetDiagram = (Diagram) context
 					.getTargetContainer();
@@ -168,7 +171,7 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 			final IPeCreateService peCreateService = Graphiti
 					.getPeCreateService();
 			final ContainerShape containerShape = peCreateService
-					.createContainerShape(targetDiagram, true);
+					.createContainerShape(targetDiagram, true);			
 
 			// check whether the context has a size (e.g. from a create feature)
 			// otherwise define a default size for the shape
@@ -178,14 +181,12 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 					.getHeight();
 
 			final IGaService gaService = Graphiti.getGaService();
-			int xy[] = new int[] { 0, 25, 20, 0, 80, 0, 100, 25, 80, 50, 20,
-					50, };
+			int xy[] = new int[] { 0, 0, EG_WIDTH-EG_OFFSET, 0, EG_WIDTH, EG_HEIGHT/2, EG_WIDTH-EG_OFFSET, EG_HEIGHT, 0, EG_HEIGHT, };
 			Polygon polygon;
 			{
 				// create invisible outer rectangle expanded by
 				// the width needed for the anchor
-				final Rectangle invisibleRectangle = gaService
-						.createInvisibleRectangle(containerShape);
+				final Rectangle invisibleRectangle = gaService.createInvisibleRectangle(containerShape);				
 				gaService.setLocationAndSize(invisibleRectangle,
 						context.getX(), context.getY(), width
 								+ INVISIBLE_RECT_RIGHT, height);
@@ -204,20 +205,23 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 
 				// create link and wire it
 				link(containerShape, addedClass);
+				
+			
 			}
+			
 
 			// SHAPE WITH TEXT
 			{
 				// create shape for text
 				final Shape shape = peCreateService.createShape(containerShape,
-						false);
-
+						false);				
 				// create and set text graphics algorithm
-				String name = addedClass.getClass().getSimpleName();
+				String name = addedClass.getClass().getSimpleName();				
+				//addedClass.setElementName()
 				final Text text = gaService.createPlainText(shape,
 						name.substring(0, name.length() - 4));
 				text.setStyle(StyleUtil.getStyleForEClassText(getDiagram()));
-				gaService.setLocationAndSize(text, 0, 10, width, 20);
+				gaService.setLocationAndSize(text, 0, 0, width, 20);
 
 				// create link and wire it
 				link(shape, addedClass);
@@ -233,6 +237,14 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 				// direct editing shall be opened after object creation
 				directEditingInfo.setPictogramElement(shape);
 				directEditingInfo.setGraphicsAlgorithm(text);
+			}
+			// Shape with ICON
+			{
+				GraphicsAlgorithmContainer ga = getGraphicsAlgorithm(containerShape);
+				//IGaService service = Graphiti.getGaService();
+				Image img = gaService.createImage(ga,
+						EventImageProvider.GEARS_ICON);
+				gaService.setLocationAndSize(img, 0, 0, 16, 16);
 			}
 
 			// add a chopbox anchor to the shape
@@ -264,4 +276,5 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 		}
 
 	}
+	
 }

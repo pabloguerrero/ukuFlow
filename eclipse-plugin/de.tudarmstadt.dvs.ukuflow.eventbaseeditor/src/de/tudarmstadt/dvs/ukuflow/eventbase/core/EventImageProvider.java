@@ -17,17 +17,20 @@ package de.tudarmstadt.dvs.ukuflow.eventbase.core;
 
 import org.eclipse.graphiti.ui.platform.AbstractImageProvider;
 
-public class TutorialImageProvider extends AbstractImageProvider {
+public class EventImageProvider extends AbstractImageProvider {
 
 	// The prefix for all identifiers of this image provider
-	protected static final String PREFIX = "org.eclipse.graphiti.examples.tutorial."; //$NON-NLS-1$
-
+	protected static final String PREFIX = "de.tudarmstadt.dvs.ukuflow.icon."; //$NON-NLS-1$
+	
 	// The image identifier for an EReference.
-	public static final String IMG_EREFERENCE = PREFIX + "ereference"; //$NON-NLS-1$
-
+	public static final String IMG_EREFERENCE = PREFIX + "ereference"; //$NON-NLS-1$	
+	public static final String GEARS_ICON = PREFIX + "gears";
+	public static final String GEARS2_ICON = PREFIX + "gears2";
 	@Override
 	protected void addAvailableImages() {
 		// register the path for each image identifier
 		addImageFilePath(IMG_EREFERENCE, "icons/ereference.gif"); //$NON-NLS-1$
+		addImageFilePath(GEARS_ICON, "icons/16/gears.png");
+		addImageFilePath(GEARS2_ICON, "icons/gears2.png");
 	}
 }

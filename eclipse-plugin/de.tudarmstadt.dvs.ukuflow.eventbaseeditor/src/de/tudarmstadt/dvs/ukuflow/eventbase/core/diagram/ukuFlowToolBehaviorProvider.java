@@ -16,6 +16,8 @@
 package de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
@@ -51,7 +53,7 @@ import org.eclipse.graphiti.tb.IContextMenuEntry;
 import org.eclipse.graphiti.tb.IDecorator;
 import org.eclipse.graphiti.tb.ImageDecorator;
 
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.TutorialImageProvider;
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.features.TutorialCollapseDummyFeature;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRenameFeature;
@@ -102,7 +104,7 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 		// 3.b. create context button and add all applicable features
 		ContextButtonEntry button = new ContextButtonEntry(null, context);
 		button.setText("Create connection"); //$NON-NLS-1$
-		button.setIconId(TutorialImageProvider.IMG_EREFERENCE);
+		button.setIconId(EventImageProvider.IMG_EREFERENCE);
 		ICreateConnectionFeature[] features = getFeatureProvider().getCreateConnectionFeatures();
 		for (ICreateConnectionFeature feature : features) {
 			if (feature.isAvailable(ccc) && feature.canStartConnection(ccc))
@@ -278,9 +280,19 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 		IFeatureProvider featureProvider = getFeatureProvider();
 		Object bo = featureProvider.getBusinessObjectForPictogramElement(pe);
 		if (bo instanceof EventBaseOperator) {
+			Iterator<PictogramElement> iterator = Graphiti.getPeService().getPictogramElementChildren(pe).iterator();			
+			//Collection<PictogramElement> col = Graphiti.getPeService().getPictogramElementChildren(pe);
+			GraphicsAlgorithm[] algorithms = new GraphicsAlgorithm[2];
+			
+			algorithms[0] = iterator.next().getGraphicsAlgorithm();
+			algorithms[1] = iterator.next().getGraphicsAlgorithm();
+			//col.toArray(algorithms);
+			return algorithms;
+			/* old:
 			GraphicsAlgorithm invisible = pe.getGraphicsAlgorithm();
 			GraphicsAlgorithm rectangle = invisible.getGraphicsAlgorithmChildren().get(0);
 			return new GraphicsAlgorithm[] { rectangle };
+			*/
 		}
 		return super.getClickArea(pe);
 	}
