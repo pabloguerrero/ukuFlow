@@ -64,7 +64,11 @@
 #include "expression-eval.h"
 
 /*---------------------------------------------------------------------------*/
-/** \brief Defines the time to live value for event operators running on a node. */
+/** \brief Defines the time to live value for event operators running on a node.
+ *
+ *         When a local subscription is created, a timer with this length is configured
+ *         so that the subscription is deleted if no 'updates' are received.
+ **/
 #define MAX_SUB_TTL CLOCK_SECOND * 60 * 3 * 2
 
 /** \brief Defines the factor between */
@@ -112,12 +116,12 @@ struct unsubscription_request {
 	request_type_t request_type;
 	/** \brief pointer to workflow token to use once unsubscription is through */
 	struct workflow_token *token;
-	/** \brief pointer to the byte array containing the entire sequence of event operator(s) */
-	struct generic_event_operator *main_ev_op;
+	/** \brief pointer to the subscription that we are to unsubscribe */
+	struct global_subscription *subscription;
 };
 
 /** \brief List of requests placed to the event manager */
-LIST( event_mgr_requests);
+LIST(event_mgr_requests);
 
 /** \brief Data type for the subscription types */
 typedef uint8_t subscription_type_t;
@@ -130,75 +134,81 @@ enum subscription_type {
 	LOCAL_SUBSCRIPTION = 1
 };
 
+/** \brief		TODO				*/
+#define GENERIC_SUBSCRIPTION_FIELDS	\
+	/** \brief Pointer to next subscription in the list */						\
+	struct generic_subscription *next;											\
+	/** \brief Type of subscription */											\
+	subscription_type_t subscription_type;										\
+	/** \brief Length of the byte array containing the event operator(s) */		\
+	data_len_t ev_op_len;														\
+	/** \brief Pointer to the byte array containing the entire sequence of event operator(s) */ \
+	struct generic_event_operator *main_ev_op;
+
 /**
  * \brief	Generic data structure for a subscription containing an event operator
  */
 struct generic_subscription {
-	/** Pointer to next subscription in the list */
-	struct generic_subscription *next;
-	/** Type of subscription */
-	subscription_type_t subscription_type;
-	/** Length of the byte array containing the event operator(s) */
-	data_len_t ev_op_len;
-	/** Pointer to the byte array containing the entire sequence of event operator(s) */
-	struct generic_event_operator *main_ev_op;
+	GENERIC_SUBSCRIPTION_FIELDS
 };
 
 /**
- * \brief	Data structure for a global subscription (i.e., the subscription is managed by this node)
+ * \brief	Data structure for a global subscription (i.e., the subscription is managed
+ * 			by this node)
  */
 struct global_subscription {
-	/** Pointer to next subscription in the list */
-	struct global_subscription *next;
-	/** Type of subscription */
-	subscription_type_t subscription_type;
-	/** Length of the byte array containing the event operator(s) */
-	data_len_t ev_op_len;
-	/** pointer to the byte array containing the entire sequence of event operator(s) */
-	struct generic_event_operator *main_ev_op;
+	GENERIC_SUBSCRIPTION_FIELDS
+	/** \brief */
 	/** Callback timer indicating when to re announce the subscription */
 	struct ctimer announcement_timer;
-	/** Pointer to function to be invoked when a matching event is detected */
+	/** \brief Pointer to function to be invoked when a matching event is detected */
 	void (*notify)(struct event *event, data_len_t event_payload_len);
-	/** Pointer to workflow specification to (e.g.) get the specification of the needed scopes */
+	/** \brief Pointer to workflow specification to (e.g.) get the specification of the needed scopes */
 	struct workflow *wf;
 };
 
 /**
- * \brief	Data structure for a local subscription (i.e., the subscription is managed by another, scope root node)
+ * \brief	Data structure for a local subscription (i.e., the subscription is managed
+ * 			by another, scope root node)
  */
 struct local_subscription {
-	/** Pointer to next subscription in the list */
-	struct local_subscription *next;
-	/** Type of subscription */
-	subscription_type_t subscription_type;
-	/** Length of the byte array containing the event operator(s) */
-	data_len_t ev_op_len;
-	/** pointer to the byte array containing the entire sequence of event operator(s) */
-	struct generic_event_operator *main_ev_op;
-	/** Callback timer indicating remaining time to live (to remove the subscription locally) */
+	GENERIC_SUBSCRIPTION_FIELDS
+	/** \brief Callback timer indicating remaining time to live (to remove the subscription locally) */
 	struct ctimer ttl_timer;
 };
 
-/** \brief List of subscriptions */
-LIST( subscriptions);
+/** \brief List of locally managed subscriptions */
+LIST(subscriptions);
+
+/** \brief		Fields for a generic running event operator	*/
+#define RUNNING_EVENT_OPERATOR_FIELDS				\
+	/** \brief TODO */ 								\
+	struct running_event_op *next; 					\
+	/** \brief TODO */ 								\
+	channel_id_t input_channel_id;					\
+	/** \brief TODO */								\
+	struct generic_event_operator *geo;
 
 /**
  * \brief	Data structure for a running event operator
  */
 struct running_event_op {
-	/** \brief TODO */
-	struct running_event_op *next;
-	/** \brief TODO */
-	channel_id_t input_channel_id;
-	/** \brief TODO */
+	RUNNING_EVENT_OPERATOR_FIELDS
+};
+
+/**
+ * \brief	Data structure for a recurrent running event operator
+ */
+struct egen_running_event_op {
+	RUNNING_EVENT_OPERATOR_FIELDS
+	/** \brief Timer to trigger the generation of an event */
 	struct ctimer event_operator_trigger_ctimer;
-	/** \brief TODO */
-	struct generic_event_operator *geo;
+	/** \brief Counter for the amount of repetitions to be executed left. Used only if it is not an infinite event generator*/
+	uint8_t repetitions_left;
 };
 
 /** \brief List of running event operators */
-LIST( running_event_ops);
+LIST(running_event_ops);
 
 /*---------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------*/
@@ -210,10 +220,10 @@ LIST( running_event_ops);
 /** \brief Constant for event operators of binary input */
 #define BINARY 0x02
 /** \brief Constant for event operators of ternary input */
-#define TERNARY 0x03
+#define TERNARY 0x04
 //...
 /** \brief Constant for event operators that are distributable */
-#define DISTRIBUTABLE 0x0
+#define DISTRIBUTABLE 0x08
 
 /**
  * \brief		Generic structure for an event operator
@@ -222,33 +232,44 @@ struct ukuflow_event_operator {
 	/** \brief TODO */
 	uint8_t operator_properties;
 	/** \brief Pointer to event operator initialization function */
-	void (* init)(struct generic_event_operator *geo);
+	void (*init)(struct generic_event_operator *geo, bool local);
 	/** \brief TODO */
-	void (* remove)(struct generic_event_operator *geo);
+	void (*remove)(struct generic_event_operator *geo, bool local);
 	/** \brief TODO */
-	void (* merge)(struct running_event_op *reo, struct event *event,
+	void (*merge)(struct running_event_op *reo, struct event *event,
 			data_len_t event_payload_len);
 	/** \brief TODO */
-	void (* evaluate)(struct event *event, data_len_t event_payload_len);
+	void (*evaluate)(struct event *event, data_len_t event_payload_len);
+	/** \brief TODO */
+	void (*list_scopes)(struct generic_event_operator *geo,
+			data_len_t ev_op_len, struct generic_event_operator **current,
+			list_t scope_ids);
+};
+
+/**
+ * \brief		Generic structure containing a scope id
+ */
+struct scope_id_node {
+	struct scope_id_node *next;
+	scope_id_t scope_id;
 };
 
 /** \brief Macro function to specify an event operator */
-#define EVENT_OPERATOR(operator_name, operator_properties, init, remove, merge, evaluate)     \
-  struct ukuflow_event_operator operator_name = { operator_properties, init, remove, merge, evaluate};
+#define EVENT_OPERATOR(operator_name, operator_properties, init, remove, merge, evaluate, list_scopes)     \
+  struct ukuflow_event_operator operator_name = { operator_properties, init, remove, merge, evaluate, list_scopes};
 
 /*---------------------------------------------------------------------------*/
 /** Declaration of static processes */
 PROCESS(ukuflow_event_mgr_request_process, "subscription process");
-static struct etimer event_mgr_control_timer;
 
 /** \brief TODO */
 PROCESS(ukuflow_event_mgr_publisher_process, "publisher process");
 
-/*---------------------------------------------------------------------------*/
-// Variables for the recursive handling of event operators (init/remove)
+/**---------------------------------------------------------------------------*/
+/** Variables for the recursive handling of event operators (init/remove) */
 static channel_id_t channel_id;
 static bool deployed;
-static scope_id_t deployed_at_scope_id;
+static scope_id_t deployment_scope_id;
 
 /*---------------------------------------------------------------------------*/
 /** Forward declaration of functions and protothreads*/
@@ -293,8 +314,8 @@ void ukuflow_event_mgr_init() {
 struct generic_subscription *get_subscription(channel_id_t channel_id) {
 	struct generic_subscription *subscription = list_head(subscriptions);
 
-	while ((subscription != NULL) && (subscription->main_ev_op->channel_id
-			!= channel_id))
+	while ((subscription != NULL)
+			&& (subscription->main_ev_op->channel_id != channel_id))
 		subscription = subscription->next;
 
 	return (subscription);
@@ -313,7 +334,7 @@ struct generic_subscription *get_subscription(channel_id_t channel_id) {
  */
 static struct global_subscription *alloc_global_subscription(
 		struct generic_event_operator *main_ev_op, data_len_t ev_op_len,
-		void(*notify)(struct event *event, data_len_t event_payload_len),
+		void (*notify)(struct event *event, data_len_t event_payload_len),
 		struct workflow *wf) {
 
 	struct global_subscription *global_sub = malloc(
@@ -364,7 +385,7 @@ static struct local_subscription *alloc_local_subscription(
 	local_sub->ev_op_len = ev_op_len;
 	local_sub->main_ev_op = local_main_ev_op;
 	ctimer_set(&local_sub->ttl_timer, MAX_SUB_TTL,
-			(void(*)(void *)) ukuflow_event_mgr_handle_unsubscription,
+			(void (*)(void *)) ukuflow_event_mgr_handle_unsubscription,
 			(void*) (&(local_main_ev_op->channel_id)));
 
 	return (local_sub);
@@ -396,6 +417,39 @@ static struct running_event_op *get_running_event_op(
 
 /*---------------------------------------------------------------------------*/
 /**
+ * \brief		Helper function to check if a scope id is present in the list passed as parameter
+ * @param[in] scope_ids
+ * @param[in] sid
+ * @return
+ */
+bool is_scope_id_present(list_t scope_ids, scope_id_t sid) {
+	struct scope_id_node *node = list_head(scope_ids);
+
+	while (node != NULL) {
+		if (node->scope_id == sid)
+			return (TRUE);
+		node = node->next;
+	}
+	return (FALSE);
+}
+
+/*---------------------------------------------------------------------------*/
+/**
+ * \brief		Helper function to clear a list's contents
+ * @param[in] scope_ids
+ * @return
+ */
+void free_scope_id_list(list_t scope_ids) {
+	struct scope_id_node *node;
+
+	while (list_length(scope_ids) > 0) {
+		node = list_pop(scope_ids);
+		free(node);
+	}
+}
+
+/*---------------------------------------------------------------------------*/
+/**
  * \brief		Allocates memory for a new running event operator for the event
  * 				operator passed as parameter.
  *
@@ -405,8 +459,72 @@ static struct running_event_op *get_running_event_op(
 static struct running_event_op *alloc_running_ev_op(
 		struct generic_event_operator *geo) {
 
-	/** Allocate memory for running event operator */
-	struct running_event_op *reo = malloc(sizeof(struct running_event_op));
+	/** Define pointer for the running event operator that will be returned */
+	struct running_event_op *reo = NULL;
+
+	/** Allocate memory for running event operator depending on generic event operator passed as parameter */
+	switch (geo->ev_op_type) {
+	case (IMMEDIATE_EG): //intentionally left blank
+	case (ABSOLUTE_EG): //intentionally left blank
+	case (OFFSET_EG): //intentionally left blank
+	case (RELATIVE_EG): //intentionally left blank
+	case (PERIODIC_EG): //intentionally left blank
+	case (PATTERN_EG): //intentionally left blank
+	case (FUNCTIONAL_EG): {
+
+		struct egen_running_event_op *egen_reo = malloc(
+				sizeof(struct egen_running_event_op));
+		reo = (struct running_event_op*) egen_reo;
+		egen_reo->repetitions_left = 0;
+
+		/** if event operator is a 'recurrent' event generator, set
+		 *  the number of repetitions accordingly */
+
+		if (geo->ev_op_type >= PERIODIC_EG) {
+			struct recurrent_egen *regen = (struct recurrent_egen *) geo;
+			if (regen->repetitions > 0)
+				egen_reo->repetitions_left = regen->repetitions;
+		}
+		break;
+	}
+	case (SIMPLE_EF): {
+		reo = malloc(sizeof(struct running_event_op));
+		break;
+	}
+		// ** Composite event operators:
+//
+//			// *** Logical filters:
+//		case (AND_COMPOSITION_EF): // intentionally blank
+//		case (OR_COMPOSITION_EF): // intentionally blank
+//		case (NOT_COMPOSITION_EF): {
+//			reo = malloc(sizeof(struct running_event_op));
+//			break;
+//		}
+//			// *** Temporal filters:
+//		case (SEQUENCE_COMPOSITION_EF): {
+//			reo = malloc(sizeof(struct running_event_op));
+//			break;
+//		}
+//			// *** Processing functions
+//		case (MIN_COMPOSITION_EF): // intentionally blank
+//		case (MAX_COMPOSITION_EF): // intentionally blank
+//		case (COUNT_COMPOSITION_EF): // intentionally blank
+//		case (SUM_COMPOSITION_EF): // intentionally blank
+//		case (AVG_COMPOSITION_EF): // intentionally blank
+//		case (STDEV_COMPOSITION_EF): {
+//			reo = malloc(sizeof(struct running_event_op));
+//			break;
+//		}
+//			// *** Change event filters:
+//		case (INCREASE_EF): // intentionally blank
+//		case (DECREASE_EF): // intentionally blank
+//		case (REMAIN_EF): {
+//			reo = malloc(sizeof(struct running_event_op));
+//			break;
+//		}
+//		}
+
+	} // switch
 
 	if (reo == NULL)
 		return (NULL);
@@ -428,24 +546,51 @@ static struct running_event_op *alloc_running_ev_op(
 
 /*---------------------------------------------------------------------------*/
 /**
+ * \brief Returns a list of scope ids referred to by the event operator expression
+ *
+ * @param main_ev_op
+ * @param ev_op_len
+ * @return
+ */
+static list_t collect_scope_list(struct generic_event_operator *main_ev_op,
+		data_len_t ev_op_len) {
+
+	list_t scope_ids = NULL;
+	list_init(scope_ids);
+
+	struct generic_event_operator *current = main_ev_op;
+
+	event_operators[main_ev_op->ev_op_type]->list_scopes(main_ev_op, ev_op_len,
+			&current, scope_ids);
+
+	return (scope_ids);
+}
+
+/*---------------------------------------------------------------------------*/
+/**
  * \brief	Generic handling of subscriptions of event operators
  *
- * @param[in] main_ev_op	pointer to the subscription
- * @param[in] ev_op_len		length of the entire subscription (sequence of event operators)
+ * @param[in]	main_ev_op	pointer to the subscription
+ * @param[in]	ev_op_len	length of the entire subscription (sequence of event operators)
+ * @param[in]	local 		boolean value indicating whether the subscription to process was started locally or not
  */
 void ukuflow_event_mgr_handle_subscription(
-		struct generic_event_operator *main_ev_op, data_len_t ev_op_len) {
+		struct generic_event_operator *main_ev_op, data_len_t ev_op_len,
+		bool local) {
 
-	PRINTF(1,"(EVENT-MGR) handling subscription: ");
-	PRINT_ARR(1,(uint8_t*) main_ev_op,ev_op_len);
+	PRINTF(1, "(EVENT-MGR) handling subscription for channel %u: ",
+			main_ev_op->channel_id);
+	PRINT_ARR(1, (uint8_t* ) main_ev_op, ev_op_len);
 
 	struct generic_subscription *generic_sub = get_subscription(
 			main_ev_op->channel_id);
 
+	PRINTF(5, "(EVENT-MGR) sub was found? pointer [%p]\n", generic_sub);
+
 	/** Check whether subscription is unknown at this node: */
 	if (generic_sub == NULL) {
 
-		/** Subscription is unknown, so allocate memory at this node for it */
+		/** Subscription is unknown, so allocate memory for a local subscription at this node for it */
 		generic_sub = (struct generic_subscription*) alloc_local_subscription(
 				main_ev_op, ev_op_len);
 
@@ -453,11 +598,12 @@ void ukuflow_event_mgr_handle_subscription(
 			list_add(subscriptions, generic_sub);
 
 	} else if (generic_sub->subscription_type == LOCAL_SUBSCRIPTION) {
-		/** Subscription is known, so reset timer */
-		PRINTF(3,"(EVENT-MGR) subscription exists locally, resetting timer\n");
+		/** Subscription is known, so restart timer */
+		PRINTF(1,
+				"(EVENT-MGR) subscription exists locally, restarting timer\n");
 		struct local_subscription *local_sub =
 				(struct local_subscription*) generic_sub;
-		ctimer_reset(&local_sub->ttl_timer);
+		ctimer_restart(&local_sub->ttl_timer);
 	}
 
 	if (generic_sub != NULL) {
@@ -465,14 +611,17 @@ void ukuflow_event_mgr_handle_subscription(
 		// input channel id
 		channel_id = 0;
 
-		PRINTF(1, "(EVENT-MGR) num reo: %u\n",list_length(running_event_ops));
+		PRINTF(1, "(EVENT-MGR) num reo before init: %u, ev. op. type: %u\n",
+				list_length(running_event_ops), main_ev_op->ev_op_type);
 
-		/* Start recursive initialization, which makes a copy of the event operator
+		deployed = FALSE;
+		/** Start recursive initialization, which makes a copy of the event operator
 		 * into a new running event operator if needed */
-		//		if (event_operators[main_ev_op->ev_op_type] != NULL)
-		event_operators[main_ev_op->ev_op_type]->init(generic_sub->main_ev_op);
-		//		else
-		//			printf("Problem: pointer to event_operator needed was null\n");
+		event_operators[main_ev_op->ev_op_type]->init(generic_sub->main_ev_op,
+				local);
+
+		PRINTF(1, "(EVENT-MGR) num reo after init: %u\n",
+				list_length(running_event_ops));
 	}
 }
 
@@ -483,30 +632,49 @@ void ukuflow_event_mgr_handle_subscription(
  *				TODO
  *
  * @param[in]	main_ev_op_channel_id channel id of the main event operator
+ * @param[in]	local boolean value indicating whether the unsubscription to process was started locally or not
  */
-void ukuflow_event_mgr_handle_unsubscription(
-		channel_id_t *main_ev_op_channel_id) {
+void ukuflow_event_mgr_handle_unsubscription(channel_id_t main_ev_op_channel_id,
+		bool local) {
 
 	struct generic_subscription *generic_sub = get_subscription(
-			*main_ev_op_channel_id);
+			main_ev_op_channel_id);
 
 	/** Check whether subscription is known here: */
 	if (generic_sub != NULL) {
 
+		PRINTF(1, "(EVENT-MGR) Sub found for channel %u, about to delete\n",
+				main_ev_op_channel_id);
+
+		PRINTF(1, "(EVENT-MGR) num reo before remove: %u\n",
+				list_length(running_event_ops));
+
+		/** Start recursive removal, which deletes running event operators as needed */
+
 		event_operators[generic_sub->main_ev_op->ev_op_type]->remove(
-				generic_sub->main_ev_op);
+				generic_sub->main_ev_op, local);
+
+		PRINTF(1, "(EVENT-MGR) num reo after remove: %u\n",
+				list_length(running_event_ops));
 
 		list_remove(subscriptions, generic_sub);
 
 		if (generic_sub->subscription_type == LOCAL_SUBSCRIPTION) {
+			PRINTF(1,
+					"(EVENT-MGR) local sub found for channel %u, about to delete\n",
+					generic_sub->main_ev_op->channel_id);
 			struct local_subscription *l_sub =
 					(struct local_subscription*) generic_sub;
+
+			/** Stop timer to eliminate sub */
+			ctimer_stop(&l_sub->ttl_timer);
+
 			/** Release memory of main event operator */
 			free(l_sub->main_ev_op);
 
-			/** Release memory of local subscription */
 		} // if
 
+		/** Release memory of local subscription */
 		free(generic_sub);
 	} // if
 }
@@ -520,12 +688,30 @@ void ukuflow_event_mgr_handle_unsubscription(
  * @param[in]	event_msg 	Event message received from the network
  */
 void ukuflow_event_mgr_handle_event(struct ukuflow_event_msg *event_msg) {
-	struct event *event = (struct event*) (((uint8_t*) event_msg)
+	struct event *received_event = (struct event*) (((uint8_t*) event_msg)
 			+ sizeof(struct ukuflow_event_msg));
 
+	struct event *copied_event = (struct event*) malloc(
+			event_msg->event_payload_len);
+
+	if (!copied_event)
+		return;
+
+	PRINTF(3, "(EVENT-MGR) allocated %u bytes at %p for ",
+			event_msg->event_payload_len, copied_event);
+	PRINT_ARR(3, received_event, event_msg->event_payload_len);
+
+	memcpy(copied_event, received_event, event_msg->event_payload_len);
+
+	PRINTF(3, "(EVENT-MGR) Copied: \n");
+	event_print(copied_event, event_msg->event_payload_len);
+
 	process_post(&ukuflow_event_mgr_publisher_process, event_mgr_publish_event,
-			event);
-	//publish(event, event_msg->event_payload_len);
+			copied_event);
+
+	PRINTF(1, "(EVENT-MGR) Finished posting received event\n");
+
+//publish(event, event_msg->event_payload_len);
 
 }
 
@@ -533,67 +719,165 @@ void ukuflow_event_mgr_handle_event(struct ukuflow_event_msg *event_msg) {
 // Specification of event operator functions
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		Callback function for generating events periodically
+ * \brief		Callback function for generating an event
  *
- * 				This function is invoked by a callback timer whenever a periodic event needs to be generated.
+ * 				This function is invoked by a callback timer whenever an event needs to be generated.
  *
  * @param[in]	ptr 	the running event operator that needs to be attended by this callback function
  */
-static void periodic_egen_generate(void *ptr) {
-	struct running_event_op *reo = (struct running_event_op*) ptr;
-	struct periodic_egen *peg = (struct periodic_egen*) reo->geo;
+static void egen_generate(void *ptr) {
+	struct egen_running_event_op *eg_reo = (struct egen_running_event_op*) ptr;
+	struct generic_egen *eg = (struct generic_egen*) eg_reo->geo;
 
 	data_len_t event_len;
+
+	/** get an empty placeholder in dynamic memory to place the event's contents */
 	struct event *event = event_alloc_raw(&event_len);
 
-	event_populate(event, (struct generic_egen*) peg);
+	event_populate(event, eg);
 
-	PRINTF(1,
-			"(EVENT-MGR) generating event for channel %u, len %u\n",
-			reo->geo->channel_id, event_len);
+	PRINTF(1, "(EVENT-MGR) generating event for channel %u, event %p, len %u\n",
+			eg_reo->geo->channel_id, event, event_len);
+
+	PRINT_ARR(3, (uint8_t* ) event, event_len);
+	event_print(event, event_len);
 
 	process_post(&ukuflow_event_mgr_publisher_process, event_mgr_publish_event,
 			event);
 
-	//	publish(event, event_len);
+	/** check if we need to continue running or not: */
+	if (eg->ev_op_type >= PERIODIC_EG) {
+		struct recurrent_egen *rgeo = (struct recurrent_egen *) eg;
 
-	//	if (ctimer_expired(&reo->ctimer))
-	ctimer_reset(&reo->event_operator_trigger_ctimer);
+		if ((rgeo->repetitions == 0) || (eg_reo->repetitions_left-- > 0)) {
+			(rgeo->repetitions == 0) ? printf(
+					"(EVENT-MGR) unlimited repetitions\n") :
+					printf("(EVENT-MGR) %u repetitions left",
+							eg_reo->repetitions_left);
+			ctimer_reset(&eg_reo->event_operator_trigger_ctimer);
+		}
+	}
 }
 
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		Initializes a periodic event generator on this node.
+ * \brief		Initializes an event generator on this node.
  *
  * 				TODO
+ *
+ * @param[in] geo
+ * @param[in] local
  */
-static void periodic_egen_init(struct generic_event_operator *geo) {
-	struct periodic_egen *peg = (struct periodic_egen*) geo;
-	struct running_event_op *reo;
+static void egen_init(struct generic_event_operator *geo, bool local) {
+	struct generic_egen *eg = (struct generic_egen*) geo;
+
+	struct egen_running_event_op *egen_reo;
 
 	/** set initially the 'deployed' variable to FALSE */
 	deployed = FALSE;
-	/** check whether this event generator operator needs to be initialized at this node: */
-	if (scopes_member_of(peg->scope_id) && !scopes_creator_of(peg->scope_id)) {
-		if ((reo = get_running_event_op(geo)) == NULL)
-			reo = alloc_running_ev_op(geo);
+
+	/** and set the used scope id to the one requested  */
+	deployment_scope_id = eg->scope_id;
+
+	/**
+	 * Check whether this event generator operator needs to be initialized at this node.
+	 * This needs to be done iff:
+	 * - first option: the event generator should run at the root and the parameter 'local' is TRUE, or
+	 * - second option: the event generator should run at scope's nodes, and this node is member but not creator of the scope */
+
+	if ( /* first option */
+	((eg->scope_id == LOCAL_EVENT_GENERATOR) && (local))
+			||
+			/* second option */
+			((eg->scope_id != LOCAL_EVENT_GENERATOR)
+					&& (scopes_member_of(eg->scope_id))
+					&& (!scopes_creator_of(eg->scope_id)))) {
+
+		/** We *do* have to initialize the running event operator in this node. */
+
+		/** See if we need to allocate a running event operator */
+		if ((egen_reo = (struct egen_running_event_op*) get_running_event_op(
+				geo)) == NULL) {
+			/** Set the channel id to the 'null' id.
+			 * By doing this, no input will be ever fed to this event generator */
+			channel_id = 0;
+			egen_reo = (struct egen_running_event_op*) alloc_running_ev_op(geo);
+		}
 
 		/** only continue deploying if it was possible to allocate running event operator */
-		if ((deployed = (reo != NULL))) {
+		if ((deployed = (egen_reo != NULL))) {
 
-			deployed_at_scope_id = peg->scope_id;
+			clock_time_t delay = 0;
+			switch (geo->ev_op_type) {
+			case (IMMEDIATE_EG): {
+				delay = 0;
+				break;
+			}
+			case (ABSOLUTE_EG): {
+				struct absolute_egen *aeg = (struct absolute_egen *) eg;
+				delay = aeg->when - clock_time();
+				break;
+			}
+			case (OFFSET_EG): {
+				struct offset_egen *oeg = (struct offset_egen *) eg;
+				delay = oeg->offset * CLOCK_SECOND;
+				break;
+			}
+			case (RELATIVE_EG): {
+				delay = 0;
+				break;
+			}
+			case (PERIODIC_EG): {
+				struct periodic_egen *peg = (struct periodic_egen*) eg;
+				delay = peg->period * CLOCK_SECOND;
 
-			/** chain the null channel id with the channel id of this event operator */
-			reo->input_channel_id = 0;
-			/** reset global variable channel_id to 0 */
-			channel_id = geo->channel_id;
+				break;
+			}
+			case (PATTERN_EG): {
+				// TODO
+				break;
+			}
+			case (FUNCTIONAL_EG): {
+				// TODO
+				break;
+			}
+			} // switch
 
-			/** set timer for periodic generation */
-			PRINTF(1, "(EVENT-MGR) periodic generator init, set timer %u\n", peg->period);
-			ctimer_set(&reo->event_operator_trigger_ctimer, peg->period
-					* CLOCK_SECOND, periodic_egen_generate, reo);
+			PRINTF(1,
+					"(EVENT-MGR) event generator init, reo channel id set to %u, recursive channel id set to %u, delay %lu\n",
+					egen_reo->input_channel_id, channel_id, delay);
+			// only set the ctimer if it hasn't yet expired:
+			if (ctimer_expired(&egen_reo->event_operator_trigger_ctimer)) {
+				ctimer_set(&egen_reo->event_operator_trigger_ctimer, delay,
+					egen_generate, egen_reo);
+			}
+		} // if
+	}
+}
+
+/**
+ * \brief Adds to the list of scope_ids the scope id of this event generator
+ * @param geo
+ * @param ev_op_len
+ * @param current
+ * @param scope_ids
+ */
+static void egen_list_scopes(struct generic_event_operator *geo,
+		data_len_t ev_op_len, struct generic_event_operator **current,
+		list_t scope_ids) {
+
+	struct generic_egen *egen = (struct generic_egen*) geo;
+
+	if (!is_scope_id_present(scope_ids, egen->scope_id)) {
+		struct scope_id_node *node = malloc(sizeof(struct scope_id_node));
+		if (node) {
+			node->scope_id = egen->scope_id;
+			list_add(scope_ids, node);
 		}
 	}
+// advance current pointer
+	*current = (struct generic_event_operator*) (((uint8_t*) (*current))
+			+ event_operator_get_size(geo));
 }
 
 /*---------------------------------------------------------------------------*/
@@ -602,33 +886,28 @@ static void periodic_egen_init(struct generic_event_operator *geo) {
  *
  * 				TODO
  */
-static void periodic_egen_remove(struct generic_event_operator *geo) {
-	// check whether this event generator operator is running at this node:
-	struct running_event_op *reo = get_running_event_op(geo);
-	if (reo != NULL) {
-		ctimer_stop(&reo->event_operator_trigger_ctimer);
-		list_remove(running_event_ops, reo);
-		free(reo);
+static void egen_remove(struct generic_event_operator *geo, bool local) {
+// check whether this event generator operator is running at this node:
+	struct egen_running_event_op *eg_reo =
+			(struct egen_running_event_op *) get_running_event_op(geo);
+	if (eg_reo != NULL) {
+		ctimer_stop(&eg_reo->event_operator_trigger_ctimer);
+		list_remove(running_event_ops, eg_reo);
+		PRINTF(1,
+				"(EVENT-MGR) Removing event generator's running event operator for channel id %u\n",
+				geo->channel_id);
+		free(eg_reo);
 	}
 }
-
-///*---------------------------------------------------------------------------*/
-///**
-// * \brief		TODO
-// *
-// * 				TODO
-// */
-//static void periodic_egen_evaluate(struct event *event,
-//		data_len_t event_payload_len) {
-//}
 
 /*---------------------------------------------------------------------------*/
 /**
  * \brief		Initializes a simple filter for the specified parameters
  *
- * 				TODO
+ * @param[in]	geo generic event operator to process
+ * @param[in]	local boolean value indicating whether the operator to process was started locally or not
  */
-static void simple_filter_init(struct generic_event_operator *geo) {
+static void simple_filter_init(struct generic_event_operator *geo, bool local) {
 
 	struct running_event_op *reo;
 
@@ -636,25 +915,29 @@ static void simple_filter_init(struct generic_event_operator *geo) {
 			(struct generic_event_operator *) (((uint8_t*) geo)
 					+ event_operator_get_size(geo));
 
-	/** First continue initialization recursively:*/
-	event_operators[next_geo->ev_op_type]->init(next_geo);
+	/** First, continue initialization recursively:*/
+	PRINTF(1, "(EVENT-MGR) Before recursive, channel id %u, deployed %u\n",
+			channel_id, deployed);
+	event_operators[next_geo->ev_op_type]->init(next_geo, local);
+	PRINTF(1, "(EVENT-MGR) After recursive, channel id %u, deployed %u\n",
+			channel_id, deployed);
 
-	/** Check whether this simple filter event operator needs to be initialized at this node.
-	 * This must be done if either the previous, recursive event operator was deployed, or if
-	 * this node is the root of the scope indicated in the subscription
+	/** Second, check whether this simple filter event operator needs to be initialized at this node.
+	 * This must be done iff the previous, recursive event operator was deployed
 	 */
-	if ((deployed) || (scopes_creator_of(deployed_at_scope_id))) {
-		if ((reo = get_running_event_op(geo)) == NULL)
-			reo = alloc_running_ev_op(geo);
+	if (deployed) { //|| (scopes_creator_of(deployment_scope_id)))
 
+		if ((reo = get_running_event_op(geo)) == NULL) {
+			PRINTF(1, "(EVENT-MGR) will create sf reo\n");
+			reo = alloc_running_ev_op(geo);
+		}
 		/** only continue deploying if it was possible to allocate running event operator */
 		if ((deployed = (reo != NULL))) {
-
-			/** chain the channel id from the previous event operator in the recursive
-			 * initialization with the channel id of this event operator */
-			reo->input_channel_id = channel_id;
-			/** set global variable channel_id to the channel id of this event operator */
-			channel_id = geo->channel_id;
+			PRINTF(5, "(EVENT-MGR) reo is not null: %u %u\n", channel_id,
+					geo->channel_id);
+			PRINTF(5,
+					"(EVENT-MGR) simple filter init, reo input channel id set to %u, recursive channel id set to %u\n",
+					reo->input_channel_id, channel_id);
 
 		}
 	}
@@ -662,16 +945,35 @@ static void simple_filter_init(struct generic_event_operator *geo) {
 
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		TODO
+ * \brief		Removes this simple filter from this node
  *
- * 				TODO
+ * 				Removes a running event operator of a simple filter passed as parameter.
+ * 				First, recursively eliminates the nested event operator.
+ *
+ * @param[in]	geo Generic event operator to be used to find the running event operator(s) to delete
+ * @param[in]	local boolean value indicating whether the operator to process was started locally or not
  */
-static void simple_filter_remove(struct generic_event_operator *geo) {
-	/** check whether this event generator operator is running at this node */
+static void simple_filter_remove(struct generic_event_operator *geo, bool local) {
+
+	struct generic_event_operator *next_geo =
+			(struct generic_event_operator *) (((uint8_t*) geo)
+					+ event_operator_get_size(geo));
+
+	/** First, continue removal recursively:*/
+	PRINTF(5, "(EVENT-MGR) Before recursive remove, num reo %d\n",
+			list_length(running_event_ops));
+	event_operators[next_geo->ev_op_type]->remove(next_geo, local);
+	PRINTF(5, "(EVENT-MGR) After recursive remove, num reo %d\n",
+			list_length(running_event_ops));
+
+	/** Second, check whether this simple filter event operator was running
+	 * at this node and in that case, remove it */
 	struct running_event_op *reo = get_running_event_op(geo);
 	if (reo != NULL) {
-		ctimer_stop(&reo->event_operator_trigger_ctimer);
+		list_remove(running_event_ops, reo);
 		free(reo);
+		PRINTF(5, "(EVENT-MGR) After own remove, num reo %d\n",
+				list_length(running_event_ops));
 	}
 }
 
@@ -684,35 +986,81 @@ static void simple_filter_remove(struct generic_event_operator *geo) {
  *				If the event passes the filter, republish it with corresponding
  *				channel id, so that potential next event operator can process it.
  *
- * @param reo[in]				TODO
- * @param event[in]				TODO
- * @param event_payload_len[in]	TODO
+ * @param[in]	reo				TODO
+ * @param[in]	event				TODO
+ * @param[in]	event_payload_len	TODO
  */
 static void simple_filter_merge(struct running_event_op *reo,
 		struct event *event, data_len_t event_payload_len) {
+
+	PRINTF(1, "(EVENT-MGR) Simple filter merging event %p...\n", event);
 
 	struct simple_filter *filter = (struct simple_filter*) reo->geo;
 
 	bool filter_passed = TRUE;
 	uint8_t num_expression;
-	uint8_t *expression_pair = ((uint8_t*) reo) + sizeof(struct simple_filter);
+	uint8_t *expression_pair = ((uint8_t*) filter)
+			+ sizeof(struct simple_filter);
 	uint8_t *expression_spec;
-	for (num_expression = 0; (filter_passed) && (num_expression < filter->num_expressions); num_expression++) {
+	PRINTF(5, "checking %u expressions:\n", filter->num_expressions);
+	for (num_expression = 0;
+			(filter_passed) && (num_expression < filter->num_expressions);
+			num_expression++) {
 		data_len_t expr_len = *expression_pair;
+		PRINTF(5, "checking expression %u, length %u\n", num_expression,
+				expr_len);
 		expression_spec = expression_pair + sizeof(data_len_t);
 		expression_eval_set_custom_input(&event_custom_input_function,
 				(void*) event);
 		filter_passed = expression_eval_evaluate(expression_spec, expr_len);
+		PRINTF(5, "eval %u\n", filter_passed);
+		expression_pair += expr_len + sizeof(data_len_t);
 	}
 
+	PRINTF(1, "(EVENT-MGR) Filter passed? %u\n", filter_passed);
+
 	if (filter_passed) {
-		// republish
-		struct event *cloned_event = event_clone(event, event_payload_len
-				+ sizeof(struct event));
+		/** Event passed the filter, hence:
+		 * 1. create a clone of the event,
+		 * 2. change the channel id to the simple filter's channel id, and
+		 * 3. publish it.
+		 *
+		 * We need to adjust the channel id, because otherwise the cloned event will be
+		 * fed to the simple filter again, while what we want is that it is evaluated by
+		 * the parent event operator (or sent to the root if this filter is the top level
+		 * event operator). */
+		struct event *cloned_event = event_clone(event,
+				event_payload_len + sizeof(struct event));
+
 		cloned_event->channel_id = reo->geo->channel_id;
+
 		process_post(&ukuflow_event_mgr_publisher_process,
 				event_mgr_publish_event, cloned_event);
 	}
+}
+
+/**
+ * \brief Adds to the list of scope_ids the scope id of this simple filter by looking recursively at input events
+ *
+ * @param geo
+ * @param ev_op_len
+ * @param current
+ * @param scope_ids
+ */
+static void simple_filter_list_scopes(struct generic_event_operator *geo,
+		data_len_t ev_op_len, struct generic_event_operator **current,
+		list_t scope_ids) {
+
+// get pointer to child event operator:
+	struct generic_event_operator *child =
+			(struct generic_event_operator *) ((uint8_t*) geo
+					+ event_operator_get_size(geo));
+
+// advance current pointer
+	*current = child;
+	event_operators[child->ev_op_type]->list_scopes(child, ev_op_len, current,
+			scope_ids);
+
 }
 
 ///*---------------------------------------------------------------------------*/
@@ -751,6 +1099,9 @@ static void reannounce_subscription(void *ptr) {
 	struct global_subscription *subscription =
 			(struct global_subscription *) ptr;
 
+	PRINTF(1, "(EVENT-MGR) Reannouncing main channel id %u!!!\n",
+			subscription->main_ev_op->channel_id);
+
 	if (!ukuflow_event_mgr_subscribe(subscription->main_ev_op,
 			subscription->ev_op_len, subscription->notify, subscription->wf))
 		ctimer_reset(&subscription->announcement_timer);
@@ -764,16 +1115,17 @@ static void reannounce_subscription(void *ptr) {
  * 				Registers interest for a given event operator expression, passed as parameter.
  * 				Whenever a matching event is detected, the <b>notify</b> function is invoked.
  *
- * @param[in]  main_ev_op  The pointer to the main, generic event operator to be subscribed to
- * @param[in]  ev_op_len   The number of bytes to copy
- * @param[in]  notify      The pointer to the function that must be invoked when a matching event is detected
- * @param[in]  wf          The pointer to the workflow specification, which is used to find the scope specifications when needed
+ * @param[in]	main_ev_op  The pointer to the main, generic event operator to be subscribed to
+ * @param[in]	ev_op_len   The number of bytes to copy
+ * @param[in]	notify      The pointer to the function that must be invoked when a matching event is detected
+ * @param[in]	wf          The pointer to the workflow specification, which is used to find the scope specifications when needed
  * \returns                TRUE if subscription succeeded, FALSE otherwise
  */
-bool ukuflow_event_mgr_subscribe(//
+bool ukuflow_event_mgr_subscribe(
+//
 		struct generic_event_operator *main_ev_op, //
 		data_len_t ev_op_len, //
-		void(*notify)(struct event *event, data_len_t event_payload_len), //
+		void (*notify)(struct event *event, data_len_t event_payload_len), //
 		struct workflow *wf) {
 
 	struct subscription_request *sub_request = malloc(
@@ -799,21 +1151,35 @@ bool ukuflow_event_mgr_subscribe(//
 
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		TODO
+ * \brief		This node has left a particular scope. Delete running event operators
+ * 				that are associated to that scope id.
  *
  * 				TODO
  *
  * @param[in]	scope_id	Scope id of the scope which is being left
  */
 void ukuflow_event_mgr_scope_left(scope_id_t scope_id) {
-	PRINTF(4,"(EVENT-MGR) removed scope: %u\n", scope_id);
+	PRINTF(1, "(EVENT-MGR) removed scope: %u\n", scope_id);
 
-	/** \todo iterate over subscriptions to see if they need to be cleaned up */
-	struct generic_subscription *subscription = list_head(subscriptions);
+	struct running_event_op *reo = NULL;
 
-	while (subscription != NULL) {
-		subscription = subscription->next;
+	/** Iterate over running event operators to see if they need to be removed */
+	for (reo = list_head(running_event_ops); //
+			reo != NULL; //
+			reo = reo->next) {
+
+		if ((reo->geo->ev_op_type >= IMMEDIATE_EG)
+				&& (reo->geo->ev_op_type <= FUNCTIONAL_EG)) {
+			struct generic_egen *g_egen = (struct generic_egen*) reo->geo;
+
+			if (g_egen->scope_id == scope_id) {
+
+				/** Invoke removal of running event operator:*/
+				event_operators[reo->geo->ev_op_type]->remove(reo->geo, FALSE);
+			}
+		}
 	}
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -828,21 +1194,32 @@ void ukuflow_event_mgr_scope_left(scope_id_t scope_id) {
 bool ukuflow_event_mgr_unsubscribe(struct generic_event_operator *main_ev_op,
 		struct workflow_token* token) {
 
-	struct unsubscription_request *unsub_request = malloc(
-			sizeof(struct unsubscription_request));
+	struct generic_subscription *generic_sub = get_subscription(
+			main_ev_op->channel_id);
 
-	if (!unsub_request)
-		return (FALSE);
+	if ((generic_sub != NULL)
+			&& (generic_sub->subscription_type == GLOBAL_SUBSCRIPTION)) {
 
-	unsub_request->request_type = UNSUBSCRIPTION_REQUEST;
-	unsub_request->main_ev_op = main_ev_op;
-	unsub_request->token = token;
-	list_add(event_mgr_requests, unsub_request);
+		struct unsubscription_request *unsub_request = malloc(
+				sizeof(struct unsubscription_request));
 
-	process_post(&ukuflow_event_mgr_request_process,
-			event_mgr_request_ready_event, NULL);
+		if (unsub_request) {
 
-	return (TRUE);
+			unsub_request->request_type = UNSUBSCRIPTION_REQUEST;
+			unsub_request->subscription =
+					(struct global_subscription*) generic_sub;
+			unsub_request->token = token;
+			list_add(event_mgr_requests, unsub_request);
+
+			ctimer_stop(&unsub_request->subscription->announcement_timer);
+
+			process_post(&ukuflow_event_mgr_request_process,
+					event_mgr_request_ready_event, NULL);
+
+			return (TRUE);
+		}
+	}
+	return (FALSE);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -850,291 +1227,313 @@ bool ukuflow_event_mgr_unsubscribe(struct generic_event_operator *main_ev_op,
  * \brief		Protothread for processing subscription and unsubscription requests
  *
  * 				This protothread is in charge of executing subscription and unsubscriptions
- */
-PROCESS_THREAD( ukuflow_event_mgr_request_process, ev, data) {
+ */PROCESS_THREAD( ukuflow_event_mgr_request_process, ev, data) {
 
 	static struct event_mgr_request *generic_request;
 	static struct subscription_request *sub_request;
 	static struct unsubscription_request *unsub_request;
 	static struct generic_subscription *generic_sub;
 	static struct global_subscription *global_sub;
+	static struct etimer event_mgr_control_timer;
+	static list_t scope_ids;
+	static struct scope_id_node *sid_node;
 	static struct ukuflow_sub_msg *sub_msg;
 	static struct ukuflow_unsub_msg unsub_msg;
-	static struct generic_event_operator *geo_iter;
-	static struct generic_egen *g_egen;
 	static struct scope_info *s_i;
-	/** \brief Length of event operator processed so far */
-	static data_len_t processed_len;
 	static bool new_sub;
-	//	static clock_time_t timestamp;
 
-	PROCESS_BEGIN();
+	PROCESS_BEGIN()
+		;
 
-	/** Prepare unsubscription message in advance */
-	unsub_msg.msg_type = SCOPED_EVENT_OPERATOR_UNSUB_MSG;
+		/** Prepare unsubscription message in advance */
+		unsub_msg.msg_type = SCOPED_EVENT_OPERATOR_UNSUB_MSG;
 
-	while (1) {
+		while (1) {
 
-		/** This process takes a request from the queue, and processes it
-		 * assuming the necessary resources are available (memory, scope information, etc.)
-		 * */
+			/** This process takes a request from the queue, and processes it
+			 * assuming the necessary resources are available (memory, scope information, etc.)
+			 * */
 
-		while ((generic_request = list_head(event_mgr_requests)) == NULL) {
-			PRINTF(
-					1,
-					"(EVENT-MGR) request-handler, yielding til (un)subscription request\n");
-			PROCESS_WAIT_EVENT_UNTIL(ev == event_mgr_request_ready_event);
-		}
-
-		//		printf("continuing with request type %u, list size: %u\n", generic_request->request_type,list_length(event_mgr_requests));
-		/*---------------------------------------------------------------------------*/
-		if (generic_request->request_type == SUBSCRIPTION_REQUEST) {
-
-			sub_request = (struct subscription_request*) generic_request;
-			PRINTF(1,"(EVENT-MGR) processing subscription for ev. channel %u\n",
-					sub_request->main_ev_op->channel_id);
-			new_sub = FALSE;
-
-			/** Find out whether subscription already exists (i.e. this is a re announcement): */
-			if ((generic_sub = get_subscription(
-					sub_request->main_ev_op->channel_id)) == NULL) {
-
-				/** Subscription didn't exist, so allocate memory for it */
-				generic_sub
-						= (struct generic_subscription*) alloc_global_subscription(
-								sub_request->main_ev_op,
-								sub_request->ev_op_len, sub_request->notify,
-								sub_request->wf);
-				new_sub = TRUE;
+			while ((generic_request = list_head(event_mgr_requests)) == NULL) {
+				PRINTF(1,
+						"(EVENT-MGR) request-handler pt, yielding til (un)subscription request\n");
+				PROCESS_WAIT_EVENT_UNTIL(ev == event_mgr_request_ready_event);
 			}
 
-			/** Check if it was possible to allocate memory for the subscription by comparing pointer against NULL */
-			/** Also check if it that pointer points to a subscription of type global */
+			PRINTF(3,
+					"(EVENT-MGR) request-handler pt, continuing with request type %u, list size: %u\n",
+					generic_request->request_type,
+					list_length(event_mgr_requests));
+			/*---------------------------------------------------------------------------*/
+			if (generic_request->request_type == SUBSCRIPTION_REQUEST) {
 
-			if ((generic_sub == NULL) || (generic_sub->subscription_type
-					!= GLOBAL_SUBSCRIPTION)) {
-				/** It wasn't possible to allocate memory, or, the subscription found is of wrong type.
-				 * Hence wait a bunch of seconds and retry */
-				etimer_set(&event_mgr_control_timer, CLOCK_SECOND * 5);
-				PROCESS_WAIT_EVENT_UNTIL(etimer_expired(
-						&event_mgr_control_timer));
-				continue;
-			}
+				sub_request = (struct subscription_request*) generic_request;
+				PRINTF(1,
+						"(EVENT-MGR) request-handler pt, processing subscription for ev. channel %u\n",
+						sub_request->main_ev_op->channel_id);
+				new_sub = FALSE;
 
-			global_sub = (struct global_subscription*) generic_sub;
+				/** Find out whether subscription already exists (i.e. this is a re announcement): */
+				if ((generic_sub = get_subscription(
+						sub_request->main_ev_op->channel_id)) == NULL) {
 
-			/** Allocate memory for network message that will contain the subscription data and will sent through scope */
-			sub_msg = malloc(sizeof(struct ukuflow_sub_msg)
-					+ global_sub->ev_op_len);
-
-			//			printf("size is %u + %u\n", sizeof(struct ukuflow_sub_msg), global_sub->ev_op_len);
-
-			/** If there was no memory free for message, postpone processing of subscription request */
-			if (sub_msg == NULL) {
-				free(global_sub);
-				etimer_set(&event_mgr_control_timer, CLOCK_SECOND * 5);
-				PROCESS_WAIT_EVENT_UNTIL(etimer_expired(
-						&event_mgr_control_timer));
-				continue;
-			}
-
-			/** Add global subscription to local list */
-			list_add(subscriptions, global_sub);
-
-			/** If this was a new global subscription (instead of a re announcement), set the callback timer. */
-			if (new_sub)
-				ctimer_set(&global_sub->announcement_timer, MAX_SUB_TTL
-						* SUBSCRIPTION_REANNOUNCE_FACTOR,
-						reannounce_subscription, global_sub);
-			else
-				/** otherwise, this is not a new subscription (it's a re announcement), thus simply reset the callback timer*/
-				ctimer_reset(&global_sub->announcement_timer);
-
-			/** Remove subscription request from list and release its memory */
-			list_remove(event_mgr_requests, generic_request);
-			free(sub_request);
-
-			/** Prepare subscription message: */
-			sub_msg->msg_type = SCOPED_EVENT_OPERATOR_SUB_MSG;
-			memcpy(((uint8_t*) sub_msg) + sizeof(struct ukuflow_sub_msg),
-					global_sub->main_ev_op, global_sub->ev_op_len);
-
-			/** Now iterate over the event operators.
-			 * Whenever an event *generator* is found, lookup its associated scope,
-			 * and send the event operator expression through it. */
-			processed_len = 0;
-			geo_iter = global_sub->main_ev_op;
-
-			while (processed_len < global_sub->ev_op_len) {
-
-				/** check whether this event operator is an event generator */
-				if (geo_iter->ev_op_type <= DISTRIBUTED_E_GEN) {
-					/** We have found an event operator that is an event generator, so send it to its associated scope */
-					g_egen = (struct generic_egen*) geo_iter;
-
-					/** Now open the scope, unless it is the world scope or the scope is already open */
-					if ((g_egen->scope_id != SCOPES_WORLD_SCOPE_ID)
-							&& (!scopes_creator_of(g_egen->scope_id))) {
-
-						s_i = workflow_get_scope_info(global_sub->wf,
-								g_egen->scope_id);
-
-						/** Test if scope information is available and whether opening the scope works.
-						 * In case opening the scope fails, it won't be possible sending through it, so cancel */
-						if ((s_i != NULL) && //
-								ukuflow_net_mgr_open_scope(g_egen->scope_id,
-										((uint8_t*) s_i)
-												+ sizeof(struct scope_info),
-										s_i->scope_spec_len, s_i->scope_ttl)) {
-
-							PRINTF(
-									3,
-									"(EVENT-MGR) request-handler, opened scope %u, waiting some seconds\n",
-									s_i->scope_id);
-							/** Now wait a bunch of seconds for the scope creation to succeed */
-							etimer_set(&event_mgr_control_timer,
-									SCOPE_OPERATION_DELAY * CLOCK_SECOND);
-							PROCESS_WAIT_EVENT_UNTIL(etimer_expired(
-									&event_mgr_control_timer));
-
-						} else {
-							PRINTF(1, "ERROR s_i %p, sid %u\n", s_i, g_egen->scope_id);
-							free(sub_msg);
-							continue;
-						}
-
-					}
-
-					/** Send through Scopes to the member nodes: */
-					ukuflow_net_mgr_send_scope(g_egen->scope_id, FALSE,
-							sub_msg, sizeof(struct ukuflow_generic_msg)
-									+ global_sub->ev_op_len);
-
-					PRINTF(
-							3,
-							"(EVENT-MGR) request-handler, sent subscription through scope %u, waiting some seconds\n",
-							s_i->scope_id);
-					/** Now wait a bunch of seconds for the message to be disseminated */
-					etimer_set(&event_mgr_control_timer, SCOPE_OPERATION_DELAY
-							* CLOCK_SECOND);
-					PROCESS_WAIT_EVENT_UNTIL(etimer_expired(
-							&event_mgr_control_timer));
+					/** Subscription didn't exist, so allocate memory for it */
+					generic_sub =
+							(struct generic_subscription*) alloc_global_subscription(
+									sub_request->main_ev_op,
+									sub_request->ev_op_len, sub_request->notify,
+									sub_request->wf);
+					if (generic_sub != NULL)
+						new_sub = TRUE;
 				}
 
-				data_len_t oper_len = event_operator_get_size(geo_iter);
-				/** Decrease remaining_len: */
-				processed_len += oper_len;
-				/** Adjust pointer to next event operator:*/
-				geo_iter
-						= (struct generic_event_operator*) (((uint8_t*) geo_iter)
-								+ oper_len);
-			}
+				/** Check if it was possible to allocate memory for the subscription by comparing pointer against NULL */
+				/** Also check if that pointer points to a subscription of type 'global' */
 
-			/** Handle subscription locally (since Scopes doesn't deliver the message at the root) */
-			ukuflow_event_mgr_handle_subscription(global_sub->main_ev_op,
-					global_sub->ev_op_len);
-
-			/** Release memory of subscription message */
-			free(sub_msg);
-
-			//			printf("finished subscribing\n", list_length(event_mgr_requests));
-		}
-		/*---------------------------------------------------------------------------*/
-		else if (generic_request->request_type == UNSUBSCRIPTION_REQUEST) {
-			unsub_request = (struct unsubscription_request*) generic_request;
-			PRINTF(1,"(EVENT-MGR) processing unsubscription for channel %u\n",
-					unsub_request->main_ev_op->channel_id);
-
-			generic_sub = get_subscription(
-					unsub_request->main_ev_op->channel_id);
-
-			if ((generic_sub != NULL) && (generic_sub->subscription_type
-					== GLOBAL_SUBSCRIPTION)) {
+				if ((generic_sub == NULL)
+						|| (generic_sub->subscription_type
+								!= GLOBAL_SUBSCRIPTION)) {
+					/** It wasn't possible to allocate memory, or, the subscription found is of wrong type.
+					 * Hence wait a bunch of seconds and retry */
+					etimer_set(&event_mgr_control_timer,
+							SCOPE_OPERATION_DELAY * CLOCK_SECOND);
+					PROCESS_WAIT_EVENT_UNTIL(
+							etimer_expired(&event_mgr_control_timer));
+					continue;
+				}
 
 				global_sub = (struct global_subscription*) generic_sub;
 
-				ctimer_stop(&global_sub->announcement_timer);
+				/** Add global subscription to local list */
+				list_add(subscriptions, global_sub);
 
-				/** Prepare unsubscription message */
-				unsub_msg.main_ev_op_channel_id
-						= global_sub->main_ev_op->channel_id;
+				/** Deploy this global subscription locally */
+				ukuflow_event_mgr_handle_subscription(global_sub->main_ev_op,
+						global_sub->ev_op_len, TRUE);
 
-				/** Now iterate over the event operators.
-				 * We need to send the unsubscription message to the members of the scopes which
-				 * previously received the subscription message.
-				 * Whenever an event *generator* is found, lookup its associated scope,
-				 * and send the unsubscription through it. */
-				processed_len = 0;
-				geo_iter = global_sub->main_ev_op;
-				while (processed_len < global_sub->ev_op_len) {
+				/** Now get list of scopes associated to expression */
+				scope_ids = collect_scope_list(global_sub->main_ev_op,
+						global_sub->ev_op_len);
 
-					if (geo_iter->ev_op_type <= DISTRIBUTED_E_GEN) {
-						/** We have found an event operator that is an event generator, so send unsubscription message through the associated scope */
-						g_egen = (struct generic_egen*) geo_iter;
+				/** If list contains any scope id, send subscription
+				 * to them (after opening them if necessary)! */
+				if (list_length(scope_ids) > 0) {
 
-						/** Send unsub message through Scopes to the member nodes: */
-						ukuflow_net_mgr_send_scope(g_egen->scope_id, FALSE,
-								&unsub_msg, sizeof(struct ukuflow_unsub_msg));
+					/** Allocate memory for network message that will contain the subscription data and will be sent through scope */
+					sub_msg = malloc(
+							sizeof(struct ukuflow_sub_msg)
+									+ global_sub->ev_op_len);
 
-						PRINTF(
-								3,
-								"(EVENT-MGR) request-handler, sent unsubscription through scope %u, waiting some seconds\n",
-								s_i->scope_id);
-						/** Now wait a bunch of seconds for the unsub message to be disseminated */
+					/** If there was no memory free for message, postpone processing of subscription request */
+					if (sub_msg == NULL) {
+						free(global_sub);
 						etimer_set(&event_mgr_control_timer,
 								SCOPE_OPERATION_DELAY * CLOCK_SECOND);
-						PROCESS_WAIT_EVENT_UNTIL(etimer_expired(
-								&event_mgr_control_timer));
+						PROCESS_WAIT_EVENT_UNTIL(
+								etimer_expired(&event_mgr_control_timer));
+						continue;
+					}
 
-						/** Now close the scope, unless it is the world scope */
-						if (g_egen->scope_id != SCOPES_WORLD_SCOPE_ID) {
+					/** Prepare subscription message: */
+					sub_msg->msg_type = SCOPED_EVENT_OPERATOR_SUB_MSG;
+					memcpy(
+							((uint8_t*) sub_msg)
+									+ sizeof(struct ukuflow_sub_msg),
+							global_sub->main_ev_op, global_sub->ev_op_len);
 
-							ukuflow_net_mgr_close_scope(g_egen->scope_id);
+					/** Iterate over each scope id of the expression */
+					for (sid_node = list_head(scope_ids); sid_node != NULL;
+							sid_node = sid_node->next) {
+						if (sid_node->scope_id != LOCAL_EVENT_GENERATOR) {
+							/** Subscription has event operators that need to be deployed through a scope. */
 
-							printf("closed\n");
-							PRINTF(
-									3,
-									"(EVENT-MGR) request-handler, closed scope %u, waiting some seconds\n",
-									g_egen->scope_id);
-							/** Now wait a bunch of seconds for the scope removal to succeed */
-							//							printf("setting timer\n");
+							/** Find out whether we need to open the scope.
+							 * This must be done iff:
+							 * - the event generator is not associated to the 'world' scope
+							 * - this is a new subscription (new_sub), i.e. it is not a reannouncement
+							 * (if it is a reannouncement, the scope should have already been open the previous time)
+							 **/
+							if ((sid_node->scope_id != SCOPES_WORLD_SCOPE_ID)
+									&& (new_sub)) {
+
+								PRINTF(1,
+										"(EVENT-MGR) request-handler pt, event expression to be sent through scope %u\n",
+										sid_node->scope_id);
+								s_i = workflow_get_scope_info(global_sub->wf,
+										sid_node->scope_id);
+
+								/** Test if scope information is available and whether opening the scope works.
+								 * In case opening the scope fails, it won't be possible sending through it, so cancel */
+								if ((s_i != NULL) && //
+										ukuflow_net_mgr_open_scope(
+												sid_node->scope_id,
+												((uint8_t*) s_i)
+														+ sizeof(struct scope_info),
+												s_i->scope_spec_len,
+												s_i->scope_ttl)) {
+
+									PRINTF(1,
+											"(EVENT-MGR) request-handler pt, opened scope %u, waiting some seconds\n",
+											s_i->scope_id);
+									/** Now wait a bunch of seconds for the scope creation to succeed */
+									etimer_set(&event_mgr_control_timer,
+											SCOPE_OPERATION_DELAY * CLOCK_SECOND);
+									PROCESS_WAIT_EVENT_UNTIL(
+											etimer_expired(
+													&event_mgr_control_timer));
+
+								} else {
+									PRINTF(1,
+											"(EVENT-MGR) request-handler pt, ERROR s_i %p, sid %u\n",
+											s_i, sid_node->scope_id);
+									continue;
+								}
+
+							}
+
+							/** Send through Scopes to the member nodes: */
+							ukuflow_net_mgr_send_scope(sid_node->scope_id,
+									FALSE, sub_msg,
+									sizeof(struct ukuflow_generic_msg)
+											+ global_sub->ev_op_len);
+
+							PRINTF(5,
+									"(EVENT-MGR) request-handler pt, sent subscription through scope %u, waiting some seconds\n",
+									s_i->scope_id);
+							/** Now wait a bunch of seconds for the message to be disseminated */
 							etimer_set(&event_mgr_control_timer,
 									SCOPE_OPERATION_DELAY * CLOCK_SECOND);
-							PROCESS_WAIT_EVENT_UNTIL(etimer_expired(
-									&event_mgr_control_timer));
-							//							printf("timer exp\n");
+							PROCESS_WAIT_EVENT_UNTIL(
+									etimer_expired(&event_mgr_control_timer));
 
-						} // if ! scope is scope_world
+						}
+					} // for each scope
 
-					} // if event operator is event generator
+					/** Release memory of subscription message */
+					free(sub_msg);
+				}
 
-					data_len_t oper_len = event_operator_get_size(geo_iter);
-					/** Increase remaining_len: */
-					processed_len += oper_len;
-					/** Adjust pointer to next event operator:*/
-					geo_iter
-							= (struct generic_event_operator*) (((uint8_t*) geo_iter)
-									+ oper_len);
+				/** Now empty list of scope ids */
+				free_scope_id_list(scope_ids);
 
-				} // while (each event operator)
+				/** Remove subscription request from list and release its memory */
+				list_remove(event_mgr_requests, generic_request);
+				free(sub_request);
 
+				/** If this was a new global subscription (instead of a re announcement), set the callback timer. */
+				if (new_sub)
+					ctimer_set(&global_sub->announcement_timer,
+							MAX_SUB_TTL * SUBSCRIPTION_REANNOUNCE_FACTOR,
+							reannounce_subscription, global_sub);
+				else
+					/** otherwise, this is not a new subscription (it's a re-announcement, triggered by a ctimer), thus simply reset the callback timer*/
+					ctimer_reset(&global_sub->announcement_timer);
+
+				PRINTF(1,
+						"(EVENT-MGR) request-handler pt, finished subscribing\n");
+			}
+			/*---------------------------------------------------------------------------*/
+			else if (generic_request->request_type == UNSUBSCRIPTION_REQUEST) {
+
+				unsub_request =
+						(struct unsubscription_request*) generic_request;
+				PRINTF(1,
+						"(EVENT-MGR) request-handler pt, processing unsubscription for channel %u\n",
+						unsub_request->subscription->main_ev_op->channel_id);
+
+				PRINTF(5,
+						"(EVENT-MGR) request-handler pt, there are %u subscriptions in the list\n",
+						list_length(subscriptions));
+
+				global_sub = unsub_request->subscription;
+
+				PRINTF(5,
+						"(EVENT-MGR) request-handler pt, about to unsub channel id %u\n",
+						global_sub->main_ev_op->channel_id);
+				/** Deregister global subscription locally*/
 				ukuflow_event_mgr_handle_unsubscription(
-						&(global_sub->main_ev_op->channel_id));
+						global_sub->main_ev_op->channel_id, TRUE);
 
-				ukuflow_notify_unsubscription_ready(unsub_request->token);
+				/** Now get list of scopes associated to expression and send an
+				 * unsubscription message to them (followed by closing scope)! */
+				scope_ids = collect_scope_list(global_sub->main_ev_op,
+						global_sub->ev_op_len);
 
-			} // if (generic_sub != NULL)
+				if (list_length(scope_ids) > 0) {
 
-			/** Remove unsubscription request from list and release its memory */
-			list_remove(event_mgr_requests, unsub_request);
-			free(unsub_request);
+					/** Prepare unsubscription message */
+					unsub_msg.main_ev_op_channel_id =
+							global_sub->main_ev_op->channel_id;
 
-		} // if (generic_request->request_type == UNSUBSCRIPTION_REQUEST)
+					for (sid_node = list_head(scope_ids); sid_node != NULL;
+							sid_node = sid_node->next) {
+						if (sid_node->scope_id != LOCAL_EVENT_GENERATOR) {
+							/** Subscription has event operators that need to be undeployed through a scope. */
 
+							/** Send unsub message through Scopes to the member nodes: */
+							ukuflow_net_mgr_send_scope(sid_node->scope_id,
+									FALSE, &unsub_msg,
+									sizeof(struct ukuflow_unsub_msg));
 
-		/*---------------------------------------------------------------------------*/
+							PRINTF(3,
+									"(EVENT-MGR) request-handler pt, sent unsubscription through scope %u, waiting some seconds\n",
+									s_i->scope_id);
+							/** Now wait a bunch of seconds for the unsub message to be disseminated */
 
-	} // while (1)
+							PRINTF(3,
+									"(EVENT-MGR) request-handler pt, before etimer, sid_node is %p, scope id is %u\n",
+									sid_node, sid_node->scope_id);
+							etimer_set(&event_mgr_control_timer,
+									SCOPE_OPERATION_DELAY * CLOCK_SECOND);
+							PROCESS_WAIT_EVENT_UNTIL(
+									etimer_expired(&event_mgr_control_timer));
+							PRINTF(3,
+									"(EVENT-MGR) request-handler pt, after etimer, sid_node is %p, scope id is %u\n",
+									sid_node, sid_node->scope_id);
+
+							/** Now close the scope, unless it is the world scope */
+							if (sid_node->scope_id != SCOPES_WORLD_SCOPE_ID) {
+
+								ukuflow_net_mgr_close_scope(sid_node->scope_id);
+
+								PRINTF(1,
+										"(EVENT-MGR) request-handler pt, closed scope %u, waiting some seconds\n",
+										sid_node->scope_id);
+
+								/** Now wait a bunch of seconds for the scope removal to succeed */
+								etimer_set(&event_mgr_control_timer,
+										(SCOPE_OPERATION_DELAY / 1)
+												* CLOCK_SECOND);
+								PROCESS_WAIT_EVENT_UNTIL(
+										etimer_expired(
+												&event_mgr_control_timer));
+
+							} // if (! scope is scope_world)
+
+						} // scope id != local
+
+					} // for (each scope id)
+
+					/** Now empty list of scope ids */
+					free_scope_id_list(scope_ids);
+
+					ukuflow_notify_unsubscription_ready(unsub_request->token);
+
+				} // if (generic_sub != NULL)
+
+				PRINTF(5,
+						"(EVENT-MGR) request-handler pt, now there are %u subscriptions in the list\n",
+						list_length(subscriptions));
+
+				/** Remove unsubscription request from list and release its memory */
+				list_remove(event_mgr_requests, unsub_request);
+				free(unsub_request);
+
+			} // if (generic_request->request_type == UNSUBSCRIPTION_REQUEST)
+
+			/*---------------------------------------------------------------------------*/
+
+		} // while (1)
 
 	PROCESS_END();
 }
@@ -1153,93 +1552,126 @@ PROCESS_THREAD( ukuflow_event_mgr_request_process, ev, data) {
  * 				was generated by the main event operator of a subscription, thus
  * 				it has to be sent to the root, where it will be used to invoke
  * 				the notify function registered with the subscription.
- */
-PROCESS_THREAD( ukuflow_event_mgr_publisher_process, ev, data) {
+ */PROCESS_THREAD( ukuflow_event_mgr_publisher_process, ev, data) {
 
-	static struct event *event;
-	static struct running_event_op *reo;
-	static scope_id_t *scope_id;
-	static struct global_subscription *subscription;
-	static data_len_t msg_size;
-	static uint8_t *msg_data;
+static struct event *event;
+static struct running_event_op *reo;
+static scope_id_t *scope_id;
+static struct global_subscription *subscription;
+static data_len_t msg_size;
+static uint8_t *msg_data;
+static bool merged_locally;
 
-	PROCESS_BEGIN();
+PROCESS_BEGIN()
+	;
 
 	while (1) {
 
-		PROCESS_WAIT_EVENT_UNTIL(ev == event_mgr_publish_event);
+		PRINTF(1, "(EVENT-MGR) publisher pt, yielding till event arrives\n");
+
+		PROCESS_YIELD_UNTIL(ev == event_mgr_publish_event);
 
 		event = (struct event*) data;
-		data_len_t event_len = event_get_size(event);
+		data_len_t event_len = event_get_len(event);
+
+		PRINTF(1,
+				"(EVENT-MGR) publisher pt, finished yielding, event %p, len %u, channel\n",
+				event, event_len);
 
 		/** look for a running event operator that is interested in the event being published */
-		for (reo = list_head(running_event_ops); reo != NULL; reo = reo->next) {
-			/** test whether output channel (contained in event) matches input channel of local event operators: */
+		merged_locally = FALSE;
+		for (reo = list_head(running_event_ops);
+				(reo != NULL) && (!merged_locally); reo = reo->next) {
+
+			/** Test whether output channel (contained in event) matches input
+			 * channel of local event operators: */
 			if (reo->input_channel_id == event->channel_id) {
 				// there was a match
+				PRINTF(1,
+						"(EVENT-MGR) publisher pt, event match with filter, try to merge\n");
+				merged_locally = TRUE;
 				event_operators[reo->geo->ev_op_type]->merge(reo, event,
-						event_len - sizeof(struct event));
-				continue;
+						event_len);
 			}
 		}
 
-		/** If control arrived here, it means that there was no local event operator that
-		 * matched the channel. Hence, depending on whether the node is root or not,
-		 * a message must be passed to the parent node:*/
-		scope_id = (scope_id_t*) event_get_value(event, SOURCE_SCOPE);
+		if (!merged_locally) {
+			/** If control arrived here, it means that there was no local event operator that
+			 * matched the channel, thus the event was not merged locally.
+			 * Hence, depending on whether the node is root or not,
+			 * a message must be passed to the parent node:*/
+			scope_id = (scope_id_t*) event_get_value(event, ORIGIN_SCOPE);
 
-		event_print(event, event_len - sizeof(struct event));
+			PRINTF(1,
+					"(EVENT-MGR) publisher pt, event received through scope %u, event_len %u\n",
+					*scope_id, event_len);
 
-		PRINTF(1,"(EVENT-MGR) Publishing to scope %u, event_payload_len %u\n", *scope_id,
-				event_len - sizeof(struct event));
+			event_print(event, event_len);
 
-		if (scopes_creator_of(*scope_id)) {
-			/** This node is scope root (creator) */
-			PRINTF(1,"(EVENT-MGR) event reached root, notifying consumer \n");
+			if ((*scope_id == LOCAL_EVENT_GENERATOR) || scopes_creator_of(*scope_id)) {
+				/** This node is scope root (creator), so process locally by notifying the subscriber*/
+				PRINTF(1,
+						"(EVENT-MGR) publisher pt, event reached root, notifying subscriber \n");
 
-			/** We arrived at the root, so look up the subscription and invoke the registered notification function */
+				/** We arrived at the root, so look up the subscription and invoke the registered notification function */
 
-			subscription = (struct global_subscription*) get_subscription(
-					event->channel_id);
-			subscription->notify(event, event_len - sizeof(struct event));
+				PRINTF(3,
+						"(EVENT-MGR) request-handler pt, will search among %u subscriptions\n",
+						list_length(subscriptions));
+				subscription = (struct global_subscription*) get_subscription(
+						event->channel_id);
 
-			//			event_operators[reo->geo->ev_op_type]->evaluate(event, event_len
-			//					- sizeof(struct event));
-		} else {
-			/** This node is not scope root (creator), so forward */
-			PRINTF(1,"(EVENT-MGR) forwarding to parent\n");
-			msg_size = sizeof(struct ukuflow_event_msg) + sizeof(struct event)
-					+ event_len - sizeof(struct event);
-			msg_data = malloc(msg_size);
-			if (msg_data != NULL) {
-				PRINT_ARR(3,(uint8_t*)event,event_len);
-				memcpy(msg_data + sizeof(struct ukuflow_event_msg), event,
-						event_len);
-				struct ukuflow_event_msg *event_msg =
-						(struct ukuflow_event_msg *) msg_data;
-				event_msg->msg_type = SCOPED_EVENT_MSG;
-				event_msg->event_payload_len = event_len - sizeof(struct event);
-				ukuflow_net_mgr_send_scope(*scope_id, TRUE, msg_data, msg_size);
-				free(msg_data);
-			} // message was not null
+				if (subscription != NULL) {
+
+					PRINTF(1,
+							"(EVENT-MGR) publisher pt, subscription found %p, notify ptr %p\n",
+							subscription, subscription->notify);
+					subscription->notify(event, event_len);
+				} else {
+					PRINTF(1,
+							"(EVENT-MGR) publisher pt, subscription not found! (out-of-order event?)\n");
+				}
+
+			} else {
+				/** This node is not scope root (creator), so forward */
+				PRINTF(1,
+						"(EVENT-MGR) publisher pt, forwarding event %p to parent\n",
+						event);
+				msg_size = sizeof(struct ukuflow_event_msg) + event_len;
+				msg_data = malloc(msg_size);
+				if (msg_data != NULL) {
+					PRINT_ARR(3, (uint8_t* )event, event_len);
+					memcpy(msg_data + sizeof(struct ukuflow_event_msg), event,
+							event_len);
+					struct ukuflow_event_msg *event_msg =
+							(struct ukuflow_event_msg *) msg_data;
+					event_msg->msg_type = SCOPED_EVENT_MSG;
+					event_msg->event_payload_len = event_len;
+					ukuflow_net_mgr_send_scope(*scope_id, TRUE, msg_data,
+							msg_size);
+					free(msg_data);
+				} // message was not null
+			}
 		}
-
 		free(event);
-
+		PRINTF(1, "(EVENT-MGR) publisher pt, event %p freed\n", event);
 	} // while (1)
-	PROCESS_END();
+PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------*/
 // Declaration of event operators
 //EVENT_OPERATOR(immediate_egen_oper, NULLARY | DISTRIBUTABLE, immediate_egen_init, _remove, NULL, NULL)
 //EVENT_OPERATOR(absolute_egen_oper, NULLARY | DISTRIBUTABLE, absolute_egen_init, _remove, NULL, NULL)
-//EVENT_OPERATOR(offset_egen_oper, NULLARY | DISTRIBUTABLE, offset_egen_init, _remove, NULL, NULL)
+EVENT_OPERATOR(offset_egen_oper, NULLARY | DISTRIBUTABLE, egen_init,
+egen_remove, NULL, NULL, egen_list_scopes)
 //EVENT_OPERATOR(relative_egen_oper, NULLARY | DISTRIBUTABLE, relative_egen_init, _remove, NULL, NULL)
-EVENT_OPERATOR(periodic_egen_oper, NULLARY | DISTRIBUTABLE, periodic_egen_init, periodic_egen_remove, NULL, NULL)
+EVENT_OPERATOR(periodic_egen_oper, NULLARY | DISTRIBUTABLE, egen_init,
+egen_remove, NULL, NULL, egen_list_scopes)
 //EVENT_OPERATOR(patterned_egen_oper, NULLARY | DISTRIBUTABLE, patterned_egen_init, _remove, NULL, NULL)
-//EVENT_OPERATOR(distributed_egen_oper, NULLARY | DISTRIBUTABLE, distributed_egen_init, _remove, NULL, NULL)
-EVENT_OPERATOR(simple_filter_oper, UNARY | DISTRIBUTABLE, simple_filter_init, simple_filter_remove, simple_filter_merge, NULL)
+//EVENT_OPERATOR(functional_egen_oper, NULLARY | DISTRIBUTABLE, distributed_egen_init, _remove, NULL, NULL)
+EVENT_OPERATOR(simple_filter_oper, UNARY | DISTRIBUTABLE, simple_filter_init,
+simple_filter_remove, simple_filter_merge, NULL, simple_filter_list_scopes)
 //EVENT_OPERATOR(and_composite_oper, BINARY | DISTRIBUTABLE, and_composite_init, _remove, NULL, NULL)
 //EVENT_OPERATOR(or_composite_oper, BINARY | DISTRIBUTABLE, or_composite_init, _remove, NULL, NULL)
 //EVENT_OPERATOR(not_composite_oper, UNARY | DISTRIBUTABLE, not_composite_init, _remove, NULL, NULL)
@@ -1259,15 +1691,18 @@ EVENT_OPERATOR(simple_filter_oper, UNARY | DISTRIBUTABLE, simple_filter_init, si
 /**
  * \brief		Array of active event operators
  */
-struct ukuflow_event_operator *event_operators[] = {//
-		// List of operators:
-				NULL, //
-				NULL, //
-				NULL, //
-				NULL, //
-				&periodic_egen_oper, //
-				NULL, //
-		};
+struct ukuflow_event_operator *event_operators[] = { //
+NULL, /* */
+NULL, /* */
+&offset_egen_oper, /* */
+NULL, /* */
+&periodic_egen_oper, /* */
+NULL, /* */
+NULL, /* */
+&simple_filter_oper, /* */
+NULL /* */
+//				simple_filter_oper,//
+};
 
 //struct ukuflow_event_operator event_operators[] = {//
 //		// List of operators:

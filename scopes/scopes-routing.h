@@ -80,8 +80,8 @@ struct scopes_routing {
 #define ROUTING(name, strname, init, send, add, remove, join, leave, buffer_clear, buffer_ptr, buffer_setlen)     \
   struct scopes_routing name = { strname, init, send, add, remove, join, leave, buffer_clear, buffer_ptr, buffer_setlen }
 
-/** \brief Constant specifying the id of the world scope */
-#define SCOPES_WORLD_SCOPE_ID 0
+/** \brief Constant specifying the scope id of the world scope (the universe) */
+#define SCOPES_WORLD_SCOPE_ID 255
 
 /**
  * \brief		Data structure for all scope messages

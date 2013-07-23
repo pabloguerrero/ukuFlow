@@ -84,6 +84,9 @@
 /** \brief Enables or disables scopes data information */
 #define SCOPES_NOINFO
 
+/** \brief Enables or disables sending data towards root automatically */
+//#define SCOPES_AUTO_FORWARD_ENABLED
+
 /*#ifdef RF_CHANNEL
 #undef RF_CHANNEL
 #define RF_CHANNEL 23

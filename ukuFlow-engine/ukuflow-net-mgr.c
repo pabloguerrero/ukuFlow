@@ -45,7 +45,11 @@
  * \date	Jul 13, 2011
  */
 
+#if DEBUG_DEPTH > 3
+#define SWITCH_LEDS
 #include "dev/leds.h"
+#endif
+
 
 /* ukuFlow */
 #include "ukuflow-net-mgr.h"
@@ -102,14 +106,14 @@ static void join_scope(scope_id_t scope_id) {
 	PRINTF(1,
 			"(UF-NET-MGR) joined scope: %u\n", scope_id);
 
-//#if DEBUG_DEPTH > 0
+#ifdef SWITCH_LEDS
 	if (scope_id == 11)
 		leds_on(LEDS_RED);
 	else if (scope_id == 22)
 		leds_on(LEDS_GREEN);
 	else if (scope_id == 33)
 		leds_on(LEDS_BLUE);
-//#endif
+#endif
 }
 
 /*---------------------------------------------------------------------------*/
@@ -122,14 +126,14 @@ static void leave_scope(scope_id_t scope_id) {
 	PRINTF(1,
 			"(UF-NET-MGR) left scope %u\n", scope_id);
 
-//#if DEBUG_DEPTH > 0
+#ifdef SWITCH_LEDS
 	if (scope_id == 11)
 		leds_off(LEDS_RED);
 	else if (scope_id == 22)
 		leds_off(LEDS_GREEN);
 	else if (scope_id == 33)
 		leds_off(LEDS_BLUE);
-//#endif
+#endif
 
 	ukuflow_event_mgr_scope_left(scope_id);
 }
@@ -148,8 +152,8 @@ static void leave_scope(scope_id_t scope_id) {
 void ukuflow_net_mgr_handler(scope_id_t scope_id, void *data,
 		data_len_t data_len, bool to_creator, const rimeaddr_t *source) {
 
-	PRINTF(1, "(UF-NET-MGR)  msg received, ");
-	PRINT_ARR(2, data, data_len);
+	PRINTF(1, "(UF-NET-MGR) msg received from [%u.%u], ", source->u8[0], source->u8[1]);
+	PRINT_ARR(1, data, data_len);
 
 	struct ukuflow_generic_msg *msg = (struct ukuflow_generic_msg*) data;
 	switch (msg->msg_type) {
@@ -163,12 +167,12 @@ void ukuflow_net_mgr_handler(scope_id_t scope_id, void *data,
 		ukuflow_event_mgr_handle_subscription(
 				(struct generic_event_operator*) (((uint8_t*) data)
 						+ sizeof(struct ukuflow_generic_msg)),
-				data_len - sizeof(struct ukuflow_generic_msg));
+				data_len - sizeof(struct ukuflow_generic_msg), FALSE);
 		break;
 	}
 	case SCOPED_EVENT_OPERATOR_UNSUB_MSG: {
 		struct ukuflow_unsub_msg *msg = (struct ukuflow_unsub_msg*) data;
-		ukuflow_event_mgr_handle_unsubscription(&(msg->main_ev_op_channel_id));
+		ukuflow_event_mgr_handle_unsubscription(msg->main_ev_op_channel_id, FALSE);
 		break;
 	}
 	case SCOPED_EVENT_MSG: {
@@ -177,7 +181,7 @@ void ukuflow_net_mgr_handler(scope_id_t scope_id, void *data,
 		break;
 	}
 	} // switch
-
+	PRINTF(1, "(UF-NET-MGR) Finished handling\n");
 }
 
 /*---------------------------------------------------------------------------*/

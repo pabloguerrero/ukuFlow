@@ -52,7 +52,7 @@
 #include "dev/light-sensor.h"
 #include "dev/battery-sensor.h"
 #else
-#ifdef CONTIKI_TARGET_Z1
+#if defined CONTIKI_TARGET_Z1
 #include "dev/tmp102.h"
 #include "dev/adxl345.h"
 #include "dev/i2cmaster.h"
@@ -68,16 +68,20 @@ static uint8_t initialized = 0;
 
 /**
  * \brief		TODO
+ *
+ * \param data the memory section to update
  */
-static uint16_t sensor_light_par_raw(void) {
+static void sensor_light_par_raw(void *data) {
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
+	uint16_t *data16 = (uint16_t*) data;
 	SENSORS_ACTIVATE(light_sensor);
-	int result = light_sensor.value(LIGHT_SENSOR_PHOTOSYNTHETIC);
+	// no op to cause delay
+	PRINTF(1,"\t");
+	*data16 = light_sensor.value(LIGHT_SENSOR_PHOTOSYNTHETIC);
 	SENSORS_DEACTIVATE(light_sensor);
-	return result;
 #else
 #ifdef CONTIKI_TARGET_Z1
-	return (0);
+	data = NULL;
 #endif
 #endif
 }
@@ -85,15 +89,15 @@ static uint16_t sensor_light_par_raw(void) {
 /**
  * \brief		TODO
  */
-static uint16_t sensor_light_tsr_raw(void) {
+static void sensor_light_tsr_raw(void *data) {
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
+	uint16_t *data16 = (uint16_t*) data;
 	SENSORS_ACTIVATE(light_sensor);
-	int result = light_sensor.value(LIGHT_SENSOR_TOTAL_SOLAR);
+	*data16 = light_sensor.value(LIGHT_SENSOR_TOTAL_SOLAR);
 	SENSORS_DEACTIVATE(light_sensor);
-	return (result);
 #else
 #ifdef CONTIKI_TARGET_Z1
-	return (0);
+	data = NULL;
 #endif
 #endif
 }
@@ -101,42 +105,44 @@ static uint16_t sensor_light_tsr_raw(void) {
 /**
  * \brief		TODO
  */
-static uint16_t sensor_temperature_raw(void) {
+static void sensor_temperature_raw(void *data) {
+	uint16_t *data16 = (uint16_t*) data;
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	SENSORS_ACTIVATE(sht11_sensor);
-	int result = sht11_sensor.value(SHT11_SENSOR_TEMP);
+	*data16 = sht11_sensor.value(SHT11_SENSOR_TEMP);
 	SENSORS_DEACTIVATE(sht11_sensor);
 #else
 #ifdef CONTIKI_TARGET_Z1
-	int result = tmp102_read_temp_raw();
+	*data16 = tmp102_read_temp_raw();
 #endif
 #endif
-	return (result);
 }
 
 /**
  * \brief		TODO
  */
-static uint16_t sensor_temperature_celsius(void) {
+static void sensor_temperature_celsius(void *data) {
+	uint16_t *data16 = (uint16_t*) data;
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
-	int result = sensor_temperature_raw();
-	return (-39.60 + 0.01 * result);
+	uint16_t tmp;
+	sensor_temperature_raw(&tmp);
+	*data16 = (-39.60 + 0.01 * tmp);
 #else
 #ifdef CONTIKI_TARGET_Z1
 	int16_t raw = tmp102_read_temp_raw();
-	//printf("RAW is %d\n", raw);
+	PRINTF(5,"RAW is %d\n", raw);
 	uint16_t absraw;
 	int16_t sign = 1;
-    if(raw < 0) {		// Perform 2C's if sensor returned negative data
-      absraw = (raw ^ 0xFFFF) + 1;
-      sign = -1;
-    }
-    else absraw=raw;
-    int16_t temp_integer_part = (absraw >> 8) * sign;
-    //uint16_t temp_fractional_part = ((absraw >> 4) % 16) * 625;	// Info in 1/10000 of degree
-	//printf("INT.FRAC is %d,%u \n", temp_integer_part, temp_fractional_part);
+	if (raw < 0) {		// Perform 2C's if sensor returned negative data
+		absraw = (raw ^ 0xFFFF) + 1;
+		sign = -1;
+	} else
+		absraw = raw;
+	int16_t temp_integer_part = (absraw >> 8) * sign;
+	uint16_t temp_fractional_part = ((absraw >> 4) % 16) * 625;	// Info in 1/10000 of degree
+	PRINTF(5,"(DATA-MGR) Temperature is %d,%u \n", temp_integer_part, temp_fractional_part);
 
-	return (temp_integer_part);
+	*data16 = temp_integer_part;
 #endif
 #endif
 }
@@ -144,13 +150,17 @@ static uint16_t sensor_temperature_celsius(void) {
 /**
  * \brief		TODO
  */
-static uint16_t sensor_temperature_fahrenheit(void) {
+static void sensor_temperature_fahrenheit(void *data) {
+	uint16_t *data16 = (uint16_t*) data;
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
-	int result = sensor_temperature_raw();
-	return (-39.60 + 0.01 * result) * 9 / 5 + 32;
+	uint16_t tmp;
+	sensor_temperature_raw(&tmp);
+	*data16 = (-39.60 + 0.01 * tmp) * 9 / 5 + 32;
 #else
 #ifdef CONTIKI_TARGET_Z1
-	return (sensor_temperature_celsius() * 9 / 5 + 32);
+	uint16_t tmp;
+	sensor_temperature_celsius(&tmp);
+	*data16 = (tmp * 9 / 5 + 32);
 #endif
 #endif
 }
@@ -158,32 +168,32 @@ static uint16_t sensor_temperature_fahrenheit(void) {
 /**
  * \brief		TODO
  */
-static uint16_t sensor_humidity_raw(void) {
+static void sensor_humidity_raw(void *data) {
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
+	uint16_t *data16 = (uint16_t*) data;
 	SENSORS_ACTIVATE(sht11_sensor);
-	int result = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
+	*data16 = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
 	SENSORS_DEACTIVATE(sht11_sensor);
 #else
 #ifdef CONTIKI_TARGET_Z1
-	uint16_t result = 0;
+	data = NULL;
 #endif
 #endif
-	return (result);
 }
 
 /**
  * \brief		TODO
  */
-static uint16_t sensor_humidity_percent(void) {
+static void sensor_humidity_percent(void *data) {
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
+	uint16_t *data16 = (uint16_t*) data;
 	SENSORS_ACTIVATE(sht11_sensor);
 	int result = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
+	*data16 = -4 + 0.0405 * result - 2.8e-6 * (result * result);
 	SENSORS_DEACTIVATE(sht11_sensor);
-	return -4 + 0.0405 * result - 2.8e-6 * (result * result);
 #else
 #ifdef CONTIKI_TARGET_Z1
-	uint16_t result = 0;
-	return (result);
+	data = NULL;
 #endif
 #endif
 }
@@ -191,13 +201,14 @@ static uint16_t sensor_humidity_percent(void) {
 /**
  * \brief		TODO
  */
-static uint16_t sensor_accm_x_axis(void) {
+static void sensor_accm_x_axis(void *data) {
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
-	return (0);
+//	uint16_t *data16 = (uint16_t*) data;
+//	*data16 = 0;
+	data = NULL;
 #else
 #ifdef CONTIKI_TARGET_Z1
-	int result = 0;
-	return (result);
+	data = NULL;
 #endif
 #endif
 }
@@ -205,12 +216,14 @@ static uint16_t sensor_accm_x_axis(void) {
 /**
  * \brief		TODO
  */
-static uint16_t sensor_accm_y_axis(void) {
+static void sensor_accm_y_axis(void *data) {
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
-	return (0);
+//	uint16_t *data16 = (uint16_t*) data;
+//	*data16 = 0;
+	data = NULL;
 #else
 #ifdef CONTIKI_TARGET_Z1
-	return (0);
+	data = NULL;
 #endif
 #endif
 }
@@ -218,12 +231,14 @@ static uint16_t sensor_accm_y_axis(void) {
 /**
  * \brief		TODO
  */
-static uint16_t sensor_accm_z_axis(void) {
+static void sensor_accm_z_axis(void *data) {
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
-	return 0;
+//	uint16_t *data16 = (uint16_t*) data;
+//	*data16 = 0;
+	data = NULL;
 #else
 #ifdef CONTIKI_TARGET_Z1
-	return (0);
+	data = NULL;
 #endif
 #endif
 }
@@ -231,23 +246,41 @@ static uint16_t sensor_accm_z_axis(void) {
 /**
  * \brief		TODO
  */
-static uint16_t sensor_voltage_raw(void) {
+static void sensor_voltage_raw(void *data) {
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
+	uint16_t *data16 = (uint16_t*) data;
 	SENSORS_ACTIVATE(battery_sensor);
-	int result = battery_sensor.value(0);
+	*data16 = battery_sensor.value(0);
 	SENSORS_DEACTIVATE(battery_sensor);
 #else
 #ifdef CONTIKI_TARGET_Z1
-	uint16_t result = 0;
+	data = NULL;
 #endif
 #endif
-	return (result);
 }
 
 /**
  * \brief		TODO
  */
-static uint16_t sensor_co2_raw(void) {
+static void sensor_co2_raw(void *data) {
+	uint16_t *data16 = (uint16_t*) data;
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
+	// TODO
+	data = NULL;
+#else
+#ifdef CONTIKI_TARGET_Z1
+	// TODO
+	data = NULL;
+#endif
+#endif
+}
+
+/**
+ * \brief		TODO
+ */
+static void sensor_co_raw(void *data) {
+	uint16_t *data16 = (uint16_t*) data;
+	data = NULL;
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
 	// TODO
 #else
@@ -255,24 +288,21 @@ static uint16_t sensor_co2_raw(void) {
 	// TODO
 #endif
 #endif
-	return (0);
 }
 
 /**
  * \brief		TODO
  */
-static uint16_t sensor_co_raw(void) {
-#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000
+static void node_timestamp(void *data) {
+	clock_time_t *data_clock = (clock_time_t*) data;
+#if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000 || defined CONTIKI_TARGET_Z1
+	printf("updating to %lu\n",*data_clock = clock_time());
 	// TODO
 #else
-#ifdef CONTIKI_TARGET_Z1
 	// TODO
+	data = NULL;
 #endif
-#endif
-	return (0);
 }
-
-
 
 /**
  * \brief		Searches for a repository with a given id
@@ -292,30 +322,35 @@ data_mgr_lookup(data_repository_id_t id) {
  */
 static struct repository_entry *
 repository_entry_lookup(struct repository* repo, entry_id_t entry_id) {
-	PRINTF(3,"searching %d\n", entry_id);
+	PRINTF(3, "searching %d\n", entry_id);
 	struct repository_entry *entry = list_head(repo->entry_list);
 	while ((entry != NULL) && (entry->entry_id != entry_id)) {
 		entry = entry->next;
-		PRINTF(3,"entry %d\n", entry->entry_id);
+		PRINTF(3, "entry %d\n", entry->entry_id);
 	}
-	PRINTF(3,"-*-*- %d\n", entry->entry_id);
+	PRINTF(3, "-*-*- %d\n", entry->entry_id);
 	return (entry);
 }
 
 /**
- * \brief		Searches for the shortest ttl, and assigns it to the common repository
+ * \brief		Searches for the shortest ttl among all active repositories,
+ * 				and assigns it to the common repository
  **/
 static void adjust_ttl_common_repository() {
-	// initialize value to maximum signed integer value
-	clock_time_t ttl = -1;
-	struct repository *repo;
-	for (repo = list_head(repository_list); repo != NULL; repo = repo->next)
-		if ((repo->id != COMMON_REPOSITORY_ID) && (repo->ttl != 0)
-				&& (repo->ttl < ttl))
-			ttl = repo->ttl;
-	repo = data_mgr_lookup(COMMON_REPOSITORY_ID);
-	if (repo != NULL) {
-		repo->ttl = ttl;
+	// initialize value to maximum unsigned integer value
+	clock_time_t min_ttl = -1;
+	PRINTF(3, "initial max = %lu\n", min_ttl);
+	struct repository *repo, *common_repo;
+	common_repo = data_mgr_lookup(COMMON_REPOSITORY_ID);
+	if (list_length(repository_list) == 1) {
+		common_repo->ttl = 0;
+	} else {
+		for (repo = list_head(repository_list); repo != NULL; repo = repo->next)
+			if ((repo->id != COMMON_REPOSITORY_ID) && (repo->ttl != 0)
+					&& (repo->ttl < min_ttl))
+				min_ttl = repo->ttl;
+		common_repo->ttl = min_ttl;
+		PRINTF(3, "found: %lu\n", min_ttl);
 	}
 }
 
@@ -368,10 +403,9 @@ static void data_mgr_init() {
 						break;
 					case SENSOR_TEMPERATURE_RAW:
 #ifdef CONTIKI_TARGET_Z1
-					  tmp102_init();
+						tmp102_init();
 #endif
 						entry->updater = sensor_temperature_raw;
-
 						break;
 					case SENSOR_TEMPERATURE_CELSIUS:
 						entry->updater = sensor_temperature_celsius;
@@ -411,26 +445,49 @@ static void data_mgr_init() {
 
 			} //for
 
-			struct manual_repository_entry *entry = malloc(
+			// now create entry for node id
+			struct manual_repository_entry *entry_m = malloc(
 					sizeof(struct manual_repository_entry) + sizeof(uint16_t));
-			if (entry != NULL) {
+			if (entry_m != NULL) {
 				// set entry type
-				entry->entry_type = MANUAL_UPDATE_ENTRY;
+				entry_m->entry_type = MANUAL_UPDATE_ENTRY;
 
 				// set entry_id
-				entry->entry_id = entry_id;
+				entry_m->entry_id = NODE_ID;
 
 				// set entry data length
-				entry->data_len = sizeof(uint16_t);
-
+				entry_m->data_len = sizeof(uint16_t);
 
 				// set value
-				uint16_t *value = (uint16_t*) (((uint8_t*) entry)
+				uint16_t *value = (uint16_t*) (((uint8_t*) entry_m)
 						+ sizeof(struct manual_repository_entry));
 				*value = rimeaddr_node_addr.u8[0]
 						+ (((uint16_t) rimeaddr_node_addr.u8[1]) << 8);
 
-				list_add(common_repo->entry_list, entry);
+				list_add(common_repo->entry_list, entry_m);
+			}
+
+			// now create entry for timestamp
+			struct auto_repository_entry *entry_a = malloc(
+					sizeof(struct auto_repository_entry)
+							+ sizeof(clock_time_t));
+			if (entry_a != NULL) {
+				// set entry type
+				entry_a->entry_type = AUTOMATIC_UPDATE_ENTRY;
+
+				// set entry_id
+				entry_a->entry_id = NODE_TIME;
+
+				// set entry data length
+				entry_a->data_len = sizeof(clock_time_t);
+
+				// set a timestamp to the future, such that the entry is automatically updated if data is requested right after initialization:
+				entry_a->timestamp = now + 60 * CLOCK_SECOND;
+
+				// now set pointer to updater function
+				entry_a->updater = node_timestamp;
+
+				list_add(common_repo->entry_list, entry_a);
 			}
 
 			initialized = 1;
@@ -566,7 +623,7 @@ void data_mgr_set_data( //
 	data_repository_id_t repo_id;
 
 	// Are we being asked for a system-wide entry (entry_id <= NODE_ID) or a user-specific  one?
-	if (entry_id <= NODE_ID)
+	if (entry_id <= NODE_TIME)
 		// we are being asked for a system-wide entry (entry_id <= NODE_ID), hence take it from the common repository
 		repo_id = COMMON_REPOSITORY_ID;
 	else
@@ -578,11 +635,11 @@ void data_mgr_set_data( //
 	if (repo == NULL)
 		return;
 
-	// ok, repository exists (whether it is the common repository or a user-specific one)
+	/** ok, repository exists (whether it is the common repository or a user-specific one) */
 
 	struct repository_entry *entry = repository_entry_lookup(repo, entry_id);
 
-	// check if entry exists with different type or data length:
+	/** check if entry exists with different type or data length: */
 	if ((entry != NULL)
 			&& ((entry->entry_type != entry_type)
 					|| (entry->data_len != data_len))) {
@@ -621,18 +678,21 @@ void data_mgr_set_data( //
 /**
  * \brief		Associates an updater function to a data repository entry
  */
-void data_mgr_set_updater(data_repository_id_t id, entry_id_t entry_id,
+void data_mgr_set_updater( //
+		data_repository_id_t id, //
+		entry_id_t entry_id, //
 		entry_update_function *updater_function) {
+
 	struct repository *repo;
 	data_repository_id_t repo_id;
 	struct repository_entry *entry;
 
-	// Are we being asked for a system-wide entry (entry_id <= NODE_ID) or a user-specific one?
-	if (entry_id <= NODE_ID)
-		// we are being asked for a system-wide entry (entry_id <= NODE_ID), hence take it from the common repository
+	// Are we being asked for a system-wide entry (entry_id <= NODE_TIME) or a user-specific one?
+	if (entry_id <= NODE_TIME)
+		// we are being asked for a system-wide entry (entry_id <= NODE_TIME), hence take it from the common repository
 		repo_id = COMMON_REPOSITORY_ID;
 	else
-		// we are being asked for a user-specific entry (entry_id > NODE_ID), hence take it from the specific repository
+		// we are being asked for a user-specific entry (entry_id > NODE_TIME), hence take it from the specific repository
 		repo_id = id;
 
 	repo = data_mgr_lookup(repo_id);
@@ -655,6 +715,7 @@ void data_mgr_set_updater(data_repository_id_t id, entry_id_t entry_id,
 		}
 	}
 }
+
 /**
  *  \brief		Returns a pointer to a byte array with the data requested, or NULL if the
  *				specified entry didn't exist. Also the length of the array is returned via the
@@ -672,12 +733,12 @@ data_mgr_get_data(data_repository_id_t repo_id_param, entry_id_t entry_id,
 
 	data_repository_id_t repo_id;
 
-	// Are we being asked for a system-wide entry (entry_id <= NODE_ID) or a user-specific  one?
-	if (entry_id <= NODE_ID)
-		// we are being asked for a system-wide entry (entry_id <= NODE_ID), hence take it from the common repository
+	// Are we being asked for a system-wide entry (entry_id <= NODE_TIME) or a user-specific  one?
+	if (entry_id <= NODE_TIME)
+		// we are being asked for a system-wide entry (entry_id <= NODE_TIME), hence take it from the common repository
 		repo_id = COMMON_REPOSITORY_ID;
 	else
-		// we are being asked for a user-specific entry (entry_id > NODE_ID), hence take it from the specific repository
+		// we are being asked for a user-specific entry (entry_id > NODE_TIME), hence take it from the specific repository
 		repo_id = repo_id_param;
 
 	struct repository *repo = data_mgr_lookup(repo_id);
@@ -688,7 +749,7 @@ data_mgr_get_data(data_repository_id_t repo_id_param, entry_id_t entry_id,
 	// ok, repository exists (whether it is the common repository or a user-specific one)
 	struct repository_entry *entry = repository_entry_lookup(repo, entry_id);
 
-	PRINTF(3,"getting field %d, entry %p\n", entry_id, entry);
+	PRINTF(3, "getting field %u, entry %p\n", entry_id, entry);
 
 	if (entry == NULL)
 		return (NULL);
@@ -702,19 +763,21 @@ data_mgr_get_data(data_repository_id_t repo_id_param, entry_id_t entry_id,
 				(struct auto_repository_entry*) entry;
 
 		// set pointer to data
-		uint16_t *value = (uint16_t*) (((uint8_t*) a_entry)
+		uint8_t *value = (uint8_t*) (((uint8_t*) a_entry)
 				+ sizeof(struct auto_repository_entry));
 
-		// since this is an automatically updated entry, check whether it is outdated:
-		// calculate age:
+		/* calculate age of entry: */
 		clock_time_t now = clock_time(), age = now - a_entry->timestamp;
 
-		// if there is an updater function, invoke it:
-		if ((age > repo->ttl) && (a_entry->updater != NULL)) {
+		// since this is an automatically updated entry, check whether the entry is outdated
+		// and if there is an updater function, invoke it:
+		PRINTF(3, "entry age: %lu, repo ttl: %lu\n", age, repo->ttl);
+		if (((age > repo->ttl) && (a_entry->updater != NULL)) || (a_entry->entry_id == NODE_TIME)) {
 			// value must be updated
 			a_entry->timestamp = now;
+			PRINTF(3, "entry old, updating!\n");
 
-			*value = a_entry->updater();
+			a_entry->updater(value);
 		}
 
 		result = (uint8_t*) value;

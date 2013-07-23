@@ -85,7 +85,7 @@ typedef uint8_t* (*custom_input_function_t)(data_len_t *data_len,
 
 void expression_eval_set_repository(data_repository_id_t id);
 void expression_eval_set_custom_input(
-		custom_input_function_t *custom_input_function, void *input);
+		custom_input_function_t custom_input_function, void *input);
 long int expression_eval_evaluate(uint8_t *expression_spec,
 		data_len_t spec_len);
 

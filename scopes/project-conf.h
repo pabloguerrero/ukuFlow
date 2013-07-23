@@ -44,14 +44,14 @@
 #ifdef NETSTACK_CONF_NETWORK
 #undef NETSTACK_CONF_NETWORK
 #endif
-/* \brief TODO */
+/** \brief TODO */
 #define NETSTACK_CONF_NETWORK					rime_driver
 
 // Radio Duty Cycling (RDC) channel check rate
 #ifdef NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE
 #undef NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE
 #endif
-/* \brief TODO */
+/** \brief TODO */
 #define NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE	128
 //#define NETSTACK_CONF_RDC_CHANNEL_CHECK_RATE	16
 
@@ -59,7 +59,7 @@
 #ifdef NETSTACK_CONF_RDC
 #undef NETSTACK_CONF_RDC
 #endif
-/* \brief TODO */
+/** \brief TODO */
 #define NETSTACK_CONF_RDC						nullrdc_driver
 //#define NETSTACK_CONF_RDC						contikimac_driver
 
@@ -68,7 +68,7 @@
 #ifdef NETSTACK_CONF_MAC
 #undef NETSTACK_CONF_MAC
 #endif
-/* \brief TODO */
+/** \brief TODO */
 #define NETSTACK_CONF_MAC						nullmac_driver
 //#define NETSTACK_CONF_MAC						csma_driver
 
@@ -77,7 +77,7 @@
 #ifdef NETSTACK_CONF_FRAMER
 #undef NETSTACK_CONF_FRAMER
 #endif
-/* \brief TODO */
+/** \brief TODO */
 //#define NETSTACK_CONF_FRAMER					framer_nullmac
 #define NETSTACK_CONF_FRAMER					framer_802154
 
@@ -87,4 +87,6 @@
 /** \brief Enables or disables scopes data information */
 #define SCOPES_NOINFO
 
+/** \brief Enables or disables sending data towards root automatically */
+//#define SCOPES_AUTO_FORWARD_ENABLED
 /** @} */

@@ -40,8 +40,8 @@
  * \author	Pablo Guerrero <guerrero@dvs.tu-darmstadt.de>
  */
 
-#ifndef __DATA_REPOSITORY_H__
-#define __DATA_REPOSITORY_H__
+#ifndef __DATA_MGR_H__
+#define __DATA_MGR_H__
 
 #include "contiki.h"
 
@@ -57,7 +57,7 @@
 #define COMMON_REPOSITORY_ID 1
 
 /**  \brief Type definition for updater functions */
-typedef uint16_t (entry_update_function)(void);
+typedef void (entry_update_function)(void *data);
 
 /**  \brief Type definition for data repository ids */
 typedef uint8_t data_repository_id_t;
@@ -145,7 +145,8 @@ enum repository_fields {
 	SENSOR_CO2_RAW, /*						11*/
 	SENSOR_CO_RAW, /*						12*/
 	NODE_ID, /**							13*/
-	USER_FIELD, /**							14*/
+	NODE_TIME, /**							14*/
+	USER_FIELD, /**							15*/
 };
 
 data_repository_id_t data_mgr_create(clock_time_t max_ttl);
@@ -158,5 +159,5 @@ void data_mgr_set_updater(data_repository_id_t id, entry_id_t entry_id,
 uint8_t *data_mgr_get_data(data_repository_id_t repo_id_param,
 		entry_id_t entry_id, data_len_t *data_len);
 
-#endif //__DATA_REPOSITORY_H__
+#endif //__DATA_MGR_H__
 /** @} */

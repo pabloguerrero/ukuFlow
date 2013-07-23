@@ -62,9 +62,9 @@ bool ukuflow_event_mgr_unsubscribe(struct generic_event_operator *main_ev_op,
 		struct workflow_token* token);
 
 void ukuflow_event_mgr_handle_subscription(
-		struct generic_event_operator *main_ev_op, data_len_t ev_op_len);
+		struct generic_event_operator *main_ev_op, data_len_t ev_op_len, bool local);
 void
-ukuflow_event_mgr_handle_unsubscription(channel_id_t *main_ev_op_channel_id);
+ukuflow_event_mgr_handle_unsubscription(channel_id_t main_ev_op_channel_id, bool local);
 void ukuflow_event_mgr_handle_event(struct ukuflow_event_msg *event_msg);
 
 void ukuflow_event_mgr_scope_left(scope_id_t scope_id);
