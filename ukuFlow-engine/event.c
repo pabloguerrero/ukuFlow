@@ -77,6 +77,9 @@ char *event_field_names[] = { //
  * \brief		TODO
  *
  * 				TODO
+ *
+ * @param geo
+ * @return
  */
 data_len_t event_operator_get_size(struct generic_event_operator *geo) {
 	data_len_t size = 0;
@@ -196,7 +199,7 @@ uint8_t* event_custom_input_function(data_len_t *data_len,
  *
  * @param[out]	event_len	the length of the returned event
  *
- * \returns	Pointer to newly allocated memory containing empty, raw event, or
+ * \return	pointer to newly allocated memory containing empty, raw event, or
  * 			NULL if there was no space.
  * */
 struct event *event_alloc_raw(data_len_t *event_len) {
@@ -213,7 +216,7 @@ struct event *event_alloc_raw(data_len_t *event_len) {
 
 	struct event *event = malloc(sizeof(struct event) + *event_len);
 
-	PRINTF(1, "(EVENT) allocated %u bytes for event at %p\n", *event_len, event);
+	PRINTF(1, "(EVENT) allocated %u bytes for event at %p\n", sizeof(struct event) + *event_len, event);
 
 	/* bail out if there was no space free*/
 	if (event == NULL)
@@ -274,7 +277,6 @@ struct event *event_clone(struct event *source_event,
  */
 void event_populate(struct event *event, struct generic_egen *g_egen) {
 
-	printf("g_egen is %p, ev is %p\n", g_egen, event);
 	data_len_t data_len;
 	uint16_t *temp_data_ptr, temp_data;
 
@@ -354,6 +356,10 @@ void event_print(struct event *event, data_len_t event_len) {
  * \brief		TODO
  *
  * 				TODO
+ *
+ * @param[in] event
+ * @param[in] searched_field
+ * \return
  */
 static uint8_t *get_value_pointer(struct event *event, uint8_t searched_field) {
 	uint8_t *fvp = ((uint8_t*) event) + sizeof(struct event);
@@ -372,9 +378,10 @@ static uint8_t *get_value_pointer(struct event *event, uint8_t searched_field) {
 
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		TODO
- *
- * 				TODO
+ * \brief	TODO
+ * @param[in,out] event the event that receives the new value
+ * @param[in] searched_field the field that needs to be set
+ * @param[in] data the data to set to this event
  */
 void event_set_value(struct event *event, uint8_t searched_field, uint8_t *data) {
 	// first, find position to store the data:
@@ -391,7 +398,9 @@ void event_set_value(struct event *event, uint8_t searched_field, uint8_t *data)
 /**
  * \brief		Returns the value of the specified field
  *
- * 				TODO
+ * @param[in] event the event where to search for the field
+ * @param[in] searched_field the field searched
+ * \return a pointer to the value
  */
 uint8_t *event_get_value(struct event *event, uint8_t searched_field) {
 	return (get_value_pointer(event, searched_field));
@@ -401,7 +410,10 @@ uint8_t *event_get_value(struct event *event, uint8_t searched_field) {
 /**
  * \brief		Copies the fields of an event into the repository
  *
- * 				TODO
+ *				TODO
+ *
+ * @param event
+ * \return
  */
 data_repository_id_t event_into_repo(struct event *event) {
 
