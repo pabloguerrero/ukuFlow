@@ -81,7 +81,7 @@
  */
 static void add_scope(scope_id_t scope_id) {
 	PRINTF(1,
-			"(UF-NET-MGR) scope %d added\n", scope_id);
+			"(UF-NET-MGR) scope %u added\n", scope_id);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -92,7 +92,7 @@ static void add_scope(scope_id_t scope_id) {
  */
 static void remove_scope(scope_id_t scope_id) {
 	PRINTF(1,
-			"(UF-NET-MGR) scope %d removed\n", scope_id);
+			"(UF-NET-MGR) scope %u removed\n", scope_id);
 
 }
 
@@ -124,7 +124,7 @@ static void join_scope(scope_id_t scope_id) {
  */
 static void leave_scope(scope_id_t scope_id) {
 	PRINTF(1,
-			"(UF-NET-MGR) left scope %u\n", scope_id);
+			"(UF-NET-MGR) about to leave scope %u\n", scope_id);
 
 #ifdef SWITCH_LEDS
 	if (scope_id == 11)
