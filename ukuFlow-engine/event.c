@@ -213,6 +213,8 @@ struct event *event_alloc_raw(data_len_t *event_len) {
 
 	struct event *event = malloc(sizeof(struct event) + *event_len);
 
+	PRINTF(1, "(EVENT) allocated %u bytes for event at %p\n", *event_len, event);
+
 	/* bail out if there was no space free*/
 	if (event == NULL)
 		return (NULL);
@@ -246,14 +248,16 @@ struct event *event_alloc_raw(data_len_t *event_len) {
 struct event *event_clone(struct event *source_event,
 		data_len_t source_event_len) {
 
-	struct event *event = malloc(source_event_len);
+	struct event *cloned_event = malloc(source_event_len);
 
-	if (event == NULL)
+	PRINTF(1, "(EVENT) allocated %u bytes for event at %p\n", source_event_len, cloned_event);
+
+	if (cloned_event == NULL)
 		return (NULL);
 
-	memcpy(event, source_event, source_event_len);
+	memcpy(cloned_event, source_event, source_event_len);
 
-	return (event);
+	return (cloned_event);
 }
 /*---------------------------------------------------------------------------*/
 /**
@@ -270,6 +274,7 @@ struct event *event_clone(struct event *source_event,
  */
 void event_populate(struct event *event, struct generic_egen *g_egen) {
 
+	printf("g_egen is %p, ev is %p\n", g_egen, event);
 	data_len_t data_len;
 	uint16_t *temp_data_ptr, temp_data;
 
@@ -283,8 +288,7 @@ void event_populate(struct event *event, struct generic_egen *g_egen) {
 	PRINTF(3, "(EVENT) time %lu, source %u, value %u\n", curr_time, g_egen->source,
 			temp_data);
 	event->channel_id = g_egen->channel_id;
-	event_type_t *ev_type;
-	*ev_type = SIMPLE_EVENT;
+	event_type_t ev_type = SIMPLE_EVENT;
 	event_set_value(event, EVENT_TYPE, (uint8_t*) &ev_type);
 	event_set_value(event, SOURCE, &g_egen->source);
 	event_set_value(event, MAGNITUDE, (uint8_t*) &temp_data);
