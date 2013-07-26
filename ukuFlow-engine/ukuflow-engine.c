@@ -317,7 +317,7 @@ bool ukuflow_engine_register(uint8_t * wf_def, data_len_t wf_def_len) {
 	// allocate dynamic memory managed by engine, where workflow will be copied into:
 	struct workflow *wf = malloc(wf_def_len);
 
-	if (!wf) {
+	if (wf == NULL) {
 		PRINTF(3,
 				"(UF-ENGINE) There is no space left for registering a new workflow!");
 		return (FALSE);
@@ -448,8 +448,7 @@ bool ukuflow_engine_deregister(uint8_t workflow_id) {
 static void processor_start_event(struct workflow_token *token,
 		struct wf_generic_elem *wfe) {
 	struct wf_start_event *wfe_se = (struct wf_start_event*) wfe;
-	PRINTF(1,
-			"(UF-ENGINE) Start event, current wf_elem_id is %u, next is %u\n",
+	PRINTF(1, "(UF-ENGINE) Start event, current wf_elem_id is %u, next is %u\n",
 			token->current_wf_elem_id, wfe_se->next_id);
 
 	token->prev_wf_elem_id = token->current_wf_elem_id;
@@ -488,8 +487,7 @@ static void processor_end_event(struct workflow_token *token,
 	 * If it does not, remove the instance and put the workflow_node into the wf_spawn_queue */
 	if (wfi->num_tokens == 0) {
 
-		PRINTF(1,
-				"(UF-ENGINE) End event, wf instance has no more tokens\n");
+		PRINTF(1, "(UF-ENGINE) End event, wf instance has no more tokens\n");
 
 		/** This was the last token belonging to this workflow instance */
 		struct workflow_node *wfn = wfi->wfn;
@@ -614,8 +612,8 @@ static void processor_execute_task(struct workflow_token *token,
 
 			long int result = expression_eval_evaluate(data_expression,
 					cst->data_expression_length);
-			PRINTF(1, "(UF-ENGINE) Result for var_%u is %ld \n",
-					cst->var_id, result);
+			PRINTF(1, "(UF-ENGINE) Result for var_%u is %ld \n", cst->var_id,
+					result);
 
 			if (cst->var_id != 0) {
 				data_mgr_set_data(token->wf_instance->repository_id,
@@ -644,14 +642,9 @@ static void processor_execute_task(struct workflow_token *token,
 			char *cmd_line = ukuflow_cmd_runner_generate_command(st_cmd,
 					&cmd_line_len, token->wf_instance->repository_id);
 
-			PRINTF(1,
-					"(UF-ENGINE) about to run statement %d '%s', len %d\n",
-					token_state->lfs_ex_task_token_state.statement_nr, cmd_line,
-					cmd_line_len);
-
 			// only proceed if a cmd line was built
 			if (cmd_line != NULL && cmd_line_len > 0) {
-				int return_val =
+				int retval =
 						ukuflow_cmd_runner_run(cmd_line, cmd_line_len,
 								&token_state->lfs_ex_task_token_state.child_command_process);
 
@@ -660,8 +653,8 @@ static void processor_execute_task(struct workflow_token *token,
 				//					continue;
 				//				}
 
-				if ((return_val == SHELL_FOREGROUND || //
-						return_val == SHELL_BACKGROUND) //
+				if ((retval == SHELL_FOREGROUND || //
+						retval == SHELL_BACKGROUND) //
 						&& process_is_running(
 								token_state->lfs_ex_task_token_state.child_command_process)) {
 
@@ -673,6 +666,7 @@ static void processor_execute_task(struct workflow_token *token,
 				}
 
 				// now free the cmd line array from memory
+				PRINTF(1, "(UF-ENGINE) freed cmd at %p\n", cmd_line);
 				free(cmd_line);
 			}
 			break;
@@ -1213,8 +1207,9 @@ void notified_by_event_mgr(struct event *event, data_len_t event_payload_len) {
 			// ----------
 			if (gw_token_state->unsub_requested == FALSE) {
 				/** We have found a token in the blocked queue that is waiting for an event.
-				 * Now check if this token needs to be awaken.
-				 * We do this by comparing the channel id of the event against each of the channel ids of the main event operators of the outgoing flows */
+				 * Now check if this token needs to be waken up.
+				 * We do this by comparing the channel id of the event against each of the channel ids
+				 * of the main event operators of the outgoing flows */
 				struct wf_eb_x_dec_gw *ebg = (struct wf_eb_x_dec_gw*) wfe;
 
 				uint8_t ev_op_flow_nr = 0;
@@ -1229,10 +1224,10 @@ void notified_by_event_mgr(struct event *event, data_len_t event_payload_len) {
 									+ sizeof(struct event_operator_flow));
 
 					if (geo->channel_id == event->channel_id) {
+						/** Weehaa! found the right token! */
+
 						/** Indicate that unsubscriptions have been requested */
 						gw_token_state->unsub_requested = TRUE;
-
-						/** Weehaa! found the right token! */
 
 						/** ---------- */
 						/** Unsubscribe from all outgoing event operator flows of the wf_eb_x_dec_gw: */
@@ -1250,7 +1245,8 @@ void notified_by_event_mgr(struct event *event, data_len_t event_payload_len) {
 									(struct generic_event_operator *) (((uint8_t*) inner_ev_op_flow)
 											+ sizeof(struct event_operator_flow));
 
-							PRINTF(1, "(UF-ENGINE) requiring unsub for channel %u\n",
+							PRINTF(1,
+									"(UF-ENGINE) requiring unsub for channel %u\n",
 									geo_iter->channel_id);
 							ukuflow_event_mgr_unsubscribe(geo_iter, token);
 
@@ -1290,7 +1286,7 @@ void notified_by_event_mgr(struct event *event, data_len_t event_payload_len) {
 						/** Interrupt iteration by setting ev_op_flow_nr to maximum value: */
 						ev_op_flow_nr = ebg->num_out_flows;
 
-					}
+					} // if
 
 					ev_op_flow =
 							(struct event_operator_flow*) (((uint8_t*) ev_op_flow)
@@ -1374,7 +1370,7 @@ PROCESS_THREAD( ukuflow_long_term_scheduler_process, ev, data) {
 			/** get the first ready workflow_node from the queue */
 			wfn = (struct workflow_node*) list_head(wf_n_spawn_queue);
 
-			if (!wfn)
+			if (wfn == NULL)
 				continue;
 
 			/** and remove it from the queue (we will see into which queue we put it later)*/
@@ -1579,8 +1575,7 @@ PROCESS_END();
  * \brief		TODO
  *
  * 				TODO
- */
-
+ */ //
 PROCESS_THREAD( ukuflow_scoped_function_statement_process, ev, data) {
 
 static struct workflow_token *token = NULL;
@@ -1654,6 +1649,11 @@ do {
 				sizeof(struct sfs_msg)
 						+ token_state->sfs_ex_task_token_state.cmd_line_len);
 
+		PRINTF(1, "(UF-ENGINE) allocated %u bytes for sfs_msg at %p\n",
+				sizeof(struct sfs_msg)
+						+ token_state->sfs_ex_task_token_state.cmd_line_len,
+				s_msg);
+
 		if (s_msg) {
 			s_msg->msg_type = SCOPED_FUNCTION_MSG;
 			s_msg->cmd_line_len =
@@ -1671,8 +1671,13 @@ do {
 			PRINTF(3, "(UF-ENGINE) sfs pt, waiting 20 seconds...\n");
 			PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&control_timer));
 
+			PRINTF(1, "(UF-ENGINE) freed scoped msg at %p\n", s_msg);
+
 			/** Release memory of scoped function statement message */
 			free(s_msg);
+
+			PRINTF(1, "(UF-ENGINE) freed cmd at %p\n", token_state->sfs_ex_task_token_state.cmd_line);
+			free(token_state->sfs_ex_task_token_state.cmd_line);
 		}
 		/** Now close the scope. If other workflow tasks/elements are using the same scope, it will not be closed but its usage counter decreased */
 		ukuflow_net_mgr_close_scope(sfs->scope_id);
