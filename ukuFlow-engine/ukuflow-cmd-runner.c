@@ -89,6 +89,10 @@ char *ukuflow_cmd_runner_generate_command(struct statement_command *st_cmd,
 	uint8_t *st_cmd_arr = (uint8_t*) st_cmd + sizeof(struct statement_command);
 
 	char *result = (char*) malloc(CMD_LEN * sizeof(char));
+
+	PRINTF(5, "(CMD-RUNNER) allocated %u bytes for cmd at %p\n",
+			CMD_LEN*sizeof(char), result);
+
 	if (result == NULL)
 		return (NULL);
 
@@ -144,7 +148,7 @@ char *ukuflow_cmd_runner_generate_command(struct statement_command *st_cmd,
 		}
 		case (UINT16_VALUE): {
 			uint16_t number = st_cmd_arr[st_cmd_index++];
-			number = (number << 8) | st_cmd_arr[st_cmd_index++];
+			number |= ((uint16_t)st_cmd_arr[st_cmd_index++]) << 8;
 			*result_len += sprintf(result + *result_len, "%u", number);
 			break;
 		} // case
@@ -155,7 +159,7 @@ char *ukuflow_cmd_runner_generate_command(struct statement_command *st_cmd,
 		} // case
 		case (INT16_VALUE): {
 			int16_t number = st_cmd_arr[st_cmd_index++];
-			number = number * 256 | st_cmd_arr[st_cmd_index++];
+			number |= ((uint16_t)st_cmd_arr[st_cmd_index++]) << 8;
 			*result_len += sprintf(result + *result_len, "%d", number);
 			break;
 		}
@@ -163,7 +167,7 @@ char *ukuflow_cmd_runner_generate_command(struct statement_command *st_cmd,
 	} // for
 
 //	result[(*result_len)++] = '\n';
-//	printf("len final: %d\n", *result_len);
+//	printf("cmd final: '%s'\n", result);
 
 	return (result);
 }
@@ -175,6 +179,9 @@ char *ukuflow_cmd_runner_generate_command(struct statement_command *st_cmd,
  */
 int ukuflow_cmd_runner_run(char *command_line, data_len_t command_line_len,
 		struct process **started_process) {
+
+	PRINTF(1, "(CMD-RUNNER) about to run statement '%s', len %u\n", command_line,
+			command_line_len);
 
 	return (shell_start_command(command_line, command_line_len, NULL,
 			started_process));
