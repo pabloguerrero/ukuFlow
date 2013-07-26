@@ -303,9 +303,9 @@ struct __attribute__((__packed__)) wf_x_merge_gw {
 struct __attribute__((__packed__)) event_operator_flow {
 	/** \brief	TODO */
 	wf_elem_id_t next_id;
-	/** \brief	TODO */
+	/** \brief	Length, in bytes, of the event operator */
 	data_len_t total_event_operator_length; // in bytes
-// followed by array with the event operator
+// followed by array with the event operators
 };
 
 /*---------------------------------------------------------------------------*/
