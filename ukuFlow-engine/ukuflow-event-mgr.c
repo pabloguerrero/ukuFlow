@@ -740,9 +740,8 @@ void ukuflow_event_mgr_handle_event(struct ukuflow_event_msg *event_msg) {
 	struct event *received_event = (struct event*) (((uint8_t*) event_msg)
 			+ sizeof(struct ukuflow_event_msg));
 
-	struct event_processing_request *ev_request =
-			(struct event_processing_request*) malloc(
-					sizeof(struct event_processing_request));
+	struct event_processing_request *ev_request = malloc(
+			sizeof(struct event_processing_request));
 
 	PRINTF(1, "(EVENT-MGR) allocated %u bytes for event req at %p\n",
 			sizeof(struct event_processing_request), ev_request);
@@ -805,9 +804,8 @@ static void egen_generate(void *ptr) {
 
 	event_print(event, event_len);
 
-	struct event_processing_request *ev_request =
-			(struct event_processing_request*) malloc(
-					sizeof(struct event_processing_request*));
+	struct event_processing_request *ev_request = malloc(
+			sizeof(struct event_processing_request));
 
 	PRINTF(1, "(EVENT-MGR) allocated %u bytes for event req at %p\n",
 			sizeof(struct event_processing_request), ev_request);
@@ -1123,9 +1121,8 @@ static void simple_filter_merge(struct running_event_op *reo,
 		if (cloned_event == NULL)
 			return;
 
-		struct event_processing_request *ev_request =
-				(struct event_processing_request*) malloc(
-						sizeof(struct event_processing_request));
+		struct event_processing_request *ev_request = malloc(
+				sizeof(struct event_processing_request));
 
 		PRINTF(1, "(EVENT-MGR) allocated %u bytes for event req at %p\n",
 				sizeof(struct event_processing_request), ev_request);
@@ -1239,7 +1236,7 @@ bool ukuflow_event_mgr_subscribe(
 			sizeof(struct subscription_request));
 
 	PRINTF(1, "(EVENT-MGR) allocated %u bytes for sub request at %p\n",
-			sizeof(struct event_processing_request), sub_request);
+			sizeof(struct subscription_request), sub_request);
 
 	if (sub_request == NULL)
 		return (FALSE);
