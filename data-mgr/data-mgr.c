@@ -296,10 +296,8 @@ static void sensor_co_raw(void *data) {
 static void node_timestamp(void *data) {
 	clock_time_t *data_clock = (clock_time_t*) data;
 #if defined CONTIKI_TARGET_SKY || defined CONTIKI_TARGET_XM1000 || defined CONTIKI_TARGET_Z1
-	printf("updating to %lu\n",*data_clock = clock_time());
-	// TODO
+	*data_clock = clock_time()/CLOCK_SECOND;
 #else
-	// TODO
 	data = NULL;
 #endif
 }
