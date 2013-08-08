@@ -29,12 +29,12 @@ public interface EGAbsolute extends EGNonRecurring {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Absolute Time</em>' attribute.
-	 * @see #setAbsoluteTime(int)
+	 * @see #setAbsoluteTime(String)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEGAbsolute_AbsoluteTime()
 	 * @model required="true"
 	 * @generated
 	 */
-	int getAbsoluteTime();
+	String getAbsoluteTime();
 
 	/**
 	 * Sets the value of the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGAbsolute#getAbsoluteTime <em>Absolute Time</em>}' attribute.
@@ -44,6 +44,6 @@ public interface EGAbsolute extends EGNonRecurring {
 	 * @see #getAbsoluteTime()
 	 * @generated
 	 */
-	void setAbsoluteTime(int value);
+	void setAbsoluteTime(String value);
 
 } // EGAbsolute

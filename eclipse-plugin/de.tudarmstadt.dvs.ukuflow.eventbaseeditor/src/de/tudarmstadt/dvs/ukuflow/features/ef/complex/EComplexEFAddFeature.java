@@ -52,13 +52,15 @@ public class EComplexEFAddFeature extends AbstractAddShapeFeature{
 		// CONTAINER SHAPE WITH ROUNDED RECTANGLE
 				final IPeCreateService peCreateService = Graphiti.getPeCreateService();
 				final ContainerShape containerShape = peCreateService.createContainerShape(targetDiagram, true);
-
+				final IGaService gaService = Graphiti.getGaService();
+				
 				// check whether the context has a size (e.g. from a create feature)
 				// otherwise define a default size for the shape
 				final int width = context.getWidth() <= 0 ? 100 : context.getWidth();
 				final int height = context.getHeight() <= 0 ? 50 : context.getHeight();
-
-				final IGaService gaService = Graphiti.getGaService();
+				int xy[] = new int[] { 0, 25, 20, 0, 80,0,100,25,80,50,20,50,};
+				gaService.createPolygon(containerShape,xy);
+				
 				RoundedRectangle roundedRectangle; // need to access it later
 				{
 					// create invisible outer rectangle expanded by

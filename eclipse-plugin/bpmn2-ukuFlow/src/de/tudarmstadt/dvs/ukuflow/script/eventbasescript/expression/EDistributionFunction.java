@@ -29,43 +29,12 @@
  */
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
-import java.util.List;
 
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
+/**
+ * @author ”Hien Quoc Dang”
+ *
+ */
+public abstract class EDistributionFunction extends EEvaluableExpression {
 
-public class EAperiodicDistributionEG extends ERecurringEG{
-	private String functionName;
-	private List<Integer> parameters;
-	private EDistributionFunction function;
-	public void setFunction(String name, List<Integer> params){
-		this.functionName = name;
-		this.parameters = params;
-	}
-	public void setFunction(EDistributionFunction f){
-		function = f;
-	}
-	public EDistributionFunction getFunction(){
-		return function;
-	}
-	
-	public List<Integer> getParameters(){
-		return parameters;
-	}
-	@Override
-	public void accept(EventBaseVisitor visitor) {
-		visitor.visit(this);
-	}
-	
-	@Override
-	public String toString(){
-		String s="";
-		s+= "[DISTRIBUTION="+functionName+"(";	
-		if(parameters != null)
-		for(Integer i : parameters){
-			s+= i +",";
-		}
-		s+="__";
-		s= s.replace(",__",")");
-		return getVariable()+"PEG_"+getSensorType()+"_"+s+"@"+getScope();
-	}
+
 }

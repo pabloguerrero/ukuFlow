@@ -27,12 +27,32 @@
  * SUCH DAMAGE.
  *
  */
-package de.tudarmstadt.dvs.ukuflow.application;
+package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
+
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
 /**
- * @author hiendq
+ * @author ”Hien Quoc Dang”
  *
  */
-public class test {
+public class EParetoFunction extends EDistributionFunction {
+	private int a;
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable#accept(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor)
+	 */
+	@Override
+	public void accept(EventBaseVisitor visitor) {
+		visitor.visit(this);
+
+	}
+	public int getA(){
+		return a;
+	}
+	public void setA(int a){
+		this.a = a;
+	}
+	public void setParameter(int a){
+		this.a = a;
+	}
 
 }

@@ -30,15 +30,20 @@
 
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor;
 
+import java.util.Vector;
+
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAbsoluteEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicDistributionEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicPatternedEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChiSquareFunction;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilterBinaryExpression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilterPolicy;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilterUnaryExpression;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EGausianFunction;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EImmediateEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EOffsetEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EParetoFunction;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EPeriodicEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERecurringEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
@@ -50,8 +55,8 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOpe
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
 
 
-public interface EventBaseVisitor {
-
+public interface EventBaseVisitor { 
+	public Vector<Byte> getOutput();
 	void visit(EEventBaseScript eventBaseScript);
 	void visit(EComplexEF ef);
 	void visit(EComplexFilterBinaryExpression exp);
@@ -71,4 +76,16 @@ public interface EventBaseVisitor {
 	void visit(ERelativeEG e);
 	void visit(EVariable e);
 	void reset();
+	/**
+	 * @param eChiSquareFunction
+	 */
+	void visit(EChiSquareFunction eChiSquareFunction);
+	/**
+	 * @param eGausianFunction
+	 */
+	void visit(EGausianFunction eGausianFunction);
+	/**
+	 * @param eParetoFunction
+	 */
+	void visit(EParetoFunction eParetoFunction);
 }

@@ -17,7 +17,10 @@ import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
+import org.eclipse.graphiti.internal.services.impl.PeServiceImpl;
+import org.eclipse.graphiti.mm.GraphicsAlgorithmContainer;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
+import org.eclipse.graphiti.mm.algorithms.Image;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
@@ -33,9 +36,11 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeCreateService;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram.TutorialFeatureProvider;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGAbsolute;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGPatterned;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.features.eg.EGFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericDirectEditFeature;
@@ -45,7 +50,7 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 
-public class EGAbsoluteFeatureContainer extends EGFeatureContainer{
+public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 
 	@Override
 	public Object getApplyObject(IContext context) {
@@ -65,7 +70,7 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer{
 	}
 
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		
+
 		return new GenericUpdateFeature(fp);
 	}
 
@@ -99,12 +104,13 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer{
 		return null;
 	}
 
-	class EGAbsoluteCreateFeature extends AbstractCreateFeature{
+	class EGAbsoluteCreateFeature extends AbstractCreateFeature {
 
-		public EGAbsoluteCreateFeature (IFeatureProvider fp){
-			super(fp,"Absolute","Create an absolute event generator");
+		public EGAbsoluteCreateFeature(IFeatureProvider fp) {
+			super(fp, "Absolute", "Create an absolute event generator");
 		}
-		public EGAbsoluteCreateFeature (IFeatureProvider fp, String name,
+
+		public EGAbsoluteCreateFeature(IFeatureProvider fp, String name,
 				String description) {
 			super(fp, name, description);
 		}
@@ -117,17 +123,17 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer{
 			EGAbsolute newClass = EventbaseFactory.eINSTANCE.createEGAbsolute();
 			getDiagram().eResource().getContents().add(newClass);
 
-			//		Use the following instead of the above line to store the model
-			//		data in a seperate file parallel to the diagram file
-			//		try {
-			//			try {
-			//				TutorialUtil.saveToModelFile(newClass, getDiagram());
-			//			} catch (IOException e) {
-			//				e.printStackTrace();
-			//			}
-			//		} catch (CoreException e) {
-			//			e.printStackTrace();
-			//		}
+			// Use the following instead of the above line to store the model
+			// data in a seperate file parallel to the diagram file
+			// try {
+			// try {
+			// TutorialUtil.saveToModelFile(newClass, getDiagram());
+			// } catch (IOException e) {
+			// e.printStackTrace();
+			// }
+			// } catch (CoreException e) {
+			// e.printStackTrace();
+			// }
 
 			// do the add
 			addGraphicalRepresentation(context, newClass);
@@ -139,124 +145,124 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer{
 		}
 
 	}
-	public class EGAbsoluteAddFeature extends AbstractAddShapeFeature{
+
+	public class EGAbsoluteAddFeature extends AbstractAddShapeFeature {
 
 		public static final int INVISIBLE_RECT_RIGHT = 6;
-		
+
 		public EGAbsoluteAddFeature(IFeatureProvider fp) {
 			super(fp);
 		}
 
 		public boolean canAdd(IAddContext context) {
 			final Object newObject = context.getNewObject();
-			if(newObject instanceof EGAbsolute)
-			if(context.getTargetContainer() instanceof Diagram){
-				return true;
-			}
+			if (newObject instanceof EGAbsolute)
+				if (context.getTargetContainer() instanceof Diagram) {
+					return true;
+				}
 			return false;
 		}
 
 		public PictogramElement add(IAddContext context) {
-			final EGAbsolute addedClass = (EGAbsolute)context.getNewObject(); 
+			final EGAbsolute addedClass = (EGAbsolute) context.getNewObject();
 			final Diagram targetDiagram = (Diagram) context.getTargetContainer();
 			// CONTAINER SHAPE WITH ROUNDED RECTANGLE
-					final IPeCreateService peCreateService = Graphiti.getPeCreateService();
-					final ContainerShape containerShape = peCreateService.createContainerShape(targetDiagram, true);
-					
-					// check whether the context has a size (e.g. from a create feature)
-					// otherwise define a default size for the shape
-					final int width = context.getWidth() <= 0 ? 100 : context.getWidth();
-					final int height = context.getHeight() <= 0 ? 50 : context.getHeight();
+			final IPeCreateService peCreateService = Graphiti.getPeCreateService();
+			final ContainerShape containerShape = peCreateService.createContainerShape(targetDiagram, true);
 
-					final IGaService gaService = Graphiti.getGaService();
-					RoundedRectangle roundedRectangle; // need to access it later
-					{
-						// create invisible outer rectangle expanded by
-						// the width needed for the anchor
-						final Rectangle invisibleRectangle = gaService.createInvisibleRectangle(containerShape);			
-						gaService.setLocationAndSize(invisibleRectangle, context.getX(), context.getY(), width + INVISIBLE_RECT_RIGHT, height);
+			final int width = context.getWidth() <= 0 ? 100 : context.getWidth();
+			final int height = context.getHeight() <= 0 ? 50 : context.getHeight();
 
-						// create and set visible rectangle inside invisible rectangle
-						//gaService.create
-						roundedRectangle = gaService.createPlainRoundedRectangle(invisibleRectangle, 5, 5);
-						roundedRectangle.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
-						gaService.setLocationAndSize(roundedRectangle, 0, 0, width, height);
+			final IGaService gaService = Graphiti.getGaService();
+			
+			int xy[] = new int[] { 0, 0, EG_WIDTH-EG_OFFSET, 0, EG_WIDTH, EG_HEIGHT/2, EG_WIDTH-EG_OFFSET, EG_HEIGHT, 0, EG_HEIGHT, };
 
-						// if addedClass has no resource we add it to the resource of the diagram
-						// in a real scenario the business model would have its own resource
-						if (addedClass.eResource() == null) {
-							getDiagram().eResource().getContents().add(addedClass);
-						}
+			// create invisible outer rectangle expanded by
+			// the width needed for the anchor
+			final Rectangle invisibleRectangle = gaService.createInvisibleRectangle(containerShape);
+			
 
-						// create link and wire it
-						link(containerShape, addedClass);
-					}
+			gaService.setLocationAndSize(invisibleRectangle, context.getX(),
+					context.getY(), width , height);//width + INVISIBLE_RECT_RIGHT
+			Shape polygonShape = peCreateService.createShape(containerShape, false);
+			Polygon polygon;
+			polygon = gaService.createPolygon(polygonShape, xy);
+			polygon.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
+			gaService.setLocationAndSize(polygon, 0, 0, width, height);
 
-					// SHAPE WITH LINE
-					{
-						// create shape for line
-						final Shape shape = peCreateService.createShape(containerShape, false);
+			// if addedClass has no resource we add it to the resource of
+			// the diagram
+			// in a real scenario the business model would have its own
+			// resource
+			if (addedClass.eResource() == null) {
+				getDiagram().eResource().getContents().add(addedClass);
+			}
 
-						// create and set graphics algorithm
-						final Polygon polyline = gaService.createPlainPolygon(shape,new int[]{0,0,width,height/2,0,height});
-						//final Polyline polyline = gaService.createPlainPolyline(shape, new int[] { 0,0,0, 20, width, 10 });
-						polyline.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
-					}
+			// create link and wire it
+			link(containerShape, addedClass);
 
-					// SHAPE WITH TEXT
-					{
-						// create shape for text
-						final Shape shape = peCreateService.createShape(containerShape, false);
+			// SHAPE WITH TEXT
+			{
+				// create shape for text
+				final Shape shape = peCreateService.createShape(containerShape,
+						false);
 
-						// create and set text graphics algorithm
-						final Text text = gaService.createPlainText(shape, addedClass.getClass().getSimpleName());
-						text.setStyle(StyleUtil.getStyleForEClassText(getDiagram()));
-						gaService.setLocationAndSize(text, 0, 0, width, 20);
+				// create and set text graphics algorithm
+				String name = addedClass.getClass().getSimpleName();
+				final Text text = gaService.createPlainText(shape,
+						name.substring(0, name.length() - 4));
+				text.setStyle(StyleUtil.getStyleForEClassText(getDiagram()));
+				gaService.setLocationAndSize(text, 0, 10, width, 20);
 
-						// create link and wire it
-						link(shape, addedClass);
-						//addedClass.setName(addedClass.getClass().getSimpleName());
-						updatePictogramElement(shape);
-						// provide information to support direct-editing directly
-						// after object creation (must be activated additionally)
-						final IDirectEditingInfo directEditingInfo = getFeatureProvider().getDirectEditingInfo();
-						// set container shape for direct editing after object creation
-						directEditingInfo.setMainPictogramElement(containerShape);
-						// set shape and graphics algorithm where the editor for
-						// direct editing shall be opened after object creation
-						directEditingInfo.setPictogramElement(shape);
-						directEditingInfo.setGraphicsAlgorithm(text);
-					}
+				// create link and wire it
+				link(shape, addedClass);
+				// addedClass.setName(addedClass.getClass().getSimpleName());
+				updatePictogramElement(shape);
+				// provide information to support direct-editing directly
+				// after object creation (must be activated additionally)
+				final IDirectEditingInfo directEditingInfo = getFeatureProvider()
+						.getDirectEditingInfo();
+				// set container shape for direct editing after object creation
+				directEditingInfo.setMainPictogramElement(containerShape);
+				// set shape and graphics algorithm where the editor for
+				// direct editing shall be opened after object creation
+				directEditingInfo.setPictogramElement(shape);
+				directEditingInfo.setGraphicsAlgorithm(text);
+			}
+			// Shape with ICON
+			{
+				GraphicsAlgorithmContainer ga = getGraphicsAlgorithm(containerShape);
+				IGaService service = Graphiti.getGaService();
+				Image img = service.createImage(ga,
+						EventImageProvider.GEARS2_ICON);
+				service.setLocationAndSize(img, 0, 0, 16, 16);
+			}
+			// add a chopbox anchor to the shape
+			peCreateService.createChopboxAnchor(containerShape);
+			// peCreateService.createBoxRelativeAnchor(containerShape);
 
-					// add a chopbox anchor to the shape
-					peCreateService.createChopboxAnchor(containerShape);
-					//peCreateService.createBoxRelativeAnchor(containerShape);
+			// create an additional box relative anchor at middle-right
+			final BoxRelativeAnchor boxAnchor = peCreateService
+					.createBoxRelativeAnchor(containerShape);
+			boxAnchor.setRelativeWidth(1.0);
+			boxAnchor.setRelativeHeight(0.38); // Use golden section
 
-					// create an additional box relative anchor at middle-right
-					final BoxRelativeAnchor boxAnchor = peCreateService.createBoxRelativeAnchor(containerShape);
-					boxAnchor.setRelativeWidth(1.0);
-					boxAnchor.setRelativeHeight(0.38); // Use golden section
+			// anchor references visible rectangle instead of invisible
+			// rectangle
+			boxAnchor.setReferencedGraphicsAlgorithm(polygon);
 
-					// anchor references visible rectangle instead of invisible rectangle
-					boxAnchor.setReferencedGraphicsAlgorithm(roundedRectangle);
+			// assign a graphics algorithm for the box relative anchor
+			final Ellipse ellipse = gaService.createEllipse(boxAnchor);
+			// anchor is located on the right border of the visible rectangle
+			// and touches the border of the invisible rectangle
+			// final int w = INVISIBLE_RECT_RIGHT;
+			gaService.setLocationAndSize(ellipse, 50, 25, 0, 0);
+			ellipse.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
 
-					// assign a graphics algorithm for the box relative anchor
-					final Ellipse ellipse = gaService.createPlainEllipse(boxAnchor);
+			// call the layout feature
+			layoutPictogramElement(containerShape);
 
-					// anchor is located on the right border of the visible rectangle
-					// and touches the border of the invisible rectangle
-					final int w = INVISIBLE_RECT_RIGHT;
-					gaService.setLocationAndSize(ellipse, -w, -w, 2 * w, 2 * w);
-					ellipse.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
-
-					
-					ChopboxAnchor chopboxAnchor = peCreateService.createChopboxAnchor(containerShape);				
-					TutorialFeatureProvider tfp = (TutorialFeatureProvider)getFeatureProvider();
-					
-					// call the layout feature
-					layoutPictogramElement(containerShape);
-
-					return containerShape;
+			return containerShape;
 		}
 
 	}

@@ -33,7 +33,7 @@ public class EGPeriodicImpl extends EGRecurringImpl implements EGPeriodic {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int TIME_EDEFAULT = 0;
+	protected static final String TIME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getTime() <em>Time</em>}' attribute.
@@ -43,7 +43,7 @@ public class EGPeriodicImpl extends EGRecurringImpl implements EGPeriodic {
 	 * @generated
 	 * @ordered
 	 */
-	protected int time = TIME_EDEFAULT;
+	protected String time = TIME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -69,7 +69,7 @@ public class EGPeriodicImpl extends EGRecurringImpl implements EGPeriodic {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getTime() {
+	public String getTime() {
 		return time;
 	}
 
@@ -78,8 +78,8 @@ public class EGPeriodicImpl extends EGRecurringImpl implements EGPeriodic {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTime(int newTime) {
-		int oldTime = time;
+	public void setTime(String newTime) {
+		String oldTime = time;
 		time = newTime;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, EventbasePackage.EG_PERIODIC__TIME, oldTime, time));
@@ -108,7 +108,7 @@ public class EGPeriodicImpl extends EGRecurringImpl implements EGPeriodic {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case EventbasePackage.EG_PERIODIC__TIME:
-				setTime((Integer)newValue);
+				setTime((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -138,7 +138,7 @@ public class EGPeriodicImpl extends EGRecurringImpl implements EGPeriodic {
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case EventbasePackage.EG_PERIODIC__TIME:
-				return time != TIME_EDEFAULT;
+				return TIME_EDEFAULT == null ? time != null : !TIME_EDEFAULT.equals(time);
 		}
 		return super.eIsSet(featureID);
 	}

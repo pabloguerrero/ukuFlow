@@ -33,7 +33,7 @@ public class EGAbsoluteImpl extends EGNonRecurringImpl implements EGAbsolute {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int ABSOLUTE_TIME_EDEFAULT = 0;
+	protected static final String ABSOLUTE_TIME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getAbsoluteTime() <em>Absolute Time</em>}' attribute.
@@ -43,7 +43,7 @@ public class EGAbsoluteImpl extends EGNonRecurringImpl implements EGAbsolute {
 	 * @generated
 	 * @ordered
 	 */
-	protected int absoluteTime = ABSOLUTE_TIME_EDEFAULT;
+	protected String absoluteTime = ABSOLUTE_TIME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -69,7 +69,7 @@ public class EGAbsoluteImpl extends EGNonRecurringImpl implements EGAbsolute {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getAbsoluteTime() {
+	public String getAbsoluteTime() {
 		return absoluteTime;
 	}
 
@@ -78,8 +78,8 @@ public class EGAbsoluteImpl extends EGNonRecurringImpl implements EGAbsolute {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setAbsoluteTime(int newAbsoluteTime) {
-		int oldAbsoluteTime = absoluteTime;
+	public void setAbsoluteTime(String newAbsoluteTime) {
+		String oldAbsoluteTime = absoluteTime;
 		absoluteTime = newAbsoluteTime;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, EventbasePackage.EG_ABSOLUTE__ABSOLUTE_TIME, oldAbsoluteTime, absoluteTime));
@@ -108,7 +108,7 @@ public class EGAbsoluteImpl extends EGNonRecurringImpl implements EGAbsolute {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case EventbasePackage.EG_ABSOLUTE__ABSOLUTE_TIME:
-				setAbsoluteTime((Integer)newValue);
+				setAbsoluteTime((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -138,7 +138,7 @@ public class EGAbsoluteImpl extends EGNonRecurringImpl implements EGAbsolute {
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case EventbasePackage.EG_ABSOLUTE__ABSOLUTE_TIME:
-				return absoluteTime != ABSOLUTE_TIME_EDEFAULT;
+				return ABSOLUTE_TIME_EDEFAULT == null ? absoluteTime != null : !ABSOLUTE_TIME_EDEFAULT.equals(absoluteTime);
 		}
 		return super.eIsSet(featureID);
 	}

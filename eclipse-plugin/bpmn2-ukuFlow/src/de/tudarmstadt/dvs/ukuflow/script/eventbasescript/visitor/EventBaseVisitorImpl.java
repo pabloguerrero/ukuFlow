@@ -30,6 +30,7 @@
 
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Vector;
 
@@ -37,12 +38,15 @@ import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAbsoluteEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicDistributionEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicPatternedEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChiSquareFunction;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilterBinaryExpression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilterPolicy;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilterUnaryExpression;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EGausianFunction;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EImmediateEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EOffsetEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EParetoFunction;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EPeriodicEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
@@ -237,5 +241,52 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	public void visit(EVariable e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChiSquareFunction)
+	 */
+	@Override
+	public void visit(EChiSquareFunction eChiSquareFunction) {
+		out.add((byte)UkuConstants.DistributionFunction.CHI_SQUARE_DISTRIBUTION);
+		out.add((byte)eChiSquareFunction.getK());
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EGausianFunction)
+	 */
+	@Override
+	public void visit(EGausianFunction eGausianFunction) {
+		out.add((byte)UkuConstants.DistributionFunction.GAUSSIAN_DISTRIBUTION);
+		out.addAll(convertToArray(eGausianFunction.getM(), 2));
+		out.addAll(convertToArray(eGausianFunction.getV(), 2));
+		out.add((byte)eGausianFunction.getA());
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EParetoFunction)
+	 */
+	@Override
+	public void visit(EParetoFunction eParetoFunction) {
+		out.add((byte)UkuConstants.DistributionFunction.PARETO_DISTRIBUTION);
+		out.addAll(convertToArray(eParetoFunction.getA(), 2));
+	}
+	
+	private Collection<Byte> convertToArray(int input, int size){
+		Collection<Byte> result = new ArrayList<Byte>(size);
+		for(int i = 0; i < size; i++){
+			input = input >> i*8;
+			byte tmp = (byte)(input % 256);
+			result.add(tmp);
+		}
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#getOutput()
+	 */
+	@Override
+	public Vector<Byte> getOutput() {
+		return out;
 	}
 }

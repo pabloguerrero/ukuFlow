@@ -34,6 +34,7 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.ParseException;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Token;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 /**
  * @author ”Hien Quoc Dang”
@@ -42,11 +43,13 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Token;
 public class UkuReceiveTask extends UkuActivity {
 	public EventBaseOperator topOperator;
 	EEventBaseScript ebScript;
+	private static BpmnLog log;
 	/**
 	 * @param id
 	 */
 	public UkuReceiveTask(String id) {
 		super(id);
+		log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	}
 
 	/* (non-Javadoc)
@@ -67,7 +70,7 @@ public class UkuReceiveTask extends UkuActivity {
 	
 	public void setScript(String script){
 		if(script == null || script.equals("")){
-			System.out.println(" receive task has no script !!");
+			log.info(" receive task has no script !!");
 			return;
 		}
 		EventBaseScript parser = EventBaseScript.getInstance(script);
@@ -83,7 +86,6 @@ public class UkuReceiveTask extends UkuActivity {
 					tk = tk.next;
 				tkn = tk.image;
 				msg = "error near the token " + tkn;
-				//if (e.getMessage() != null && e.getMessage().startsWith(tkn)) msg = e.getMessage();
 				addErrorMessage("element " + id + ", at line: "
 						+ tk.beginLine + "& col: "
 						+ tk.beginColumn, msg);
@@ -91,7 +93,6 @@ public class UkuReceiveTask extends UkuActivity {
 				addErrorMessage("element " + id,
 						"there is an unknown error in the script");
 			}			
-			e.printStackTrace();
 		}
 	}
 

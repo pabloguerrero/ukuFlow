@@ -35,6 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UkuConstants {
+	public class DistributionFunction{
+		public static final int GAUSSIAN_DISTRIBUTION	=0;//	 event-types.h
+		public static final int CHI_SQUARE_DISTRIBUTION	 =1;//	 event-types.h
+		public static final int PARETO_DISTRIBUTION	 = 2;//
+	}
+	
 	public class EGConstants {
 		public static final int IMMEDIATE_E_GEN = 0;
 		public static final int ABSOLUTE_E_GEN = 1;

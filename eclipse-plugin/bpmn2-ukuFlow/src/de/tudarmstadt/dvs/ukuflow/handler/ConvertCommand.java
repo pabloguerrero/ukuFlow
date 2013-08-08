@@ -98,6 +98,7 @@ import de.tudarmstadt.dvs.ukuflow.xml.entity.ElementVisitorImpl;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuElement;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuEntity;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuProcess;
+import de.tudarmstadt.dvs.ukuflow.xml.entity.UkuReceiveTask;
 
 @SuppressWarnings("restriction")
 public class ConvertCommand extends AbstractHandler {
@@ -142,9 +143,6 @@ public class ConvertCommand extends AbstractHandler {
 		return null;
 	}
 	public static boolean convert(IFile file, boolean saveOutput) {
-		//project = file.getProject();
-		//folder = file.getParent();
-		//System.out.println(folder);
 		deleteMarker(file);
 		boolean saved = saveAllResources(file);
 		if (!saved)
@@ -189,9 +187,10 @@ public class ConvertCommand extends AbstractHandler {
 		console.info("Validator", "Report:");
 		console.info("Validator", "Issued " + em.getWarnings().size()
 				+ (em.getWarnings().size() == 1 ? " warming" : " warnings "));
+		int errs = em.getErrors().size();
 		if (!em.isValid()) {
-			console.info("Validator", "There are(is) " + em.getErrors().size()
-					+ " errors in the diagram, please fix them (it) first");
+			console.info("Validator", "There "+(errs>1?"are":"is") + em.getErrors().size()
+					+ " errors in the diagram, please fix "+(errs>1?"them":"it")+" first");
 			return false;
 		}
 		return true;
@@ -199,14 +198,6 @@ public class ConvertCommand extends AbstractHandler {
 
 	private static boolean convert(IFile file, String oFileLocation, String extension,
 			boolean saveOutput) {
-		
-		// String extension = file.getFileExtension();
-		// String oFileLocation = file.getLocation().toOSString();
-		
-		//String nfileLocation = oFileLocation + "\n";
-		//String nfileLocation64 = oFileLocation + "\n";
-		//nfileLocation = nfileLocation.replace(extension + "\n", "uku");
-		//nfileLocation64 = nfileLocation64.replace(extension + "\n", "uku64");
 
 		if (extension.equals("bpmn") || extension.equals("bpmn2")) {
 			ErrorManager em = ErrorManager.getInstance();
@@ -225,8 +216,9 @@ public class ConvertCommand extends AbstractHandler {
 			}
 			/* checking cycles */
 
-			/* split mixed */
+			/* split mixed gateway */
 			boolean valid = new ProcessOptimizer(process).optimize();
+			
 			/* checking each element, cycle and balancing(if valid==true) */			
 			new UkuProcessValidation(process).validate(valid);
 
@@ -236,6 +228,7 @@ public class ConvertCommand extends AbstractHandler {
 			if (!isValid) {
 				return false;
 			}
+			
 			/* set ID & visit & writing output to file */
 			if (saveOutput)
 				visiting(file, process);
@@ -250,7 +243,7 @@ public class ConvertCommand extends AbstractHandler {
 		 */
 		byte id = 0;
 		for (UkuEntity ue : process.getEntities()) {
-			if (ue instanceof UkuElement) {
+			if (ue instanceof UkuElement && !(ue instanceof UkuReceiveTask)) {
 				((UkuElement) ue).setWorkflowElementID(id);
 				id++;
 			}
@@ -259,6 +252,7 @@ public class ConvertCommand extends AbstractHandler {
 
 		visitor.reset();
 		process.accept(visitor);
+		
 		InputStream istream = new ByteArrayInputStream(visitor.getOutputString64().getBytes());
 		console.info("Output", visitor.getOutputString64());
 		String fname = file.getName()+"\n";
