@@ -200,7 +200,8 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 
 			// create link and wire it
 			link(containerShape, addedClass);
-
+			link(polygonShape,addedClass);
+			//link(invisibleRectangle,addedClass);
 			// SHAPE WITH TEXT
 			{
 				// create shape for text
@@ -234,8 +235,8 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 				GraphicsAlgorithmContainer ga = getGraphicsAlgorithm(containerShape);
 				IGaService service = Graphiti.getGaService();
 				Image img = service.createImage(ga,
-						EventImageProvider.GEARS2_ICON);
-				service.setLocationAndSize(img, 0, 0, 16, 16);
+						EventImageProvider.GEARS_ICON);
+				service.setLocationAndSize(img, 0, 0, 20, 20);
 			}
 			// add a chopbox anchor to the shape
 			peCreateService.createChopboxAnchor(containerShape);
@@ -249,7 +250,7 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 
 			// anchor references visible rectangle instead of invisible
 			// rectangle
-			boxAnchor.setReferencedGraphicsAlgorithm(polygon);
+			boxAnchor.setReferencedGraphicsAlgorithm(invisibleRectangle);
 
 			// assign a graphics algorithm for the box relative anchor
 			final Ellipse ellipse = gaService.createEllipse(boxAnchor);

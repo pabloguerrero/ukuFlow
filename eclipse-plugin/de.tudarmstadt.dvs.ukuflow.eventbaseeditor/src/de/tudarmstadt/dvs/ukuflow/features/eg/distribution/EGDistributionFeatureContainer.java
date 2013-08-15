@@ -154,74 +154,76 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 			super(fp);
 		}
 
-		public boolean canAdd(IAddContext context) {			
+		public boolean canAdd(IAddContext context) {
 			final Object newObject = context.getNewObject();
 			if (newObject instanceof EGDistribution)
 				if (context.getTargetContainer() instanceof Diagram) {
 					return true;
-				}			
+				}
 			return false;
 		}
 
-		public PictogramElement add(IAddContext context) {			
-			final EGDistribution addedClass = (EGDistribution) context.getNewObject();
+		public PictogramElement add(IAddContext context) {
+			final EGDistribution addedClass = (EGDistribution) context
+					.getNewObject();
 			final Diagram targetDiagram = (Diagram) context
 					.getTargetContainer();
 			// CONTAINER SHAPE WITH ROUNDED RECTANGLE
 			final IPeCreateService peCreateService = Graphiti
 					.getPeCreateService();
 			final ContainerShape containerShape = peCreateService
-					.createContainerShape(targetDiagram, true);			
+					.createContainerShape(targetDiagram, true);
 
-			// check whether the context has a size (e.g. from a create feature)
-			// otherwise define a default size for the shape
 			final int width = context.getWidth() <= 0 ? 100 : context
 					.getWidth();
 			final int height = context.getHeight() <= 0 ? 50 : context
 					.getHeight();
 
 			final IGaService gaService = Graphiti.getGaService();
-			int xy[] = new int[] { 0, 0, EG_WIDTH-EG_OFFSET, 0, EG_WIDTH, EG_HEIGHT/2, EG_WIDTH-EG_OFFSET, EG_HEIGHT, 0, EG_HEIGHT, };
+
+			int xy[] = new int[] { 0, 0, EG_WIDTH - EG_OFFSET, 0, EG_WIDTH,
+					EG_HEIGHT / 2, EG_WIDTH - EG_OFFSET, EG_HEIGHT, 0,
+					EG_HEIGHT, };
+
+			// create invisible outer rectangle expanded by
+			// the width needed for the anchor
+			final Rectangle invisibleRectangle = gaService
+					.createInvisibleRectangle(containerShape);
+
+			gaService.setLocationAndSize(invisibleRectangle, context.getX(),
+					context.getY(), width, height);// width +
+													// INVISIBLE_RECT_RIGHT
+			Shape polygonShape = peCreateService.createShape(containerShape,
+					false);
 			Polygon polygon;
-			{
-				// create invisible outer rectangle expanded by
-				// the width needed for the anchor
-				final Rectangle invisibleRectangle = gaService.createInvisibleRectangle(containerShape);				
-				gaService.setLocationAndSize(invisibleRectangle,
-						context.getX(), context.getY(), width
-								+ INVISIBLE_RECT_RIGHT, height);
+			polygon = gaService.createPolygon(polygonShape, xy);
+			polygon.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
+			gaService.setLocationAndSize(polygon, 0, 0, width, height);
 
-				polygon = gaService.createPolygon(invisibleRectangle, xy);
-				polygon.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
-				gaService.setLocationAndSize(polygon, 0, 0, width, height);
-
-				// if addedClass has no resource we add it to the resource of
-				// the diagram
-				// in a real scenario the business model would have its own
-				// resource
-				if (addedClass.eResource() == null) {
-					getDiagram().eResource().getContents().add(addedClass);
-				}
-
-				// create link and wire it
-				link(containerShape, addedClass);
-				
-			
+			// if addedClass has no resource we add it to the resource of
+			// the diagram
+			// in a real scenario the business model would have its own
+			// resource
+			if (addedClass.eResource() == null) {
+				getDiagram().eResource().getContents().add(addedClass);
 			}
-			
 
+			// create link and wire it
+			link(containerShape, addedClass);
+			link(polygonShape, addedClass);
+			// link(invisibleRectangle,addedClass);
 			// SHAPE WITH TEXT
 			{
 				// create shape for text
 				final Shape shape = peCreateService.createShape(containerShape,
-						false);				
+						false);
+
 				// create and set text graphics algorithm
-				String name = addedClass.getClass().getSimpleName();				
-				//addedClass.setElementName()
+				String name = addedClass.getClass().getSimpleName();
 				final Text text = gaService.createPlainText(shape,
 						name.substring(0, name.length() - 4));
 				text.setStyle(StyleUtil.getStyleForEClassText(getDiagram()));
-				gaService.setLocationAndSize(text, 0, 0, width, 20);
+				gaService.setLocationAndSize(text, 0, 10, width, 20);
 
 				// create link and wire it
 				link(shape, addedClass);
@@ -241,12 +243,11 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 			// Shape with ICON
 			{
 				GraphicsAlgorithmContainer ga = getGraphicsAlgorithm(containerShape);
-				//IGaService service = Graphiti.getGaService();
-				Image img = gaService.createImage(ga,
+				IGaService service = Graphiti.getGaService();
+				Image img = service.createImage(ga,
 						EventImageProvider.GEARS_ICON);
-				gaService.setLocationAndSize(img, 0, 0, 16, 16);
+				service.setLocationAndSize(img, 0, 0, 20, 20);
 			}
-
 			// add a chopbox anchor to the shape
 			peCreateService.createChopboxAnchor(containerShape);
 			// peCreateService.createBoxRelativeAnchor(containerShape);
@@ -259,7 +260,7 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 
 			// anchor references visible rectangle instead of invisible
 			// rectangle
-			boxAnchor.setReferencedGraphicsAlgorithm(polygon);
+			boxAnchor.setReferencedGraphicsAlgorithm(invisibleRectangle);
 
 			// assign a graphics algorithm for the box relative anchor
 			final Ellipse ellipse = gaService.createEllipse(boxAnchor);
@@ -276,5 +277,4 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 		}
 
 	}
-	
 }

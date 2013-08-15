@@ -17,7 +17,9 @@ import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
+import org.eclipse.graphiti.mm.GraphicsAlgorithmContainer;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
+import org.eclipse.graphiti.mm.algorithms.Image;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
@@ -33,6 +35,7 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeCreateService;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram.TutorialFeatureProvider;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGPatterned;
@@ -169,49 +172,44 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 			final ContainerShape containerShape = peCreateService
 					.createContainerShape(targetDiagram, true);
 
-			// check whether the context has a size (e.g. from a create feature)
-			// otherwise define a default size for the shape
 			final int width = context.getWidth() <= 0 ? 100 : context
 					.getWidth();
 			final int height = context.getHeight() <= 0 ? 50 : context
 					.getHeight();
 
 			final IGaService gaService = Graphiti.getGaService();
-			int xy[] = new int[] { 0, 0, 90, 0, 100, 25, 90, 50, 0, 50, };
+
+			int xy[] = new int[] { 0, 0, EG_WIDTH - EG_OFFSET, 0, EG_WIDTH,
+					EG_HEIGHT / 2, EG_WIDTH - EG_OFFSET, EG_HEIGHT, 0,
+					EG_HEIGHT, };
+
+			// create invisible outer rectangle expanded by
+			// the width needed for the anchor
+			final Rectangle invisibleRectangle = gaService
+					.createInvisibleRectangle(containerShape);
+
+			gaService.setLocationAndSize(invisibleRectangle, context.getX(),
+					context.getY(), width, height);// width +
+													// INVISIBLE_RECT_RIGHT
+			Shape polygonShape = peCreateService.createShape(containerShape,
+					false);
 			Polygon polygon;
-			Ellipse ellipse_funnel;
-			{
+			polygon = gaService.createPolygon(polygonShape, xy);
+			polygon.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
+			gaService.setLocationAndSize(polygon, 0, 0, width, height);
 
-				// create invisible outer rectangle expanded by
-				// the width needed for the anchor
-				final Rectangle invisibleRectangle = gaService
-						.createInvisibleRectangle(containerShape);
-				
-				
-				gaService.setLocationAndSize(invisibleRectangle,
-						context.getX(), context.getY(), width
-								+ INVISIBLE_RECT_RIGHT, height);
-
-				polygon = gaService.createPolygon(invisibleRectangle, xy);
-				polygon.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
-				gaService.setLocationAndSize(polygon, 0, 0, width, height);
-				/**
-				ellipse_funnel= gaService.createPlainEllipse(invisibleRectangle);
-				gaService.setLocationAndSize(ellipse_funnel, 0, 0, 20, 50);
-				ellipse_funnel.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
-				*/
-				// if addedClass has no resource we add it to the resource of
-				// the diagram
-				// in a real scenario the business model would have its own
-				// resource
-				if (addedClass.eResource() == null) {
-					getDiagram().eResource().getContents().add(addedClass);
-				}
-
-				// create link and wire it
-				link(containerShape, addedClass);
+			// if addedClass has no resource we add it to the resource of
+			// the diagram
+			// in a real scenario the business model would have its own
+			// resource
+			if (addedClass.eResource() == null) {
+				getDiagram().eResource().getContents().add(addedClass);
 			}
 
+			// create link and wire it
+			link(containerShape, addedClass);
+			link(polygonShape, addedClass);
+			// link(invisibleRectangle,addedClass);
 			// SHAPE WITH TEXT
 			{
 				// create shape for text
@@ -240,7 +238,14 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 				directEditingInfo.setPictogramElement(shape);
 				directEditingInfo.setGraphicsAlgorithm(text);
 			}
-
+			// Shape with ICON
+			{
+				GraphicsAlgorithmContainer ga = getGraphicsAlgorithm(containerShape);
+				IGaService service = Graphiti.getGaService();
+				Image img = service.createImage(ga,
+						EventImageProvider.GEARS_ICON);
+				service.setLocationAndSize(img, 0, 0, 20, 20);
+			}
 			// add a chopbox anchor to the shape
 			peCreateService.createChopboxAnchor(containerShape);
 			// peCreateService.createBoxRelativeAnchor(containerShape);
@@ -253,7 +258,7 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 
 			// anchor references visible rectangle instead of invisible
 			// rectangle
-			boxAnchor.setReferencedGraphicsAlgorithm(polygon);
+			boxAnchor.setReferencedGraphicsAlgorithm(invisibleRectangle);
 
 			// assign a graphics algorithm for the box relative anchor
 			final Ellipse ellipse = gaService.createEllipse(boxAnchor);
@@ -268,5 +273,6 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 
 			return containerShape;
 		}
+
 	}
 }
