@@ -145,7 +145,7 @@ void scopes_init(struct scopes_routing *r, struct scopes_membership *m) {
 	world_scope.scope_id = SCOPES_WORLD_SCOPE_ID;
 	world_scope.super_scope_id = SCOPES_WORLD_SCOPE_ID;
 	world_scope.ttl = 0;
-	world_scope.status = SCOPES_STATUS_MEMBER;
+	world_scope.status = SCOPES_FLAG_STATUS_MEMBER;
 	world_scope.flags = SCOPES_FLAG_NONE;
 
 	/* add world scope */
@@ -193,8 +193,7 @@ void scopes_register(subscriber_id_t id, struct scopes_application *application)
 
 	/* add the subscriber */
 	list_add(subscribers, subscriber);
-	PRINTF(3, "(SCOPES) added subscriber: %s (sid=%u)\n",
-			subscriber->process->name, subscriber->id);
+	PRINTF(5, "(SCOPES) added subscriber with sid=%u\n", subscriber->id);
 }
 
 /** \brief TODO */
@@ -208,8 +207,7 @@ void scopes_unregister(subscriber_id_t subscriber_id) {
 
 	/* remove the subscriber */
 	list_remove(subscribers, subscriber);
-	PRINTF(3, "(SCOPES) removed subscriber: %s (sid=%u)\n",
-			subscriber->process->name, subscriber->id);
+	PRINTF(5, "(SCOPES) removed subscriber with sid=%u\n", subscriber->id);
 	memb_free(&subscribers_mem, subscriber);
 }
 
@@ -268,7 +266,7 @@ bool scopes_open(subscriber_id_t subscriber_id, scope_id_t super_scope_id,
 	scope->owner = subscriber;
 	scope->use_counter = 1;
 	scope->ttl = ttl;
-	scope->status = SCOPES_STATUS_CREATOR;
+	scope->status = SCOPES_FLAG_STATUS_CREATOR;
 	scope->flags = flags;
 	scope->spec_len = spec_len;
 
@@ -292,13 +290,23 @@ bool scopes_open(subscriber_id_t subscriber_id, scope_id_t super_scope_id,
 /** \brief Returns whether this node is member of the scope with id passed as parameter */
 bool scopes_member_of(scope_id_t scope_id) {
 	struct scope *scope = lookup_scope_id(scope_id);
-	return (HAS_STATUS(scope, SCOPES_STATUS_MEMBER));
+	return (HAS_STATUS(scope, SCOPES_FLAG_STATUS_MEMBER));
 }
 
 /** \brief Returns whether this node is creator (root) of the scope with id passed as parameter */
 bool scopes_creator_of(scope_id_t scope_id) {
 	struct scope *scope = lookup_scope_id(scope_id);
-	return (HAS_STATUS(scope, SCOPES_STATUS_CREATOR));
+	return (HAS_STATUS(scope, SCOPES_FLAG_STATUS_CREATOR));
+}
+
+/** \brief Returns whether this node is forwarder of the scope with id passed as parameter */
+bool scopes_forwarder_of(scope_id_t scope_id) {
+	return (routing->has_status(scope_id, 0x2 /*SELFUR_STATUS_FORWARDER*/));
+}
+
+/** \brief Returns whether this node is forwarder of the scope with id passed as parameter */
+uint8_t scopes_height_of(scope_id_t scope_id) {
+	return (routing->node_distance(scope_id));
 }
 
 /** \brief TODO */
@@ -320,7 +328,7 @@ void scopes_close(subscriber_id_t subscriber_id, scope_id_t scope_id) {
 	}
 
 	/* check if this scope may be deleted */
-	if (!HAS_STATUS(scope, SCOPES_STATUS_CREATOR)
+	if (!HAS_STATUS(scope, SCOPES_FLAG_STATUS_CREATOR)
 			|| !IS_OWNER(scope, subscriber)) {
 		PRINTF(3, "(SCOPES) not allowed to delete scope: %u\n",
 				scope->scope_id);
@@ -417,7 +425,7 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 			break;
 
 		/* check if the node is a member in the super scope */
-		if (!HAS_STATUS(super_scope, SCOPES_STATUS_MEMBER))
+		if (!HAS_STATUS(super_scope, SCOPES_FLAG_STATUS_MEMBER))
 			break;
 
 		/* calculate the position of the specification */
@@ -460,7 +468,7 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 						new_scope->super_scope_id = msg->scope_id;
 						new_scope->owner = owner;
 						new_scope->ttl = msg->ttl;
-						new_scope->status = SCOPES_STATUS_NONE;
+						new_scope->status = SCOPES_FLAG_STATUS_NONE;
 						new_scope->flags = msg->flags;
 						new_scope->spec_len = msg->spec_len;
 
@@ -482,7 +490,7 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 
 			/* check if the new scope is the super scope's sub scope */
 			if (ARE_LINKED(super_scope, new_scope)
-					&& !HAS_STATUS(new_scope, SCOPES_STATUS_CREATOR)) {
+					&& !HAS_STATUS(new_scope, SCOPES_FLAG_STATUS_CREATOR)) {
 
 				/* check if the timer should be reset */
 				if (should_be_member || (msg->flags & SCOPES_FLAG_DYNAMIC)) {
@@ -514,7 +522,7 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 		/* check if the scope should be removed */
 		if (super_scope != NULL && sub_scope != NULL
 				&& ARE_LINKED(super_scope, sub_scope)
-				&& !HAS_STATUS(sub_scope, SCOPES_STATUS_CREATOR)) {
+				&& !HAS_STATUS(sub_scope, SCOPES_FLAG_STATUS_CREATOR)) {
 			/* remove the scope */
 			PRINTF(3, "(SCOPES) had %d scopes\n", list_length(scopes));
 			remove_scope(sub_scope);
@@ -542,28 +550,29 @@ void scopes_receive(struct scopes_msg_generic *gmsg) {
 		/* check if the scope is known */
 		if (scope != NULL) {
 			/* check if the node is a member */
-			if (HAS_STATUS(scope, SCOPES_STATUS_MEMBER) || //
-					(msg->to_creator && HAS_FLAG(scope, SCOPES_FLAG_INTERCEPT))) {
-				/* check if the message should be delivered */
-				if ((msg->to_creator
-						&& HAS_STATUS(scope, SCOPES_STATUS_CREATOR))
-				|| (!(msg->to_creator)
-						&& !HAS_STATUS(scope, SCOPES_STATUS_CREATOR))
-				|| (msg->to_creator
-						&& HAS_FLAG(scope, SCOPES_FLAG_INTERCEPT))){
-				/* check if the owner is subscribed */
-				if (IS_SUBSCRIBED(scope->owner)) {
-					/* calculate the position of the payload */
-					void *payload_ptr = (void *) ((uint8_t *) gmsg
-							+ sizeof(struct scopes_msg_data));
+			if (HAS_STATUS(scope, SCOPES_FLAG_STATUS_MEMBER) || //
+					(msg->to_creator && HAS_FLAG(scope, SCOPES_FLAG_INTERCEPT))||
+					(!msg->to_creator && HAS_FLAG(scope, SCOPES_FLAG_INTERCEPT) && routing->has_status(scope->scope_id, 0x2 /*SELFUR_STATUS_FORWARDER*/))){
+					/* check if the message should be delivered */
+					if ((msg->to_creator
+									&& HAS_STATUS(scope, SCOPES_FLAG_STATUS_CREATOR))
+							|| (!(msg->to_creator)
+									&& !HAS_STATUS(scope, SCOPES_FLAG_STATUS_CREATOR))
+							|| (msg->to_creator
+									&& HAS_FLAG(scope, SCOPES_FLAG_INTERCEPT))) {
+						/* check if the owner is subscribed */
+						if (IS_SUBSCRIBED(scope->owner)) {
+							/* calculate the position of the payload */
+							void *payload_ptr = (void *) ((uint8_t *) gmsg
+									+ sizeof(struct scopes_msg_data));
 
-					/* notify the owner */
-					CALLBACK(scope->owner,
-							recv(scope->scope_id, payload_ptr, msg->data_len, msg->to_creator, &msg->source));
+							/* notify the owner */
+							CALLBACK(scope->owner,
+									recv(scope->scope_id, payload_ptr, msg->data_len, msg->to_creator, &msg->source));
+						}
+					}
 				}
 			}
-		}
-	}
 		break;
 	}
 	default:
@@ -592,6 +601,8 @@ allocate_scope(data_len_t spec_len) {
 	/* try to get memory for the specification */
 	void *specs_ptr = malloc(spec_len);
 
+	PRINTF(2, "(SCOPES) allocated %u bytes for scope_spec @%p\n", spec_len,
+			specs_ptr);
 	/* check if memory could be obtained */
 	if (specs_ptr == NULL) {
 		/* free memory for scope structure */
@@ -607,6 +618,9 @@ allocate_scope(data_len_t spec_len) {
 }
 
 static void deallocate_scope(struct scope *scope) {
+	PRINTF(2, "(SCOPES) freed specs of scope %p @%p\n", scope,
+			scope->specs);
+
 	/* free specification memory */
 	free(scope->specs);
 
@@ -623,13 +637,14 @@ static void add_scope(struct scope *scope) {
 
 	PRINTF(3, "(SCOPES) Added scope %u\n", scope->scope_id);
 
-	PRINTF(3, "(SCOPES) scope-id=%u, super-scope-id=%u, owner-sid=%u, ttl=%lu, flags=%u, status=%u, spec-len=%u\n", scope->scope_id, scope->super_scope_id,
-			scope->owner->id,
+	PRINTF(3,
+			"(SCOPES) scope-id=%u, super-scope-id=%u, owner-sid=%u, ttl=%lu, flags=%u, status=%u, spec-len=%u\n",
+			scope->scope_id, scope->super_scope_id, scope->owner->id,
 			timer_remaining(&(scope->ttl_timer.etimer.timer)) / CLOCK_SECOND,
 			scope->flags, scope->status, scope->spec_len);
 
 	/* inform the routing processes */
-	routing->add(scope->scope_id, HAS_STATUS(scope, SCOPES_STATUS_CREATOR));
+	routing->add(scope->scope_id, HAS_STATUS(scope, SCOPES_FLAG_STATUS_CREATOR));
 
 	/* inform the owner */
 	CALLBACK(scope->owner, add(scope->scope_id));
@@ -673,7 +688,7 @@ static void remove_scope_recursively(struct scope *scope) {
 /** \brief TODO */
 static void remove_single_scope(struct scope *scope) {
 	/* leave scope in case node is a member */
-	if (HAS_STATUS(scope, SCOPES_STATUS_MEMBER)) {
+	if (HAS_STATUS(scope, SCOPES_FLAG_STATUS_MEMBER)) {
 		leave_scope(scope);
 	}
 
@@ -698,7 +713,7 @@ static void remove_single_scope(struct scope *scope) {
 /** \brief TODO */
 static void join_scope(struct scope *scope) {
 	/* set member status */
-	scope->status |= SCOPES_STATUS_MEMBER;
+	scope->status |= SCOPES_FLAG_STATUS_MEMBER;
 
 	PRINTF(3, "(SCOPES) Joined scope %u\n", scope->scope_id);
 
@@ -720,7 +735,7 @@ static void leave_scope(struct scope *scope) {
 	routing->leave(scope->scope_id);
 
 	/* unset member status */
-	scope->status &= ~SCOPES_STATUS_MEMBER;
+	scope->status &= ~SCOPES_FLAG_STATUS_MEMBER;
 }
 
 /** \brief TODO */
@@ -741,7 +756,7 @@ lookup_scope_id(scope_id_t scope_id) {
 static void handle_scope_timeout(struct scope *scope) {
 	/* check if the node is the creator of the scope and if the owner is
 	 subscribed */
-	if (HAS_STATUS(scope, SCOPES_STATUS_CREATOR) && IS_SUBSCRIBED(scope->owner)) {
+	if (HAS_STATUS(scope, SCOPES_FLAG_STATUS_CREATOR) && IS_SUBSCRIBED(scope->owner)) {
 		/* re-announce the scope on the network */
 		PRINTF(3, "(SCOPES) Re-announcing scope %u\n", scope->scope_id);
 		announce_scope_open(scope);
@@ -759,7 +774,7 @@ static void handle_scope_timeout(struct scope *scope) {
 static void reset_scope_timer(struct scope *scope) {
 	clock_time_t timeout = CLOCK_SECOND * scope->ttl;
 
-	if (HAS_STATUS(scope, SCOPES_STATUS_CREATOR)) {
+	if (HAS_STATUS(scope, SCOPES_FLAG_STATUS_CREATOR)) {
 		/* shorten the creator's timer so the scope is re-announced in time */
 		timeout = timeout * SCOPES_REANNOUNCE_FACTOR;
 	}
@@ -843,7 +858,7 @@ PROCESS_THREAD( scopes_process, ev, data) {
 	PROCESS_BEGIN()
 		;
 
-	PRINTF(3, "(SCOPES) scopes process started\n");
+		PRINTF(3, "(SCOPES) scopes process started\n");
 
 		/* create and start an event timer */
 		static struct etimer scopes_timer;
@@ -861,7 +876,7 @@ PROCESS_THREAD( scopes_process, ev, data) {
 			for (s = list_head(scopes); s != NULL; s = s->next) {
 				/* only check scopes not created by the local node */
 				if (HAS_FLAG(s, SCOPES_FLAG_DYNAMIC)
-						&& !HAS_STATUS(s, SCOPES_STATUS_CREATOR)) {
+						&& !HAS_STATUS(s, SCOPES_FLAG_STATUS_CREATOR)) {
 					/* check membership */
 					int should_be_member = membership->check(s->specs,
 							s->spec_len);
@@ -871,11 +886,11 @@ PROCESS_THREAD( scopes_process, ev, data) {
 
 					/* decide action */
 					if (should_be_member
-							&& !HAS_STATUS(s, SCOPES_STATUS_MEMBER)) {
+							&& !HAS_STATUS(s, SCOPES_FLAG_STATUS_MEMBER)) {
 						/* join scope */
 						join_scope(s);
 					} else if (!should_be_member
-							&& HAS_STATUS(s, SCOPES_STATUS_MEMBER)) {
+							&& HAS_STATUS(s, SCOPES_FLAG_STATUS_MEMBER)) {
 						/* leave scope */
 						leave_scope(s);
 					}
