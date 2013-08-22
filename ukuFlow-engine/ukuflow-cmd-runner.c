@@ -90,7 +90,7 @@ char *ukuflow_cmd_runner_generate_command(struct statement_command *st_cmd,
 
 	char *result = (char*) malloc(CMD_LEN * sizeof(char));
 
-	PRINTF(5, "(CMD-RUNNER) allocated %u bytes for cmd at %p\n",
+	PRINTF(2, "(CMD-RUNNER) allocated %u bytes for cmd at %p\n",
 			CMD_LEN*sizeof(char), result);
 
 	if (result == NULL)
