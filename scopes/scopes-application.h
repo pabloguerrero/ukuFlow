@@ -89,5 +89,9 @@ extern bool scopes_member_of(scope_id_t scope_id);
 
 extern bool scopes_creator_of(scope_id_t scope_id);
 
+extern bool scopes_forwarder_of(scope_id_t scope_id);
+
+extern uint8_t scopes_height_of(scope_id_t scope_id);
+
 #endif
 /** @} */
