@@ -169,6 +169,8 @@ struct routing_entry {
 	/** \brief	TODO */
 	rimeaddr_t next_hop;
 	/** \brief	TODO */
+	uint8_t hop_count;
+	/** \brief	TODO */
 	struct ctimer ttl_timer;
 };
 
