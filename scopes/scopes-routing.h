@@ -57,28 +57,57 @@ struct scopes_routing {
 	/** \brief Name of the routing protocol */
 	const char *name;
 	/** \brief Initialization function */
-	void (* init)(void);
+	void (*init)(void);
 	/** \brief Data transmission function */
-	void (* send)(scope_id_t scope_id, bool to_creator);
+	void (*send)(scope_id_t scope_id, bool to_creator);
 	/** \brief Scope addition function */
-	void (* add)(scope_id_t scope, bool is_creator);
+	void (*add)(scope_id_t scope, bool is_creator);
 	/** \brief Scope removal function */
-	void (* remove)(scope_id_t scope);
+	void (*remove)(scope_id_t scope);
 	/** \brief Scope join function */
-	void (* join)(scope_id_t scope);
+	void (*join)(scope_id_t scope);
 	/** \brief Scope leave function */
-	void (* leave)(scope_id_t scope);
+	void (*leave)(scope_id_t scope);
 	/** \brief Buffer clearing function */
-	void (* buffer_clear)(bool to_creator);
+	void (*buffer_clear)(bool to_creator);
 	/** \brief Buffer access function */
-	uint8_t* (* buffer_ptr)(bool to_creator);
+	uint8_t* (*buffer_ptr)(bool to_creator);
 	/** \brief Buffer length set function */
-	void (* buffer_setlen)(bool to_creator, uint16_t len);
+	void (*buffer_setlen)(bool to_creator, uint16_t len);
+	/** \brief Scope status checking function */
+	bool (*has_status)(scope_id_t scope_id, uint8_t status);
+	/** \brief Scope status checking function */
+	uint8_t (*node_distance)(scope_id_t scope_id);
 };
 
 /** \brief Macro for specifying a routing protocol */
-#define ROUTING(name, strname, init, send, add, remove, join, leave, buffer_clear, buffer_ptr, buffer_setlen)     \
-  struct scopes_routing name = { strname, init, send, add, remove, join, leave, buffer_clear, buffer_ptr, buffer_setlen }
+#define ROUTING(  /**/ \
+				name, /**/ \
+				strname, /**/ \
+				init, /**/ \
+				send, /**/ \
+				add, /**/ \
+				remove, /**/ \
+				join, /**/ \
+				leave, /**/ \
+				buffer_clear, /**/ \
+				buffer_ptr, /**/ \
+				buffer_setlen, /**/ \
+				has_status, /**/ \
+				node_distance) /**/ \
+struct scopes_routing name = { /**/ \
+		strname, /**/ \
+		init, /**/ \
+		send, /**/ \
+		add, /**/ \
+		remove, /**/ \
+		join, /**/ \
+		leave, /**/ \
+		buffer_clear, /**/ \
+		buffer_ptr, /**/ \
+		buffer_setlen, /**/ \
+		has_status, /**/ \
+		node_distance }
 
 /** \brief Constant specifying the scope id of the world scope (the universe) */
 #define SCOPES_WORLD_SCOPE_ID 255
@@ -96,5 +125,4 @@ struct scopes_msg_generic {
 extern void scopes_receive(struct scopes_msg_generic *gmsg);
 
 #endif // __SCOPES_ROUTING_H__
-
 /** @} */
