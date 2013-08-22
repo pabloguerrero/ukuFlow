@@ -80,7 +80,7 @@
  * 				TODO
  */
 static void add_scope(scope_id_t scope_id) {
-	PRINTF(1,
+	PRINTF(2,
 			"(UF-NET-MGR) scope %u added\n", scope_id);
 }
 
@@ -91,9 +91,10 @@ static void add_scope(scope_id_t scope_id) {
  * 				Tell to upper layers that a scope was removed in this node, so that necessary housekeeping can be done.
  */
 static void remove_scope(scope_id_t scope_id) {
-	PRINTF(1,
+	PRINTF(2,
 			"(UF-NET-MGR) scope %u removed\n", scope_id);
 
+	ukuflow_event_mgr_scope_removed(scope_id);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -103,7 +104,7 @@ static void remove_scope(scope_id_t scope_id) {
  * 				TODO
  */
 static void join_scope(scope_id_t scope_id) {
-	PRINTF(1,
+	PRINTF(2,
 			"(UF-NET-MGR) joined scope: %u\n", scope_id);
 
 #ifdef SWITCH_LEDS
@@ -123,7 +124,7 @@ static void join_scope(scope_id_t scope_id) {
  * 				TODO
  */
 static void leave_scope(scope_id_t scope_id) {
-	PRINTF(1,
+	PRINTF(2,
 			"(UF-NET-MGR) about to leave scope %u\n", scope_id);
 
 #ifdef SWITCH_LEDS
@@ -135,7 +136,6 @@ static void leave_scope(scope_id_t scope_id) {
 		leds_off(LEDS_BLUE);
 #endif
 
-	ukuflow_event_mgr_scope_left(scope_id);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -152,7 +152,7 @@ static void leave_scope(scope_id_t scope_id) {
 void ukuflow_net_mgr_handler(scope_id_t scope_id, void *data,
 		data_len_t data_len, bool to_creator, const rimeaddr_t *source) {
 
-	PRINTF(1, "(UF-NET-MGR) msg received from [%u.%u], ", source->u8[0], source->u8[1]);
+	PRINTF(2, "(UF-NET-MGR) msg received from [%u.%u], ", source->u8[0], source->u8[1]);
 	PRINT_ARR(1, data, data_len);
 
 	struct ukuflow_generic_msg *msg = (struct ukuflow_generic_msg*) data;
@@ -181,7 +181,7 @@ void ukuflow_net_mgr_handler(scope_id_t scope_id, void *data,
 		break;
 	}
 	} // switch
-	PRINTF(1, "(UF-NET-MGR) Finished handling\n");
+	PRINTF(2, "(UF-NET-MGR) Finished handling\n");
 }
 
 /*---------------------------------------------------------------------------*/
@@ -214,7 +214,7 @@ void ukuflow_net_mgr_init() {
 bool ukuflow_net_mgr_open_scope(scope_id_t scope_id, void *specs,
 		data_len_t spec_len, scope_ttl_t ttl) {
 
-	PRINTF(1,
+	PRINTF(2,
 			"(UF-NET-MGR) Opening scope %u, len %u, ttl %u\n", scope_id, spec_len, ttl);
 
 	return (scopes_open(UKUFLOW_SCOPES_SID, SCOPES_WORLD_SCOPE_ID, scope_id,
@@ -230,7 +230,7 @@ bool ukuflow_net_mgr_open_scope(scope_id_t scope_id, void *specs,
  */
 void ukuflow_net_mgr_close_scope(scope_id_t scope_id) {
 
-	PRINTF(1,
+	PRINTF(2,
 			"(UF-NET-MGR) Closing scope %u\n", scope_id);
 
 	scopes_close(UKUFLOW_SCOPES_SID, scope_id);
@@ -244,8 +244,8 @@ void ukuflow_net_mgr_close_scope(scope_id_t scope_id) {
  */
 void ukuflow_net_mgr_send_scope(scope_id_t scope_id, bool to_creator,
 		void *data, data_len_t data_len) {
-	PRINTF(1,
-			"(UF-NET-MGR) Sending msg through scope %u, msg len %u, direction %u\n", scope_id, data_len, to_creator);
+	PRINTF(2,
+			"(UF-NET-MGR) Sending msg through scope %u, msg len %u, direction %u, height %u\n", scope_id, data_len, to_creator, scopes_height_of(scope_id));
 	scopes_send(UKUFLOW_SCOPES_SID, scope_id, to_creator, data, data_len);
 }
 /** @} */
