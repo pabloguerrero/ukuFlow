@@ -43,34 +43,44 @@
 #include "event.h"
 #include "stdlib.h"
 #include "string.h"
+#include "stdarg.h"
 
 #include "logger.h"
 /*---------------------------------------------------------------------------*/
 /** \brief		Size of event fields. These correspond to the enumeration 'event_field' in event-types.h */
 data_len_t event_field_width[] = { //
 		/** \brief EVENT_TYPE */
-		sizeof(event_type_t),
+		sizeof(event_operator_type_t),
+		/** \brief EVENT_OPERATOR_ID */
+		sizeof(event_operator_id_t),
 		/** \brief SOURCE */
 		sizeof(uint8_t),
 		/** \brief MAGNITUDE */
 		sizeof(int16_t),
 		/** \brief TIMESTAMP */
 		sizeof(clock_time_t),
-		/** \brief SOURCE_NODE */
+		/** \brief ORIGIN_NODE */
 		sizeof(rimeaddr_t),
-		/** \brief SOURCE_SCOPE */
-		sizeof(scope_id_t) //
+		/** \brief ORIGIN_SCOPE */
+		sizeof(scope_id_t),
+		/** \brief COUNT */
+		sizeof(uint16_t),
+		/** \brief SUM */
+		sizeof(uint16_t) //
 		};
 
 /*---------------------------------------------------------------------------*/
 /** \brief		Names of event fields. These correspond to the enumeration 'event_field' */
 char *event_field_names[] = { //
-		"event type", /** 		EVENT_TYPE*/
-		"source", /** 			SOURCE*/
-		"magnitude", /** 		MAGNITUDE*/
-		"timestamp", /** 		TIMESTAMP*/
-		"origin node", /** 		SOURCE_NODE*/
-		"origin scope" /** 		SOURCE_SCOPE*/
+		"event type", /**			EVENT_TYPE*/
+		"event operator id", /** 	EVENT_OPERATOR_ID*/
+		"source", /** 				SOURCE*/
+		"magnitude", /** 			MAGNITUDE*/
+		"timestamp", /** 			TIMESTAMP*/
+		"origin node", /** 			ORIGIN_NODE*/
+		"origin scope", /** 		ORIGIN_SCOPE*/
+		"count", /** 				COUNT*/
+		"sum", /** 					SUM*/
 		};
 /*---------------------------------------------------------------------------*/
 /**
@@ -132,22 +142,34 @@ data_len_t event_operator_get_size(struct generic_event_operator *geo) {
 		// intentionally left blank
 	case OR_COMPOSITION_EF:
 		// intentionally left blank
-	case NOT_COMPOSITION_EF:
-		// intentionally left blank
-	case SEQUENCE_COMPOSITION_EF:
-		// intentionally left blank
-	case AVG_COMPOSITION_EF:
-		// intentionally left blank
+	case NOT_COMPOSITION_EF: {
+		size = sizeof(struct logical_composition_filter);
+		break;
+	}
+	case SEQUENCE_COMPOSITION_EF: {
+		size = sizeof(struct temporal_composition_filter);
+		break;
+	}
 	case MIN_COMPOSITION_EF:
 		// intentionally left blank
 	case MAX_COMPOSITION_EF:
 		// intentionally left blank
+	case COUNT_COMPOSITION_EF:
+		// intentionally left blank
+	case SUM_COMPOSITION_EF:
+		// intentionally left blank
+	case AVG_COMPOSITION_EF:
+		// intentionally left blank
+	case STDEV_COMPOSITION_EF: {
+		size = sizeof(struct processing_composition_filter);
+		break;
+	}
 	case INCREASE_EF:
 		// intentionally left blank
 	case DECREASE_EF:
 		// intentionally left blank
 	case REMAIN_EF: {
-		size = sizeof(struct composite_filter);
+		size = sizeof(struct change_filter);
 		break;
 	}
 	default: {
@@ -189,51 +211,61 @@ uint8_t* event_custom_input_function(data_len_t *data_len,
 	return (NULL);
 
 }
-/*---------------------------------------------------------------------------*/
+
 /**
- * \brief	Allocates memory for a raw event and returns a pointer to it
+ * \brief		Allocates memory for a raw event and returns a pointer to it
  *
- * 			Allocates enough memory to store an event, and
- *			returns a pointer to the newly allocated memory segment.
- * 			If allocation fails, this function returns NULL.
+ *	 			Allocates enough memory to store an event with the fields passed
+ *	 			as parameter. Returns a pointer to the newly allocated memory segment.
+ * 				If allocation fails, this function returns NULL.
  *
- * @param[out]	event_len	the length of the returned event
- *
- * \return	pointer to newly allocated memory containing empty, raw event, or
- * 			NULL if there was no space.
- * */
-struct event *event_alloc_raw(data_len_t *event_len) {
-	uint8_t field;
-	// determine event payload size
-	*event_len = sizeof(struct event);
+ * @param[in] num_fields the number of fields that this event will have
+ * @param[in] ... the list of variable length of arguments, which are the event fields
+ * @return an event with space for the requested fields, or NULL if no space is left
+ */
+struct event *event_alloc(int num_fields, ...) {
+	va_list arg_list;
 
-	uint8_t num_fields = sizeof(event_field_width) / sizeof(uint8_t);
+	va_start(arg_list, num_fields);
 
-	/* now calculate the length of the event based on the individual lengths of the fields*/
-	for (field = 0; field < num_fields; field++)
-		/* the length is increased by 1 byte (for the field name) and the width of the field value */
-		*event_len += sizeof(uint8_t) + event_field_width[field];
+	/** First we need to find out the final size of the event */
+	data_len_t event_len = sizeof(struct event);
 
-	struct event *event = malloc(sizeof(struct event) + *event_len);
+	uint8_t field_nr, field;
+	/** now calculate the length of the event based on the individual lengths of the requested fields*/
+	for (field_nr = 0; field_nr < num_fields; field_nr++) {
+		/** the length is increased by 1 byte (for the field name) and the width of the field value */
+		field = va_arg(arg_list, uint16_t);
+		event_len += sizeof(uint8_t) + event_field_width[field];
+	}
 
-	PRINTF(1, "(EVENT) allocated %u bytes for event at %p\n", sizeof(struct event) + *event_len, event);
+	va_end(arg_list);
 
-	/* bail out if there was no space free*/
-	if (event == NULL)
-		return (NULL);
+	/** Now that we know the size, allocate it and add the fields */
+	struct event *event = malloc(event_len);
 
-	event->channel_id = 0;
-	event->num_fields = num_fields;
+	PRINTF(2, "(EVENT) allocated %u bytes for event at %p\n", event_len, event);
 
-	/* enter the field names already, but leave the values blank */
-	uint8_t *fvp = ((uint8_t*) event) + sizeof(struct event);
-	for (field = 0; field <= ORIGIN_SCOPE; field++) {
-		*fvp = field;
-		fvp += sizeof(uint8_t) + event_field_width[field];
+	if (event) {
+		event->channel_id = 0;
+		event->num_fields = num_fields;
+
+		va_start(arg_list, num_fields);
+
+		uint8_t *fvp = ((uint8_t*) event) + sizeof(struct event);
+		for (field_nr = 0; field_nr < num_fields; field_nr++) {
+			field = va_arg(arg_list, uint16_t);
+			*fvp = field;
+			fvp += sizeof(uint8_t) + event_field_width[field];
+		}
+
+		va_end(arg_list);
+
 	}
 
 	return (event);
 }
+
 /*---------------------------------------------------------------------------*/
 /**
  * \brief		Clones (copies) an event and returns a pointer to it.
@@ -243,7 +275,7 @@ struct event *event_alloc_raw(data_len_t *event_len) {
  * 				If allocation fails, this function returns NULL.
  *
  * @param[in]	source_event		the source event
- * @param[in]	source_event_len	the length of the returned event
+ * @param[in]	source_event_len	the length of the event to be cloned
  *
  * \return		Pointer to newly allocated memory containing copied event, or
  * 				NULL if there was no space.
@@ -253,7 +285,8 @@ struct event *event_clone(struct event *source_event,
 
 	struct event *cloned_event = malloc(source_event_len);
 
-	PRINTF(1, "(EVENT) allocated %u bytes for event at %p\n", source_event_len, cloned_event);
+	PRINTF(2,
+			"(EVENT) allocated %u bytes for cloned event at %p\n", source_event_len, cloned_event);
 
 	if (cloned_event == NULL)
 		return (NULL);
@@ -262,9 +295,10 @@ struct event *event_clone(struct event *source_event,
 
 	return (cloned_event);
 }
+
 /*---------------------------------------------------------------------------*/
 /**
- * \brief		Populates an event's fields with primitive information.
+ * \brief		Populates an event's fields with respective information.
  *
  * 				Populates an event's fields with primitive information.
  * 				The fields are filled with information from the common data
@@ -287,26 +321,30 @@ void event_populate(struct event *event, struct generic_egen *g_egen) {
 	temp_data = *temp_data_ptr;
 
 	clock_time_t curr_time = clock_time() / CLOCK_SECOND;
-	PRINTF(3, "(EVENT) time %lu, source %u, value %u\n", curr_time, g_egen->source,
-			temp_data);
+	PRINTF(5,
+			"(EVENT) time %lu, source %u, value %u\n", curr_time, g_egen->source, temp_data);
 	event->channel_id = g_egen->channel_id;
-	event_type_t ev_type = SIMPLE_EVENT;
-	event_set_value(event, EVENT_TYPE, (uint8_t*) &ev_type);
-	event_set_value(event, SOURCE, &g_egen->source);
-	event_set_value(event, MAGNITUDE, (uint8_t*) &temp_data);
-	event_set_value(event, TIMESTAMP, (uint8_t*) &curr_time);
-	event_set_value(event, ORIGIN_NODE, (uint8_t*) &rimeaddr_node_addr);
-	event_set_value(event, ORIGIN_SCOPE, &g_egen->scope_id);
+	event_operator_type_t ev_type = SIMPLE_EVENT;
+	event_set_value(event, EVENT_TYPE_F, (uint8_t*) &ev_type);
+	event_set_value(event, EVENT_OPERATOR_ID_F, &g_egen->event_operator_id);
+	event_set_value(event, SOURCE_F, &g_egen->source);
+	event_set_value(event, MAGNITUDE_F, (uint8_t*) &temp_data);
+	event_set_value(event, TIMESTAMP_F, (uint8_t*) &curr_time);
+	event_set_value(event, ORIGIN_NODE_F, (uint8_t*) &rimeaddr_node_addr);
+	event_set_value(event, ORIGIN_SCOPE_F, &g_egen->scope_id);
 }
 
 /*---------------------------------------------------------------------------*/
 /**
+ *
  * \brief		Calculates and returns the size of the event.
  *
  * 				Calculates the size of the event, including the main structure
- * 				and the size of the individual fields-value-pairs. The returned
+ * 				and the size of the individual field-value-pairs. The returned
  * 				value is expressed in bytes.
+ *
  * @param[in] event the event from which the length will be calculated
+ * @return
  */
 data_len_t event_get_len(struct event *event) {
 	data_len_t event_size = sizeof(struct event);
@@ -328,13 +366,12 @@ data_len_t event_get_len(struct event *event) {
  *
  *  			Prints the content's of an event in a pretty fashion :)
  *
- *  @param[in]	event Structure containing the event
- *  @param[in]	event_len Length, in bytes, of the event
+ * @param[in]	event Structure containing the event
+ * @param[in]	event_len Length, in bytes, of the event
  */
 void event_print(struct event *event, data_len_t event_len) {
-	PRINTF(1,
-			"(EVENT) Event info: mem: %p, channel id %u, number of fields: %u, len: %u\n",
-			event, event->channel_id, event->num_fields, event_len);
+	PRINTF(2,
+			"(EVENT) Event info: mem: %p, channel id %u, number of fields: %u, len: %u\n", event, event->channel_id, event->num_fields, event_len);
 
 	uint8_t field_nr, field;
 
@@ -347,7 +384,7 @@ void event_print(struct event *event, data_len_t event_len) {
 		value = 0; // sets all 4 bytes from unit32_t to zero
 		memcpy(&value, fvp, event_field_width[field]);
 		fvp += event_field_width[field];
-		PRINTF(1, "<%u, %s;%lu>\n", field, event_field_names[field], value);
+		PRINTF(2, "<%u, %s;%lu>\n", field, event_field_names[field], value);
 	}
 }
 
@@ -379,17 +416,18 @@ static uint8_t *get_value_pointer(struct event *event, uint8_t searched_field) {
 /*---------------------------------------------------------------------------*/
 /**
  * \brief	TODO
+ *
  * @param[in,out] event the event that receives the new value
- * @param[in] searched_field the field that needs to be set
+ * @param[in] target_field the field that needs to be set
  * @param[in] data the data to set to this event
  */
-void event_set_value(struct event *event, uint8_t searched_field, uint8_t *data) {
+void event_set_value(struct event *event, uint8_t target_field, uint8_t *data) {
 	// first, find position to store the data:
-	uint8_t *fvp = get_value_pointer(event, searched_field);
+	uint8_t *fvp = get_value_pointer(event, target_field);
 
 	// if the field was found, copy
 	if (fvp != NULL) {
-		memcpy(fvp, data, event_field_width[searched_field]);
+		memcpy(fvp, data, event_field_width[target_field]);
 	}
 	// else, the field was not found in this event!
 }
@@ -404,6 +442,17 @@ void event_set_value(struct event *event, uint8_t searched_field, uint8_t *data)
  */
 uint8_t *event_get_value(struct event *event, uint8_t searched_field) {
 	return (get_value_pointer(event, searched_field));
+}
+
+/*---------------------------------------------------------------------------*/
+/**
+ * \brief		Returns the length of the field specified field
+ *
+ * @param[in] searched_field the field for which we want to find out the width
+ * \return the length of the field
+ */
+data_len_t event_get_field_len(uint8_t searched_field) {
+	return (event_field_width[searched_field]);
 }
 
 /*---------------------------------------------------------------------------*/
