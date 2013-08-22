@@ -11,7 +11,7 @@
 int receive_from_rime(struct netflood_conn *s, const rimeaddr_t *from,
 		const rimeaddr_t *originator, uint8_t seqno, uint8_t hops) {
 	scopes_receive(packetbuf_dataptr());
-	return 1;
+	return (1);
 }
 
 static struct netflood_conn netflood;
@@ -28,19 +28,19 @@ static void scopes_flooding_send(scope_id_t scope_id, bool to_creator) {
 }
 
 static void scopes_flooding_add(scope_id_t scope_id, bool is_creator) {
-	PRINTF(3, "ROUTING added scope: %u\n", scope_id);
+	PRINTF(5, "ROUTING added scope: %u\n", scope_id);
 }
 
 static void scopes_flooding_remove(scope_id_t scope_id) {
-	PRINTF(3, "ROUTING removed scope: %u\n", scope_id);
+	PRINTF(5, "ROUTING removed scope: %u\n", scope_id);
 }
 
 static void scopes_flooding_join(scope_id_t scope_id) {
-	PRINTF(3, "ROUTING joined scope: %u\n", scope_id);
+	PRINTF(5, "ROUTING joined scope: %u\n", scope_id);
 }
 
 static void scopes_flooding_leave(scope_id_t scope_id) {
-	PRINTF(3, "ROUTING left scope: %u\n", scope_id);
+	PRINTF(5, "ROUTING left scope: %u\n", scope_id);
 }
 
 static void scopes_flooding_buffer_clear(bool to_creator) {
