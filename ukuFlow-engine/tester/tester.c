@@ -60,24 +60,29 @@
 
 /**
  * \brief	 	This workflow tests an event-based exclusive decision gateway (and its respective
- * 				exclusive join gateway). Depending on the events' expressions of the outgoing
- * 				flows of the e-b exclusive decision gateway, tokens flow into them. The event
- * 				operators are simple, periodical event generators,
+ * 				exclusive join gateway).
+ *
+ * 				A workflow testing event expressions. Depending on the events' expressions of the outgoing
+ * 				flows of the e-b exclusive decision gateway, tokens flow into them.
+ * 				There are two event expressions:
+ * 				- the first event expression is a periodic event generator chained with a simple filter and a composition filter
+ * 				- the second event expression is a local, offset event generator (to which a timer event of 700 seconds can map)
  **/
-#define WORKFLOW_SPEC_10 10, /* 1 = workflow id */ \
-	7,  /* 7 = number of wf_elems (0..6)*/ \
-	2,  /* 2 = number of scopes*/ \
+#define WORKFLOW_SPEC 10, /* 1 = workflow id */ \
+	6,  /* number of wf_elems (0..5)*/ \
+	1,  /* number of scopes*/ \
 	1,  /* minimum number of instances required */ \
 	1,  /* maximum number of instances required */ \
 	0,  /* looping (loop infinitely)*/ \
 	0, START_EVENT, 1, /* 0 = 1st wf_elem, start event, goes to wf_elem id 1*/ \
 	\
 	1, EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY, 2, /* 1 = 2nd wf_elem, event based decision gateway with 2 out flows */ \
-		2 /* event operator goes to wf_elem id 2 */, 17 /*total outflow len*/, \
-		   SIMPLE_EF /*type*/, 2/*channel_id*/, 1/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, MAGNITUDE, UINT16_VALUE, 0, 23 /* 5888 */, \
-		   PERIODIC_E_GEN/*type*/, 1/*channel id*/, SENSOR_TEMPERATURE_RAW/*sensor*/,	11/*scope_id*/, 0 /* infinite repetitions */, 60, 0/*period (60 seconds) [2 byte]*/, \
+		2 /* event operator goes to wf_elem id 2 */, 24 /*total outflow len*/, \
+		   COUNT_COMPOSITION_EF/*type*/,	3/*ev_op_id*/,	30/*channel_id*/, 160, 0 /* window size*/, \
+		   SIMPLE_EF/*type*/,				2/*ev_op_id*/,	20/*channel_id*/, 1/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, TIMESTAMP_F, UINT16_VALUE, 25, 0 /* 25 secs */, \
+		   PERIODIC_EG/*type*/,				1/*ev_op_id*/,	10/*channel id*/, NODE_ID /* source*/,						11/*scope_id*/, 2/* infinite repetitions*/, 50, 0/*period (50 seconds) [2 byte]*/, \
 		3 /* event operator goes to wf_elem id 3 */, 7 /*total outflow len*/, \
-		   PERIODIC_E_GEN/*type*/, 3/*channel id*/, NODE_ID/*sensor*/, 					22/*scope_id*/, 0 /* infinite repetitions */, 60, 0/*period (60 seconds) [2 byte]*/, \
+		   OFFSET_EG/*type*/,				4/*ev_op_id*/,	40/*channel id*/, NODE_TIME /* source */,	LOCAL_EVENT_GENERATOR /*scope_id*/, 188, 0 /* offset (700 secs) [2 byte]*/, \
 		\
 	2, EXECUTE_TASK, 4, 1, /* 2 = 3rd wf_elem, execute task, with 1 local function statement, goes to wf_elem id 4 */ \
 	LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, UINT8_VALUE, 2,/*  'local blink 2;' */ \
@@ -85,12 +90,12 @@
 	3, EXECUTE_TASK, 4, 1, /* 3 = 4th wf_elem, execute task, with 1 local function statement, goes to wf_elem id 4 */ \
 	LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, UINT8_VALUE, 6,/*  'local blink 6;' */ \
 	\
-	4, EXCLUSIVE_MERGE_GATEWAY, 5, 3, /* 4 = 5th wf_elem, goes to wf_elem id 5, exclusive merge with 2 incoming flows */ \
+	4, EXCLUSIVE_MERGE_GATEWAY, 5, 2, /* 4 = 5th wf_elem, goes to wf_elem id 5, exclusive merge with 2 incoming flows */ \
 	2, 3, /* ids of the wf_elems from which this merge potentially waits tokens */ \
 	\
-	5, END_EVENT, /* 5 = 6h wf_elem, end event */ \
-	11, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3, /* scope id 11, ttl 60 secs, length 5 bytes, spec */ \
-	22, 60, 0, 5, PREDICATE_GT, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3 /* scope id 22, ttl 60 secs, length 5 bytes, spec */
+	5, END_EVENT, /* 5 = 6th wf_elem, end event */ \
+	11, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 10, /* scope id 11, ttl 60 secs, length 5 bytes, spec */
+
 
 /**
  * \brief		This workflow tests an event-based exclusive decision gateway (and its respective
@@ -104,18 +109,18 @@
  * */
 #define WORKFLOW_SPEC_9_3 9, /* 9 = workflow id */ \
 	6,  /* number of wf_elems (0..5)*/ \
-	2,  /* number of scopes*/ \
+	1,  /* number of scopes*/ \
 	1,  /* minimum number of instances required */ \
 	1,  /* maximum number of instances required */ \
 	0,  /* looping (loop infinitely)*/ \
 	0, START_EVENT, 1, /* 0 = 1st wf_elem, start event, goes to wf_elem id 1*/ \
 	\
 	1, EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY, 2, /* 1 = 2nd wf_elem, event based decision gateway with 2 out flows */ \
-		2 /* event operator goes to wf_elem id 2 */, 24 /* total outflow len*/, \
-		   SIMPLE_EF /*type*/, 2/*channel_id*/, 2/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE, UINT16_VALUE, 3, 0/* 3 */, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, TIMESTAMP, UINT16_VALUE, 94, 1 /* 350 secs */, \
-		   PERIODIC_EG/*type*/, 1/*channel id*/, NODE_ID /* source*/,						11/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
-		3 /* event operator goes to wf_elem id 3 */, 6 /*total outflow len*/, \
-		   OFFSET_EG/*type*/, 3/*channel id*/, NODE_TIME /* source */,	LOCAL_EVENT_GENERATOR /*scope_id*/, 188, 2 /* offset (700 secs) [2 byte]*/, \
+		2 /* event operator goes to wf_elem id 2 */, 26 /* total outflow len*/, \
+		   SIMPLE_EF /*type*/,	2/*ev_op_id*/, 2/*channel_id*/, 2/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE, UINT16_VALUE, 3, 0/* 3 */, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, TIMESTAMP, UINT16_VALUE, 94, 1 /* 350 secs */, \
+		   PERIODIC_EG/*type*/,	1/*ev_op_id*/, 1/*channel id*/, NODE_ID /* source*/,						11/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
+		3 /* event operator goes to wf_elem id 3 */, 7 /*total outflow len*/, \
+		   OFFSET_EG/*type*/,	3/*ev_op_id*/, 3/*channel id*/, NODE_TIME /* source */,	LOCAL_EVENT_GENERATOR /*scope_id*/, 188, 2 /* offset (700 secs) [2 byte]*/, \
 		\
 	2, EXECUTE_TASK, 4, 1, /* 2 = 3rd wf_elem, execute task, with 1 local function statement, goes to wf_elem id 4 */ \
 	LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, UINT8_VALUE, 2,/*  'local blink 2;' */ \
@@ -127,8 +132,8 @@
 	2, 3, /* ids of the wf_elems from which this merge potentially waits tokens */ \
 	\
 	5, END_EVENT, /* 5 = 6th wf_elem, end event */ \
-	11, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3, /* scope id 11, ttl 60 secs, length 5 bytes, spec (NODE_ID <= 3)*/ \
-	44, 60, 0, 5, PREDICATE_EQ, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 4  /* scope id 44, ttl 60 secs, length 5 bytes, spec (NODE_ID == 4)*/
+	11, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3, /* scope id 11, ttl 60 secs, length 5 bytes, spec (NODE_ID <= 3)*/
+
 
 /**
  * \brief		This workflow tests an event-based exclusive decision gateway (and its respective
@@ -142,18 +147,18 @@
  * */
 #define WORKFLOW_SPEC_9_2 9, /* 9 = workflow id */ \
 	6,  /* number of wf_elems (0..5)*/ \
-	2,  /* number of scopes*/ \
+	1,  /* number of scopes*/ \
 	1,  /* minimum number of instances required */ \
 	1,  /* maximum number of instances required */ \
 	0,  /* looping (loop infinitely)*/ \
 	0, START_EVENT, 1, /* 0 = 1st wf_elem, start event, goes to wf_elem id 1*/ \
 	\
 	1, EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY, 2, /* 1 = 2nd wf_elem, event based decision gateway with 2 out flows */ \
-		2 /* event operator goes to wf_elem id 2 */, 14 /* total outflow len*/, \
-		   SIMPLE_EF /*type*/, 20/*channel_id*/, 1/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE, UINT16_VALUE, 3, 0/* 3 */, \
-		   IMMEDIATE_EG/*type*/, 10/*channel id*/, SENSOR_TEMPERATURE_CELSIUS /* source*/,						11/*scope_id*/, \
-		3 /* event operator goes to wf_elem id 3 */, 6 /*total outflow len*/, \
-		   OFFSET_EG/*type*/, 30/*channel id*/, NODE_TIME /* source */,	LOCAL_EVENT_GENERATOR /*scope_id*/, 100, 0 /* offset (100 secs) [2 byte]*/, \
+		2 /* event operator goes to wf_elem id 2 */, 16 /* total outflow len*/, \
+		   SIMPLE_EF /*type*/,		2/*ev_op_id*/, 20/*channel_id*/, 1/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE, UINT16_VALUE, 3, 0/* 3 */, \
+		   IMMEDIATE_EG/*type*/,	1/*ev_op_id*/, 10/*channel id*/, SENSOR_TEMPERATURE_CELSIUS /* source*/,						11/*scope_id*/, \
+		3 /* event operator goes to wf_elem id 3 */, 7 /*total outflow len*/, \
+		   OFFSET_EG/*type*/,		3/*ev_op_id*/, 30/*channel id*/, NODE_TIME /* source */,	LOCAL_EVENT_GENERATOR /*scope_id*/, 100, 0 /* offset (100 secs) [2 byte]*/, \
 	\
 	2, EXECUTE_TASK, 4, 1, /* 2 = 3rd wf_elem, execute task, with 1 local function statement, goes to wf_elem id 4 */ \
 	LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, UINT8_VALUE, 2,/*  'local blink 2;' */ \
@@ -165,20 +170,22 @@
 	2, 3, /* ids of the wf_elems from which this merge potentially waits tokens */ \
 	\
 	5, END_EVENT, /* 5 = 6th wf_elem, end event */ \
-	11, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3, /* scope id 11, ttl 60 secs, length 5 bytes, spec (NODE_ID <= 3)*/ \
-	44, 60, 0, 5, PREDICATE_EQ, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 4  /* scope id 44, ttl 60 secs, length 5 bytes, spec (NODE_ID == 4)*/
+	11, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3, /* scope id 11, ttl 60 secs, length 5 bytes, spec (NODE_ID <= 3)*/
+
 
 /**
  * \brief		This workflow tests an event-based exclusive decision gateway (and its respective
- * 				exclusive join gateway). The possible events are a simple filter, filtering the output of
- * 				a periodic event generator, as well as a stand-alone event generator (i.e., not filtered).
- * 				The simple filter has two expressions (i.e., two constraints). The first constraint is that
- * 				the id of the generator node is 3, while the second constraint is that the timestamp of the
- * 				event is greater than or equal to 200 seconds.
- * 				Depending on the events' expressions of the outgoing
+ * 				exclusive join gateway).
+ *
+ * 				A workflow testing event expressions. Depending on the events' expressions of the outgoing
  * 				flows of the e-b exclusive decision gateway, tokens flow into them.
- * */
-#define WORKFLOW_SPEC 9, /* 9 = workflow id */ \
+ * 				There are two event expressions:
+ * 				- the first event expression is a periodic event generator chained with a simple filter.
+ * 				  The first constraint of the filter is that the id of the generator node is 3, while the
+ * 				  second constraint is that the timestamp of the event is greater than or equal to 200 seconds.
+ * 				- the second event expression is a periodic event generator local running at scope 44
+ **/
+#define WORKFLOW_SPEC_9_1 9, /* 9 = workflow id */ \
 	6,  /* number of wf_elems (0..5)*/ \
 	2,  /* number of scopes*/ \
 	1,  /* minimum number of instances required */ \
@@ -187,11 +194,11 @@
 	0, START_EVENT, 1, /* 0 = 1st wf_elem, start event, goes to wf_elem id 1*/ \
 	\
 	1, EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY, 2, /* 1 = 2nd wf_elem, event based decision gateway with 2 out flows */ \
-		2 /* event operator goes to wf_elem id 2 */, 24 /* total outflow len*/, \
-		   SIMPLE_EF /*type*/, 2/*channel_id*/, 2/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE, UINT16_VALUE, 3, 0, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, TIMESTAMP, UINT16_VALUE, 200, 0 /* 200 secs*/, \
-		   PERIODIC_EG/*type*/, 1/*channel id*/, NODE_ID /* source*/,				11/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
-		3 /* event operator goes to wf_elem id 3 */, 7 /*total outflow len*/, \
-		   PERIODIC_EG/*type*/, 3/*channel id*/, SENSOR_TEMPERATURE_RAW/*sensor*/,	44/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
+		2 /* event operator goes to wf_elem id 2 */, 26 /* total outflow len*/, \
+		   SIMPLE_EF /*type*/,	2/*ev_op_id*/, 2/*channel_id*/, 2/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE, UINT16_VALUE, 3, 0, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, TIMESTAMP, UINT16_VALUE, 200, 0 /* 200 secs*/, \
+		   PERIODIC_EG/*type*/,	1/*ev_op_id*/, 1/*channel id*/, NODE_ID /* source*/,				11/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
+		3 /* event operator goes to wf_elem id 3 */, 8 /*total outflow len*/, \
+		   PERIODIC_EG/*type*/,	3/*ev_op_id*/, 3/*channel id*/, SENSOR_TEMPERATURE_RAW/*sensor*/,	44/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
 		\
 	2, EXECUTE_TASK, 4, 1, /* 2 = 3rd wf_elem, execute task, with 1 local function statement, goes to wf_elem id 4 */ \
 	LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, UINT8_VALUE, 2,/*  'local blink 2;' */ \
@@ -205,6 +212,7 @@
 	5, END_EVENT, /* 5 = 6th wf_elem, end event */ \
 	11, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3, /* scope id 11, ttl 60 secs, length 5 bytes, spec (NODE_ID <= 3)*/ \
 	44, 60, 0, 5, PREDICATE_EQ, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 4,  /* scope id 44, ttl 60 secs, length 5 bytes, spec (NODE_ID == 4)*/ \
+
 
 /**
  * \brief		This workflow tests an event-based exclusive decision gateway (and its
@@ -223,12 +231,12 @@
 	0, START_EVENT, 1, /* 0 = 1st wf_elem, start event, goes to wf_elem id 1*/ \
 	\
 	1, EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY, 3, /* 1 = 2nd wf_elem, event based decision gateway with 3 out flows */ \
-		2 /* event operator goes to wf_elem id 2 */, 7 /*total outflow len*/, \
-		   PERIODIC_EG/*type*/, 1/*channel id*/, SENSOR_TEMPERATURE_RAW/*source*/,			22/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
-		3 /* event operator goes to wf_elem id 3 */, 7 /*total outflow len*/, \
-		   PERIODIC_EG/*type*/, 2/*channel id*/, SENSOR_TEMPERATURE_CELSIUS/*source*/,		33/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
-		4 /* event operator goes to wf_elem id 4 */, 7 /*total outflow len*/, \
-		   PERIODIC_EG/*type*/, 3/*channel id*/, SENSOR_TEMPERATURE_FAHRENHEIT/*source*/,	44/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
+		2 /* event operator goes to wf_elem id 2 */, 8 /*total outflow len*/, \
+		   PERIODIC_EG/*type*/, 1/*ev_op_id*/, 1/*channel id*/, SENSOR_TEMPERATURE_RAW/*source*/,			22/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
+		3 /* event operator goes to wf_elem id 3 */, 8 /*total outflow len*/, \
+		   PERIODIC_EG/*type*/,	2/*ev_op_id*/, 2/*channel id*/, SENSOR_TEMPERATURE_CELSIUS/*source*/,		33/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
+		4 /* event operator goes to wf_elem id 4 */, 8 /*total outflow len*/, \
+		   PERIODIC_EG/*type*/,	3/*ev_op_id*/, 3/*channel id*/, SENSOR_TEMPERATURE_FAHRENHEIT/*source*/,	44/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
 		\
 	2, EXECUTE_TASK, 5, 1, /* 2 = 3rd wf_elem, execute task, goes to wf_elem id 5, with 1 local function statement */ \
 	LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, UINT8_VALUE, 2,/*  'local blink 2;' */ \
