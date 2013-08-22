@@ -75,9 +75,9 @@ static void receive_suppress(struct broadcast_conn *c, const rimeaddr_t *from);
 static void build_routing_tree(void);
 static void send_activation_msg(struct scope_entry *s);
 static void add_routing_entry(const rimeaddr_t *root,
-		const rimeaddr_t *next_hop);
+		const rimeaddr_t *next_hop, uint8_t hops);
 static void update_routing_entry(struct routing_entry *r,
-		const rimeaddr_t *next_hop);
+		const rimeaddr_t *next_hop, uint8_t hops);
 static struct routing_entry *lookup_routing_entry(const rimeaddr_t *root);
 static void print_routing_entry(struct routing_entry *r, char *msg);
 static void remove_routing_entry(struct routing_entry *r);
@@ -140,25 +140,28 @@ LIST(scopes_list);
 static int receive_tree_update(struct netflood_conn *c, const rimeaddr_t *from,
 		const rimeaddr_t *originator, uint8_t seqno, uint8_t hops) {
 
-	//	PRINTF(3,"[%u.%u:%10lu] %s::%s() : Received a tree update from [%u.%u], hop-count: %d.\n",
-	//			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, from->u8[1], from->u8[0], hops+1);
+	PRINTF(5,
+			"(SCOPES-SELFUR) Received a tree update from [%u.%u], hop-count: %u.\n",
+			from->u8[1], from->u8[0], hops + 1);
 
 	/* check if the local node is the originator of the message */
 	if (!rimeaddr_cmp(&rimeaddr_node_addr, originator)) {
 		/* look up the originator's routing entry */
 		struct routing_entry *r = lookup_routing_entry(originator);
 		if (r != NULL) {
-			//			PRINTF(3,"[%u.%u:%10lu] %s::%s() : there was already a routing entry for the originator [%u.%u]\n",
-			//					rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, originator->u8[1], originator->u8[0]);
+			PRINTF(5,
+					"(SCOPES-SELFUR) there was already a routing entry for the originator [%u.%u]\n",
+					originator->u8[1], originator->u8[0]);
 
 			/* update the originator's existing routing entry */
-			update_routing_entry(r, from);
+			update_routing_entry(r, from, hops + 1);
 		} else {
-			//			PRINTF(3,"[%u.%u:%10lu] %s::%s() : there wasn't a routing entry for the originator [%u.%u], so one will be created.\n",
-			//					rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, originator->u8[1], originator->u8[0]);
+			PRINTF(5,
+					"(SCOPES-SELFUR) there wasn't a routing entry for the originator [%u.%u], so one will be created.\n",
+					originator->u8[1], originator->u8[0]);
 
 			/* add a new routing entry for the originator */
-			add_routing_entry(originator, from);
+			add_routing_entry(originator, from, hops + 1);
 		}
 		/* rebroadcast the tree update */
 		return (1);
@@ -172,9 +175,8 @@ static int receive_tree_update(struct netflood_conn *c, const rimeaddr_t *from,
 static void receive_activation(struct runicast_conn *c, const rimeaddr_t *from,
 		uint8_t seqno) {
 
-	PRINTF(3, "[%u.%u:%10lu] %s::%s() : Received activation msg from [%u.%u]\n",
-			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-			__FILE__, __FUNCTION__, from->u8[0], from->u8[1]);
+	PRINTF(5, "(SCOPES-SELFUR) Received activation msg from [%u.%u]\n",
+			from->u8[0], from->u8[1]);
 
 	/* cast the message */
 	struct route_activation_msg *msg =
@@ -194,8 +196,9 @@ static void receive_activation(struct runicast_conn *c, const rimeaddr_t *from,
 			/* set status forwarder */
 			SELFUR_SET_STATUS(s, SELFUR_STATUS_FORWARDER);
 
-			//			PRINTF(3,"[%u.%u:%10lu] %s::%s() : forwarding enabled in scope: scope-id=%u\n",
-			//					rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, s->scope_id);
+			PRINTF(5,
+					"(SCOPES-SELFUR) forwarding enabled in scope: scope-id=%u\n",
+					s->scope_id);
 
 			/* send suppression message */
 			packetbuf_clear();
@@ -211,13 +214,13 @@ static void receive_activation(struct runicast_conn *c, const rimeaddr_t *from,
 /** \brief		TODO */
 static int receive_flood_data(struct netflood_conn *c, const rimeaddr_t *from,
 		const rimeaddr_t *originator, uint8_t seqno, uint8_t hops) {
-	PRINTF(3,
+	PRINTF(5,
 			"(SCOPES-SELFUR) Received flood data from [%u.%u] orig [%u.%u] num scope_e %u, num rou_e %d\n",
 			from->u8[0], from->u8[1], originator->u8[0], originator->u8[1],
 			list_length(scopes_list), list_length(routing_list));
 	PRINT_ARR(3, packetbuf_dataptr(), packetbuf_datalen());
 
-	/* bail out if address in invalid! */
+	/* bail out if address is invalid! */
 	if (rimeaddr_cmp(originator, &rimeaddr_null))
 		return (0);
 
@@ -236,15 +239,21 @@ static int receive_flood_data(struct netflood_conn *c, const rimeaddr_t *from,
 		if (gmsg->scope_id == SCOPES_WORLD_SCOPE_ID
 				|| ((s = lookup_scope_entry(gmsg->scope_id)) != NULL
 						&& SELFUR_HAS_STATUS(s, SELFUR_STATUS_FORWARDER))) {
-			//			PRINTF(3,"[%u.%u:%10lu] %s::%s() : forwarding message via parent scope with id %u\n",
-			//					rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(), __FILE__, __FUNCTION__, gmsg->scope_id);
+			PRINTF(5,
+					"(SCOPES-SELFUR) forwarding message via parent scope with id %u\n",
+					gmsg->scope_id);
 			rebroadcast = 1;
-		} else { // Hack to fix receiving msgs multiple times, adopted from revision 21439
-			PRINTF(4, "performing netflood hack %u.%u\n", originator->u8[0],
-					originator->u8[1]);
+		} //
+#ifndef NETFLOOD_BUG_FIXED
+				else { //
+			// Hack to fix receiving msgs multiple times, adopted from revision 21439
+			// Hack not needed if netflood bug is fixed
+			PRINTF(5, "(SCOPES-SELFUR) performing netflood hack %u.%u\n",
+					originator->u8[0], originator->u8[1]);
 			rimeaddr_copy(&c->last_originator, originator);
 			c->last_originator_seqno = seqno;
 		}
+#endif
 
 		/* check the message type */
 		switch (gmsg->type) {
@@ -264,11 +273,9 @@ static int receive_flood_data(struct netflood_conn *c, const rimeaddr_t *from,
 		}
 
 		/* call scopes */
-		PRINTF(3,
-				"[%u.%u:%10lu] %s::%s() : Invoking scopes_receive() with payload: from [%u.%u], orig [%u.%u], ",
-				rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1],
-				clock_time(), __FILE__, __FUNCTION__, from->u8[0], from->u8[1],
-				originator->u8[0], originator->u8[1]);
+		PRINTF(4,
+				"(SCOPES-SELFUR) Invoking scopes_receive() with payload: from [%u.%u], orig [%u.%u], ",
+				from->u8[0], from->u8[1], originator->u8[0], originator->u8[1]);
 		PRINT_ARR(3, (uint8_t* )gmsg, packetbuf_datalen());
 		scopes_receive(gmsg);
 	}
@@ -287,7 +294,7 @@ static void receive_unicast_data(struct unicast_conn *c, const rimeaddr_t *from)
 {
 	/* A data message has arrived to this node, flowing towards the creator. */
 
-	PRINTF(1, "(SCOPES-SELFUR) Data received from [%u.%u]\n", from->u8[0],
+	PRINTF(5, "(SCOPES-SELFUR) Data received from [%u.%u]\n", from->u8[0],
 			from->u8[1]);
 
 	/* Message is passed to upper layer, and then,
@@ -305,7 +312,7 @@ static void receive_unicast_data(struct unicast_conn *c, const rimeaddr_t *from)
 	/* Call scopes */
 	scopes_receive(gmsg);
 
-	PRINTF(3, "(SCOPES-SELFUR) Data passed to scopes_received ()\n");
+	PRINTF(4, "(SCOPES-SELFUR) Data passed to scopes_received ()\n");
 
 	/* Remaining code commented out to avoid forwarding the message automatically.
 	 * Instead, the upper layer will request the reforwarding based on its processing.
@@ -324,7 +331,7 @@ static void receive_unicast_data(struct unicast_conn *c, const rimeaddr_t *from)
 #else
 		unicast_send(&data_unicast, &(s->tree->next_hop));
 #endif
-		PRINTF(1,
+		PRINTF(5,
 				"(SCOPES-SELFUR) data sent to upper parent\n");
 
 	}
@@ -402,11 +409,9 @@ static void selfur_send(scope_id_t scope_id, bool to_creator) {
 				"(SCOPES-SELFUR) Refused to send data for scope %u during lock interval.\n",
 				scope_id);
 		return;
-	}
-
-	//	else 		PRINTF(3,"[%u.%u:%10lu] %s::%s() : Accepted to send data for scope %u, lock interval is over.\n",
-	//			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-	//			__FILE__, __FUNCTION__, scope_id);
+	} else PRINTF(5,
+			"(SCOPES-SELFUR) Accepted to send data for scope %u, lock interval is over.\n",
+			scope_id);
 
 	/* check the direction of the message */
 	if (to_creator) {
@@ -483,9 +488,7 @@ static void selfur_buffer_setlen(bool to_creator, uint16_t len) {
 
 /** \brief		TODO */
 static void selfur_remove(scope_id_t scope_id) {
-	PRINTF(3, "[%u.%u:%10lu] %s::%s() : Removed scope %u\n",
-			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-			__FILE__, __FUNCTION__, scope_id);
+	PRINTF(5, "(SCOPES-SELFUR) Removed scope %u\n", scope_id);
 
 	/* check if the local node is the root */
 	struct scope_entry *s = lookup_scope_entry(scope_id);
@@ -500,9 +503,7 @@ static void selfur_remove(scope_id_t scope_id) {
 
 /** \brief		TODO */
 static void selfur_join(scope_id_t scope_id) {
-	PRINTF(3, "[%u.%u:%10lu] %s::%s() : Joined scope %u\n",
-			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-			__FILE__, __FUNCTION__, scope_id);
+	PRINTF(5, "(SCOPES-SELFUR) Joined scope %u\n", scope_id);
 
 	/* look up the scope's entry */
 	struct scope_entry *s = lookup_scope_entry(scope_id);
@@ -517,9 +518,7 @@ static void selfur_join(scope_id_t scope_id) {
 
 /** \brief		TODO */
 static void selfur_leave(scope_id_t scope_id) {
-	PRINTF(3, "[%u.%u:%10lu] %s::%s() : Left scope %u\n",
-			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-			__FILE__, __FUNCTION__, scope_id);
+	PRINTF(5, "(SCOPES-SELFUR) Left scope %u\n", scope_id);
 
 	/* look up the scope's entry */
 	struct scope_entry *s = lookup_scope_entry(scope_id);
@@ -527,6 +526,24 @@ static void selfur_leave(scope_id_t scope_id) {
 		SELFUR_UNSET_STATUS(s, SELFUR_STATUS_MEMBER);
 	}
 }
+
+/**
+ * \brief		Checks for the status of a routing entry
+ */
+static bool selfur_has_status(scope_id_t scope_id, uint8_t status) {
+	/* Look up the scope's routing entry */
+	struct scope_entry *s = lookup_scope_entry(scope_id);
+
+	return ((s != NULL) ? SELFUR_HAS_STATUS(s, status) : FALSE);
+}
+
+static uint8_t selfur_node_distance(scope_id_t scope_id) {
+	/* Look up the scope's routing entry */
+	struct scope_entry *s = lookup_scope_entry(scope_id);
+
+	return ((s != NULL) ? s->tree->hop_count : 0);
+}
+
 /** \brief Declares the scopes-selfur routing protocol */
 ROUTING(scopes_selfur, //
 		"selfur",//
@@ -538,14 +555,14 @@ ROUTING(scopes_selfur, //
 		selfur_leave,//
 		selfur_buffer_clear,//
 		selfur_buffer_ptr,//
-		selfur_buffer_setlen);
+		selfur_buffer_setlen,//
+		selfur_has_status,//
+		selfur_node_distance);
 
 /* helper functions */
 /** \brief		TODO */
 static void build_routing_tree(void) {
-	PRINTF(3, "[%u.%u:%10lu] %s::%s() : building routing tree\n",
-			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-			__FILE__, __FUNCTION__);
+	PRINTF(5, "(SCOPES-SELFUR) building routing tree\n");
 
 	/* clear the contents of the packet buffer */
 	packetbuf_clear();
@@ -555,18 +572,15 @@ static void build_routing_tree(void) {
 
 	/* start the lock timer */
 	etimer_set(&lock_timer, SELFUR_LOCK_TIMER_DURATION * CLOCK_SECOND);
-	PRINTF(3, "[%u.%u:%10lu] %s::%s() : lock timer started (%d seconds)\n",
-			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-			__FILE__, __FUNCTION__, SELFUR_LOCK_TIMER_DURATION);
+	PRINTF(5, "(SCOPES-SELFUR) lock timer started (%d seconds)\n",
+			SELFUR_LOCK_TIMER_DURATION);
 }
 
 /** \brief		TODO */
 static void send_activation_msg(struct scope_entry *s) {
-	PRINTF(3,
-			"[%u.%u:%10lu] %s::%s() : Sending activation: scope-id=%u, next-hop=[%u.%u]\n",
-			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-			__FILE__, __FUNCTION__, s->scope_id, (s->tree->next_hop).u8[0],
-			(s->tree->next_hop).u8[1]);
+	PRINTF(5,
+			"(SCOPES-SELFUR) Sending activation: scope-id=%u, next-hop=[%u.%u]\n",
+			s->scope_id, (s->tree->next_hop).u8[0], (s->tree->next_hop).u8[1]);
 
 	/* clear the contents of the packet buffer */
 	packetbuf_clear();
@@ -584,7 +598,7 @@ static void send_activation_msg(struct scope_entry *s) {
 
 /** \brief		TODO */
 static void add_routing_entry(const rimeaddr_t *root,
-		const rimeaddr_t *next_hop) {
+		const rimeaddr_t *next_hop, uint8_t hops) {
 	//  if (rimeaddr_cmp(root, next_hop) != 0) {
 	/* try to get memory for the routing entry */
 	struct routing_entry *r = (struct routing_entry *) memb_alloc(&routing_mem);
@@ -593,7 +607,7 @@ static void add_routing_entry(const rimeaddr_t *root,
 		rimeaddr_copy(&(r->root), root); //r->root = *root;
 
 		/* store the next hop */
-		update_routing_entry(r, next_hop);
+		update_routing_entry(r, next_hop, hops);
 
 		/* add the entry to the routing list */
 		list_add(routing_list, r);
@@ -603,7 +617,7 @@ static void add_routing_entry(const rimeaddr_t *root,
 
 /** \brief		TODO */
 static void update_routing_entry(struct routing_entry *r,
-		const rimeaddr_t *next_hop) {
+		const rimeaddr_t *next_hop, uint8_t hops) {
 	//  if (rimeaddr_cmp(&(r->root), next_hop) != 0) {
 
 	/* set a new next hop */
@@ -612,6 +626,10 @@ static void update_routing_entry(struct routing_entry *r,
 	/* reset the entry's timer */
 	ctimer_set(&(r->ttl_timer), SELFUR_ROUTING_ENTRY_TTL * CLOCK_SECOND,
 			(void (*)(void *)) remove_routing_entry, r);
+
+	/* update the node's height in tree */
+	PRINTF(5, "(SCOPES-SELFUR) updating hops to %u\n", hops);
+	r->hop_count = hops;
 
 	/* go through the scopes list */
 	struct scope_entry *s;
@@ -650,7 +668,7 @@ lookup_routing_entry(const rimeaddr_t *root) {
 
 /** \brief		TODO */
 static void print_routing_entry(struct routing_entry *r, char *msg) {
-	PRINTF(3, "(SCOPES-SELFUR) %s: root=%u.%u, next-hop=%u.%u, route-ttl=%u\n",
+	PRINTF(5, "(SCOPES-SELFUR) %s: root=%u.%u, next-hop=%u.%u, route-ttl=%u\n",
 			msg, (r->root).u8[0], (r->root).u8[1], (r->next_hop).u8[0],
 			(r->next_hop).u8[1],
 			(unsigned int) (timer_remaining(&(r->ttl_timer.etimer.timer)) / CLOCK_SECOND));
@@ -658,7 +676,7 @@ static void print_routing_entry(struct routing_entry *r, char *msg) {
 
 /** \brief		TODO */
 static void remove_routing_entry(struct routing_entry *r) {
-	PRINTF(4,
+	PRINTF(5,
 			"(SCOPES-SELFUR) Removed routing entry for root %u.%u because it's old (num s_e %d num r_e %d)\n",
 			r->root.u8[0], r->root.u8[1], list_length(scopes_list),
 			list_length(routing_list));
@@ -692,7 +710,7 @@ static void remove_routing_entry(struct routing_entry *r) {
 	list_remove(routing_list, r);
 	memb_free(&routing_mem, r);
 
-	PRINTF(4,
+	PRINTF(5,
 			"(SCOPES-SELFUR) Removed routing entry because it's old (num s_e %d num r_e %d)\n",
 			list_length(scopes_list), list_length(routing_list));
 }
@@ -700,7 +718,7 @@ static void remove_routing_entry(struct routing_entry *r) {
 /** \brief		TODO */
 static void add_scope_entry(scope_id_t scope_id, struct routing_entry *r) {
 	/* check if memory is available */
-	PRINTF(3, "(SCOPES-SELFUR) Adding scope routing entry with root %u.%u\n",
+	PRINTF(4, "(SCOPES-SELFUR) Adding scope routing entry with root %u.%u\n",
 			r->root.u8[0], r->root.u8[1]);
 	struct scope_entry *s = (struct scope_entry *) memb_alloc(&scopes_mem);
 	if (s != NULL) {
@@ -721,10 +739,12 @@ static struct scope_entry *
 lookup_scope_entry(scope_id_t scope_id) {
 	/* go through the scopes list */
 	struct scope_entry *s;
-	PRINTF(5, "lookup_scope_entry, list size: %u\n", list_length(scopes_list));
+	PRINTF(5, "(SCOPES-SELFUR) lookup_scope_entry, list size: %u\n",
+			list_length(scopes_list));
 	for (s = list_head(scopes_list); s != NULL; s = s->next) {
 		/* find the one with the matching scope id */
-		PRINTF(5, "comparing %u with %u\n", scope_id, s->scope_id);
+		PRINTF(5, "(SCOPES-SELFUR) comparing %u with %u\n", scope_id,
+				s->scope_id);
 		if (s->scope_id == scope_id) {
 			return (s);
 		}
@@ -734,12 +754,11 @@ lookup_scope_entry(scope_id_t scope_id) {
 
 /** \brief		TODO */
 static void print_scope_entry(struct scope_entry *s, char *msg) {
-	PRINTF(3,
-			"[%u.%u:%10lu] %s::%s() : %s: scope-id=%u, status=%u, root=%u.%u, next-hop=%u.%u, route-ttl=%u\n",
-			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-			__FILE__, __FUNCTION__, msg, s->scope_id, s->status,
-			(s->tree->root).u8[0], (s->tree->root).u8[1],
-			(s->tree->next_hop).u8[0], (s->tree->next_hop).u8[1],
+	PRINTF(5,
+			"(SCOPES-SELFUR) %s: scope-id=%u, status=%u, root=%u.%u, next-hop=%u.%u, route-ttl=%u\n",
+			msg, s->scope_id, s->status, (s->tree->root).u8[0],
+			(s->tree->root).u8[1], (s->tree->next_hop).u8[0],
+			(s->tree->next_hop).u8[1],
 			(unsigned int) (timer_remaining(&(s->tree->ttl_timer.etimer.timer)) / CLOCK_SECOND));
 }
 
@@ -749,9 +768,7 @@ PROCESS_THREAD( tree_update_process, ev, data) {
 	PROCESS_BEGIN()
 		;
 
-		PRINTF(3, "[%u.%u:%10lu] %s::%s() : tree update process started\n",
-				rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1],
-				clock_time(), __FILE__, __FUNCTION__);
+		PRINTF(5, "(SCOPES-SELFUR) tree update process started\n");
 
 		static struct etimer tree_update_timer;
 		etimer_set(&tree_update_timer,
@@ -777,9 +794,7 @@ PROCESS_THREAD( activation_process, ev, data) {
 PROCESS_BEGIN()
 	;
 
-	PRINTF(3, "[%u.%u:%10lu] %s::%s() : activation process started\n",
-			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-			__FILE__, __FUNCTION__);
+	PRINTF(5, "(SCOPES-SELFUR) activation process started\n");
 
 	static struct etimer activation_timer;
 	etimer_set(&activation_timer, SELFUR_ACTIVATION_MAX_DELAY * CLOCK_SECOND);
@@ -803,15 +818,12 @@ PROCESS_END();
 }
 
 #ifndef SCOPES_NOINFO
-/** \brief		TODO */
-
+/** \brief		TODO */ //
 PROCESS_THREAD( info_process, ev, data) {
 PROCESS_BEGIN()
 ;
 
-PRINTF(3, "[%u.%u:%10lu] %s::%s() : info process started\n",
-		rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-		__FILE__, __FUNCTION__);
+PRINTF(5, "(SCOPES-SELFUR) info process started\n");
 
 static struct etimer info_timer;
 etimer_set(&info_timer, SELFUR_INFO_TIMER_DURATION * CLOCK_SECOND);
@@ -820,15 +832,13 @@ while (1) {
 	PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&info_timer));
 	etimer_reset(&info_timer);
 
-	PRINTF(3, "(ROUTING) known trees:\n");
+	PRINTF(5, "(SCOPES-SELFUR) known trees:\n");
 	struct routing_entry *r;
 	for (r = list_head(routing_list); r != NULL; r = r->next) {
 		print_routing_entry(r, "");
 	}
 
-	PRINTF(3, "[%u.%u:%10lu] %s::%s() known scopes:\n",
-			rimeaddr_node_addr.u8[0], rimeaddr_node_addr.u8[1], clock_time(),
-			__FILE__, __FUNCTION__);
+	PRINTF(5, "(SCOPES-SELFUR) known scopes:\n");
 	struct scope_entry *s;
 	for (s = list_head(scopes_list); s != NULL; s = s->next) {
 		print_scope_entry(s, "");
