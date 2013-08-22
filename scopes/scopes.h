@@ -94,20 +94,20 @@
 /** \brief Constant specifying that an application is subscribed */
 #define SCOPES_APPLICATION_SUBSCRIBED 1
 
-/** \brief Constant specifying that this node has no status yet for a given scope */
-#define SCOPES_STATUS_NONE 0
-/** \brief Constant specifying that this node is member of a given scope */
-#define SCOPES_STATUS_MEMBER 1
-/** \brief Constant specifying that this node is creator of a given scope */
-#define SCOPES_STATUS_CREATOR 2
+/** \brief Constant specifying a flag for indicating that this node has no status yet for a given scope */
+#define SCOPES_FLAG_STATUS_NONE 0x0
+/** \brief Constant specifying a flag for indicating that this node is member of a given scope */
+#define SCOPES_FLAG_STATUS_MEMBER 0x1
+/** \brief Constant specifying a flag for indicating that this node is creator of a given scope */
+#define SCOPES_FLAG_STATUS_CREATOR 0x2
 
 /* Scope flags */
-/** \brief Constant specifying the flag for indicating that a scope doesn't have special characteristics */
-#define SCOPES_FLAG_NONE 0
-/** \brief Constant specifying the flag for indicating that a scope must be dynamically reevaluated even at non-member nodes */
-#define SCOPES_FLAG_DYNAMIC 1
-/** \brief Constant specifying the flag for indicating that a scope should intercept traffic on its way from members to the root (potentially also at non-member nodes, if the other flag is set) */
-#define SCOPES_FLAG_INTERCEPT 2
+/** \brief Constant specifying a flag for indicating that a scope doesn't have special characteristics */
+#define SCOPES_FLAG_NONE 0x0
+/** \brief Constant specifying a flag for indicating that a scope must be dynamically reevaluated even at non-member nodes */
+#define SCOPES_FLAG_DYNAMIC 0x1
+/** \brief Constant specifying a flag for indicating that a scope should intercept traffic (potentially also at non-member nodes)*/
+#define SCOPES_FLAG_INTERCEPT 0x2
 //#define SCOPES_FLAG_OTHER_1 4
 //#define SCOPES_FLAG_OTHER_2 8
 
