@@ -51,6 +51,6 @@ public class GenericMoveFeature extends DefaultMoveShapeFeature {
 				}
 			}
 		}
-		return canMove;
+		return true;
 	}
 }

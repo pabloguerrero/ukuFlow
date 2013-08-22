@@ -6,8 +6,8 @@ import java.util.List;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 
-import de.tudarmstadt.dvs.ukuflow.features.ef.simple.EFSimpleFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.distribution.EGDistributionFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.simple.EFSimpleFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring.EGAbsoluteFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring.EGImmediateFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring.EGOffsetFeatureContainer;
