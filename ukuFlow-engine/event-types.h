@@ -52,7 +52,11 @@
 
 /** \brief Types of operators */
 typedef uint8_t event_operator_type_t;
-/** \brief Connecting channel id */
+
+/** \brief Id of the event operator */
+typedef uint8_t event_operator_id_t;
+
+/** \brief Id of channel that connects two or more event operators */
 typedef uint8_t channel_id_t;
 
 /** \brief Types of event operators */
@@ -80,7 +84,7 @@ enum event_operator_type {
 	NOT_COMPOSITION_EF, /**						10 */
 	// *** Temporal filters:
 	SEQUENCE_COMPOSITION_EF, /**				11 */
-	// *** Processing functions
+	// *** Processing composition functions
 	MIN_COMPOSITION_EF, /**						12 */
 	MAX_COMPOSITION_EF, /**						13 */
 	COUNT_COMPOSITION_EF, /**					14 */
@@ -100,6 +104,8 @@ enum event_operator_type {
 #define GENERIC_EVENT_OPERATOR_FIELDS	\
 	/** \brief	Type of event */  		\
 	event_operator_type_t ev_op_type;	\
+	/** \brief Id of the event operator */	\
+	event_operator_id_t event_operator_id; 	\
 	/** \brief	Output channel id (i.e., events that match with this event operator will be labeled with this channel number) */ \
 	channel_id_t channel_id;
 
@@ -215,39 +221,50 @@ struct __attribute__((__packed__)) simple_filter {
 };
 
 /** \brief		TODO				*/
-struct __attribute__((__packed__)) composite_filter {
+struct __attribute__((__packed__)) composition_filter {
 	GENERIC_EVENT_OPERATOR_FIELDS
-	/** \brief	TODO */
+	/** \brief	Size of the window in which received events will be evaluated */
 	uint16_t window_size;
 };
-struct __attribute__((__packed__)) logical_composite_filter {
+
+/** \brief		TODO				*/
+struct __attribute__((__packed__)) logical_composition_filter {
 	GENERIC_EVENT_OPERATOR_FIELDS
 	// TODO: complete
 };
 
-// TODO: replace with corresponding processing functions
-struct __attribute__((__packed__)) processing_function_filter {
+/** \brief		TODO				*/
+struct __attribute__((__packed__)) processing_composition_filter {
 	GENERIC_EVENT_OPERATOR_FIELDS
+	/** \brief	Size of the window in which received events will be evaluated */
+	uint16_t window_size;
 };
 
-struct __attribute__((__packed__)) temporal_composite_filter {
+/** \brief		TODO				*/
+struct __attribute__((__packed__)) temporal_composition_filter {
 	GENERIC_EVENT_OPERATOR_FIELDS
 	// TODO: complete
 };
 
-/*
- struct __attribute__((__packed__)) increase_filter {
- GENERIC_EVENT_OPERATOR_FIELDS
- };
+/** \brief		TODO				*/
+struct __attribute__((__packed__)) change_filter {
+	GENERIC_EVENT_OPERATOR_FIELDS
+};
 
- struct __attribute__((__packed__)) decrease_filter {
- GENERIC_EVENT_OPERATOR_FIELDS
- };
+/** \brief		TODO				*/
+struct __attribute__((__packed__)) increase_filter {
+	GENERIC_EVENT_OPERATOR_FIELDS
+};
 
- struct __attribute__((__packed__)) remain_filter {
- GENERIC_EVENT_OPERATOR_FIELDS
- };
- */
+/** \brief		TODO				*/
+struct __attribute__((__packed__)) decrease_filter {
+	GENERIC_EVENT_OPERATOR_FIELDS
+};
+
+/** \brief		TODO				*/
+struct __attribute__((__packed__)) remain_filter {
+	GENERIC_EVENT_OPERATOR_FIELDS
+};
 
 /*---------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------*/
@@ -255,12 +272,14 @@ struct __attribute__((__packed__)) temporal_composite_filter {
 /*---------------------------------------------------------------------------*/
 /** \brief		Main structure for an event for its network transport: */
 struct __attribute__((__packed__)) event {
+	//	/** \brief	TODO */
 	channel_id_t channel_id;
+	//	/** \brief	TODO */
 	uint8_t num_fields;
 // followed by <field-value> pairs
 };
 
-/** \brief		Types of event */
+/** \brief Type definition for event types (simple / composite) */
 typedef uint8_t event_type_t;
 
 /** \brief		Enumeration for event types */
@@ -273,18 +292,24 @@ enum event_type {
 
 /** \brief		Enumeration for event fields */
 enum event_field {
-//	/** \brief	TODO */
-	EVENT_TYPE = 0,
+//	/** \brief	Type of event (simple / composite) */
+	EVENT_TYPE_F = 0,
+	/** \brief Id of the event operator used to produce this event */
+	EVENT_OPERATOR_ID_F,
 	/** \brief	Valid values for the SOURCE field are those from the 'enum repository_fields' in data-mgr.h */
-	SOURCE,
+	SOURCE_F,
 	/** \brief	TODO */
-	MAGNITUDE,
+	MAGNITUDE_F,
 	/** \brief	TODO */
-	TIMESTAMP,
+	TIMESTAMP_F,
 	/** \brief	TODO */
-	ORIGIN_NODE,
+	ORIGIN_NODE_F,
 	/** \brief	TODO */
-	ORIGIN_SCOPE
+	ORIGIN_SCOPE_F,
+	/** \brief	TODO */
+	COUNT_F,
+	/** \brief	TODO */
+	SUM_F
 };
 
 #endif /** __EVENTTYPES_H__ */
