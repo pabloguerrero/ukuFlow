@@ -94,7 +94,7 @@ PROCESS_THREAD( ukuflow_serial_process, ev, data) {
 
 		while (1) {
 
-			PRINTF(1, "(UF-SERIAL) Input [%d]-:\n", cmd_nr++);
+			PRINTF(2, "(UF-SERIAL) Input [%d]-:\n", cmd_nr++);
 
 			PROCESS_WAIT_EVENT_UNTIL(
 					ev == serial_line_event_message && data != NULL);
@@ -102,11 +102,11 @@ PROCESS_THREAD( ukuflow_serial_process, ev, data) {
 			data_len = strlen(data);
 
 			if (data_len < 4) {
-				PRINTF(1, "(UF-SERIAL) Input received too short!\n");
+				PRINTF(2, "(UF-SERIAL) Input received too short!\n");
 				continue;
 			}
 
-			PRINTF(1, "(UF-SERIAL) Input received (%d chars): ", strlen(data));
+			PRINTF(2, "(UF-SERIAL) Input received (%d chars): ", strlen(data));
 			{
 				PRINT_ARR(1, data, data_len);
 			}
@@ -117,31 +117,31 @@ PROCESS_THREAD( ukuflow_serial_process, ev, data) {
 
 			s_input = decoded_data;
 			if (s_input == NULL) {
-				PRINTF(1, "(UF-SERIAL) --------- No more memory!\n");
+				PRINTF(2, "(UF-SERIAL) --------- No more memory!\n");
 				continue;
 			}
 
-			PRINTF(1, "(UF-SERIAL) s_input (len: %d): ", decoded_len);
+			PRINTF(2, "(UF-SERIAL) s_input (len: %d): ", decoded_len);
 			{
 				PRINT_ARR(1, s_input, decoded_len);
 			}
 
 			if (s_input[0] == WF_REGISTER) {
-				PRINTF(1,
+				PRINTF(2,
 						"(UF-SERIAL) Registering wf (id: %d, length %d)...\n", s_input[2], s_input[1]);
 				if (ukuflow_mgr_register(s_input + 2, s_input[1])) {
-					PRINTF(1, "(UF-SERIAL) Registration successful!\n");
+					PRINTF(2, "(UF-SERIAL) Registration successful!\n");
 				} else
-				PRINTF(1, "(UF-SERIAL) Registration failed!\n");
+				PRINTF(2, "(UF-SERIAL) Registration failed!\n");
 			} else if (s_input[0] == WF_DEREGISTER) {
-				PRINTF(1,
+				PRINTF(2,
 						"(UF-SERIAL) Deregistering wf (id: %d)...\n", s_input[1]);
 				if (ukuflow_mgr_deregister(s_input[1])) {
-					PRINTF(1, "(UF-SERIAL) Deregistration successful!\n");
+					PRINTF(2, "(UF-SERIAL) Deregistration successful!\n");
 				} else
-				PRINTF(1, "(UF-SERIAL) Deregistration failed!\n");
+				PRINTF(2, "(UF-SERIAL) Deregistration failed!\n");
 			} else
-				printf("(UF-SERIAL) Input invalid!\n");
+				PRINTF(2, "(UF-SERIAL) Input invalid!\n");
 
 		}
 
