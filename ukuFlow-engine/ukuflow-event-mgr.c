@@ -56,6 +56,7 @@
 #include "ukuflow-event-mgr.h"
 #include "workflow.h"
 #include "event.h"
+#include "bitvector.h"
 
 /** for memcpy */
 #include "string.h"
@@ -222,6 +223,20 @@ struct running_event_op {
  * \brief	Data structure for a recurrent running event operator
  */
 struct egen_running_event_op {
+	RUNNING_EVENT_OPERATOR_FIELDS
+	/** \brief Timer trigger inside a period */
+	struct ctimer intra_period_trigger_ctimer;
+	/** \brief Timer triggering once per period */
+	struct ctimer inter_period_trigger_ctimer;
+	/** \brief Counter for the amount of repetitions to be executed left.
+	 * Used only if it is _not_ an infinite event generator*/
+	uint8_t repetitions_left;
+};
+
+/**
+ * \brief	Data structure for a recurrent running event operator
+ */
+struct complex_egen_running_event_op {
 	RUNNING_EVENT_OPERATOR_FIELDS
 	/** \brief Timer to trigger the production of an event */
 	struct ctimer event_operator_trigger_ctimer;
@@ -832,54 +847,126 @@ void ukuflow_event_mgr_handle_event(struct ukuflow_event_msg *event_msg) {
  * @param[in]	ptr 	the running event operator that needs to be attended by this callback function
  */
 static void egen_produce(void *ptr) {
-	struct egen_running_event_op *eg_reo = (struct egen_running_event_op*) ptr;
-	struct generic_egen *eg = (struct generic_egen*) eg_reo->geo;
+	struct egen_running_event_op *egen_reo = (struct egen_running_event_op*) ptr;
+	struct generic_egen *eg = (struct generic_egen*) egen_reo->geo;
 
-	data_len_t event_len;
+	/** By default we always produce an event */
+	bool produce = TRUE;
 
-	/** get an empty placeholder in dynamic memory to place the event's contents */
-	struct event *event = event_alloc(7, EVENT_TYPE_F, EVENT_OPERATOR_ID_F,
-			SOURCE_F, MAGNITUDE_F, TIMESTAMP_F, ORIGIN_NODE_F, ORIGIN_SCOPE_F);
+	/** Now check if we need to reset a timer or so */
+	switch (egen_reo->geo->ev_op_type) {
+	case (PATTERN_EG): {
+		struct pattern_egen *pateg = (struct pattern_egen *) egen_reo->geo;
 
-	event_len = event_get_len(event);
+		clock_time_t slot_duration = pateg->period * CLOCK_SECOND
+				/ pateg->pattern_len, now = clock_time();
+		uint8_t slot_nr = (now
+				- egen_reo->inter_period_trigger_ctimer.etimer.timer.start)
+				/ slot_duration;
 
-	if (event == NULL)
-		return;
+		PRINTF(7,
+				"(EVENT-MGR) egen_produce, slot %u duration: %lu now %lu timer:%lu\n",
+				slot_nr, slot_duration, now,
+				egen_reo->inter_period_trigger_ctimer.etimer.timer.start);
+		if ((slot_nr + 1 < pateg->pattern_len)
+				&& ctimer_expired(&egen_reo->intra_period_trigger_ctimer)) {
+			ctimer_reset(&egen_reo->intra_period_trigger_ctimer);
+			PRINTF(7, "(EVENT-MGR) egen_produce, resetting intra timer\n");
+		} else
+		PRINTF(7,
+				"(EVENT-MGR) egen_produce, not resetting intra timer anymore\n");
 
-	PRINTF(2, "(EVENT-MGR) producing event for channel %u, event %p, len %u: ",
-			eg_reo->geo->channel_id, event, event_len);
-	PRINT_ARR(2, (uint8_t* ) event, event_len);
-
-	event_populate(event, eg);
-
-	event_print(event, event_len);
-
-	struct event_processing_request *ev_request = malloc(
-			sizeof(struct event_processing_request));
-
-	PRINTF(2, "(EVENT-MGR) alloc %u bytes for event req @%p\n",
-			sizeof(struct event_processing_request), ev_request);
-
-	if (ev_request == NULL) {
-		free(event);
-		return;
+		/** And here check if event needs to be produced in this slot or not */
+		uint8_t *bitvector = ((uint8_t*) pateg) + sizeof(struct pattern_egen);
+		if (!bitvector_get(bitvector, slot_nr))
+			produce = FALSE;
+		break;
+	}
+	case (FUNCTIONAL_EG): {
+		// TODO
+		break;
 	}
 
-	ev_request->event = event;
-	ev_request->request_type = EVENT_PROCESSING_REQUEST;
-	list_add(event_mgr_requests, ev_request);
+	} // switch
 
-	process_post(&ukuflow_event_mgr_engine_pt, event_mgr_request_ready_event,
-			ev_request);
+	/** If desired, produce the event */
 
-	/** check if we need to continue running or not: */
-	if (eg->ev_op_type >= PERIODIC_EG) {
-		struct recurrent_egen *rgeo = (struct recurrent_egen *) eg;
+	if (produce) {
+		data_len_t event_len;
 
-		if ((rgeo->repetitions == 0) /** unlimited number of repetitions */
-				|| (eg_reo->repetitions_left-- > 0) /** limited number of repetitions, and still some to go */)
-			ctimer_reset(&eg_reo->event_operator_trigger_ctimer);
+		/** get an empty placeholder in dynamic memory to place the event's contents */
+		struct event *event = event_alloc(7, EVENT_TYPE_F, EVENT_OPERATOR_ID_F,
+				SOURCE_F, MAGNITUDE_F, TIMESTAMP_F, ORIGIN_NODE_F,
+				ORIGIN_SCOPE_F);
+
+		event_len = event_get_len(event);
+
+		if (event == NULL)
+			return;
+
+		PRINTF(1,
+				"(EVENT-MGR) producing event for channel %u, event %p, len %u: ",
+				egen_reo->geo->channel_id, event, event_len);
+		PRINT_ARR(1, (uint8_t* ) event, event_len);
+
+		event_populate(event, eg);
+
+		event_print(event, event_len);
+
+		struct event_processing_request *ev_request = malloc(
+				sizeof(struct event_processing_request));
+
+		PRINTF(1, "(EVENT-MGR) alloc %u bytes for event req @%p\n",
+				sizeof(struct event_processing_request), ev_request);
+
+		if (ev_request == NULL) {
+			free(event);
+			return;
+		}
+
+		ev_request->event = event;
+		ev_request->request_type = EVENT_PROCESSING_REQUEST;
+		list_add(event_mgr_requests, ev_request);
+
+		process_post(&ukuflow_event_mgr_engine_pt,
+				event_mgr_request_ready_event, ev_request);
+
 	}
+
+}
+
+/*---------------------------------------------------------------------------*/
+static void egen_inter_interval(void *ptr) {
+
+	struct egen_running_event_op *egen_reo = (struct egen_running_event_op*) ptr;
+	struct recurrent_egen *rgeo = (struct recurrent_egen *) egen_reo;
+
+	if (((rgeo->repetitions == 0) /** unlimited number of repetitions */
+	|| (egen_reo->repetitions_left-- > 0) /** limited number of repetitions, and still some to go */)
+			&& ctimer_expired(&egen_reo->inter_period_trigger_ctimer)) {
+		ctimer_reset(&egen_reo->inter_period_trigger_ctimer);
+		PRINTF(7, "(EVENT-MGR) egen_inter_interval, inter reset\n");
+	}
+
+	PRINTF(7, "(EVENT-MGR) egen_inter_interval callback: %lu \n",
+			egen_reo->inter_period_trigger_ctimer.etimer.timer.start);
+
+	switch (egen_reo->geo->ev_op_type) {
+	case (PERIODIC_EG): {
+		egen_produce(ptr);
+		break;
+	}
+	case (PATTERN_EG): {
+		struct pattern_egen *pateg = (struct pattern_egen*) egen_reo->geo;
+		ctimer_set(&egen_reo->intra_period_trigger_ctimer,
+				pateg->period * CLOCK_SECOND / pateg->pattern_len, egen_produce,
+				egen_reo);
+
+		egen_produce(egen_reo);
+		break;
+	}
+	}
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -890,6 +977,7 @@ static void egen_produce(void *ptr) {
  *
  * @param[in] geo
  * @param[in] local
+ * @param[in] subscription
  */
 static void egen_init(struct generic_event_operator *geo, bool local,
 		struct generic_subscription *subscription) {
@@ -946,28 +1034,47 @@ static void egen_init(struct generic_event_operator *geo, bool local,
 			case (ABSOLUTE_EG): {
 				struct absolute_egen *aeg = (struct absolute_egen *) eg;
 				delay = aeg->when - clock_time();
+
+				ctimer_set(&egen_reo->intra_period_trigger_ctimer, delay,
+						egen_produce, egen_reo);
+
 				break;
 			}
 			case (OFFSET_EG): {
 				struct offset_egen *oeg = (struct offset_egen *) eg;
 				delay = oeg->offset * CLOCK_SECOND;
+
+				ctimer_set(&egen_reo->intra_period_trigger_ctimer, delay,
+						egen_produce, egen_reo);
+
 				break;
 			}
 			case (RELATIVE_EG): {
 				delay = 0;
+
+				// TODO
 				break;
 			}
 			case (PERIODIC_EG): {
 				struct periodic_egen *peg = (struct periodic_egen*) eg;
 				delay = peg->period * CLOCK_SECOND;
+
+				ctimer_set(&egen_reo->inter_period_trigger_ctimer, delay,
+						egen_inter_interval, egen_reo);
 				break;
 			}
+
 			case (PATTERN_EG): {
-				/**  TODO */
+				struct pattern_egen *pateg = (struct pattern_egen*) eg;
+				delay = pateg->period * CLOCK_SECOND;
+
+				ctimer_set(&egen_reo->inter_period_trigger_ctimer, delay,
+						egen_inter_interval, egen_reo);
+				egen_inter_interval(egen_reo);
 				break;
 			}
 			case (FUNCTIONAL_EG): {
-				/** TODO */
+				// TODO
 				break;
 			}
 			} /** switch */
@@ -975,8 +1082,6 @@ static void egen_init(struct generic_event_operator *geo, bool local,
 			PRINTF(5,
 					"(EVENT-MGR) egen init, reo channel id set to %u, recursive channel id set to %u, delay %lu\n",
 					egen_reo->input_channel_id, channel_id, delay);
-			ctimer_set(&egen_reo->event_operator_trigger_ctimer, delay,
-					egen_produce, egen_reo);
 
 		} /** if */
 	}
@@ -988,11 +1093,11 @@ static void egen_init(struct generic_event_operator *geo, bool local,
 
 /*---------------------------------------------------------------------------*/
 /**
- * \brief Adds to the list of scope_ids the scope id of this event generator
- * @param geo
- * @param ev_op_len
- * @param current
- * @param scope_ids
+ * \brief Adds to the list of scope ids the scope id of this event generator
+ *
+ * @param[in] geo
+ * @param[in] current the current event operator
+ * @param[in|out] ls simple list in which the scope ids are inserted
  */
 static void egen_list_scopes(struct generic_event_operator *geo,
 		struct generic_event_operator **current, struct simple_list_struct *ls) {
@@ -1026,9 +1131,10 @@ static void egen_remove(struct generic_event_operator *geo, bool local) {
 	struct egen_running_event_op *eg_reo =
 			(struct egen_running_event_op *) get_running_event_op(geo);
 	if (eg_reo != NULL) {
-		ctimer_stop(&eg_reo->event_operator_trigger_ctimer);
+		ctimer_stop(&eg_reo->intra_period_trigger_ctimer);
+		ctimer_stop(&eg_reo->inter_period_trigger_ctimer);
 		list_remove(running_event_ops, eg_reo);
-		PRINTF(2, "(EVENT-MGR) freed eg_reo @%p\n", eg_reo);
+		PRINTF(1, "(EVENT-MGR) freed eg_reo @%p\n", eg_reo);
 		free(eg_reo);
 	}
 }
@@ -1321,8 +1427,8 @@ static void pcf_evaluate(struct running_event_op *reo,
 					(uint8_t*) event_get_value(received_event, COUNT_F));
 			event_set_value(event, ORIGIN_SCOPE_F,
 					event_get_value(received_event, ORIGIN_SCOPE_F));
-			printf("eval final magnitude %u\n",
-					*((uint16_t*) event_get_value(event, MAGNITUDE_F)));
+//			printf("eval final magnitude %u\n",
+//					*((uint16_t*) event_get_value(event, MAGNITUDE_F)));
 
 			PRINTF(2, "(EVENT-MGR) engine pt, freed event @%p\n",
 					received_event);
@@ -1474,13 +1580,13 @@ static void pcf_init(struct generic_event_operator *geo, bool local,
 					reo, channel_id, geo->channel_id, reo->input_channel_id,
 					list_length(
 							((struct pcf_running_event_op* ) reo)->event_buffer));
-			if (list_length(((struct pcf_running_event_op*) reo)->event_buffer)
-					> 0) {
-				struct event_node *ev_n = list_head(
-						((struct pcf_running_event_op*) reo)->event_buffer);
-//				printf("what was here:\n");
-//				event_print(ev_n->event_ptr, event_get_len(ev_n->event_ptr));
-			}
+//			if (list_length(((struct pcf_running_event_op*) reo)->event_buffer)
+//					> 0) {
+//				struct event_node *ev_n = list_head(
+//						((struct pcf_running_event_op*) reo)->event_buffer);
+////				printf("what was here:\n");
+////				event_print(ev_n->event_ptr, event_get_len(ev_n->event_ptr));
+//			}
 		}
 
 	} /** if operator can be deployed here */
@@ -1788,7 +1894,8 @@ void ukuflow_event_mgr_scope_removed(scope_id_t scope_id) {
 			if (g_egen->scope_id == scope_id) {
 
 				/** Invoke removal of running event operator:*/
-				event_operators[reo->geo->ev_op_type]->remove(reo->geo, FALSE);
+				event_operators[reo->geo->ev_op_type]->remove(reo->geo,
+				FALSE);
 				reo_deleted = TRUE;
 			}
 
@@ -1801,7 +1908,8 @@ void ukuflow_event_mgr_scope_removed(scope_id_t scope_id) {
 					ls.list);
 			if ((node != NULL) && (node->scope_id == scope_id)) {
 				/** Invoke removal of running event operator:*/
-				event_operators[reo->geo->ev_op_type]->remove(reo->geo, FALSE);
+				event_operators[reo->geo->ev_op_type]->remove(reo->geo,
+				FALSE);
 				reo_deleted = TRUE;
 			}
 
@@ -2064,7 +2172,8 @@ PROCESS_THREAD( ukuflow_event_mgr_engine_pt, ev, data) {
 
 				/** Deploy this global subscription locally */
 				ukuflow_event_mgr_handle_subscription(global_sub->main_ev_op,
-						global_sub->ev_op_len, TRUE);
+						global_sub->ev_op_len,
+						TRUE);
 
 				/** Now get list of scopes associated to expression */
 				collect_scope_list(global_sub->main_ev_op, &ls);
@@ -2352,7 +2461,8 @@ EVENT_OPERATOR(offset_egen_oper, egen_init, egen_remove, NULL, NULL,
 //EVENT_OPERATOR(relative_egen_oper, NULLARY | DISTRIBUTABLE, relative_egen_init, _remove, NULL, NULL)
 EVENT_OPERATOR(periodic_egen_oper, egen_init, egen_remove, NULL, NULL,
 	egen_list_scopes)
-//EVENT_OPERATOR(pattern_egen_oper, NULLARY | DISTRIBUTABLE, patterned_egen_init, _remove, NULL, NULL)
+EVENT_OPERATOR(pattern_egen_oper, egen_init, egen_remove, NULL, NULL,
+	egen_list_scopes)
 //EVENT_OPERATOR(functional_egen_oper, NULLARY | DISTRIBUTABLE, distributed_egen_init, _remove, NULL, NULL)
 EVENT_OPERATOR(simple_filter_oper, simple_filter_init, simple_filter_remove,
 	simple_filter_consume, NULL, simple_filter_list_scopes)
@@ -2382,7 +2492,7 @@ struct ukuflow_event_operator *event_operators[] = { //
 	&offset_egen_oper, /* */
 	NULL, /*						relative_egen_oper*/
 	&periodic_egen_oper, /* */
-	NULL, /*						pattern_egen_oper*/
+	&pattern_egen_oper, /* */
 	NULL, /*						functional_egen_oper*/
 	&simple_filter_oper, /* */
 	NULL, /*						and_composite_filter_oper*/
