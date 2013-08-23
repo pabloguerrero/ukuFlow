@@ -153,7 +153,7 @@ void ukuflow_net_mgr_handler(scope_id_t scope_id, void *data,
 		data_len_t data_len, bool to_creator, const rimeaddr_t *source) {
 
 	PRINTF(2, "(UF-NET-MGR) msg received from [%u.%u], ", source->u8[0], source->u8[1]);
-	PRINT_ARR(1, data, data_len);
+	PRINT_ARR(2, data, data_len);
 
 	struct ukuflow_generic_msg *msg = (struct ukuflow_generic_msg*) data;
 	switch (msg->msg_type) {
