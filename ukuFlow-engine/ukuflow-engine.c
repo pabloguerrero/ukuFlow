@@ -847,7 +847,7 @@ static void processor_join_gateway(struct workflow_token *token,
 	 * check if that was the last child token */
 	if ((--(parent_token_state->num_children_tokens)) == 0) {
 
-		/** Release memory���of token state */
+		/** Release memory of token state */
 		free(parent_token_state);
 		parent_token->token_state = NULL;
 
@@ -994,7 +994,7 @@ static void processor_inclusive_join_gateway(struct workflow_token *token,
  * \brief		Processes an exclusive decision gateway.
  *
  * 				Exclusive decision gateways are used to create alternative paths.
- * 				This is basically the ���diversion point in the road��� for a process.
+ * 				This is basically the diversion point in the road for a process.
  * 				For a given instance of the process, only one of the paths can be
  * 				taken.
  *
