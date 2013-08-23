@@ -64,10 +64,10 @@ int bitvector_get(uint8_t *bitvector, uint8_t bit_nr) {
 	/**  first, a byte is created with the correct bit set: */
 	uint8_t shifted_bit = 1 << (bit_nr % 8);
 
-	PRINTF(4, "bitvector : shifted_bit is %u\n", shifted_bit);
+	PRINTF(4, "bitvector : shifted_bit is %u, byte to use is %2x\n", shifted_bit, bitvector[bit_nr/8]);
 
 	/**  second, the corresponding byte is OR'ed against the byte with the 'shifted_bit' */
-	return (bitvector[bit_nr / 8] | shifted_bit);
+	return ((bitvector[bit_nr / 8] & shifted_bit) != 0);
 }
 
 /**
