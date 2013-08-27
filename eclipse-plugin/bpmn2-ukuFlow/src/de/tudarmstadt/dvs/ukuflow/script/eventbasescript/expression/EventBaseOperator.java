@@ -32,14 +32,15 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.ChannelIDManager;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.OperatorIDGenerator;
 
 public abstract class EventBaseOperator extends EEvaluableExpression {
-	private String variable = null;
 	private byte channel;
-	
+	private byte operatorID = -1;
 	public EventBaseOperator(){
 		channel = ChannelIDManager.getInstance().generateID();
 	}
+	/*
 	@Deprecated
 	public void setVariable(String var) {
 		this.variable = var;
@@ -49,7 +50,13 @@ public abstract class EventBaseOperator extends EEvaluableExpression {
 	public String getVariable() {
 		return variable;
 	}
+	*/
 	
+	public byte getOperatorID(){
+		if(operatorID == -1)
+			operatorID = OperatorIDGenerator.getNextID();
+		return operatorID;
+	}
 	public byte getChannel(){
 		return channel;
 	}

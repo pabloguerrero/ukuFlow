@@ -90,7 +90,8 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 
 	@Override
 	public void visit(ESimpleEF sef) {
-		out.add((byte)UkuConstants.SIMPLE_FILTER);
+		out.add(UkuConstants.EFConstants.SIMPLE_EF);
+		out.add(sef.getOperatorID());
 		out.add(sef.getChannel());
 		out.add((byte)sef.getConstraints().size());
 		for(ESimpleFilterConstraint c : sef.getConstraints()){
@@ -114,7 +115,8 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 
 	@Override
 	public void visit(EAperiodicDistributionEG a) {
-		out.add((byte)UkuConstants.DISTRIBUTED_E_GEN);
+		out.add((byte)UkuConstants.EGConstants.FUNCTIONAL_EG);
+		out.add(a.getOperatorID());
 		out.add(a.getChannel());
 		out.add(a.getSensorType());
 		out.add(getScope(a));
@@ -147,7 +149,8 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 
 	@Override
 	public void visit(EAperiodicPatternedEG a) {
-		out.add((byte)UkuConstants.PATTERNED_E_GEN);
+		out.add((byte)UkuConstants.EGConstants.PATTERNED_EG);
+		out.add(a.getOperatorID());
 		out.add(a.getChannel());
 		out.add((byte)a.getSensorType());
 		out.add(getScope(a));
@@ -163,7 +166,8 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	
 	@Override
 	public void visit(EPeriodicEG ep) {
-		out.add((byte)UkuConstants.PERIODIC_E_GEN);
+		out.add((byte)UkuConstants.EGConstants.PERIODIC_EG);
+		out.add(ep.getOperatorID());
 		out.add(ep.getChannel());
 		out.add((byte)ep.getSensorType());
 		byte code = getScope(ep);
@@ -179,6 +183,7 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	@Override
 	public void reset(){
 		out.clear();
+		OperatorIDGenerator.init();
 	}
 
 	/* (non-Javadoc)
@@ -186,7 +191,9 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	 */
 	@Override
 	public void visit(EAbsoluteEG e) {
-		out.add((byte)UkuConstants.ABSOLUTE_E_GEN);
+		out.add((byte)UkuConstants.EGConstants.ABSOLUTE_EG);
+		out.add(e.getOperatorID());
+		out.add(OperatorIDGenerator.getNextID());
 		out.add(e.getChannel());
 		out.add(e.getSensorType());
 		out.add(getScope(e));
@@ -200,7 +207,8 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	 */
 	@Override
 	public void visit(EImmediateEG e) {
-		out.add((byte)UkuConstants.IMMEDIATE_E_GEN);
+		out.add(UkuConstants.EGConstants.IMMEDIATE_EG);
+		out.add(e.getOperatorID());
 		out.add(e.getChannel());
 		out.add(e.getSensorType());
 		out.add(getScope(e));
@@ -212,7 +220,8 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	 */
 	@Override
 	public void visit(EOffsetEG e) {
-		out.add((byte)UkuConstants.OFFSET_E_GEN);
+		out.add((byte)UkuConstants.EGConstants.OFFSET_EG);
+		out.add(e.getOperatorID());
 		out.add(e.getChannel());
 		out.add(e.getSensorType());
 		out.add(getScope(e));
@@ -225,7 +234,8 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	 */
 	@Override
 	public void visit(ERelativeEG e) {
-		out.add((byte)UkuConstants.IMMEDIATE_E_GEN);
+		out.add((byte)UkuConstants.EGConstants.RELATIVE_EG);
+		out.add(e.getOperatorID());
 		out.add(e.getChannel());
 		out.add(e.getSensorType()); 
 		out.add(getScope(e)); 

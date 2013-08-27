@@ -95,13 +95,13 @@ public class UkuConstant extends PrimaryExpression {
 
 	public void setValue(int intValue) throws InvalidConstantValueException{
 		if (intValue >= 0 && intValue < 256)
-			type = (byte) UkuConstants.UINT8_VALUE;
+			type = (byte) UkuConstants.OperatorConstants.UINT8_VALUE;
 		else if (intValue >= 0 && intValue < 65536)
-			type = (byte) UkuConstants.UINT16_VALUE;
+			type = (byte) UkuConstants.OperatorConstants.UINT16_VALUE;
 		else if (intValue >= -128 && intValue < 128)
-			type = (byte) UkuConstants.INT8_VALUE;
+			type = (byte) UkuConstants.OperatorConstants.INT8_VALUE;
 		else if (intValue >= -32768 && intValue < 32768)
-			type = (byte) UkuConstants.INT16_VALUE;
+			type = (byte) UkuConstants.OperatorConstants.INT16_VALUE;
 		else {
 			throw new InvalidConstantValueException();
 		}
@@ -143,11 +143,11 @@ public class UkuConstant extends PrimaryExpression {
 	public int getLength() {
 
 		switch (getType()) {
-		case UkuConstants.UINT8_VALUE:
-		case UkuConstants.INT8_VALUE:
+		case UkuConstants.OperatorConstants.UINT8_VALUE:
+		case UkuConstants.OperatorConstants.INT8_VALUE:
 			return 2;
-		case UkuConstants.UINT16_VALUE:
-		case UkuConstants.INT16_VALUE:
+		case UkuConstants.OperatorConstants.UINT16_VALUE:
+		case UkuConstants.OperatorConstants.INT16_VALUE:
 			return 3;
 		}
 		return 0;

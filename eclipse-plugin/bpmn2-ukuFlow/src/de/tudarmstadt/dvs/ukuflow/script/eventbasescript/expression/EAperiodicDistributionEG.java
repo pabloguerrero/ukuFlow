@@ -66,6 +66,6 @@ public class EAperiodicDistributionEG extends ERecurringEG{
 		}
 		s+="__";
 		s= s.replace(",__",")");
-		return getVariable()+"PEG_"+getSensorType()+"_"+s+"@"+getScope();
+		return "PEG_"+getSensorType()+"_"+s+"@"+getScope();
 	}
 }

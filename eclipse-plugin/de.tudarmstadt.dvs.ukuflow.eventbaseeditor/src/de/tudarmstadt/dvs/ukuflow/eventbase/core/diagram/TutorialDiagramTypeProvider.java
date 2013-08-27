@@ -24,7 +24,7 @@ public class TutorialDiagramTypeProvider extends AbstractDiagramTypeProvider {
 
     public TutorialDiagramTypeProvider() {
         super();
-        setFeatureProvider(new TutorialFeatureProvider(this));
+        setFeatureProvider(new UkuFlowFeatureProvider(this));
     }
 
     @Override

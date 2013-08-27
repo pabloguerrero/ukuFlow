@@ -38,7 +38,7 @@ import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram.TutorialFeatureProvider;
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram.UkuFlowFeatureProvider;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGAbsolute;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGPatterned;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;

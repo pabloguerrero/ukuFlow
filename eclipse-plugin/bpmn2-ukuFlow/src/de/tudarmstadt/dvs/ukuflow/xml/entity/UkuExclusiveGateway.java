@@ -43,9 +43,9 @@ public class UkuExclusiveGateway extends UkuGateway{
 	@Override
 	public int getUkuType(){
 		if(calculateType()==1)
-			return UkuConstants.EXCLUSIVE_MERGE_GATEWAY;
+			return UkuConstants.WorkflowOperators.EXCLUSIVE_MERGE_GATEWAY;
 		if(calculateType()==2)
-			return UkuConstants.EXCLUSIVE_DECISION_GATEWAY;		
+			return UkuConstants.WorkflowOperators.EXCLUSIVE_DECISION_GATEWAY;		
 		return -1;
 	}
 

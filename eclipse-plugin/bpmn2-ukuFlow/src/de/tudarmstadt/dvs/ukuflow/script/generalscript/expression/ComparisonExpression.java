@@ -42,12 +42,12 @@ import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
  */
 public class ComparisonExpression extends BoolExpression {
 	
-	public static final int EQUAL = UkuConstants.PREDICATE_EQ;
-	public static final int UNEQUAL = UkuConstants.PREDICATE_NEQ;
-	public static final int GREATERTHAN = UkuConstants.PREDICATE_GT;
-	public static final int LESSTHAN = UkuConstants.PREDICATE_LT;
-	public static final int GREATEROREQUAL = UkuConstants.PREDICATE_GET;
-	public static final int LESSOREQUAL = UkuConstants.PREDICATE_LET;
+	public static final int EQUAL = UkuConstants.OperatorConstants.PREDICATE_EQ;
+	public static final int UNEQUAL = UkuConstants.OperatorConstants.PREDICATE_NEQ;
+	public static final int GREATERTHAN = UkuConstants.OperatorConstants.PREDICATE_GT;
+	public static final int LESSTHAN = UkuConstants.OperatorConstants.PREDICATE_LT;
+	public static final int GREATEROREQUAL = UkuConstants.OperatorConstants.PREDICATE_GET;
+	public static final int LESSOREQUAL = UkuConstants.OperatorConstants.PREDICATE_LET;
 
 	/**
 	 * @uml.property  name="operator"

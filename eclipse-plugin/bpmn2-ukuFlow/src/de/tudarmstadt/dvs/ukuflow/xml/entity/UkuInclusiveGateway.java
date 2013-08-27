@@ -41,9 +41,9 @@ public class UkuInclusiveGateway extends UkuGateway{
 	@Override
 	public int getUkuType() {
 		if(calculateType() == 1)
-			return UkuConstants.INCLUSIVE_JOIN_GATEWAY;
+			return UkuConstants.WorkflowOperators.INCLUSIVE_JOIN_GATEWAY;
 		if(calculateType() == 2)
-			return UkuConstants.INCLUSIVE_DECISION_GATEWAY;
+			return UkuConstants.WorkflowOperators.INCLUSIVE_DECISION_GATEWAY;
 		return -1;
 	}
 

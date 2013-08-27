@@ -37,11 +37,11 @@ import de.tudarmstadt.dvs.ukuflow.script.*;
  * 
  */
 public abstract class NumericalExpression extends UkuExpression {
-	public static final int ADD = UkuConstants.OPERATOR_ADD;
-	public static final int SUB = UkuConstants.OPERATOR_SUB;
-	public static final int MUL = UkuConstants.OPERATOR_MULT;
-	public static final int DIV = UkuConstants.OPERATOR_DIV;
-	public static final int MOD = UkuConstants.OPERATOR_MOD;
+	public static final int ADD = UkuConstants.OperatorConstants.OPERATOR_ADD;
+	public static final int SUB = UkuConstants.OperatorConstants.OPERATOR_SUB;
+	public static final int MUL = UkuConstants.OperatorConstants.OPERATOR_MULT;
+	public static final int DIV = UkuConstants.OperatorConstants.OPERATOR_DIV;
+	public static final int MOD = UkuConstants.OperatorConstants.OPERATOR_MOD;
 	
 	public static final int MINUS = 0;//TODO: mapping negative & positive number
 	public static final int PLUS = 0;//TODO:
