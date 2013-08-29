@@ -51,6 +51,6 @@ public class EPeriodicEG extends ERecurringEG{
 	public String toString(){
 		String s="";
 		s+=time;
-		return getVariable()+"PEG_"+getSensorType()+"_"+s+"@"+getScope();
+		return "PEG_"+getSensorType()+"_"+s+"@"+getScope();
 	}
 }

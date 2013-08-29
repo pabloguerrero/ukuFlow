@@ -46,13 +46,15 @@ public class UkuProcess implements VisitableElement {
 	private List<UkuEntity> entities;
 	public UkuEvent startEvent = null;
 	// private HashMap<String,UkuEntity> ref = new HashMap<String, UkuEntity>();
-
+	public int minInstance;
+	public int maxInstance;
+	public int numberOfLoop;
+	
 	public List<UkuScope> scopes = new LinkedList<UkuScope>();
 	/**
 	 * unique id
 	 */
 	public String id;
-
 	public String name;
 
 	public UkuProcess(String id, String name) {
@@ -77,7 +79,7 @@ public class UkuProcess implements VisitableElement {
 			return;
 		}
 		if (startEvent == null && newEntity instanceof UkuEvent
-				&& ((UkuEvent) newEntity).getType() == UkuConstants.START_EVENT) {
+				&& ((UkuEvent) newEntity).getType() == UkuConstants.WorkflowOperators.START_EVENT) {
 			startEvent = (UkuEvent) newEntity;
 		}
 		entities.add(newEntity);

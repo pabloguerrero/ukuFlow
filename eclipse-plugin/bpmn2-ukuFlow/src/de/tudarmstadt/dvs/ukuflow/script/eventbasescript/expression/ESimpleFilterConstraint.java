@@ -54,10 +54,10 @@ public class ESimpleFilterConstraint implements Visitable{
 		return null;
 	}
 	public void setType(String type){
-		this.type = UkuConstants.getConstantWithName(type);		
+		this.type = UkuConstants.getConstantByName(type);		
 	}
 	public void setValue(String value){
-		int v = UkuConstants.getConstantWithName(value);
+		int v = UkuConstants.getConstantByName(value);
 		if(v==-1)
 			try{
 				v = Integer.parseInt(value);
@@ -69,7 +69,7 @@ public class ESimpleFilterConstraint implements Visitable{
 	}
 	
 	public void setComparator(String op){
-		comparator = UkuConstants.getConstantWithName(op);
+		comparator = UkuConstants.getConstantByName(op);
 	}
 	public boolean isValueFirst(){
 		return valueFirst;

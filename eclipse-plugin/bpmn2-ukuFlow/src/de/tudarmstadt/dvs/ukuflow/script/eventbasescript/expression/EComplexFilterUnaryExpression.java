@@ -38,7 +38,7 @@ public class EComplexFilterUnaryExpression extends EComplexFilterExpression{
 	private EEvaluableExpression exp;
 	private String op =null;
 	public EComplexFilterUnaryExpression(String op,EEvaluableExpression exp){
-		this.operator = UkuConstants.getConstantWithName(op);
+		this.operator = UkuConstants.getConstantByName(op);
 		this.exp = exp;
 		this.op = op;
 	}

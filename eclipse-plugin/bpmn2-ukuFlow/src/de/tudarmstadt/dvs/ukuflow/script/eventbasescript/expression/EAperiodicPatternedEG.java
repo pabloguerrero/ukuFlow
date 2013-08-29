@@ -92,7 +92,7 @@ public class EAperiodicPatternedEG extends ERecurringEG{
 	@Override
 	public String toString(){
 		String s ="[PATTERNED="+pattern+"("+time+"s)]";		
-		return getVariable()+"PEG_"+getSensorType()+"_"+s+"@"+getScope();
+		return "PEG_"+getSensorType()+"_"+s+"@"+getScope();
 	}
 	public static void main(String[] args) {
 		String pattern = "00001010";

@@ -41,7 +41,7 @@ public class EComplexFilterBinaryExpression extends EComplexFilterExpression{
 		this.left = left;
 		this.right = right;
 		this.op = op;
-		operator = UkuConstants.getConstantWithName(op);
+		operator = UkuConstants.getConstantByName(op);
 	}
 	public EEvaluableExpression getLeft(){
 		return left;

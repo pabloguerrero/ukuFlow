@@ -42,9 +42,9 @@ public class UkuParallelGateway extends UkuGateway{
 	@Override
 	public int getUkuType() {
 		if(calculateType()==1)
-			return UkuConstants.JOIN_GATEWAY;
+			return UkuConstants.WorkflowOperators.JOIN_GATEWAY;
 		if(calculateType()==2)
-			return UkuConstants.FORK_GATEWAY;
+			return UkuConstants.WorkflowOperators.FORK_GATEWAY;
 		return -1;
 	}
 

@@ -68,13 +68,13 @@ public class UkuProcessValidation {
 		for (UkuEntity e : process.getEntities()) {
 			if (e instanceof UkuEvent) {
 				UkuEvent ev = (UkuEvent) e;
-				if (ev.getType() == UkuConstants.START_EVENT) {
+				if (ev.getType() == UkuConstants.WorkflowOperators.START_EVENT) {
 					if (start == null) {
 						start = ev;
 					} else {
 						ev.addErrorMessage("process should have only one Start Event");
 					}
-				} else if (ev.getType() == UkuConstants.END_EVENT) {
+				} else if (ev.getType() == UkuConstants.WorkflowOperators.END_EVENT) {
 					if (end == null) {
 						end = ev;
 					} else {
@@ -118,7 +118,7 @@ public class UkuProcessValidation {
 		}
 		if (balanceCheck && ErrorManager.getInstance().isValid()) {
 			UkuElement last = wellformednessChecking3(start);
-			if (last != null && last instanceof UkuEvent && ((UkuEvent)last).getType()==UkuConstants.END_EVENT)
+			if (last != null && last instanceof UkuEvent && ((UkuEvent)last).getType()==UkuConstants.WorkflowOperators.END_EVENT)
 				System.out.println("workflow is well-formed");
 			else 
 				System.err.println("workflow is not well-formed "+ last);
@@ -150,7 +150,7 @@ public class UkuProcessValidation {
 			return goToNextEntity(
 					((UkuSequenceFlow) current).getTargetEntity(), max);
 		} else if (current instanceof UkuEvent
-				&& ((UkuEvent) current).getType() == UkuConstants.END_EVENT) {
+				&& ((UkuEvent) current).getType() == UkuConstants.WorkflowOperators.END_EVENT) {
 			return true;
 		} else {
 			UkuElement e = (UkuElement) current;
@@ -289,7 +289,7 @@ public class UkuProcessValidation {
 				}
 			} else if (tmp instanceof UkuActivity) {
 				if (tmp instanceof UkuEvent
-						&& ((UkuEvent) tmp).getType() == UkuConstants.END_EVENT) {
+						&& ((UkuEvent) tmp).getType() == UkuConstants.WorkflowOperators.END_EVENT) {
 					return tmp;
 				}
 			} else {
@@ -351,13 +351,13 @@ public class UkuProcessValidation {
 
 	private void validate(UkuEvent event) {
 		switch (event.getType()) {
-		case UkuConstants.END_EVENT:
+		case UkuConstants.WorkflowOperators.END_EVENT:
 			if (event.getIncomingID().size() == 0)
 				event.addErrorMessage("End Event should have at least one incoming connection");
 			if (event.getOutgoingID().size() > 0)
 				event.addErrorMessage("End Event cannot have outoging connection");
 			break;
-		case UkuConstants.START_EVENT:
+		case UkuConstants.WorkflowOperators.START_EVENT:
 			if (event.getOutgoingID().size() == 0)
 				event.addErrorMessage("Start Event should have at least one outgoing connection");
 			if (event.getIncomingID().size() > 0)
@@ -412,13 +412,13 @@ public class UkuProcessValidation {
 			if (sourceGway.calculateType() != 2)
 				return;
 			switch (sourceGway.getUkuType()) {
-			case UkuConstants.INCLUSIVE_DECISION_GATEWAY:
-			case UkuConstants.EXCLUSIVE_DECISION_GATEWAY:
+			case UkuConstants.WorkflowOperators.INCLUSIVE_DECISION_GATEWAY:
+			case UkuConstants.WorkflowOperators.EXCLUSIVE_DECISION_GATEWAY:
 				if (!sef.hasCondition() && !sef.isDefault()) {
 					sef.addErrorMessage("sequence Flow has no condition or condition expression has incorrect syntax");
 				}
 				break;
-			case UkuConstants.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY:
+			case UkuConstants.WorkflowOperators.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY:
 				if (sef.hasCondition()) {
 					sef.addErrorMessage("this sequence flow shouldn't have condition");
 				}

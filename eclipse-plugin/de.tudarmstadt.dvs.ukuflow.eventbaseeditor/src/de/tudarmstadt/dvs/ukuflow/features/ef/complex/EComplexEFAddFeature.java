@@ -21,7 +21,7 @@ import org.eclipse.graphiti.services.IPeCreateService;
 
 
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram.TutorialFeatureProvider;
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram.UkuFlowFeatureProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.utils.EventObjIndependenceSolver;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexEF;
 /**
@@ -143,7 +143,7 @@ public class EComplexEFAddFeature extends AbstractAddShapeFeature{
 
 				
 				ChopboxAnchor chopboxAnchor = peCreateService.createChopboxAnchor(containerShape);				
-				TutorialFeatureProvider tfp = (TutorialFeatureProvider)getFeatureProvider();
+				UkuFlowFeatureProvider tfp = (UkuFlowFeatureProvider)getFeatureProvider();
 				EventObjIndependenceSolver pojoIndependenceSolver = tfp.getCustomIndependenceSolver();										
 				pojoIndependenceSolver.registerGraphicalObject(ChopboxAnchor.class, addedClass, chopboxAnchor);
 				// call the layout feature

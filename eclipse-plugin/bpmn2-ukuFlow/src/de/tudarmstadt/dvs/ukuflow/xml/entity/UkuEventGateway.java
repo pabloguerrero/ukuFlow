@@ -41,7 +41,7 @@ public class UkuEventGateway extends UkuGateway {
 
 	@Override
 	public int getUkuType() {		
-		return UkuConstants.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY;
+		return UkuConstants.WorkflowOperators.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY;
 	}
 
 }

@@ -57,7 +57,7 @@ public abstract class EventGenerator extends EventBaseOperator {
 		return(byte) sensorType;
 	}
 	public void setSensorType(String sensorType) {
-		this.sensorType = UkuConstants.getConstantWithName(sensorType);
+		this.sensorType = UkuConstants.getConstantByName(sensorType);
 	}
 	
 

@@ -56,7 +56,7 @@ import org.eclipse.graphiti.tb.ImageDecorator;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.features.TutorialCollapseDummyFeature;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
-import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRenameFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.GenericEditPropertiesFeature;
 
 public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 
@@ -228,7 +228,7 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
         }
         
         private void createEntry(Class c, PaletteCompartmentEntry compartmentEntry) {
-                        TutorialFeatureProvider featureProvider = (TutorialFeatureProvider)getFeatureProvider();
+                        UkuFlowFeatureProvider featureProvider = (UkuFlowFeatureProvider)getFeatureProvider();
                         IFeature feature = featureProvider.getCreateFeatureForBusinessObject(c);
                         if (feature instanceof ICreateFeature) {
                                 ICreateFeature cf = (ICreateFeature)feature;
@@ -249,7 +249,7 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
         
         @Override
         public ICustomFeature getDoubleClickFeature(IDoubleClickContext context) {
-                ICustomFeature customFeature = new GenericRenameFeature(getFeatureProvider());
+                ICustomFeature customFeature = new GenericEditPropertiesFeature(getFeatureProvider());
                 // canExecute() tests especially if the context contains a EClass
                 if (customFeature.canExecute(context)) {
                         return customFeature;

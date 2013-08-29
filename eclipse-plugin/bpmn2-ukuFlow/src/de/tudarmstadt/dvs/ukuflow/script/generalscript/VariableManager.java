@@ -23,7 +23,7 @@ import de.tudarmstadt.dvs.ukuflow.validation.ErrorManager;
 public class VariableManager {
 	private ErrorManager errM = ErrorManager.getInstance();
 	private static VariableManager INSTANCE = null;
-	public static final int NODE_ID = UkuConstants.NODE_ID;
+	public static final int NODE_ID = UkuConstants.SensorTypeConstants.NODE_ID;
 	private int current_id;
 	private static BpmnLog log = BpmnLog.getInstance(VariableManager.class
 			.getSimpleName());
