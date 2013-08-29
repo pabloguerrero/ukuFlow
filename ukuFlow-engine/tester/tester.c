@@ -68,7 +68,7 @@
  * 				- the first event expression is a periodic event generator chained with a simple filter and a composition filter
  * 				- the second event expression is a local, offset event generator (to which a timer event of 700 seconds can map)
  **/
-#define WORKFLOW_SPEC 10, /* 1 = workflow id */ \
+#define WORKFLOW_SPEC_10_2 10, /* 1 = workflow id */ \
 	6,  /* number of wf_elems (0..5)*/ \
 	1,  /* number of scopes*/ \
 	1,  /* minimum number of instances required */ \
@@ -96,6 +96,43 @@
 	5, END_EVENT, /* 5 = 6th wf_elem, end event */ \
 	11, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 10, /* scope id 11, ttl 60 secs, length 5 bytes, spec */
 
+/**
+ * \brief	 	This workflow tests an event-based exclusive decision gateway (and its respective
+ * 				exclusive join gateway).
+ *
+ * 				A workflow testing event expressions. Depending on the events' expressions of the outgoing
+ * 				flows of the e-b exclusive decision gateway, tokens flow into them.
+ * 				There are two event expressions:
+ * 				- the first event expression is a periodic event generator chained with a simple filter and a composition filter
+ * 				- the second event expression is a local, offset event generator (to which a timer event of 700 seconds can map)
+ **/
+#define WORKFLOW_SPEC 10, /* 1 = workflow id */ \
+	6,  /* number of wf_elems (0..5)*/ \
+	1,  /* number of scopes*/ \
+	1,  /* minimum number of instances required */ \
+	1,  /* maximum number of instances required */ \
+	0,  /* looping (loop infinitely)*/ \
+	0, START_EVENT, 1, /* 0 = 1st wf_elem, start event, goes to wf_elem id 1*/ \
+	\
+	1, EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY, 2, /* 1 = 2nd wf_elem, event based decision gateway with 2 out flows */ \
+		2 /* event operator goes to wf_elem id 2 */, 26 /*total outflow len*/, \
+		   COUNT_COMPOSITION_EF/*type*/,	3/*ev_op_id*/,	30/*channel_id*/, 60, 0 /* window size*/, \
+		   SIMPLE_EF/*type*/,				2/*ev_op_id*/,	20/*channel_id*/, 1/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE_F, UINT16_VALUE, 3, 0 /* NODE_ID >= 3 */, \
+		   PATTERN_EG/*type*/,				1/*ev_op_id*/,	10/*channel id*/, NODE_ID /* source*/,				11/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, 2/*pattern length*/, 0x01 /* pattern: 0x01 = 00000001*/, \
+		3 /* event operator goes to wf_elem id 3 */, 7 /*total outflow len*/, \
+		   OFFSET_EG/*type*/,				4/*ev_op_id*/,	40/*channel id*/, NODE_TIME /* source */,	LOCAL_EVENT_GENERATOR /*scope_id*/, 200, 0 /* offset (200 secs) [2 byte]*/, \
+		\
+	2, EXECUTE_TASK, 4, 1, /* 2 = 3rd wf_elem, execute task, with 1 local function statement, goes to wf_elem id 4 */ \
+	LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, UINT8_VALUE, 2,/*  'local blink 2;' */ \
+	\
+	3, EXECUTE_TASK, 4, 1, /* 3 = 4th wf_elem, execute task, with 1 local function statement, goes to wf_elem id 4 */ \
+	LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, UINT8_VALUE, 6,/*  'local blink 6;' */ \
+	\
+	4, EXCLUSIVE_MERGE_GATEWAY, 5, 2, /* 4 = 5th wf_elem, goes to wf_elem id 5, exclusive merge with 2 incoming flows */ \
+	2, 3, /* ids of the wf_elems from which this merge potentially waits tokens */ \
+	\
+	5, END_EVENT, /* 5 = 6th wf_elem, end event */ \
+	11, 60, 0, 5, PREDICATE_GET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 2, /* scope id 11, ttl 60 secs, length 5 bytes, spec */
 
 /**
  * \brief		This workflow tests an event-based exclusive decision gateway (and its respective
@@ -107,7 +144,7 @@
  * 				- the first event expression is a periodic event generator chained with a simple filter
  * 				- the second event expression is a local, offset event generator (to which a timer event can map)
  * */
-#define WORKFLOW_SPEC_9_3 9, /* 9 = workflow id */ \
+#define WORKFLOW_SPEC_9_4 9, /* 9 = workflow id */ \
 	6,  /* number of wf_elems (0..5)*/ \
 	1,  /* number of scopes*/ \
 	1,  /* minimum number of instances required */ \
@@ -117,7 +154,7 @@
 	\
 	1, EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY, 2, /* 1 = 2nd wf_elem, event based decision gateway with 2 out flows */ \
 		2 /* event operator goes to wf_elem id 2 */, 26 /* total outflow len*/, \
-		   SIMPLE_EF /*type*/,	2/*ev_op_id*/, 2/*channel_id*/, 2/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE, UINT16_VALUE, 3, 0/* 3 */, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, TIMESTAMP, UINT16_VALUE, 94, 1 /* 350 secs */, \
+		   SIMPLE_EF /*type*/,	2/*ev_op_id*/, 2/*channel_id*/, 2/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE_F, UINT16_VALUE, 3, 0/* 3 */, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, TIMESTAMP_F, UINT16_VALUE, 94, 1 /* 350 secs */, \
 		   PERIODIC_EG/*type*/,	1/*ev_op_id*/, 1/*channel id*/, NODE_ID /* source*/,						11/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
 		3 /* event operator goes to wf_elem id 3 */, 7 /*total outflow len*/, \
 		   OFFSET_EG/*type*/,	3/*ev_op_id*/, 3/*channel id*/, NODE_TIME /* source */,	LOCAL_EVENT_GENERATOR /*scope_id*/, 188, 2 /* offset (700 secs) [2 byte]*/, \
@@ -145,7 +182,7 @@
  * 				- the first event expression is an immediate event generator chained with a simple filter
  * 				- the second event expression is a local, offset event generator (to which a timer event can map)
  * */
-#define WORKFLOW_SPEC_9_2 9, /* 9 = workflow id */ \
+#define WORKFLOW_SPEC_9_3 9, /* 9 = workflow id */ \
 	6,  /* number of wf_elems (0..5)*/ \
 	1,  /* number of scopes*/ \
 	1,  /* minimum number of instances required */ \
@@ -155,7 +192,7 @@
 	\
 	1, EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY, 2, /* 1 = 2nd wf_elem, event based decision gateway with 2 out flows */ \
 		2 /* event operator goes to wf_elem id 2 */, 16 /* total outflow len*/, \
-		   SIMPLE_EF /*type*/,		2/*ev_op_id*/, 20/*channel_id*/, 1/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE, UINT16_VALUE, 3, 0/* 3 */, \
+		   SIMPLE_EF /*type*/,		2/*ev_op_id*/, 20/*channel_id*/, 1/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE_F, UINT16_VALUE, 3, 0/* 3 */, \
 		   IMMEDIATE_EG/*type*/,	1/*ev_op_id*/, 10/*channel id*/, SENSOR_TEMPERATURE_CELSIUS /* source*/,						11/*scope_id*/, \
 		3 /* event operator goes to wf_elem id 3 */, 7 /*total outflow len*/, \
 		   OFFSET_EG/*type*/,		3/*ev_op_id*/, 30/*channel id*/, NODE_TIME /* source */,	LOCAL_EVENT_GENERATOR /*scope_id*/, 100, 0 /* offset (100 secs) [2 byte]*/, \
@@ -185,7 +222,7 @@
  * 				  second constraint is that the timestamp of the event is greater than or equal to 200 seconds.
  * 				- the second event expression is a periodic event generator local running at scope 44
  **/
-#define WORKFLOW_SPEC_9_1 9, /* 9 = workflow id */ \
+#define WORKFLOW_SPEC_9_2 9, /* 9 = workflow id */ \
 	6,  /* number of wf_elems (0..5)*/ \
 	2,  /* number of scopes*/ \
 	1,  /* minimum number of instances required */ \
@@ -195,7 +232,7 @@
 	\
 	1, EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY, 2, /* 1 = 2nd wf_elem, event based decision gateway with 2 out flows */ \
 		2 /* event operator goes to wf_elem id 2 */, 26 /* total outflow len*/, \
-		   SIMPLE_EF /*type*/,	2/*ev_op_id*/, 2/*channel_id*/, 2/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE, UINT16_VALUE, 3, 0, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, TIMESTAMP, UINT16_VALUE, 200, 0 /* 200 secs*/, \
+		   SIMPLE_EF /*type*/,	2/*ev_op_id*/, 2/*channel_id*/, 2/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE_F, UINT16_VALUE, 3, 0, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, TIMESTAMP_F, UINT16_VALUE, 200, 0 /* 200 secs*/, \
 		   PERIODIC_EG/*type*/,	1/*ev_op_id*/, 1/*channel id*/, NODE_ID /* source*/,				11/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
 		3 /* event operator goes to wf_elem id 3 */, 8 /*total outflow len*/, \
 		   PERIODIC_EG/*type*/,	3/*ev_op_id*/, 3/*channel id*/, SENSOR_TEMPERATURE_RAW/*sensor*/,	44/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, \
@@ -213,6 +250,44 @@
 	11, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3, /* scope id 11, ttl 60 secs, length 5 bytes, spec (NODE_ID <= 3)*/ \
 	44, 60, 0, 5, PREDICATE_EQ, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 4,  /* scope id 44, ttl 60 secs, length 5 bytes, spec (NODE_ID == 4)*/ \
 
+/**
+ * \brief		This workflow tests an event-based exclusive decision gateway (and its respective
+ * 				exclusive join gateway).
+ *
+ * 				A workflow testing event expressions. Depending on the events' expressions of the outgoing
+ * 				flows of the e-b exclusive decision gateway, tokens flow into them.
+ * 				There are two event expressions:
+ * 				- the first event expression is a pattern event generator chained with a simple filter.
+ * 				  The first constraint of the filter is that the id of the generator node is 3, while the
+ * 				  second constraint is that the timestamp of the event is greater than or equal to 200 seconds.
+ * 				- the second event expression is a local, offset event generator (to which a timer event can map)
+ **/
+#define WORKFLOW_SPEC_9_1 9, /* 9 = workflow id */ \
+	6,  /* number of wf_elems (0..5)*/ \
+	1,  /* number of scopes*/ \
+	1,  /* minimum number of instances required */ \
+	1,  /* maximum number of instances required */ \
+	0,  /* looping (loop infinitely)*/ \
+	0, START_EVENT, 1, /* 0 = 1st wf_elem, start event, goes to wf_elem id 1*/ \
+	\
+	1, EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY, 2, /* 1 = 2nd wf_elem, event based decision gateway with 2 out flows */ \
+		2 /* event operator goes to wf_elem id 2 */, 28 /* total outflow len*/, \
+		   SIMPLE_EF /*type*/,	2/*ev_op_id*/, 20/*channel_id*/, 2/*num_expressions*/, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, ORIGIN_NODE_F, UINT16_VALUE, 3, 0, 6/*expression_len*/, PREDICATE_GET, CUSTOM_INPUT_VALUE, TIMESTAMP_F, UINT16_VALUE, 200, 0 /* 200 secs*/, \
+		   PATTERN_EG/*type*/,	1/*ev_op_id*/, 10/*channel id*/, NODE_ID /* source*/,				11/*scope_id*/, 0/* infinite repetitions*/, 60, 0/*period (60 seconds) [2 byte]*/, 5/*pattern length*/, 0x05 /* pattern: 0x05 = 00000101*/, \
+		3 /* event operator goes to wf_elem id 3 */, 7 /*total outflow len*/, \
+		   OFFSET_EG/*type*/,		3/*ev_op_id*/, 30/*channel id*/, NODE_TIME /* source */,	LOCAL_EVENT_GENERATOR /*scope_id*/, 250, 0 /* offset (100 secs) [2 byte]*/, \
+		\
+	2, EXECUTE_TASK, 4, 1, /* 2 = 3rd wf_elem, execute task, with 1 local function statement, goes to wf_elem id 4 */ \
+	LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, UINT8_VALUE, 2,/*  'local blink 2;' */ \
+	\
+	3, EXECUTE_TASK, 4, 1, /* 3 = 4th wf_elem, execute task, with 1 local function statement, goes to wf_elem id 4 */ \
+	LOCAL_FUNCTION_STATEMENT, 0, 5, 1, 98, 108, 105, 110, 107, UINT8_VALUE, 6,/*  'local blink 6;' */ \
+	\
+	4, EXCLUSIVE_MERGE_GATEWAY, 5, 2, /* 4 = 5th wf_elem, goes to wf_elem id 5, exclusive merge with 2 incoming flows */ \
+	2, 3, /* ids of the wf_elems from which this merge potentially waits tokens */ \
+	\
+	5, END_EVENT, /* 5 = 6th wf_elem, end event */ \
+	11, 60, 0, 5, PREDICATE_LET, REPOSITORY_VALUE, NODE_ID, UINT8_VALUE, 3 /* scope id 11, ttl 60 secs, length 5 bytes, spec (NODE_ID <= 3)*/
 
 /**
  * \brief		This workflow tests an event-based exclusive decision gateway (and its
@@ -594,7 +669,7 @@ PROCESS_THREAD( tester_process, ev, data) {
 
 		leds_off(LEDS_ALL);
 
-		PRINTF(1, "(UF-TESTER) Starting\n");
+		PRINTF(3, "(UF-TESTER) Starting\n");
 
 		/*	LOG("[%u.%u:%10lu] tester::main() : size of a 'struct wf_elem' is %u, size of a 'struct wf_start_event' is %u\n",
 		 rimeaddr_node_addr.u8[0],rimeaddr_node_addr.u8[1], clock_time(), sizeof(struct wf_elem), sizeof(struct wf_start_event));
@@ -606,8 +681,8 @@ PROCESS_THREAD( tester_process, ev, data) {
 
 		if (node_id == ROOT_NODE_ID) {
 
-			PRINTF(1, "(UF-TESTER) Requesting workflow registration: ");
-			PRINT_ARR(1, wf_spec, sizeof(wf_spec));
+			PRINTF(3, "(UF-TESTER) Requesting workflow registration: ");
+			PRINT_ARR(3, wf_spec, sizeof(wf_spec));
 
 			ukuflow_mgr_register(wf_spec, sizeof(wf_spec));
 
