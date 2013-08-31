@@ -1218,13 +1218,22 @@ public interface EventbasePackage extends EPackage {
 	int EF_PROCESSING__ELEMENT_NAME = EF_STATUS_EVENT__ELEMENT_NAME;
 
 	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING__WINDOW_SIZE = EF_STATUS_EVENT_FEATURE_COUNT + 0;
+
+	/**
 	 * The number of structural features of the '<em>EF Processing</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EF_PROCESSING_FEATURE_COUNT = EF_STATUS_EVENT_FEATURE_COUNT + 0;
+	int EF_PROCESSING_FEATURE_COUNT = EF_STATUS_EVENT_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EFTemporalImpl <em>EF Temporal</em>}' class.
@@ -1448,6 +1457,15 @@ public interface EventbasePackage extends EPackage {
 	int EF_PROCESSING_MIN__ELEMENT_NAME = EF_PROCESSING__ELEMENT_NAME;
 
 	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING_MIN__WINDOW_SIZE = EF_PROCESSING__WINDOW_SIZE;
+
+	/**
 	 * The number of structural features of the '<em>EF Processing Min</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1492,6 +1510,15 @@ public interface EventbasePackage extends EPackage {
 	 * @ordered
 	 */
 	int EF_PROCESSING_MAX__ELEMENT_NAME = EF_PROCESSING__ELEMENT_NAME;
+
+	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING_MAX__WINDOW_SIZE = EF_PROCESSING__WINDOW_SIZE;
 
 	/**
 	 * The number of structural features of the '<em>EF Processing Max</em>' class.
@@ -1540,6 +1567,15 @@ public interface EventbasePackage extends EPackage {
 	int EF_PROCESSING_SUM__ELEMENT_NAME = EF_PROCESSING__ELEMENT_NAME;
 
 	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING_SUM__WINDOW_SIZE = EF_PROCESSING__WINDOW_SIZE;
+
+	/**
 	 * The number of structural features of the '<em>EF Processing Sum</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1584,6 +1620,15 @@ public interface EventbasePackage extends EPackage {
 	 * @ordered
 	 */
 	int EF_PROCESSING_COUNT__ELEMENT_NAME = EF_PROCESSING__ELEMENT_NAME;
+
+	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING_COUNT__WINDOW_SIZE = EF_PROCESSING__WINDOW_SIZE;
 
 	/**
 	 * The number of structural features of the '<em>EF Processing Count</em>' class.
@@ -1632,6 +1677,15 @@ public interface EventbasePackage extends EPackage {
 	int EF_PROCESSING_AVG__ELEMENT_NAME = EF_PROCESSING__ELEMENT_NAME;
 
 	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING_AVG__WINDOW_SIZE = EF_PROCESSING__WINDOW_SIZE;
+
+	/**
 	 * The number of structural features of the '<em>EF Processing Avg</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1676,6 +1730,15 @@ public interface EventbasePackage extends EPackage {
 	 * @ordered
 	 */
 	int EF_PROCESSING_ST_DEV__ELEMENT_NAME = EF_PROCESSING__ELEMENT_NAME;
+
+	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING_ST_DEV__WINDOW_SIZE = EF_PROCESSING__WINDOW_SIZE;
 
 	/**
 	 * The number of structural features of the '<em>EF Processing St Dev</em>' class.
@@ -2547,6 +2610,17 @@ public interface EventbasePackage extends EPackage {
 	EClass getEFProcessing();
 
 	/**
+	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessing#getWindowSize <em>Window Size</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Window Size</em>'.
+	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessing#getWindowSize()
+	 * @see #getEFProcessing()
+	 * @generated
+	 */
+	EAttribute getEFProcessing_WindowSize();
+
+	/**
 	 * Returns the meta object for class '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFTemporal <em>EF Temporal</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3316,6 +3390,14 @@ public interface EventbasePackage extends EPackage {
 		 * @generated
 		 */
 		EClass EF_PROCESSING = eINSTANCE.getEFProcessing();
+
+		/**
+		 * The meta object literal for the '<em><b>Window Size</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EF_PROCESSING__WINDOW_SIZE = eINSTANCE.getEFProcessing_WindowSize();
 
 		/**
 		 * The meta object literal for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EFTemporalImpl <em>EF Temporal</em>}' class.

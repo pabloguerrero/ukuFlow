@@ -725,6 +725,15 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getEFProcessing_WindowSize() {
+		return (EAttribute)efProcessingEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getEFTemporal() {
 		return efTemporalEClass;
 	}
@@ -1139,6 +1148,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		efLogicEClass = createEClass(EF_LOGIC);
 
 		efProcessingEClass = createEClass(EF_PROCESSING);
+		createEAttribute(efProcessingEClass, EF_PROCESSING__WINDOW_SIZE);
 
 		efTemporalEClass = createEClass(EF_TEMPORAL);
 
@@ -1313,6 +1323,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		initEClass(efLogicEClass, EFLogic.class, "EFLogic", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(efProcessingEClass, EFProcessing.class, "EFProcessing", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getEFProcessing_WindowSize(), ecorePackage.getEInt(), "windowSize", null, 0, 1, EFProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(efTemporalEClass, EFTemporal.class, "EFTemporal", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

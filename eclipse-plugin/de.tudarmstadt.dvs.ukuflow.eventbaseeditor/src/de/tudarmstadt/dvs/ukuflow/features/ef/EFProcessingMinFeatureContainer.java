@@ -1,4 +1,4 @@
-package de.tudarmstadt.dvs.ukuflow.features.ef.simple;
+package de.tudarmstadt.dvs.ukuflow.features.ef;
 
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
@@ -25,7 +25,6 @@ import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.BoxRelativeAnchor;
-import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -36,13 +35,9 @@ import org.eclipse.graphiti.services.IPeCreateService;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.ModelUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram.UkuFlowFeatureProvider;
-import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessingMin;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
-import de.tudarmstadt.dvs.ukuflow.features.ef.EFFeatureContainer;
-import de.tudarmstadt.dvs.ukuflow.features.eg.EGFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericDirectEditFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericLayoutFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericMoveFeature;
@@ -50,7 +45,7 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 
-public class EFSimpleFeatureContainer extends EFFeatureContainer{
+public class EFProcessingMinFeatureContainer extends EFFeatureContainer {
 
 	@Override
 	public Object getApplyObject(IContext context) {
@@ -58,19 +53,19 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 	}
 
 	public boolean canApplyTo(Object o) {
-		return (o instanceof EFSimple);
+		return (o instanceof EFProcessingMin);
 	}
 
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
-		return new EFSimpleCreateFeature(fp);
+		return new EFProcessingMinCreateFeature(fp);
 	}
 
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
-		return new EFSimpleAddFeature(fp);
+		return new EFProcessingMinAddFeature(fp);
 	}
 
 	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-		
+
 		return new GenericUpdateFeature(fp);
 	}
 
@@ -104,12 +99,18 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 		return null;
 	}
 
-	class EFSimpleCreateFeature extends AbstractCreateFeature{
+	class EFProcessingMinCreateFeature extends AbstractCreateFeature {
 
-		public EFSimpleCreateFeature (IFeatureProvider fp){
-			super(fp,"Simple","Create a simple event filter");
+		public EFProcessingMinCreateFeature(IFeatureProvider fp) {
+			super(fp, "Min", "Create composition mininum event filter");
 		}
-		public EFSimpleCreateFeature (IFeatureProvider fp, String name,
+
+		@Override
+		public String getCreateImageId() {
+			return EventImageProvider.FUNNEL_ICON;
+		}
+
+		public EFProcessingMinCreateFeature(IFeatureProvider fp, String name,
 				String description) {
 			super(fp, name, description);
 		}
@@ -119,20 +120,21 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 		}
 
 		public Object[] create(ICreateContext context) {
-			EFSimple newClass = EventbaseFactory.eINSTANCE.createEFSimple();
+			EFProcessingMin newClass = EventbaseFactory.eINSTANCE
+					.createEFProcessingMin();
 			getDiagram().eResource().getContents().add(newClass);
 
-			//		Use the following instead of the above line to store the model
-			//		data in a seperate file parallel to the diagram file
-			//		try {
-			//			try {
-			//				TutorialUtil.saveToModelFile(newClass, getDiagram());
-			//			} catch (IOException e) {
-			//				e.printStackTrace();
-			//			}
-			//		} catch (CoreException e) {
-			//			e.printStackTrace();
-			//		}
+			// Use the following instead of the above line to store the model
+			// data in a seperate file parallel to the diagram file
+			// try {
+			// try {
+			// TutorialUtil.saveToModelFile(newClass, getDiagram());
+			// } catch (IOException e) {
+			// e.printStackTrace();
+			// }
+			// } catch (CoreException e) {
+			// e.printStackTrace();
+			// }
 
 			// do the add
 			addGraphicalRepresentation(context, newClass);
@@ -144,33 +146,38 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 		}
 
 	}
-	public class EFSimpleAddFeature extends AbstractAddShapeFeature{
+
+	public class EFProcessingMinAddFeature extends AbstractAddShapeFeature {
 
 		public static final int INVISIBLE_RECT_RIGHT = 6;
-		
-		public EFSimpleAddFeature(IFeatureProvider fp) {
+
+		public EFProcessingMinAddFeature(IFeatureProvider fp) {
 			super(fp);
 		}
 
 		public boolean canAdd(IAddContext context) {
 			final Object newObject = context.getNewObject();
-			if(newObject instanceof EFSimple)
-			if(context.getTargetContainer() instanceof Diagram){
-				return true;
-			}
+			if (newObject instanceof EFProcessingMin)
+				if (context.getTargetContainer() instanceof Diagram) {
+					return true;
+				}
 			return false;
 		}
-		protected  GraphicsAlgorithmContainer getGraphicsAlgorithm(ContainerShape containerShape) {
+
+		protected GraphicsAlgorithmContainer getGraphicsAlgorithm(
+				ContainerShape containerShape) {
 			if (containerShape.getGraphicsAlgorithm() instanceof RoundedRectangle)
 				return containerShape.getGraphicsAlgorithm();
-			if (containerShape.getChildren().size()>0) {
+			if (containerShape.getChildren().size() > 0) {
 				Shape shape = containerShape.getChildren().get(0);
 				return shape.getGraphicsAlgorithm();
 			}
 			return null;
 		}
-		public PictogramElement add(IAddContext context){
-			final EFSimple addedClass = (EFSimple)context.getNewObject(); 
+
+		public PictogramElement add(IAddContext context) {
+			final EFProcessingMin addedClass = (EFProcessingMin) context
+					.getNewObject();
 			final Diagram targetDiagram = (Diagram) context
 					.getTargetContainer();
 			// CONTAINER SHAPE WITH ROUNDED RECTANGLE
@@ -186,8 +193,7 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 
 			final IGaService gaService = Graphiti.getGaService();
 
-			int xy[] = new int[] { 0, 25, 5, 0, 95,
-					0, 100,25, 95, 50, 5,50 };
+			int xy[] = new int[] { 0, 25, 5, 0, 95, 0, 100, 25, 95, 50, 5, 50 };
 
 			// create invisible outer rectangle expanded by
 			// the width needed for the anchor
@@ -282,102 +288,3 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 
 	}
 }
-		/*
-		public PictogramElement add(IAddContext context) {
-			final EFSimple addedClass = (EFSimple)context.getNewObject(); 
-			String oldName = addedClass.getElementName();
-			String newname = ModelUtil.setName(addedClass);
-			System.out.println(oldName + " -> new: " + newname);
-			final Diagram targetDiagram = (Diagram) context.getTargetContainer();
-			// CONTAINER SHAPE WITH ROUNDED RECTANGLE
-					final IPeCreateService peCreateService = Graphiti.getPeCreateService();
-					final ContainerShape containerShape = peCreateService.createContainerShape(targetDiagram, true);
-					
-					// check whether the context has a size (e.g. from a create feature)
-					// otherwise define a default size for the shape
-					final int width = context.getWidth() <= 0 ? 100 : context.getWidth();
-					final int height = context.getHeight() <= 0 ? 50 : context.getHeight();
-
-					final IGaService gaService = Graphiti.getGaService();
-					RoundedRectangle roundedRectangle; // need to access it later
-					{
-						// create invisible outer rectangle expanded by
-						// the width needed for the anchor
-						final Rectangle invisibleRectangle = gaService.createInvisibleRectangle(containerShape);			
-						gaService.setLocationAndSize(invisibleRectangle, context.getX(), context.getY(), width + INVISIBLE_RECT_RIGHT, height);
-
-						// create and set visible rectangle inside invisible rectangle
-						//gaService.create
-						roundedRectangle = gaService.createPlainRoundedRectangle(invisibleRectangle, 5, 5);
-						roundedRectangle.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
-						gaService.setLocationAndSize(roundedRectangle, 0, 0, width, height);
-
-						// if addedClass has no resource we add it to the resource of the diagram
-						// in a real scenario the business model would have its own resource
-						if (addedClass.eResource() == null) {
-							getDiagram().eResource().getContents().add(addedClass);
-						}
-
-						// create link and wire it
-						link(containerShape, addedClass);
-					}
-					
-
-					// SHAPE WITH TEXT
-					{
-						// create shape for text
-						final Shape shape = peCreateService.createShape(containerShape, false);
-
-						// create and set text graphics algorithm
-						final Text text = gaService.createPlainText(shape, addedClass.getClass().getSimpleName());
-						text.setStyle(StyleUtil.getStyleForEClassText(getDiagram()));
-						gaService.setLocationAndSize(text, 2, 10, width, 20);
-
-						// create link and wire it
-						link(shape, addedClass);
-						//addedClass.setName(addedClass.getClass().getSimpleName());
-						updatePictogramElement(shape);
-						// provide information to support direct-editing directly
-						// after object creation (must be activated additionally)
-						final IDirectEditingInfo directEditingInfo = getFeatureProvider().getDirectEditingInfo();
-						// set container shape for direct editing after object creation
-						directEditingInfo.setMainPictogramElement(containerShape);
-						// set shape and graphics algorithm where the editor for
-						// direct editing shall be opened after object creation
-						directEditingInfo.setPictogramElement(shape);
-						directEditingInfo.setGraphicsAlgorithm(text);
-					}
-
-					// add a chopbox anchor to the shape
-					peCreateService.createChopboxAnchor(containerShape);
-					//peCreateService.createBoxRelativeAnchor(containerShape);
-
-					// create an additional box relative anchor at middle-right
-					final BoxRelativeAnchor boxAnchor = peCreateService.createBoxRelativeAnchor(containerShape);
-					boxAnchor.setRelativeWidth(1.0);
-					boxAnchor.setRelativeHeight(0.38); // Use golden section
-
-					// anchor references visible rectangle instead of invisible rectangle
-					boxAnchor.setReferencedGraphicsAlgorithm(roundedRectangle);
-
-					// assign a graphics algorithm for the box relative anchor
-					final Ellipse ellipse = gaService.createPlainEllipse(boxAnchor);
-
-					// anchor is located on the right border of the visible rectangle
-					// and touches the border of the invisible rectangle
-					final int w = INVISIBLE_RECT_RIGHT;
-					gaService.setLocationAndSize(ellipse, 50, 25, 2 * w, 2 * w);
-					ellipse.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
-
-					
-					//ChopboxAnchor chopboxAnchor = peCreateService.createChopboxAnchor(containerShape);				
-					//TutorialFeatureProvider tfp = (TutorialFeatureProvider)getFeatureProvider();
-					
-					// call the layout feature
-					layoutPictogramElement(containerShape);
-
-					return containerShape;
-		}
-		
-	}
-}*/

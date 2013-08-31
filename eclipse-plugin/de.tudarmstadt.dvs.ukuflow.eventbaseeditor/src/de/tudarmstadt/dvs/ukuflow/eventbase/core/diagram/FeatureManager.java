@@ -7,6 +7,8 @@ import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 
 import de.tudarmstadt.dvs.ukuflow.features.eg.distribution.EGDistributionFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.EFProcessingCountFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.EFProcessingMinFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.simple.EFSimpleFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring.EGAbsoluteFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring.EGImmediateFeatureContainer;
@@ -20,17 +22,11 @@ public class FeatureManager {
 	private FeatureManager(){
 		ALL_CreateFeature = new LinkedList<ICreateFeature>();
 	}
-	public static List<ICreateFeature> getCreateFeatures(IFeatureProvider fp){
-		List<ICreateFeature> features = new LinkedList<ICreateFeature>();
-		
-		//features.add(new EAperiodicDistributionEGCreateFeature(fp));
-		//features.add(new EAperiodicPatternedEGCreateFeature(fp));
-		//features.add(new EComplexEFCreateFeature(fp));
-		//features.add(new EPeriodicEGCreateFeature(fp));
-		//features.add(new ESimpleEFCreateFeature(fp));
-		
-		return features;
-	}
+	/**
+	 * return a list of create features of recurring event generators
+	 * @param fp
+	 * @return
+	 */
 	public static List<ICreateFeature> getRecurringEGFeature(IFeatureProvider fp){
 		List<ICreateFeature> features = new LinkedList<ICreateFeature>();
 		features.add((new EGPeriodicFeatureContainer()).getCreateFeature(fp));
@@ -40,6 +36,11 @@ public class FeatureManager {
 		//features.add((new EGRelativeFeatureContainer()).getCreateFeature(fp));
 		return features;
 	}
+	/**
+	 * return a list of create features of non recurring event generators
+	 * @param fp
+	 * @return
+	 */
 	public static List<ICreateFeature> getNonRecurringEGFeatures(IFeatureProvider fp){
 		List<ICreateFeature> features = new LinkedList<ICreateFeature>();
 		features.add((new EGImmediateFeatureContainer()).getCreateFeature(fp));
@@ -48,25 +49,23 @@ public class FeatureManager {
 		features.add((new EGRelativeFeatureContainer()).getCreateFeature(fp));
 		return features;
 	}
-	
+	/**
+	 * return create features of simple event filter
+	 * @param fp
+	 * @return
+	 */
 	public static List<ICreateFeature> getSimpleEFCreateFeatures(IFeatureProvider fp){
 		List<ICreateFeature> features = new LinkedList<ICreateFeature>();
 		features.add((new EFSimpleFeatureContainer()).getCreateFeature(fp));
 
 		return features;
 	}
-	/**
-	 * 
-	 * @param fp
-	 * @return
-	 * @deprecated
-	 */
-	public static List<ICreateFeature> getEFCreateFeatures__(IFeatureProvider fp){
+	
+	public static List<ICreateFeature> getComplexEFCreateFeatures(IFeatureProvider fp){
 		List<ICreateFeature> features = new LinkedList<ICreateFeature>();
-
-		//features.add(new EComplexEFCreateFeature(fp));
-		//features.add(new ESimpleEFCreateFeature(fp));
-		
+		//features.add((new EFSimpleFeatureContainer()).getCreateFeature(fp));
+		features.add((new EFProcessingCountFeatureContainer()).getCreateFeature(fp));
+		features.add((new EFProcessingMinFeatureContainer()).getCreateFeature(fp));
 		return features;
 	}
 }

@@ -29,6 +29,7 @@ public class GenericDirectEditFeature extends AbstractDirectEditingFeature {
 
 	public GenericDirectEditFeature(IFeatureProvider fp) {
 		super(fp);
+		System.out.println("DirectEditFeature is called");
 	}
 
 	public int getEditingType() {
@@ -42,6 +43,7 @@ public class GenericDirectEditFeature extends AbstractDirectEditingFeature {
 		PictogramElement pe = context.getPictogramElement();
 		Object bo = getBusinessObjectForPictogramElement(pe);
 		GraphicsAlgorithm ga = context.getGraphicsAlgorithm();
+		System.out.println("DirectEditFeature is called");
 		// support direct editing, if it is a EClass, and the user clicked
 		// directly on the text and not somewhere else in the rectangle
 		if (bo instanceof EventBaseOperator && ga instanceof Text) {

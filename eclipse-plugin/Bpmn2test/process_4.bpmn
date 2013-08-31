@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definitions_1" targetNamespace="http://www.jboss.org/drools">
+  <bpmn2:process id="process_41" drools:version="1" drools:packageName="defaultPackage" drools:adHoc="false" name="Default Process" isExecutable="true"/>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Process">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process_41">
+      <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_1" isMarkerVisible="true">
+        <dc:Bounds height="50.0" width="50.0" x="183.0" y="200.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

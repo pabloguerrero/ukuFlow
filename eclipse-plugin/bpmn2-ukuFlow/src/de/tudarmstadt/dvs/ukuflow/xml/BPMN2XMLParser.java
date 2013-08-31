@@ -194,7 +194,7 @@ public class BPMN2XMLParser {
 		UkuProcess result = null;
 		if (e.getName().equals("process")) {
 			//String name = fetchName(e);
-			result = new UkuProcess(fetchID(e),fetchName(e));			
+			result = new UkuProcess(fetchID(e),fetchName(e));
 			result.setEntities(fetchEntities(e));
 			if(result.name==null || result.name.equals("")){
 				errorManager.addError(result.id, "name of the process is not specified");
