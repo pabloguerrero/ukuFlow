@@ -21,7 +21,6 @@ public class GenericDeleteFeature extends DefaultDeleteFeature {
 
 	public GenericDeleteFeature(IFeatureProvider fp) {
 		super(fp);
-		// TODO Auto-generated constructor stub
 	}
 	/**
 	 * askbeforedelete properties !
@@ -47,8 +46,9 @@ public class GenericDeleteFeature extends DefaultDeleteFeature {
 		List<PictogramElement> pictElements = Graphiti.getLinkService().getPictogramElements(getDiagram(), (EObject) bo);
 		for (Iterator<PictogramElement> iterator = pictElements.iterator(); iterator.hasNext();) {
 			PictogramElement pe = iterator.next();
-			deletePeEnvironment(pe);
-			Graphiti.getPeService().deletePictogramElement(pe);
+			deletePeEnvironment(pe); 
+			// this line of code delete the other elements, which have the same type with the deleted element????!
+			//Graphiti.getPeService().deletePictogramElement(pe);
 		}
 		super.deleteBusinessObject(bo);
 	}

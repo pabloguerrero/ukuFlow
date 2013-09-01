@@ -217,18 +217,18 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 				// create shape for text
 				final Shape shape = peCreateService.createShape(containerShape,
 						false);
-
+				String className = addedClass.getClass().getSimpleName();
+				addedClass.setElementName(className.substring(0,className.length()-5));
 				// create and set text graphics algorithm
-				String name = addedClass.getClass().getSimpleName();
-				final Text text = gaService.createPlainText(shape,
-						name.substring(0, name.length() - 4));
+				String name = addedClass.getElementName();
+				final Text text = gaService.createPlainText(shape, name);
 				text.setStyle(StyleUtil.getStyleForEClassText(getDiagram()));
 				gaService.setLocationAndSize(text, 0, 10, width, 20);
 
 				// create link and wire it
 				link(shape, addedClass);
-				// addedClass.setName(addedClass.getClass().getSimpleName());
-				updatePictogramElement(shape);
+				
+				// updatePictogramElement(shape);
 				// provide information to support direct-editing directly
 				// after object creation (must be activated additionally)
 				final IDirectEditingInfo directEditingInfo = getFeatureProvider()

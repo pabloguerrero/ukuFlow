@@ -217,9 +217,8 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 						false);
 
 				// create and set text graphics algorithm
-				String name = addedClass.getClass().getSimpleName();
-				final Text text = gaService.createPlainText(shape,
-						name.substring(0, name.length() - 4));
+				String name = addedClass.getElementName();
+				final Text text = gaService.createPlainText(shape, name);
 				text.setStyle(StyleUtil.getStyleForEClassText(getDiagram()));
 				gaService.setLocationAndSize(text, 0, 10, width, 20);
 

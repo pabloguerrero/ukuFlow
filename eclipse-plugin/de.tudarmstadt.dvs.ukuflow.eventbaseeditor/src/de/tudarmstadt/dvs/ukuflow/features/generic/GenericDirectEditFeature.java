@@ -29,7 +29,6 @@ public class GenericDirectEditFeature extends AbstractDirectEditingFeature {
 
 	public GenericDirectEditFeature(IFeatureProvider fp) {
 		super(fp);
-		System.out.println("DirectEditFeature is called");
 	}
 
 	public int getEditingType() {
@@ -43,17 +42,19 @@ public class GenericDirectEditFeature extends AbstractDirectEditingFeature {
 		PictogramElement pe = context.getPictogramElement();
 		Object bo = getBusinessObjectForPictogramElement(pe);
 		GraphicsAlgorithm ga = context.getGraphicsAlgorithm();
-		System.out.println("DirectEditFeature is called");
 		// support direct editing, if it is a EClass, and the user clicked
 		// directly on the text and not somewhere else in the rectangle
 		if (bo instanceof EventBaseOperator && ga instanceof Text) {
+			System.out.println("can be editted");
+
 			// EClass eClass = (EClass) bo;
 			// additionally the flag isFrozen must be false
 			// return !eClass.isFrozen();
 			return true;
 		}
+		System.out.println("cannot be editted");
 		// direct editing not supported in all other cases
-		return false;
+		return true;
 	}
 
 	public String getInitialValue(IDirectEditingContext context) {
@@ -85,7 +86,7 @@ public class GenericDirectEditFeature extends AbstractDirectEditingFeature {
 		// Explicitly update the shape to display the new value in the diagram
 		// Note, that this might not be necessary in future versions of Graphiti
 		// (currently in discussion)
-
+		
 		// we know, that pe is the Shape of the Text, so its container is the
 		// main shape of the EClass
 		updatePictogramElement(((Shape) pe).getContainer());

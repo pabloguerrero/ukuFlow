@@ -205,7 +205,8 @@ public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
 						return fc.getUpdateFeature(this);
 			}
 		}
-		return super.getUpdateFeature(context);
+		return new GenericUpdateFeature(this);
+		//return super.getUpdateFeature(context);
 	}
 
 	@Override
@@ -271,12 +272,15 @@ public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
 		Object bo = getBusinessObjectForPictogramElement(pe);
 		if (bo == null)
 			return super.getDirectEditingFeature(context);
-		// TODO
+		return new GenericDirectEditFeature(this);
+		// TODO the container contains the interface classes, but "bo" is the implemented version of this interface!!
+		/*
 		FeatureContainer fc = containers.get(bo.getClass());
 		if (fc != null)
 			if (fc.getDirectEditingFeature(this) != null)
 				return fc.getDirectEditingFeature(this);
 		return super.getDirectEditingFeature(context);
+		*/
 	}
 
 	/*
