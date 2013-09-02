@@ -58,6 +58,7 @@ public class GenericDirectEditFeature extends AbstractDirectEditingFeature {
 	}
 
 	public String getInitialValue(IDirectEditingContext context) {
+		
 		// return the current name of the EClass
 		PictogramElement pe = context.getPictogramElement();
 		EventBaseOperator eClass = (EventBaseOperator) getBusinessObjectForPictogramElement(pe);
@@ -66,12 +67,11 @@ public class GenericDirectEditFeature extends AbstractDirectEditingFeature {
 
 	@Override
 	public String checkValueValid(String value, IDirectEditingContext context) {
+		System.out.println(value);
 		if (value.length() < 1)
-			return "Please enter any text as class name."; //$NON-NLS-1$
-		if (value.contains(" ")) //$NON-NLS-1$
-			return "Spaces are not allowed in class names."; //$NON-NLS-1$
+			return "Name should not be empty."; //$NON-NLS-1$
 		if (value.contains("\n")) //$NON-NLS-1$
-			return "Line breakes are not allowed in class names."; //$NON-NLS-1$
+			return "Line breakes are not allowed."; //$NON-NLS-1$
 
 		// null means, that the value is valid
 		return null;

@@ -26,6 +26,8 @@ import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.jface.dialogs.IInputValidator;
 
+
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.ModelUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.TimeUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.utils.DialogUtils;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.*;
@@ -68,13 +70,15 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 		return ret;
 	}
 	private String getQuestion(Object o){
-		String question = "";
+		String className = o.getClass().getSimpleName();
+		String question = ModelUtil.toDisplayName(className.substring(2, className.length()-4)).toLowerCase() + " ";
+		
 		if(o instanceof EventGenerator)
-			question += "EG ";
+			question += "event generator '";
 		else
-			question += "EF ";
+			question += "event filter '";
 		question += ((EventBaseOperator) o).getElementName();
-		question = "Properties of "+question;
+		question = "Properties of "+question + "'";
 		return question;
 	}
 	public void execute(ICustomContext context) {
