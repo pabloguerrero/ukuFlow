@@ -15,17 +15,14 @@ import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
-import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 import org.eclipse.graphiti.mm.GraphicsAlgorithmContainer;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.algorithms.Image;
 import org.eclipse.graphiti.mm.algorithms.Polygon;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
-import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.BoxRelativeAnchor;
-import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -37,8 +34,6 @@ import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram.UkuFlowFeatureProvider;
-import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGPatterned;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGPeriodic;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.features.eg.EGFeatureContainer;
@@ -48,6 +43,7 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericMoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractAddShapeFeature;
 
 public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 
@@ -145,7 +141,7 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 
 	}
 
-	public class EGPeriodicAddFeature extends AbstractAddShapeFeature {
+	public class EGPeriodicAddFeature extends UkuAbstractAddShapeFeature {
 
 		public static final int INVISIBLE_RECT_RIGHT = 6;
 

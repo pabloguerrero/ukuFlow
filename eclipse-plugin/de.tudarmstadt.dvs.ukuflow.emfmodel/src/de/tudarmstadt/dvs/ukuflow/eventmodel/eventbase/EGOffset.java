@@ -29,12 +29,12 @@ public interface EGOffset extends EGNonRecurring {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Offset Time</em>' attribute.
-	 * @see #setOffsetTime(int)
+	 * @see #setOffsetTime(String)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEGOffset_OffsetTime()
 	 * @model required="true"
 	 * @generated
 	 */
-	int getOffsetTime();
+	String getOffsetTime();
 
 	/**
 	 * Sets the value of the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGOffset#getOffsetTime <em>Offset Time</em>}' attribute.
@@ -44,6 +44,6 @@ public interface EGOffset extends EGNonRecurring {
 	 * @see #getOffsetTime()
 	 * @generated
 	 */
-	void setOffsetTime(int value);
+	void setOffsetTime(String value);
 
 } // EGOffset

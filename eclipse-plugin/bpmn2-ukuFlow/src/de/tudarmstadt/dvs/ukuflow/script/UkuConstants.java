@@ -52,10 +52,37 @@ public class UkuConstants {
 		public static final byte EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY = 12;
 	}
 
-	public class DistributionFunction {
+	public static class DistributionFunction {
 		public static final byte GAUSSIAN_DISTRIBUTION = 0;// event-types.h
 		public static final byte CHI_SQUARE_DISTRIBUTION = 1;// event-types.h
 		public static final byte PARETO_DISTRIBUTION = 2;//
+		public static List<String> FUNCTIONS = new ArrayList<String>(3);
+
+		static {
+			FUNCTIONS.add("GAUSSIAN_DISTRIBUTION");
+			FUNCTIONS.add("CHI_SQUARE_DISTRIBUTION");
+			FUNCTIONS.add("PARETO_DISTRIBUTION");
+		}
+
+		public static List<String> getParameters(byte function) {
+			List<String> result = new ArrayList<String>();
+			switch (function) {
+			case GAUSSIAN_DISTRIBUTION:
+				result.add("Mean value (in second)s");
+				result.add("Variance (in seconds");
+				result.add("Peak (in units");
+				break;
+			case CHI_SQUARE_DISTRIBUTION:
+				result.add("Degrees of freedom");
+				break;
+			case PARETO_DISTRIBUTION:
+				result.add("Shape value");
+				break;
+			default:
+				return null;
+			}
+			return result;
+		}
 	}
 
 	public class EGConstants {

@@ -1291,7 +1291,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		initEAttribute(getEGAbsolute_AbsoluteTime(), ecorePackage.getEString(), "absoluteTime", null, 1, 1, EGAbsolute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(egOffsetEClass, EGOffset.class, "EGOffset", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getEGOffset_OffsetTime(), ecorePackage.getEInt(), "offsetTime", null, 1, 1, EGOffset.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEGOffset_OffsetTime(), ecorePackage.getEString(), "offsetTime", null, 1, 1, EGOffset.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(egRelativeEClass, EGRelative.class, "EGRelative", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getEGRelative_DelayTime(), ecorePackage.getEInt(), "delayTime", null, 1, 1, EGRelative.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

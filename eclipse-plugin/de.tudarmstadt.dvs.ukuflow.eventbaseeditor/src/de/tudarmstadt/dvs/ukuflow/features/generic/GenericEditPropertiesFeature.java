@@ -19,13 +19,10 @@ package de.tudarmstadt.dvs.ukuflow.features.generic;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.jface.dialogs.IInputValidator;
-
 
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.ModelUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.TimeUtil;
@@ -60,8 +57,8 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 		if (pes != null && pes.length == 1) {
 			Object bo = getBusinessObjectForPictogramElement(pes[0]);
 
-			if (bo instanceof EGImmediate)
-				return false;
+			// if (bo instanceof EGImmediate)
+			// return false;
 
 			if (bo instanceof EventBaseOperator) {
 				ret = true;
@@ -69,31 +66,37 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 		}
 		return ret;
 	}
-	private String getQuestion(Object o){
+
+	private String getQuestion(Object o) {
 		String className = o.getClass().getSimpleName();
-		String question = ModelUtil.toDisplayName(className.substring(2, className.length()-4)).toLowerCase() + " ";
-		
-		if(o instanceof EventGenerator)
+		String question = ModelUtil.toDisplayName(
+				className.substring(2, className.length() - 4)).toLowerCase()
+				+ " ";
+
+		if (o instanceof EventGenerator)
 			question += "event generator '";
 		else
 			question += "event filter '";
 		question += ((EventBaseOperator) o).getElementName();
-		question = "Properties of "+question + "'";
+		question = "Properties of " + question + "'";
 		return question;
 	}
+
 	public void execute(ICustomContext context) {
 		PictogramElement[] pes = context.getPictogramElements();
 		if (pes != null && pes.length == 1) {
 			Object bo = getBusinessObjectForPictogramElement(pes[0]);
 			String question = getQuestion(bo);
-			
-			
+
 			Map<Integer, RequestContainer> properties = new HashMap<Integer, RequestContainer>();
 			Map<Integer, RequestContainer> result = null;
 			if (bo instanceof EventGenerator) {
-				if(bo instanceof EGRecurring){
-					properties.put(EventbasePackage.EG_RECURRING__REPETITION, 
-							new RequestContainer(new RequestContainer.IntegerValidator(), ((EGRecurring) bo).getRepetition()+"","Number of repetitions"));
+				if (bo instanceof EGRecurring) {
+					properties.put(EventbasePackage.EG_RECURRING__REPETITION,
+							new RequestContainer(
+									new RequestContainer.IntegerValidator(),
+									((EGRecurring) bo).getRepetition() + "",
+									"Number of repetitions (0-255, 0 means infinite)"));
 				}
 				EventGenerator eg = (EventGenerator) bo;
 				properties.put(EventbasePackage.EVENT_GENERATOR__SENSOR_TYPE,
@@ -101,24 +104,32 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 								UkuConstants.SensorTypeConstants.sensor_types,
 								"Sensor type", eg.getSensorType()));
 				properties.put(EventbasePackage.EVENT_GENERATOR__SCOPE,
-						new RequestContainer(null, (eg.getScope()==null?"":eg.getScope()),
+						new RequestContainer(null, (eg.getScope() == null ? ""
+								: eg.getScope()),
 								"Scope identifier (optional):"));
-				System.out.println(properties);
 				if (bo instanceof EGImmediate) {
-					// nothing to do
+
+					result = DialogUtils.askString(question, properties);
+					if (result == null)
+						return;
 				} else if (bo instanceof EGAbsolute) {
 					EGAbsolute eClass = (EGAbsolute) bo;
 					String currentTime = eClass.getAbsoluteTime();
-					properties.put(EventbasePackage.EG_ABSOLUTE__ABSOLUTE_TIME,
-							new RequestContainer(
-									new RequestContainer.AbsoluteTimeValidator(), "" + currentTime,
-									"Absolute Time(dd-MM-yyy hh:mm:ss"));
+					if (currentTime == null)
+						currentTime = "";
+					properties
+							.put(EventbasePackage.EG_ABSOLUTE__ABSOLUTE_TIME,
+									new RequestContainer(
+											new RequestContainer.AbsoluteTimeValidator(),
+											currentTime,
+											"Absolute time (dd-MM-yyy hh:mm:ss)"));
 
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
 
-					String newTime =result.get(EventbasePackage.EG_ABSOLUTE__ABSOLUTE_TIME).result;
+					String newTime = result
+							.get(EventbasePackage.EG_ABSOLUTE__ABSOLUTE_TIME).result;
 					if (!newTime.equals(currentTime)) {
 						this.hasDoneChanges = true;
 						eClass.setAbsoluteTime(newTime);
@@ -127,25 +138,25 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 					EGOffset off = (EGOffset) bo;
 					properties.put(EventbasePackage.EG_OFFSET__OFFSET_TIME,
 							new RequestContainer(
-									new RequestContainer.IntegerValidator(), off.getOffsetTime() + "",
-									"Offset Time"));
+									new RequestContainer.OffsetTimeValidator(),
+									off.getOffsetTime() + "",
+									"Offset time (mm:ss)"));
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
-					int currentTime = off.getOffsetTime();
-					int newTime = Integer
-							.parseInt(result
-									.get(EventbasePackage.EG_OFFSET__OFFSET_TIME).result);
-					if (newTime != currentTime) {
+					String currentTime = off.getOffsetTime();
+					String newTime = result.get(EventbasePackage.EG_OFFSET__OFFSET_TIME).result;
+					if (!newTime.equals(currentTime)) {
 						this.hasDoneChanges = true;
 						off.setOffsetTime(newTime);
 					}
 				} else if (bo instanceof EGRelative) {
 					EGRelative off = (EGRelative) bo;
 					properties.put(EventbasePackage.EG_RELATIVE__DELAY_TIME,
-							new RequestContainer(
-									new RequestContainer.IntegerValidator(), "" + off.getDelayTime(),
-									"Delay time"));
+									new RequestContainer(
+											new RequestContainer.IntegerValidator(),
+											"" + off.getDelayTime(),
+											"Delay time (in second)"));
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
@@ -159,12 +170,13 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 						// updatePictogramElement(pes[0]);
 					}
 				} else if (bo instanceof EGPeriodic) {
-					int i = EventbasePackage.EG_PERIODIC;
 					EGPeriodic off = (EGPeriodic) bo;
 					properties.put(EventbasePackage.EG_PERIODIC__TIME,
 							new RequestContainer(
-									new RequestContainer.DatePatternValidator(TimeUtil.SHORT_TIME_PATTERN),"" + off.getTime(),
-									"Period duration (mm:ss)" ));
+									new RequestContainer.DatePatternValidator(
+											TimeUtil.SHORT_TIME_PATTERN), ""
+											+ off.getTime(),
+									"Period duration (mm:ss)"));
 
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
@@ -187,9 +199,10 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 					properties.put(key1, new RequestContainer(
 							new RequestContainer.IntegerValidator(),
 							"Period Time", "" + off.getTime()));
-					properties.put(key2, new RequestContainer(
-							new RequestContainer.BinaryValidator(),
-							"" + off.getPattern(), "Pattern"));
+					properties.put(key2,
+							new RequestContainer(
+									new RequestContainer.BinaryValidator(), ""
+											+ off.getPattern(), "Pattern"));
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
@@ -209,11 +222,13 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 					EGDistribution off = (EGDistribution) bo;
 					Integer key1 = EventbasePackage.EG_DISTRIBUTION__TIME;
 					Integer key2 = EventbasePackage.EG_DISTRIBUTION__FUNCTION;
-					properties.put(key1, new RequestContainer(
-							new RequestContainer.IntegerValidator(), "" + off.getTime(),
-							"Time unit"));// TODO
-					properties.put(key2, new RequestContainer(null,
-							off.getFunction(), "Function"));// off.getFunction());
+					properties.put(key1,
+							new RequestContainer(
+									new RequestContainer.IntegerValidator(), ""
+											+ off.getTime(), "Time unit"));// TODO
+					properties.put(key2,
+							new RequestContainer(null,UkuConstants.DistributionFunction.FUNCTIONS ,
+									"Function",off.getFunction()));// off.getFunction());
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
@@ -234,7 +249,7 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 				}
 
 				// ///
-				
+
 				String scope = eg.getScope();
 				String newScope = result
 						.get(EventbasePackage.EVENT_GENERATOR__SCOPE).result;
@@ -248,9 +263,11 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 					this.hasDoneChanges = true;
 				eg.setSensorType(newType);
 				// repetation
-				if(bo instanceof EGRecurring){
-					int newRepetition = Integer.parseInt(result.get(EventbasePackage.EG_RECURRING__REPETITION).result);
-					if(((EGRecurring) bo).getRepetition() != newRepetition){
+				if (bo instanceof EGRecurring) {
+					int newRepetition = Integer
+							.parseInt(result
+									.get(EventbasePackage.EG_RECURRING__REPETITION).result);
+					if (((EGRecurring) bo).getRepetition() != newRepetition) {
 						this.hasDoneChanges = true;
 					}
 					((EGRecurring) bo).setRepetition(newRepetition);
@@ -261,42 +278,50 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 					EFSimple efsimple = (EFSimple) bo;
 					String currentConstraints = "";
 					boolean multiple = false;
-					for(ESimpleFilterConstraint c: efsimple.getConstraints()){
-						currentConstraints += c.getType() + c.getOperator()+c.getValue() + ",";
+					for (ESimpleFilterConstraint c : efsimple.getConstraints()) {
+						currentConstraints += c.getType() + c.getOperator()
+								+ c.getValue() + ",";
 						multiple = true;
-					}					
-					if(multiple)
-						currentConstraints = currentConstraints.substring(0, currentConstraints.length()-1);
-					properties.put(EventbasePackage.EF_SIMPLE__CONSTRAINTS, new RequestContainer(null, currentConstraints, "Filter's constraints"));
-					
-					
+					}
+					if (multiple)
+						currentConstraints = currentConstraints.substring(0,
+								currentConstraints.length() - 1);
+					properties.put(EventbasePackage.EF_SIMPLE__CONSTRAINTS,
+							new RequestContainer(null, currentConstraints,
+									"Filter's constraints"));
+
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
-					String newConstraint = result.get(EventbasePackage.EF_SIMPLE__CONSTRAINTS).result;
-					if(!newConstraint.equals(currentConstraints)){
-						this.hasDoneChanges= true;
-						for(String x : newConstraint.split(",")){
+					String newConstraint = result
+							.get(EventbasePackage.EF_SIMPLE__CONSTRAINTS).result;
+					if (!newConstraint.equals(currentConstraints)) {
+						this.hasDoneChanges = true;
+						for (String x : newConstraint.split(",")) {
 							System.out.println(x);
 						}
 					}
-					
-				}else if (bo instanceof EFProcessing){
+
+				} else if (bo instanceof EFProcessing) {
 					EFProcessing efCount = (EFProcessing) bo;
 					int currentWindowSize = efCount.getWindowSize();
-					
-					properties.put(EventbasePackage.EF_PROCESSING__WINDOW_SIZE, new RequestContainer(new RequestContainer.IntegerValidator(), currentWindowSize+"", "Window Size"));
+
+					properties.put(EventbasePackage.EF_PROCESSING__WINDOW_SIZE,
+							new RequestContainer(
+									new RequestContainer.IntegerValidator(),
+									currentWindowSize + "", "Window Size"));
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
-					String newConstraint = result.get(EventbasePackage.EF_PROCESSING__WINDOW_SIZE).result;
-					if(!newConstraint.equals(currentWindowSize)){
-						this.hasDoneChanges= true;
-						for(String x : newConstraint.split(",")){
+					String newConstraint = result
+							.get(EventbasePackage.EF_PROCESSING__WINDOW_SIZE).result;
+					if (!newConstraint.equals(currentWindowSize)) {
+						this.hasDoneChanges = true;
+						for (String x : newConstraint.split(",")) {
 							System.out.println(x);
 						}
 					}
-				}else {
+				} else {
 					System.err.println("this element is not implemented yet");
 				}
 			}

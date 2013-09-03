@@ -228,6 +228,7 @@ public class UkuInputDialog extends Dialog {
 				});
 			} else  {
 				CCombo combo = new CCombo(composite, getInputTextStyle());
+				System.out.println(requests.get(message).requests);
 				combo.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 						| GridData.HORIZONTAL_ALIGN_FILL));
 				List l = (List<?>) requests.get(message).requests;

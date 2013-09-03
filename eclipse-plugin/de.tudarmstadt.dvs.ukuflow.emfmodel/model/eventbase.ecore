@@ -34,7 +34,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EGOffset" eSuperTypes="#//EGNonRecurring">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="offsetTime" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EGRelative" eSuperTypes="#//EGNonRecurring">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="delayTime" lowerBound="1"

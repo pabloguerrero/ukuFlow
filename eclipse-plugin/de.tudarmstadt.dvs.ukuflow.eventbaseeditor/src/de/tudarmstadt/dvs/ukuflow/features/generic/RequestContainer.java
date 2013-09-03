@@ -29,6 +29,18 @@ public class RequestContainer{
 	public static IntegerValidator getIntValidator(){
 		return new RequestContainer.IntegerValidator();
 	}
+	public static class OffsetTimeValidator implements IInputValidator{
+
+		public String isValid(String newText) {
+			if(newText == null || newText.equals(""))
+				return "empty input!";
+			if(newText.matches("[0-9]+:[0-9]+"))
+				return null;
+			else 
+				return "expecting offset time in format: \"mm:ss\"";
+		}
+		
+	}
 	public static class AbsoluteTimeValidator implements IInputValidator {
 		public String isValid(String newText){
 			if(newText == null || newText.equals(""))

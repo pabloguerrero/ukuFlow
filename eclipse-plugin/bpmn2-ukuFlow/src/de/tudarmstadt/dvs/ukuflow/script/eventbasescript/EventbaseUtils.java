@@ -77,7 +77,9 @@ public class EventbaseUtils {
 					result = factory.createEGImmediate();
 				} else if (ebo instanceof EOffsetEG) {
 					result= factory.createEGOffset();
-					((EGOffset)result).setOffsetTime(((EOffsetEG)ebo).getTimeExpression().getValueInt());
+					int tmp = ((EOffsetEG)ebo).getTimeExpression().getValueInt();
+					
+					((EGOffset)result).setOffsetTime((tmp/60) + ":"+(tmp%60));
 				} else if (ebo instanceof ERelativeEG) {
 					result = factory.createEGRelative();
 					((EGRelative)result).setDelayTime(((ERelativeEG)ebo).getTimeExpression().getValueInt());
