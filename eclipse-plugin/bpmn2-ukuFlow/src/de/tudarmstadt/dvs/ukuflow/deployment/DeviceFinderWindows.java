@@ -39,8 +39,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
+
 public class DeviceFinderWindows {
 
+	static BpmnLog log = BpmnLog.getInstance("DeviceFinderWindows");
 	public static final int HKEY_CURRENT_USER = 0x80000001;
 	public static final int HKEY_LOCAL_MACHINE = 0x80000002;
 	public static final int REG_SUCCESS = 0;
@@ -467,7 +470,7 @@ public class DeviceFinderWindows {
 								deviceName[2].substring(0,
 										deviceName[2].length() - 1));
 					} else
-						System.out.println("warning: null comport");
+						log.debug("warning: null comport");
 				}
 			List<String> controlSet002 = readStringSubKeys(HKEY_LOCAL_MACHINE,
 					"SYSTEM\\ControlSet002\\Enum\\FTDIBUS");
@@ -482,7 +485,7 @@ public class DeviceFinderWindows {
 								deviceName[2].substring(0,
 										deviceName[2].length() - 1));
 					} else
-						System.out.println("warning: null comport");
+						log.info("warning: null comport");
 				}
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();

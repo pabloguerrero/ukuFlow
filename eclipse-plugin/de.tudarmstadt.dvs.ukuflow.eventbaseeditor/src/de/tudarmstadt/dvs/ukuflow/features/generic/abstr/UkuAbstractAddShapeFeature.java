@@ -25,9 +25,11 @@ import de.tudarmstadt.dvs.ukuflow.eventbase.core.ModelUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGImmediate;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public abstract class UkuAbstractAddShapeFeature extends
 		AbstractAddShapeFeature {
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	public static int EG_HEIGHT = 50;
 	public static int EG_WIDTH = 100;
 	public static int EG_OFFSET = 7;
@@ -105,7 +107,7 @@ public abstract class UkuAbstractAddShapeFeature extends
 				name = getName(addedClass);
 				addedClass.setElementName(name);
 			}
-			System.out.println(name);
+			log.debug(name);
 			final Text text = gaService.createPlainText(shape, name);
 			text.setStyle(StyleUtil.getStyleForEClassText(getDiagram()));
 			gaService.setLocationAndSize(text, 0, 10, width, 20);

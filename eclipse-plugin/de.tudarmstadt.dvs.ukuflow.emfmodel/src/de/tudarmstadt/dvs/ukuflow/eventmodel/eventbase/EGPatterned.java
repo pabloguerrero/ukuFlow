@@ -30,12 +30,12 @@ public interface EGPatterned extends EGRecurring {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Time</em>' attribute.
-	 * @see #setTime(int)
+	 * @see #setTime(String)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEGPatterned_Time()
 	 * @model
 	 * @generated
 	 */
-	int getTime();
+	String getTime();
 
 	/**
 	 * Sets the value of the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGPatterned#getTime <em>Time</em>}' attribute.
@@ -45,7 +45,7 @@ public interface EGPatterned extends EGRecurring {
 	 * @see #getTime()
 	 * @generated
 	 */
-	void setTime(int value);
+	void setTime(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Pattern</b></em>' attribute.

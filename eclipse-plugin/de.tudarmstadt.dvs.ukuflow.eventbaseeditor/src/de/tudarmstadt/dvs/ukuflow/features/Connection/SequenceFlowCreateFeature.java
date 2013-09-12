@@ -86,7 +86,6 @@ public class SequenceFlowCreateFeature extends AbstractCreateConnectionFeature {
 						return false;
 				}
 			} else if (target instanceof EventFilter) {
-				System.out.println(target.getIncoming().size());
 				return ((EventFilter) target).getIncoming().size() < 2;
 			}
 			return true;

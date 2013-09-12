@@ -32,7 +32,7 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.features.AbstractDrillDownFeature;
 
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.TutorialUtil;
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventModelUtil;
 
 
 public class TutorialDrillDownEClassFeature extends AbstractDrillDownFeature {
@@ -128,7 +128,7 @@ public class TutorialDrillDownEClassFeature extends AbstractDrillDownFeature {
 			IResource fileResource = ResourcesPlugin.getWorkspace().getRoot().findMember(platformString);
 			if (fileResource != null){
 				IProject project = fileResource.getProject();
-				result = TutorialUtil.getDiagrams(project);
+				result = EventModelUtil.getDiagrams(project);
 			}
 			
 		}

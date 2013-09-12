@@ -36,10 +36,12 @@ import java.util.Collection;
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class ESimpleFilterConstraint implements Visitable{
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	public int type = -1;
-	public int value = -1;
+	private int value = -1;
 	public int comparator = -1;
 	boolean valueFirst;
 	public ESimpleFilterConstraint(String type , String op, String value,boolean valueFirst){
@@ -50,8 +52,26 @@ public class ESimpleFilterConstraint implements Visitable{
 	}
 	public Collection<? extends Byte> getValues(){
 		ArrayList<Byte> result = new ArrayList<Byte>();
-		
-		return null;
+		int length = 0;
+		switch(type){
+		case UkuConstants.EventFields.EVENT_OPERATOR_ID:
+		case UkuConstants.EventFields.SOURCE:
+		case UkuConstants.EventFields.ORIGIN_SCOPE:
+		case UkuConstants.EventFields.EVENT_TYPE:
+			length = 1; break;
+		case UkuConstants.EventFields.ORIGIN_NODE:
+		case UkuConstants.EventFields.MAGNITUDE:
+			length = 2; break;
+		case UkuConstants.EventFields.TIMESTAMP:
+			length= 4; break;
+		}
+		int tmp = value;
+		log.debug(" getValues() : "+value);
+		for(int i = 0; i < length; i++){
+			result.add((byte)(tmp %256));
+			tmp = tmp/256;
+		}
+		return result;
 	}
 	public void setType(String type){
 		this.type = UkuConstants.getConstantByName(type);		

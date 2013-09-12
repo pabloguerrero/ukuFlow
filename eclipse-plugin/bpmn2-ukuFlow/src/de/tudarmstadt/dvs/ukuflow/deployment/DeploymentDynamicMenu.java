@@ -50,10 +50,11 @@ import org.eclipse.ui.services.IServiceLocator;
 import de.tudarmstadt.dvs.ukuflow.converter.Activator;
 import de.tudarmstadt.dvs.ukuflow.handler.ConvertCommand;
 import de.tudarmstadt.dvs.ukuflow.preference.UkuPreference;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class DeploymentDynamicMenu extends ContributionItem implements
 		IWorkbenchContribution {
-
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	private ISelectionService srv;
 	private Object selected;
 	private static Set<String> fileExtensions;
@@ -88,7 +89,6 @@ public class DeploymentDynamicMenu extends ContributionItem implements
 
 	@Override
 	public void fill(Menu menu, int index) {
-		System.out.println("DynamicNode is filled");
 		final int timeout = 1000*Activator.getDefault().getPreferenceStore().getInt(UkuPreference.TIMEOUT);
 		if (srv == null)
 			return;
@@ -107,10 +107,10 @@ public class DeploymentDynamicMenu extends ContributionItem implements
 			devItem.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					System.out.println("selected->");
-					System.out.println("\t"
-							+ file.getFullPath().toPortableString());
-					System.out.println("\t" + key);
+					//System.out.println("selected->");
+					//System.out.println("\t"
+					//		+ file.getFullPath().toPortableString());
+					//System.out.println("\t" + key);
 					String fname;
 					String extension = file.getFileExtension();
 					boolean converted = false;
@@ -142,7 +142,7 @@ public class DeploymentDynamicMenu extends ContributionItem implements
 
 	@Override
 	public void initialize(IServiceLocator serviceLocator) {
-		System.out.println("DynamicNode is initialized");
+		log.debug("DynamicNode is initialized");
 
 		srv = (ISelectionService) serviceLocator
 				.getService(ISelectionService.class);

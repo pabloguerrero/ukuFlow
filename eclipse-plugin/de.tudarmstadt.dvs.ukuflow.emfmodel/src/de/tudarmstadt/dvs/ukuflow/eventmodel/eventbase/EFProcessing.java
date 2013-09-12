@@ -20,7 +20,6 @@ package de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase;
  * @generated
  */
 public interface EFProcessing extends EFStatusEvent {
-
 	/**
 	 * Returns the value of the '<em><b>Window Size</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -46,4 +45,5 @@ public interface EFProcessing extends EFStatusEvent {
 	 * @generated
 	 */
 	void setWindowSize(int value);
+
 } // EFProcessing

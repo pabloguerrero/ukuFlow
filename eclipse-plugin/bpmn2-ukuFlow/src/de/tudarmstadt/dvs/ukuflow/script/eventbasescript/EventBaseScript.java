@@ -102,7 +102,7 @@ public class EventBaseScript implements EventBaseScriptConstants {
   EventBaseOperator result = null;
   String var = null;
     var = variable();
-    jj_consume_token(42);
+    jj_consume_token(54);
     result = eventbaseOperator();
     EVariable evar = new EVariable(var, result);
     ChannelIDManager.variableMapping.put(var, evar);
@@ -119,6 +119,8 @@ public class EventBaseScript implements EventBaseScriptConstants {
     } else if (jj_2_10(2)) {
       result = CEF();
     } else if (jj_2_11(2)) {
+      result = min_ef();
+    } else if (jj_2_12(2)) {
       result = NonRecurring_EG();
     } else {
       jj_consume_token(-1);
@@ -131,11 +133,11 @@ public class EventBaseScript implements EventBaseScriptConstants {
   final public EventBaseOperator TOP() throws ParseException {
   EventBaseOperator result = null;
     jj_consume_token(TOP);
-    jj_consume_token(42);
-    if (jj_2_12(2)) {
-      System.out.println("1. path is taken");
+    jj_consume_token(54);
+    if (jj_2_13(2)) {
+
       result = eventbaseOperator();
-    } else if (jj_2_13(2)) {
+    } else if (jj_2_14(2)) {
       variable();
       result = ChannelIDManager.variableMapping.get(token.image.trim());
     } else {
@@ -146,24 +148,26 @@ public class EventBaseScript implements EventBaseScriptConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public void scope() throws ParseException {
-    jj_consume_token(43);
+  final public String scope() throws ParseException {
+    jj_consume_token(55);
     jj_consume_token(IDENTIFIER);
+        {if (true) return token.image.trim();}
+    throw new Error("Missing return statement in function");
   }
 
   final public EventBaseOperator Recurring_EG() throws ParseException {
   EventBaseOperator result;
-    if (jj_2_14(2)) {
+    if (jj_2_15(2)) {
       result = PEG();
-    } else if (jj_2_15(2)) {
-      result = APEG();
     } else if (jj_2_16(2)) {
+      result = APEG();
+    } else if (jj_2_17(2)) {
       result = ADEG();
     } else {
       jj_consume_token(-1);
       throw new ParseException();
     }
-    if (jj_2_17(2)) {
+    if (jj_2_18(2)) {
       jj_consume_token(REPETITION);
           int rep = Integer.parseInt(token.image.trim().substring(1));
           ((ERecurringEG)result).setRepetition(rep);
@@ -176,13 +180,13 @@ public class EventBaseScript implements EventBaseScriptConstants {
 
   final public EventBaseOperator NonRecurring_EG() throws ParseException {
   EventBaseOperator result;
-    if (jj_2_18(2)) {
+    if (jj_2_19(2)) {
       result = immediate_EG();
-    } else if (jj_2_19(2)) {
-      result = absolute_EG();
     } else if (jj_2_20(2)) {
-      result = offset_EG();
+      result = absolute_EG();
     } else if (jj_2_21(2)) {
+      result = offset_EG();
+    } else if (jj_2_22(2)) {
       result = relative_EG();
     } else {
       jj_consume_token(-1);
@@ -197,8 +201,8 @@ public class EventBaseScript implements EventBaseScriptConstants {
     jj_consume_token(immediate_EG);
     jj_consume_token(SENSOR_TYPE);
       result.setSensorType(token.image.trim());
-    if (jj_2_22(2)) {
-      jj_consume_token(43);
+    if (jj_2_23(2)) {
+      jj_consume_token(55);
       jj_consume_token(IDENTIFIER);
         result.setScope(token.image.trim());
     } else {
@@ -216,8 +220,8 @@ public class EventBaseScript implements EventBaseScriptConstants {
       result.setSensorType(token.image.trim());
     time = timeExpression();
       result.setTimeExpression(time);
-    if (jj_2_23(2)) {
-      jj_consume_token(43);
+    if (jj_2_24(2)) {
+      jj_consume_token(55);
       jj_consume_token(IDENTIFIER);
         result.setScope(token.image.trim());
     } else {
@@ -235,8 +239,8 @@ public class EventBaseScript implements EventBaseScriptConstants {
       result.setSensorType(token.image.trim());
     time = timeExpression();
       result.setTimeExpression(time);
-    if (jj_2_24(2)) {
-      jj_consume_token(43);
+    if (jj_2_25(2)) {
+      jj_consume_token(55);
       jj_consume_token(IDENTIFIER);
         result.setScope(token.image.trim());
     } else {
@@ -250,15 +254,24 @@ public class EventBaseScript implements EventBaseScriptConstants {
   ERelativeEG result = new ERelativeEG();
   EventBaseOperator source;
   TimeExpression time;
+  String scope = null;
     jj_consume_token(relative_EG);
     jj_consume_token(SENSOR_TYPE);
       result.setSensorType(token.image.trim());
     time = timeExpression();
       result.setTimeExpression(time);
-    jj_consume_token(44);
+    if (jj_2_26(2)) {
+      scope = scope();
+    } else {
+      ;
+    }
+    jj_consume_token(56);
     source = Terminate_Operand();
-    jj_consume_token(45);
+    jj_consume_token(57);
     result.setSource(source);
+    if(scope == null)
+        scope = "WORLD";
+    result.setScope(scope);
     {if (true) return result;}
     throw new Error("Missing return statement in function");
   }
@@ -269,11 +282,11 @@ public class EventBaseScript implements EventBaseScriptConstants {
     jj_consume_token(PEG);
     jj_consume_token(SENSOR_TYPE);
     result.setSensorType(token.image.trim());
-    jj_consume_token(46);
+    jj_consume_token(58);
     periodic = timeExpression();
     result.setTime(periodic);
-    if (jj_2_25(2)) {
-      jj_consume_token(43);
+    if (jj_2_27(2)) {
+      jj_consume_token(55);
       jj_consume_token(IDENTIFIER);
     result.setScope(token.image.trim());
     } else {
@@ -285,7 +298,7 @@ public class EventBaseScript implements EventBaseScriptConstants {
 
 /**
 * allowed formats:
-* 	yyyy-MM-dd HH:mm:ss (absolute time)
+* 	dd-MM-yyyy HH:mm:ss (absolute time)
 *	HH:mm:ss			(time amount)
 * 	mm:ss				( 	-nt-	)
 */
@@ -296,14 +309,13 @@ public class EventBaseScript implements EventBaseScriptConstants {
   int first = 0;
     jj_consume_token(POSITIVE_NUMBER);
     first = Integer.parseInt(token.image.trim());
-    if (jj_2_27(2)) {
-      System.out.println("first path");
-      jj_consume_token(47);
+    if (jj_2_29(2)) {
+      jj_consume_token(59);
       result.minute = first;
       jj_consume_token(POSITIVE_NUMBER);
       result.second = Integer.parseInt(token.image.trim());
-      if (jj_2_26(2)) {
-        jj_consume_token(47);
+      if (jj_2_28(2)) {
+        jj_consume_token(59);
         jj_consume_token(POSITIVE_NUMBER);
         result.hour = result.minute;
         result.minute = result.second;
@@ -311,22 +323,20 @@ public class EventBaseScript implements EventBaseScriptConstants {
       } else {
         ;
       }
-    } else if (jj_2_28(2)) {
-      System.out.println("2. path");
-      jj_consume_token(48);
-      System.out.println("yeye");
-      result.year = first;
+    } else if (jj_2_30(2)) {
+      jj_consume_token(60);
+      result.day = first;
       jj_consume_token(POSITIVE_NUMBER);
       result.month = Integer.parseInt(token.image.trim());
-      jj_consume_token(48);
+      jj_consume_token(60);
       jj_consume_token(POSITIVE_NUMBER);
-      result.day = Integer.parseInt(token.image.trim());
+      result.year = Integer.parseInt(token.image.trim());
       jj_consume_token(POSITIVE_NUMBER);
       result.hour = Integer.parseInt(token.image.trim());
-      jj_consume_token(47);
+      jj_consume_token(59);
       jj_consume_token(POSITIVE_NUMBER);
       result.minute = Integer.parseInt(token.image.trim());
-      jj_consume_token(47);
+      jj_consume_token(59);
       jj_consume_token(POSITIVE_NUMBER);
       result.second = Integer.parseInt(token.image.trim());
     } else {
@@ -345,10 +355,10 @@ public class EventBaseScript implements EventBaseScriptConstants {
     result.setSensorType(token.image.trim());
     jj_consume_token(PATTERN);
     result.setPattern(token.image.trim());
-    jj_consume_token(46);
+    jj_consume_token(58);
     time = timeExpression();
     result.setTime(time);
-    jj_consume_token(43);
+    jj_consume_token(55);
     jj_consume_token(IDENTIFIER);
     result.setScope(token.image.trim());
     {if (true) return result;}
@@ -365,11 +375,11 @@ public class EventBaseScript implements EventBaseScriptConstants {
     jj_consume_token(ADEG);
     jj_consume_token(SENSOR_TYPE);
     result.setSensorType(token.image.trim());
-    jj_consume_token(46);
+    jj_consume_token(58);
     period_length = timeExpression();
     jj_consume_token(I);
     evaluation_frequency = timeExpression();
-    if (jj_2_29(2)) {
+    if (jj_2_31(2)) {
       jj_consume_token(GAUSSIAN_DISTRIBUTION);
       jj_consume_token(M);
       jj_consume_token(POSITIVE_NUMBER);
@@ -385,12 +395,12 @@ public class EventBaseScript implements EventBaseScriptConstants {
       jj_consume_token(POSITIVE_NUMBER);
         func_t.setA(Integer.parseInt(token.image));
         func = func_t;
-    } else if (jj_2_30(2)) {
+    } else if (jj_2_32(2)) {
       jj_consume_token(CHI_SQUARE_DISTRIBUTION);
       jj_consume_token(K);
       jj_consume_token(POSITIVE_NUMBER);
 
-    } else if (jj_2_31(2)) {
+    } else if (jj_2_33(2)) {
       jj_consume_token(PARETO_DISTRIBUTION);
       jj_consume_token(A);
       jj_consume_token(POSITIVE_NUMBER);
@@ -400,7 +410,7 @@ public class EventBaseScript implements EventBaseScriptConstants {
       throw new ParseException();
     }
    result.setFunction(func);
-    jj_consume_token(43);
+    jj_consume_token(55);
     jj_consume_token(IDENTIFIER);
     result.setScope(token.image.trim());
     {if (true) return result;}
@@ -409,28 +419,25 @@ public class EventBaseScript implements EventBaseScriptConstants {
 
   final public ESimpleEF SEF() throws ParseException {
   ESimpleEF result = new ESimpleEF();
-  List < ESimpleFilterConstraint > constraints = new ArrayList < ESimpleFilterConstraint > ();
-  ESimpleFilterConstraint constr = null;
-  EventGenerator eG;
+  List < ESimpleFilterNestedConstraint > constraints = new ArrayList < ESimpleFilterNestedConstraint > ();
+  ESimpleFilterNestedConstraint constr = null;
+  EventBaseOperator source = null;
     jj_consume_token(SEF);
-    jj_consume_token(49);
-    constr = Constraint();
+    jj_consume_token(61);
+    constr = nestedConstraint();
     if (constr != null)
     {
       constraints.add(constr);
     }
-    else
-    { //TODO error
-    }
     label_3:
     while (true) {
-      if (jj_2_32(2)) {
+      if (jj_2_34(2)) {
         ;
       } else {
         break label_3;
       }
-      jj_consume_token(50);
-      constr = Constraint();
+      jj_consume_token(62);
+      constr = nestedConstraint();
       if (constr != null)
       {
         constraints.add(constr);
@@ -439,38 +446,11 @@ public class EventBaseScript implements EventBaseScriptConstants {
       { //TODO error
       }
     }
-    jj_consume_token(51);
-    jj_consume_token(49);
-    if (jj_2_33(2)) {
-      jj_consume_token(IDENTIFIER);
-      result.addSource(token.image.trim());
-    } else if (jj_2_34(2)) {
-      eG = event_generator();
-      result.addSource(eG);
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-    label_4:
-    while (true) {
-      if (jj_2_35(2)) {
-        ;
-      } else {
-        break label_4;
-      }
-      jj_consume_token(50);
-      if (jj_2_36(2)) {
-        jj_consume_token(IDENTIFIER);
-        result.addSource(token.image.trim());
-      } else if (jj_2_37(2)) {
-        eG = event_generator();
-        result.addSource(eG);
-      } else {
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-    }
-    jj_consume_token(51);
+    jj_consume_token(63);
+    jj_consume_token(56);
+    source = Terminate_Operand();
+    jj_consume_token(57);
+    result.setSource(source);
     result.setConstraints(constraints);
     {if (true) return result;}
     throw new Error("Missing return statement in function");
@@ -478,17 +458,51 @@ public class EventBaseScript implements EventBaseScriptConstants {
 
   final public EventGenerator event_generator() throws ParseException {
   EventGenerator result;
-    if (jj_2_38(2)) {
+    if (jj_2_35(2)) {
       result = PEG();
-    } else if (jj_2_39(2)) {
+    } else if (jj_2_36(2)) {
       result = APEG();
-    } else if (jj_2_40(2)) {
+    } else if (jj_2_37(2)) {
       result = ADEG();
     } else {
       jj_consume_token(-1);
       throw new ParseException();
     }
     {if (true) return result;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public ESimpleFilterNestedConstraint nestedConstraint() throws ParseException {
+  ESimpleFilterNestedConstraint result = new ESimpleFilterNestedConstraint();
+  result.resetConstraints();
+  ESimpleFilterConstraint cons= null;
+    if (jj_2_39(2)) {
+      cons = Constraint();
+    result.addConstraints(cons);
+    {if (true) return result;}
+    } else if (jj_2_40(2)) {
+      jj_consume_token(56);
+      cons = Constraint();
+    result.addConstraints(cons);
+      jj_consume_token(57);
+      label_4:
+      while (true) {
+        if (jj_2_38(2)) {
+          ;
+        } else {
+          break label_4;
+        }
+        jj_consume_token(OR);
+        jj_consume_token(56);
+        cons = Constraint();
+        result.addConstraints(cons);
+        jj_consume_token(57);
+      }
+          {if (true) return result;}
+    } else {
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
     throw new Error("Missing return statement in function");
   }
 
@@ -537,10 +551,41 @@ public class EventBaseScript implements EventBaseScriptConstants {
     throw new Error("Missing return statement in function");
   }
 
+  final public EProcessingEF min_ef() throws ParseException {
+  EProcessingEF result = null;
+  EventBaseOperator source = null;
+    if (jj_2_46(2)) {
+      jj_consume_token(MIN_COMPOSITION_EF);
+    } else if (jj_2_47(2)) {
+      jj_consume_token(MAX_COMPOSITION_EF);
+    } else if (jj_2_48(2)) {
+      jj_consume_token(COUNT_COMPOSITION_EF);
+    } else if (jj_2_49(2)) {
+      jj_consume_token(SUM_COMPOSITION_EF);
+    } else if (jj_2_50(2)) {
+      jj_consume_token(AVG_COMPOSITION_EF);
+    } else if (jj_2_51(2)) {
+      jj_consume_token(STDEV_COMPOSITION_EF);
+    } else {
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    result = new EProcessingEF(token.image.trim());
+    jj_consume_token(POSITIVE_NUMBER);
+    int window = Integer.parseInt(token.image.trim());
+    result.setWindow(window);
+    jj_consume_token(56);
+    source = Terminate_Operand();
+    jj_consume_token(57);
+    result.setSource(source);
+    {if (true) return result;}
+    throw new Error("Missing return statement in function");
+  }
+
   final public EComplexEF CEF() throws ParseException {
   EEvaluableExpression exp = null;
   EComplexEF result = new EComplexEF();
-    jj_consume_token(CEF);
+    jj_consume_token(64);
     exp = OR_operator();
     result.setCondition(exp);
     {if (true) return result;}
@@ -548,9 +593,9 @@ public class EventBaseScript implements EventBaseScriptConstants {
   }
 
   final public void policy() throws ParseException {
-    jj_consume_token(52);
+    jj_consume_token(65);
     jj_consume_token(COMPOSITION_POLICY);
-    jj_consume_token(52);
+    jj_consume_token(65);
     jj_consume_token(EVICTION);
   }
 
@@ -562,7 +607,7 @@ public class EventBaseScript implements EventBaseScriptConstants {
     left = AND_operator();
     label_5:
     while (true) {
-      if (jj_2_46(2)) {
+      if (jj_2_52(2)) {
         ;
       } else {
         break label_5;
@@ -586,7 +631,7 @@ public class EventBaseScript implements EventBaseScriptConstants {
     left = NOT_operator();
     label_6:
     while (true) {
-      if (jj_2_47(2)) {
+      if (jj_2_53(2)) {
         ;
       } else {
         break label_6;
@@ -605,17 +650,17 @@ public class EventBaseScript implements EventBaseScriptConstants {
   final public EEvaluableExpression NOT_operator() throws ParseException {
   String op = "NOT";
   EEvaluableExpression exp;
-    if (jj_2_48(2)) {
+    if (jj_2_54(2)) {
       exp = Terminate_Operand();
     {if (true) return exp;}
-    } else if (jj_2_49(2)) {
+    } else if (jj_2_55(2)) {
       jj_consume_token(NOT);
       exp = NOT_operator();
     {if (true) return new EComplexFilterUnaryExpression(op, exp);}
-    } else if (jj_2_50(2)) {
-      jj_consume_token(44);
+    } else if (jj_2_56(2)) {
+      jj_consume_token(56);
       exp = OR_operator();
-      jj_consume_token(45);
+      jj_consume_token(57);
     {if (true) return exp;}
     } else {
       jj_consume_token(-1);
@@ -626,10 +671,10 @@ public class EventBaseScript implements EventBaseScriptConstants {
 
   final public EventBaseOperator Terminate_Operand() throws ParseException {
   EventBaseOperator result = null;
-    if (jj_2_51(2)) {
+    if (jj_2_57(2)) {
       jj_consume_token(IDENTIFIER);
       result = ChannelIDManager.variableMapping.get(token.image.trim());
-    } else if (jj_2_52(2)) {
+    } else if (jj_2_58(2)) {
       result = eventbaseOperator();
     } else {
       jj_consume_token(-1);
@@ -640,15 +685,22 @@ public class EventBaseScript implements EventBaseScriptConstants {
   }
 
   final public int Number() throws ParseException {
-    if (jj_2_53(2)) {
+  int positive = 1;
+    if (jj_2_59(2)) {
+      jj_consume_token(60);
+          positive = -1;
+    } else {
+      ;
+    }
+    if (jj_2_60(2)) {
       jj_consume_token(BINARY);
-    } else if (jj_2_54(2)) {
+    } else if (jj_2_61(2)) {
       jj_consume_token(POSITIVE_NUMBER);
     } else {
       jj_consume_token(-1);
       throw new ParseException();
     }
-    {if (true) return Integer.parseInt(token.image.trim());}
+    {if (true) return positive *Integer.parseInt(token.image.trim());}
     throw new Error("Missing return statement in function");
   }
 
@@ -1030,20 +1082,590 @@ public class EventBaseScript implements EventBaseScriptConstants {
     finally { jj_save(53, xla); }
   }
 
-  private boolean jj_3_25() {
-    if (jj_scan_token(43)) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
+  private boolean jj_2_55(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_55(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(54, xla); }
+  }
+
+  private boolean jj_2_56(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_56(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(55, xla); }
+  }
+
+  private boolean jj_2_57(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_57(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(56, xla); }
+  }
+
+  private boolean jj_2_58(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_58(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(57, xla); }
+  }
+
+  private boolean jj_2_59(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_59(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(58, xla); }
+  }
+
+  private boolean jj_2_60(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_60(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(59, xla); }
+  }
+
+  private boolean jj_2_61(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_61(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(60, xla); }
+  }
+
+  private boolean jj_3R_13() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_8()) {
+    jj_scanpos = xsp;
+    if (jj_3_9()) {
+    jj_scanpos = xsp;
+    if (jj_3_10()) {
+    jj_scanpos = xsp;
+    if (jj_3_11()) {
+    jj_scanpos = xsp;
+    if (jj_3_12()) return true;
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3_33() {
+    if (jj_scan_token(PARETO_DISTRIBUTION)) return true;
+    if (jj_scan_token(A)) return true;
+    return false;
+  }
+
+  private boolean jj_3_26() {
+    if (jj_3R_22()) return true;
+    return false;
+  }
+
+  private boolean jj_3_32() {
+    if (jj_scan_token(CHI_SQUARE_DISTRIBUTION)) return true;
+    if (jj_scan_token(K)) return true;
+    return false;
+  }
+
+  private boolean jj_3_51() {
+    if (jj_scan_token(STDEV_COMPOSITION_EF)) return true;
+    return false;
+  }
+
+  private boolean jj_3_50() {
+    if (jj_scan_token(AVG_COMPOSITION_EF)) return true;
+    return false;
+  }
+
+  private boolean jj_3_49() {
+    if (jj_scan_token(SUM_COMPOSITION_EF)) return true;
+    return false;
+  }
+
+  private boolean jj_3_48() {
+    if (jj_scan_token(COUNT_COMPOSITION_EF)) return true;
     return false;
   }
 
   private boolean jj_3_47() {
-    if (jj_scan_token(AND)) return true;
+    if (jj_scan_token(MAX_COMPOSITION_EF)) return true;
+    return false;
+  }
+
+  private boolean jj_3_46() {
+    if (jj_scan_token(MIN_COMPOSITION_EF)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_7() {
+    if (jj_3R_14()) return true;
+    if (jj_scan_token(54)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_21() {
+    if (jj_scan_token(relative_EG)) return true;
+    if (jj_scan_token(SENSOR_TYPE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_11() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_46()) {
+    jj_scanpos = xsp;
+    if (jj_3_47()) {
+    jj_scanpos = xsp;
+    if (jj_3_48()) {
+    jj_scanpos = xsp;
+    if (jj_3_49()) {
+    jj_scanpos = xsp;
+    if (jj_3_50()) {
+    jj_scanpos = xsp;
+    if (jj_3_51()) return true;
+    }
+    }
+    }
+    }
+    }
+    if (jj_scan_token(POSITIVE_NUMBER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_45() {
+    if (jj_scan_token(SENSOR_TYPE)) return true;
+    return false;
+  }
+
+  private boolean jj_3_4() {
+    if (jj_scan_token(K)) return true;
+    return false;
+  }
+
+  private boolean jj_3_44() {
     if (jj_3R_26()) return true;
     return false;
   }
 
+  private boolean jj_3_31() {
+    if (jj_scan_token(GAUSSIAN_DISTRIBUTION)) return true;
+    if (jj_scan_token(M)) return true;
+    return false;
+  }
+
+  private boolean jj_3_43() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_7() {
+    if (jj_3R_7()) return true;
+    return false;
+  }
+
+  private boolean jj_3_25() {
+    if (jj_scan_token(55)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
   private boolean jj_3R_25() {
-    if (jj_3R_26()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_43()) {
+    jj_scanpos = xsp;
+    if (jj_3_44()) {
+    jj_scanpos = xsp;
+    if (jj_3_45()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3_3() {
+    if (jj_scan_token(A)) return true;
+    return false;
+  }
+
+  private boolean jj_3_6() {
+    if (jj_3R_7()) return true;
+    return false;
+  }
+
+  private boolean jj_3_2() {
+    if (jj_scan_token(M)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_17() {
+    if (jj_scan_token(ADEG)) return true;
+    if (jj_scan_token(SENSOR_TYPE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_20() {
+    if (jj_scan_token(offset_EG)) return true;
+    if (jj_scan_token(SENSOR_TYPE)) return true;
+    return false;
+  }
+
+  private boolean jj_3_5() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_scan_token(I)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_14() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_1()) {
+    jj_scanpos = xsp;
+    if (jj_3_2()) {
+    jj_scanpos = xsp;
+    if (jj_3_3()) {
+    jj_scanpos = xsp;
+    if (jj_3_4()) {
+    jj_scanpos = xsp;
+    if (jj_3_5()) return true;
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3_42() {
+    if (jj_3R_25()) return true;
+    if (jj_scan_token(COMPARISON)) return true;
+    return false;
+  }
+
+  private boolean jj_3_24() {
+    if (jj_scan_token(55)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_61() {
+    if (jj_scan_token(POSITIVE_NUMBER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_60() {
+    if (jj_scan_token(BINARY)) return true;
+    return false;
+  }
+
+  private boolean jj_3_59() {
+    if (jj_scan_token(60)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_16() {
+    if (jj_scan_token(APEG)) return true;
+    if (jj_scan_token(SENSOR_TYPE)) return true;
+    return false;
+  }
+
+  private boolean jj_3_41() {
+    if (jj_scan_token(EVENT_OUTPUT_TYPE)) return true;
+    if (jj_scan_token(COMPARISON)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_26() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_59()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3_60()) {
+    jj_scanpos = xsp;
+    if (jj_3_61()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_24() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_41()) {
+    jj_scanpos = xsp;
+    if (jj_3_42()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_19() {
+    if (jj_scan_token(absolute_EG)) return true;
+    if (jj_scan_token(SENSOR_TYPE)) return true;
+    return false;
+  }
+
+  private boolean jj_3_58() {
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+  private boolean jj_3_38() {
+    if (jj_scan_token(OR)) return true;
+    if (jj_scan_token(56)) return true;
+    return false;
+  }
+
+  private boolean jj_3_57() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_23() {
+    if (jj_scan_token(55)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_29() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_57()) {
+    jj_scanpos = xsp;
+    if (jj_3_58()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_18() {
+    if (jj_scan_token(immediate_EG)) return true;
+    if (jj_scan_token(SENSOR_TYPE)) return true;
+    return false;
+  }
+
+  private boolean jj_3_56() {
+    if (jj_scan_token(56)) return true;
+    if (jj_3R_30()) return true;
+    return false;
+  }
+
+  private boolean jj_3_40() {
+    if (jj_scan_token(56)) return true;
+    if (jj_3R_24()) return true;
+    return false;
+  }
+
+  private boolean jj_3_55() {
+    if (jj_scan_token(NOT)) return true;
+    if (jj_3R_28()) return true;
+    return false;
+  }
+
+  private boolean jj_3_30() {
+    if (jj_scan_token(60)) return true;
+    if (jj_scan_token(POSITIVE_NUMBER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_28() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_54()) {
+    jj_scanpos = xsp;
+    if (jj_3_55()) {
+    jj_scanpos = xsp;
+    if (jj_3_56()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3_22() {
+    if (jj_3R_21()) return true;
+    return false;
+  }
+
+  private boolean jj_3_54() {
+    if (jj_3R_29()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_23() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_39()) {
+    jj_scanpos = xsp;
+    if (jj_3_40()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3_21() {
+    if (jj_3R_20()) return true;
+    return false;
+  }
+
+  private boolean jj_3_39() {
+    if (jj_3R_24()) return true;
+    return false;
+  }
+
+  private boolean jj_3_20() {
+    if (jj_3R_19()) return true;
+    return false;
+  }
+
+  private boolean jj_3_19() {
+    if (jj_3R_18()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_12() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_19()) {
+    jj_scanpos = xsp;
+    if (jj_3_20()) {
+    jj_scanpos = xsp;
+    if (jj_3_21()) {
+    jj_scanpos = xsp;
+    if (jj_3_22()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3_28() {
+    if (jj_scan_token(59)) return true;
+    if (jj_scan_token(POSITIVE_NUMBER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_37() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  private boolean jj_3_36() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  private boolean jj_3_35() {
+    if (jj_3R_15()) return true;
+    return false;
+  }
+
+  private boolean jj_3_18() {
+    if (jj_scan_token(REPETITION)) return true;
+    return false;
+  }
+
+  private boolean jj_3_29() {
+    if (jj_scan_token(59)) return true;
+    if (jj_scan_token(POSITIVE_NUMBER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_53() {
+    if (jj_scan_token(AND)) return true;
+    if (jj_3R_28()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_27() {
+    if (jj_3R_28()) return true;
+    return false;
+  }
+
+  private boolean jj_3_17() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  private boolean jj_3_16() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  private boolean jj_3_15() {
+    if (jj_3R_15()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_8() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_15()) {
+    jj_scanpos = xsp;
+    if (jj_3_16()) {
+    jj_scanpos = xsp;
+    if (jj_3_17()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_22() {
+    if (jj_scan_token(55)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_52() {
+    if (jj_scan_token(OR)) return true;
+    if (jj_3R_27()) return true;
+    return false;
+  }
+
+  private boolean jj_3_34() {
+    if (jj_scan_token(62)) return true;
+    if (jj_3R_23()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_30() {
+    if (jj_3R_27()) return true;
+    return false;
+  }
+
+  private boolean jj_3_14() {
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  private boolean jj_3_27() {
+    if (jj_scan_token(55)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_9() {
+    if (jj_scan_token(SEF)) return true;
+    if (jj_scan_token(61)) return true;
+    return false;
+  }
+
+  private boolean jj_3_13() {
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_15() {
+    if (jj_scan_token(PEG)) return true;
+    if (jj_scan_token(SENSOR_TYPE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_10() {
+    if (jj_scan_token(64)) return true;
+    if (jj_3R_30()) return true;
+    return false;
+  }
+
+  private boolean jj_3_12() {
+    if (jj_3R_12()) return true;
     return false;
   }
 
@@ -1067,465 +1689,6 @@ public class EventBaseScript implements EventBaseScriptConstants {
     return false;
   }
 
-  private boolean jj_3R_14() {
-    if (jj_scan_token(PEG)) return true;
-    if (jj_scan_token(SENSOR_TYPE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_12() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_8()) {
-    jj_scanpos = xsp;
-    if (jj_3_9()) {
-    jj_scanpos = xsp;
-    if (jj_3_10()) {
-    jj_scanpos = xsp;
-    if (jj_3_11()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3_31() {
-    if (jj_scan_token(PARETO_DISTRIBUTION)) return true;
-    if (jj_scan_token(A)) return true;
-    return false;
-  }
-
-  private boolean jj_3_46() {
-    if (jj_scan_token(OR)) return true;
-    if (jj_3R_25()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_28() {
-    if (jj_3R_25()) return true;
-    return false;
-  }
-
-  private boolean jj_3_30() {
-    if (jj_scan_token(CHI_SQUARE_DISTRIBUTION)) return true;
-    if (jj_scan_token(K)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_7() {
-    if (jj_3R_13()) return true;
-    if (jj_scan_token(42)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_20() {
-    if (jj_scan_token(relative_EG)) return true;
-    if (jj_scan_token(SENSOR_TYPE)) return true;
-    return false;
-  }
-
-  private boolean jj_3_4() {
-    if (jj_scan_token(K)) return true;
-    return false;
-  }
-
-  private boolean jj_3_7() {
-    if (jj_3R_7()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_10() {
-    if (jj_scan_token(CEF)) return true;
-    if (jj_3R_28()) return true;
-    return false;
-  }
-
-  private boolean jj_3_3() {
-    if (jj_scan_token(A)) return true;
-    return false;
-  }
-
-  private boolean jj_3_24() {
-    if (jj_scan_token(43)) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3_29() {
-    if (jj_scan_token(GAUSSIAN_DISTRIBUTION)) return true;
-    if (jj_scan_token(M)) return true;
-    return false;
-  }
-
-  private boolean jj_3_6() {
-    if (jj_3R_7()) return true;
-    return false;
-  }
-
-  private boolean jj_3_2() {
-    if (jj_scan_token(M)) return true;
-    return false;
-  }
-
-  private boolean jj_3_45() {
-    if (jj_scan_token(SENSOR_TYPE)) return true;
-    return false;
-  }
-
-  private boolean jj_3_44() {
-    if (jj_3R_24()) return true;
-    return false;
-  }
-
-  private boolean jj_3_43() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3_5() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_16() {
-    if (jj_scan_token(ADEG)) return true;
-    if (jj_scan_token(SENSOR_TYPE)) return true;
-    return false;
-  }
-
-  private boolean jj_3_1() {
-    if (jj_scan_token(I)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_19() {
-    if (jj_scan_token(offset_EG)) return true;
-    if (jj_scan_token(SENSOR_TYPE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_23() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_43()) {
-    jj_scanpos = xsp;
-    if (jj_3_44()) {
-    jj_scanpos = xsp;
-    if (jj_3_45()) return true;
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_13() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_1()) {
-    jj_scanpos = xsp;
-    if (jj_3_2()) {
-    jj_scanpos = xsp;
-    if (jj_3_3()) {
-    jj_scanpos = xsp;
-    if (jj_3_4()) {
-    jj_scanpos = xsp;
-    if (jj_3_5()) return true;
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3_23() {
-    if (jj_scan_token(43)) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3_42() {
-    if (jj_3R_23()) return true;
-    if (jj_scan_token(COMPARISON)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_18() {
-    if (jj_scan_token(absolute_EG)) return true;
-    if (jj_scan_token(SENSOR_TYPE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_15() {
-    if (jj_scan_token(APEG)) return true;
-    if (jj_scan_token(SENSOR_TYPE)) return true;
-    return false;
-  }
-
-  private boolean jj_3_41() {
-    if (jj_scan_token(EVENT_OUTPUT_TYPE)) return true;
-    if (jj_scan_token(COMPARISON)) return true;
-    return false;
-  }
-
-  private boolean jj_3_22() {
-    if (jj_scan_token(43)) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_21() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_41()) {
-    jj_scanpos = xsp;
-    if (jj_3_42()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_17() {
-    if (jj_scan_token(immediate_EG)) return true;
-    if (jj_scan_token(SENSOR_TYPE)) return true;
-    return false;
-  }
-
-  private boolean jj_3_40() {
-    if (jj_3R_16()) return true;
-    return false;
-  }
-
-  private boolean jj_3_39() {
-    if (jj_3R_15()) return true;
-    return false;
-  }
-
-  private boolean jj_3_38() {
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_22() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_38()) {
-    jj_scanpos = xsp;
-    if (jj_3_39()) {
-    jj_scanpos = xsp;
-    if (jj_3_40()) return true;
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3_21() {
-    if (jj_3R_20()) return true;
-    return false;
-  }
-
-  private boolean jj_3_20() {
-    if (jj_3R_19()) return true;
-    return false;
-  }
-
-  private boolean jj_3_19() {
-    if (jj_3R_18()) return true;
-    return false;
-  }
-
-  private boolean jj_3_18() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
-  private boolean jj_3_28() {
-    if (jj_scan_token(48)) return true;
-    if (jj_scan_token(POSITIVE_NUMBER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_11() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_18()) {
-    jj_scanpos = xsp;
-    if (jj_3_19()) {
-    jj_scanpos = xsp;
-    if (jj_3_20()) {
-    jj_scanpos = xsp;
-    if (jj_3_21()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3_54() {
-    if (jj_scan_token(POSITIVE_NUMBER)) return true;
-    return false;
-  }
-
-  private boolean jj_3_53() {
-    if (jj_scan_token(BINARY)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_24() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_53()) {
-    jj_scanpos = xsp;
-    if (jj_3_54()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_37() {
-    if (jj_3R_22()) return true;
-    return false;
-  }
-
-  private boolean jj_3_26() {
-    if (jj_scan_token(47)) return true;
-    if (jj_scan_token(POSITIVE_NUMBER)) return true;
-    return false;
-  }
-
-  private boolean jj_3_36() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3_17() {
-    if (jj_scan_token(REPETITION)) return true;
-    return false;
-  }
-
-  private boolean jj_3_35() {
-    if (jj_scan_token(50)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_36()) {
-    jj_scanpos = xsp;
-    if (jj_3_37()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_52() {
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
-  private boolean jj_3_51() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3_16() {
-    if (jj_3R_16()) return true;
-    return false;
-  }
-
-  private boolean jj_3_34() {
-    if (jj_3R_22()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_27() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_51()) {
-    jj_scanpos = xsp;
-    if (jj_3_52()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_15() {
-    if (jj_3R_15()) return true;
-    return false;
-  }
-
-  private boolean jj_3_14() {
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
-  private boolean jj_3_27() {
-    if (jj_scan_token(47)) return true;
-    if (jj_scan_token(POSITIVE_NUMBER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_8() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_14()) {
-    jj_scanpos = xsp;
-    if (jj_3_15()) {
-    jj_scanpos = xsp;
-    if (jj_3_16()) return true;
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3_33() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3_50() {
-    if (jj_scan_token(44)) return true;
-    if (jj_3R_28()) return true;
-    return false;
-  }
-
-  private boolean jj_3_49() {
-    if (jj_scan_token(NOT)) return true;
-    if (jj_3R_26()) return true;
-    return false;
-  }
-
-  private boolean jj_3_32() {
-    if (jj_scan_token(50)) return true;
-    if (jj_3R_21()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_26() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_48()) {
-    jj_scanpos = xsp;
-    if (jj_3_49()) {
-    jj_scanpos = xsp;
-    if (jj_3_50()) return true;
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3_48() {
-    if (jj_3R_27()) return true;
-    return false;
-  }
-
-  private boolean jj_3_13() {
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
-  private boolean jj_3_12() {
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_9() {
-    if (jj_scan_token(SEF)) return true;
-    if (jj_scan_token(49)) return true;
-    return false;
-  }
-
   /** Generated Token Manager. */
   public EventBaseScriptTokenManager token_source;
   SimpleCharStream jj_input_stream;
@@ -1540,9 +1703,11 @@ public class EventBaseScript implements EventBaseScriptConstants {
   final private int[] jj_la1 = new int[0];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
+  static private int[] jj_la1_2;
   static {
       jj_la1_init_0();
       jj_la1_init_1();
+      jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
       jj_la1_0 = new int[] {};
@@ -1550,7 +1715,10 @@ public class EventBaseScript implements EventBaseScriptConstants {
    private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {};
    }
-  final private JJCalls[] jj_2_rtns = new JJCalls[54];
+   private static void jj_la1_init_2() {
+      jj_la1_2 = new int[] {};
+   }
+  final private JJCalls[] jj_2_rtns = new JJCalls[61];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
@@ -1734,7 +1902,7 @@ public class EventBaseScript implements EventBaseScriptConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[53];
+    boolean[] la1tokens = new boolean[66];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -1748,10 +1916,13 @@ public class EventBaseScript implements EventBaseScriptConstants {
           if ((jj_la1_1[i] & (1<<j)) != 0) {
             la1tokens[32+j] = true;
           }
+          if ((jj_la1_2[i] & (1<<j)) != 0) {
+            la1tokens[64+j] = true;
+          }
         }
       }
     }
-    for (int i = 0; i < 53; i++) {
+    for (int i = 0; i < 66; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -1778,7 +1949,7 @@ public class EventBaseScript implements EventBaseScriptConstants {
 
   private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 54; i++) {
+    for (int i = 0; i < 61; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -1839,6 +2010,13 @@ public class EventBaseScript implements EventBaseScriptConstants {
             case 51: jj_3_52(); break;
             case 52: jj_3_53(); break;
             case 53: jj_3_54(); break;
+            case 54: jj_3_55(); break;
+            case 55: jj_3_56(); break;
+            case 56: jj_3_57(); break;
+            case 57: jj_3_58(); break;
+            case 58: jj_3_59(); break;
+            case 59: jj_3_60(); break;
+            case 60: jj_3_61(); break;
           }
         }
         p = p.next;

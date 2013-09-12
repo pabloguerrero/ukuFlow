@@ -33,10 +33,12 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.ChannelIDManager;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.OperatorIDGenerator;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public abstract class EventBaseOperator extends EEvaluableExpression {
 	private byte channel;
 	private byte operatorID = -1;
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	public EventBaseOperator(){
 		channel = ChannelIDManager.getInstance().generateID();
 	}
@@ -53,8 +55,10 @@ public abstract class EventBaseOperator extends EEvaluableExpression {
 	*/
 	
 	public byte getOperatorID(){
-		if(operatorID == -1)
+		if(operatorID == -1){
 			operatorID = OperatorIDGenerator.getNextID();
+			log.debug("operator_id generated for "+this.getClass() + "\t "+operatorID);
+		}
 		return operatorID;
 	}
 	public byte getChannel(){

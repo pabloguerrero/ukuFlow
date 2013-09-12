@@ -23,6 +23,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -33,6 +34,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Combo;
 
 import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 /**
  * A simple input dialog for soliciting an input string from the user.
@@ -42,6 +44,7 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
  * </p>
  */
 public class UkuInputDialog extends Dialog {
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	/**
 	 * The title of the dialog.
 	 */
@@ -132,7 +135,7 @@ public class UkuInputDialog extends Dialog {
 				if (tmp instanceof CCombo) {
 					CCombo combo = ((CCombo) tmp);
 					req.result = combo.getItem(combo.getSelectionIndex());
-					System.out.println("result >"+combo.getSelectionIndex()+">" + req.result);
+					log.debug("result >"+combo.getSelectionIndex()+">" + req.result);
 
 				}
 			} else {
@@ -216,6 +219,7 @@ public class UkuInputDialog extends Dialog {
 				label.setFont(parent.getFont());
 			}
 			Control text = null;
+			log.debug("requests of "+message+" : " + requests.get(message).requests );
 			if (requests.get(message).requests instanceof String) {
 				text = new Text(composite, getInputTextStyle());
 				text.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
@@ -232,7 +236,7 @@ public class UkuInputDialog extends Dialog {
 				combo.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 						| GridData.HORIZONTAL_ALIGN_FILL));
 				List l = (List<?>) requests.get(message).requests;
-				System.out.println("debug "+message + ">"+l);
+				log.debug(message + ">"+l);
 				String[] a = new String[l.size()];
 				int selectIndex = 0;
 				for (int j = 0; j < l.size(); j++) {
@@ -307,19 +311,25 @@ public class UkuInputDialog extends Dialog {
 	 * </p>
 	 */
 	protected void validateInput() {
-		String errorMessage = null;
+		String errorMessage = "";
 		if (validator != null) {
-			// errorMessage = validator.isValid(text.getText());
+			// validator should be null anyway.
 		}
 		for (Integer key : requests.keySet()) {
-			RequestContainer req = requests.get(key);
 			if (texts.get(key) instanceof Text
 					&& requests.get(key).validator != null) {
-				errorMessage = requests.get(key).validator
+				String tmp = requests.get(key).validator
 						.isValid(((Text) texts.get(key)).getText());
-				setErrorMessage(errorMessage);
+				if(tmp != null){
+					String meta = requests.get(key).title;
+					meta = meta.split("[(]")[0];
+					tmp = meta + ":  "+ tmp; 
+					errorMessage += tmp + "\n"; 
+					
+				}
 			}
 		}
+		setErrorMessage(errorMessage.equals("")?null:errorMessage);
 	}
 
 	/**
@@ -345,6 +355,7 @@ public class UkuInputDialog extends Dialog {
 			errorMessageText.setEnabled(hasError);
 			errorMessageText.setVisible(hasError);
 			errorMessageText.getParent().update();
+			errorMessageText.setForeground(new Color(null,255,0,0));
 			// Access the ok button by id, in case clients have overridden
 			// button creation.
 			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=113643

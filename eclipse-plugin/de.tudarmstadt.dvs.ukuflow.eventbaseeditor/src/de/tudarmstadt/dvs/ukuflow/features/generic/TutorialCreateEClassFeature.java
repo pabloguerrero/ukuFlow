@@ -25,7 +25,7 @@ import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.TutorialUtil;
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventModelUtil;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicDistributionEG;
 
 public class TutorialCreateEClassFeature extends AbstractCreateFeature {

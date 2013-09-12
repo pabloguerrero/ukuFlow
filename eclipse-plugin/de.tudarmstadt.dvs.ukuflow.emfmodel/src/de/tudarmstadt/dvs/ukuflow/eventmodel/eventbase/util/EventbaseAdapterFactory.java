@@ -76,10 +76,6 @@ public class EventbaseAdapterFactory extends AdapterFactoryImpl {
 				return createESequenceFlowAdapter();
 			}
 			@Override
-			public Adapter caseESimpleFilterConstraint(ESimpleFilterConstraint object) {
-				return createESimpleFilterConstraintAdapter();
-			}
-			@Override
 			public Adapter caseEventGenerator(EventGenerator object) {
 				return createEventGeneratorAdapter();
 			}
@@ -252,20 +248,6 @@ public class EventbaseAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createESequenceFlowAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESimpleFilterConstraint <em>ESimple Filter Constraint</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESimpleFilterConstraint
-	 * @generated
-	 */
-	public Adapter createESimpleFilterConstraintAdapter() {
 		return null;
 	}
 

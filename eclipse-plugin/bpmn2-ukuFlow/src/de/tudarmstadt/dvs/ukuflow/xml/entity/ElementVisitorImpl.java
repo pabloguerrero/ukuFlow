@@ -37,6 +37,7 @@ import java.util.Vector;
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitorImpl;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.OperatorIDGenerator;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitorImpl;
 import de.tudarmstadt.dvs.ukuflow.tools.Base64Converter;
@@ -88,6 +89,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 	}
 
 	public void reset() {
+		OperatorIDGenerator.init();
 		out.clear();
 		sVisitor.reset();
 		eVisitor.reset();
@@ -240,7 +242,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 			out.add(toByte(sVisitor.getOutput().size()));
 			out.addAll(sVisitor.getOutput());
 		} else if (task.isDefault()) {
-			System.out.println("default");
+			log.info("sequenceFlow "+task.id + " is a default sq");
 			out.add(toByte(0));
 		}
 	}
@@ -250,6 +252,10 @@ public class ElementVisitorImpl implements ElementVisitor {
 		out.add(p.getWorkflowID());
 		out.add((byte) p.getElements().size());
 		out.add(p.getNumberOfScope());
+		log.info("fetching min, max instances and number of loop : "+p.minInstance + "/"+p.maxInstance+"/"+p.numberOfLoop);
+		out.add((byte)p.minInstance);
+		out.add((byte)p.maxInstance);
+		out.add((byte)p.numberOfLoop);
 		for (UkuElement e : p.getElements()) {
 			if(e instanceof UkuReceiveTask)
 				continue;
@@ -267,8 +273,9 @@ public class ElementVisitorImpl implements ElementVisitor {
 			return;
 		}
 		out.add(toByte(us.getScopeID()));
-		out.add(toByte(us.getTTL()/256));
+		
 		out.add(toByte(us.getTTL()%256));
+		out.add(toByte(us.getTTL()/256));
 		sVisitor.reset();
 		us.getScopeExp().accept(sVisitor);
 		out.add(toByte(sVisitor.getOutput().size()));

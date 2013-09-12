@@ -39,7 +39,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ListDialog;
 
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.TutorialUtil;
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventModelUtil;
 
 public class TutorialAssociateDiagramEClassFeature extends AbstractCustomFeature {
 
@@ -83,7 +83,7 @@ public class TutorialAssociateDiagramEClassFeature extends AbstractCustomFeature
 			IResource fileResource = ResourcesPlugin.getWorkspace().getRoot().findMember(platformString);
 			if (fileResource != null){
 				IProject project = fileResource.getProject();
-				result = TutorialUtil.getDiagrams(project);
+				result = EventModelUtil.getDiagrams(project);
 			}
 			
 		}
@@ -97,7 +97,6 @@ public class TutorialAssociateDiagramEClassFeature extends AbstractCustomFeature
 			eClasses[i] = (EClass) getBusinessObjectForPictogramElement(pes[i]);
 		}
 
-		System.out.println("ass");
 		Diagram diagram = null;
 		
 		final Collection<Diagram> possibleDiagramsList = getDiagrams();
@@ -129,14 +128,14 @@ public class TutorialAssociateDiagramEClassFeature extends AbstractCustomFeature
 				if (result != null) {
 					for (int i = 0; i < result.length; i++) {
 						diagram = (Diagram) result[i];
-						System.out.println("Result: " + diagram.getName());
+						//System.out.println("Result: " + diagram.getName());
 					}
 				}
 			}
 
 			if (diagram != null) {
 				// associate selected EClass with diagram
-				System.out.println("associate with: " + diagram.getName());
+				//System.out.println("associate with: " + diagram.getName());
 				link(diagram, eClasses);
 			}
 		}

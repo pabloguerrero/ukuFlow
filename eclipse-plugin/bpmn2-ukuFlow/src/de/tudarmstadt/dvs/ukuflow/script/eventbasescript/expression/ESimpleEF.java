@@ -35,43 +35,47 @@ import java.util.List;
 
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
-public class ESimpleEF extends EEventFilter{
-	List<ESimpleFilterConstraint> constraints = new ArrayList<ESimpleFilterConstraint>();
+public class ESimpleEF extends EEventFilter {
+	List<ESimpleFilterNestedConstraint> constraints = new ArrayList<ESimpleFilterNestedConstraint>();
 	List<String> sourceVariable = new ArrayList<String>();
-	List<EventBaseOperator> sourceDirect = new ArrayList<EventBaseOperator>();
-	
-	public void addSource(String variable){
+	EventBaseOperator sourceDirect = null;
+
+	public void addSource(String variable) {
 		sourceVariable.add(variable);
 	}
-	
-	public void addSource(EventBaseOperator source){
-		sourceDirect.add(source);
+	public EventBaseOperator getSource(){
+		return sourceDirect;
 	}
 	
+	public void setSource(EventBaseOperator source) {
+		sourceDirect = source;
+	}
+
 	@Override
 	public void accept(EventBaseVisitor visitor) {
 		visitor.visit(this);
 	}
-	public void setConstraints(List<ESimpleFilterConstraint> cons){
-		this.constraints=cons;
+
+	public void setConstraints(List<ESimpleFilterNestedConstraint> cons) {
+		this.constraints = cons;
 	}
-	public List<ESimpleFilterConstraint> getConstraints(){
+
+	public List<ESimpleFilterNestedConstraint> getConstraints() {
 		return constraints;
 	}
-	public String toString(){
+
+	public String toString() {
 		String s = "SEF ";
-		s+="[";
-		for(ESimpleFilterConstraint c : constraints){
+		s += "[";
+		for (ESimpleFilterNestedConstraint c : constraints) {
 			s += c + ",";
 		}
-		s+="]-[";
-		for(String v : sourceVariable){
-			s+=v+",";
+		s += "]-[";
+		for (String v : sourceVariable) {
+			s += v + ",";
 		}
-		for(EventBaseOperator sd : sourceDirect){
-			s+=sd+",";
-		}
-		s+="]";
+		s += sourceDirect;
+		s += "]";
 		return s;
 	}
 }

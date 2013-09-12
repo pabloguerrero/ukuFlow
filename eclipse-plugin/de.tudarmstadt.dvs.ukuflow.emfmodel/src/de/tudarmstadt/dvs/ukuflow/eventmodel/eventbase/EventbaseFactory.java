@@ -31,15 +31,6 @@ public interface EventbaseFactory extends EFactory {
 	ESequenceFlow createESequenceFlow();
 
 	/**
-	 * Returns a new object of class '<em>ESimple Filter Constraint</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>ESimple Filter Constraint</em>'.
-	 * @generated
-	 */
-	ESimpleFilterConstraint createESimpleFilterConstraint();
-
-	/**
 	 * Returns a new object of class '<em>Event Generator</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

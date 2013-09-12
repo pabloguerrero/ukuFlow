@@ -52,13 +52,15 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EOffsetEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EPeriodicEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERecurringEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 /**
  * @author ”Hien Quoc Dang”
  * 
  */
 public class EventbaseUtils {
-
+	
+	static BpmnLog log = BpmnLog.getInstance(EventbaseUtils.class.getSimpleName());
 	/**
 	 * convert an script expression entity to corresponding eObject
 	 * @param ebo
@@ -82,7 +84,7 @@ public class EventbaseUtils {
 					((EGOffset)result).setOffsetTime((tmp/60) + ":"+(tmp%60));
 				} else if (ebo instanceof ERelativeEG) {
 					result = factory.createEGRelative();
-					((EGRelative)result).setDelayTime(((ERelativeEG)ebo).getTimeExpression().getValueInt());
+					((EGRelative)result).setDelayTime(((ERelativeEG)ebo).getTimeExpression().getOffsetTime());
 					//((EGRelative)result).set
 				}
 				///
@@ -93,11 +95,12 @@ public class EventbaseUtils {
 					//TODO
 				} else if (ebo instanceof EAperiodicPatternedEG) {
 					result = factory.createEGPatterned();
+					
 					((EGPatterned)result).setPattern(((EAperiodicPatternedEG) ebo).getPattern());
-					((EGPatterned)result).setTime(((EAperiodicPatternedEG) ebo).getTime().getValueInt());
+					((EGPatterned)result).setTime(((EAperiodicPatternedEG) ebo).getTime().getOffsetTime());
 				} else if (ebo instanceof EPeriodicEG) {
 					result = factory.createEGPeriodic();
-					((EGPeriodic)result).setTime(((EPeriodicEG) ebo).getTime().toString());
+					((EGPeriodic)result).setTime(((EPeriodicEG) ebo).getTime().getOffsetTime());
 				}
 				ERecurringEG rec = (ERecurringEG)ebo;
 				((EGRecurring)result).setRepetition(rec.getRepetition());
@@ -114,7 +117,7 @@ public class EventbaseUtils {
 		} else if (ebo instanceof EEventFilter) {
 			// TODO
 		} else {
-			System.err.println("unknown event base operator!!?");
+			log.error(ebo.getClass().getSimpleName() + "is unknown event base operator?");
 		}
 		return result;
 	}

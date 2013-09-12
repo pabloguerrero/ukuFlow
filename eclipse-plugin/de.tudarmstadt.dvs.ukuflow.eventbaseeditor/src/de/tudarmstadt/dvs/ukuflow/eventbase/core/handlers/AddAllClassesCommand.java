@@ -9,7 +9,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
-import org.eclipse.graphiti.examples.common.util.Util;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.impl.AddContext;
@@ -34,7 +33,7 @@ public class AddAllClassesCommand extends RecordingCommand {
 	@Override
 	protected void doExecute() {
 		// Get all EClasses
-		EClass[] allClasses = Util.getAllClasses(project, editingDomain.getResourceSet());
+		EClass[] allClasses = null;//Util.getAllClasses(project, editingDomain.getResourceSet());
 
 		// Create the diagram and its file
 		Diagram diagram = Graphiti.getPeCreateService().createDiagram("ukuFlowEvent", diagramName, true); //$NON-NLS-1$

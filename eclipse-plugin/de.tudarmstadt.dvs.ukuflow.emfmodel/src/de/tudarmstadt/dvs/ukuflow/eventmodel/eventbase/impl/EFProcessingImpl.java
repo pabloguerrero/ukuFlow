@@ -6,7 +6,9 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessing;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage;
 
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.ecore.EClass;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
@@ -32,6 +34,7 @@ public class EFProcessingImpl extends EFStatusEventImpl implements EFProcessing 
 	 * @ordered
 	 */
 	protected static final int WINDOW_SIZE_EDEFAULT = 0;
+
 	/**
 	 * The cached value of the '{@link #getWindowSize() <em>Window Size</em>}' attribute.
 	 * <!-- begin-user-doc -->

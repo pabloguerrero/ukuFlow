@@ -24,9 +24,10 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class GenericDirectEditFeature extends AbstractDirectEditingFeature {
-
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	public GenericDirectEditFeature(IFeatureProvider fp) {
 		super(fp);
 	}
@@ -36,7 +37,7 @@ public class GenericDirectEditFeature extends AbstractDirectEditingFeature {
 		// text-field, checkbox, color-chooser, combobox, ...
 		return TYPE_TEXT;
 	}
-
+	
 	@Override
 	public boolean canDirectEdit(IDirectEditingContext context) {
 		PictogramElement pe = context.getPictogramElement();
@@ -45,14 +46,14 @@ public class GenericDirectEditFeature extends AbstractDirectEditingFeature {
 		// support direct editing, if it is a EClass, and the user clicked
 		// directly on the text and not somewhere else in the rectangle
 		if (bo instanceof EventBaseOperator && ga instanceof Text) {
-			System.out.println("can be editted");
+			//System.out.println("can be editted");
 
 			// EClass eClass = (EClass) bo;
 			// additionally the flag isFrozen must be false
 			// return !eClass.isFrozen();
 			return true;
 		}
-		System.out.println("cannot be editted");
+		//System.out.println("cannot be editted");
 		// direct editing not supported in all other cases
 		return true;
 	}
@@ -67,7 +68,6 @@ public class GenericDirectEditFeature extends AbstractDirectEditingFeature {
 
 	@Override
 	public String checkValueValid(String value, IDirectEditingContext context) {
-		System.out.println(value);
 		if (value.length() < 1)
 			return "Name should not be empty."; //$NON-NLS-1$
 		if (value.contains("\n")) //$NON-NLS-1$

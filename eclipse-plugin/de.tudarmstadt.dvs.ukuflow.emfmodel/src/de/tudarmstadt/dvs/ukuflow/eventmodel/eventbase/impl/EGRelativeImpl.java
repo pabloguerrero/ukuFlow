@@ -33,7 +33,7 @@ public class EGRelativeImpl extends EGNonRecurringImpl implements EGRelative {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int DELAY_TIME_EDEFAULT = 0;
+	protected static final String DELAY_TIME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getDelayTime() <em>Delay Time</em>}' attribute.
@@ -43,7 +43,7 @@ public class EGRelativeImpl extends EGNonRecurringImpl implements EGRelative {
 	 * @generated
 	 * @ordered
 	 */
-	protected int delayTime = DELAY_TIME_EDEFAULT;
+	protected String delayTime = DELAY_TIME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -69,7 +69,7 @@ public class EGRelativeImpl extends EGNonRecurringImpl implements EGRelative {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getDelayTime() {
+	public String getDelayTime() {
 		return delayTime;
 	}
 
@@ -78,8 +78,8 @@ public class EGRelativeImpl extends EGNonRecurringImpl implements EGRelative {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDelayTime(int newDelayTime) {
-		int oldDelayTime = delayTime;
+	public void setDelayTime(String newDelayTime) {
+		String oldDelayTime = delayTime;
 		delayTime = newDelayTime;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, EventbasePackage.EG_RELATIVE__DELAY_TIME, oldDelayTime, delayTime));
@@ -108,7 +108,7 @@ public class EGRelativeImpl extends EGNonRecurringImpl implements EGRelative {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case EventbasePackage.EG_RELATIVE__DELAY_TIME:
-				setDelayTime((Integer)newValue);
+				setDelayTime((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -138,7 +138,7 @@ public class EGRelativeImpl extends EGNonRecurringImpl implements EGRelative {
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case EventbasePackage.EG_RELATIVE__DELAY_TIME:
-				return delayTime != DELAY_TIME_EDEFAULT;
+				return DELAY_TIME_EDEFAULT == null ? delayTime != null : !DELAY_TIME_EDEFAULT.equals(delayTime);
 		}
 		return super.eIsSet(featureID);
 	}

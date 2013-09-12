@@ -34,7 +34,7 @@ public class EGPatternedImpl extends EGRecurringImpl implements EGPatterned {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int TIME_EDEFAULT = 0;
+	protected static final String TIME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getTime() <em>Time</em>}' attribute.
@@ -44,7 +44,7 @@ public class EGPatternedImpl extends EGRecurringImpl implements EGPatterned {
 	 * @generated
 	 * @ordered
 	 */
-	protected int time = TIME_EDEFAULT;
+	protected String time = TIME_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
@@ -90,7 +90,7 @@ public class EGPatternedImpl extends EGRecurringImpl implements EGPatterned {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getTime() {
+	public String getTime() {
 		return time;
 	}
 
@@ -99,8 +99,8 @@ public class EGPatternedImpl extends EGRecurringImpl implements EGPatterned {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTime(int newTime) {
-		int oldTime = time;
+	public void setTime(String newTime) {
+		String oldTime = time;
 		time = newTime;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, EventbasePackage.EG_PATTERNED__TIME, oldTime, time));
@@ -152,7 +152,7 @@ public class EGPatternedImpl extends EGRecurringImpl implements EGPatterned {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case EventbasePackage.EG_PATTERNED__TIME:
-				setTime((Integer)newValue);
+				setTime((String)newValue);
 				return;
 			case EventbasePackage.EG_PATTERNED__PATTERN:
 				setPattern((String)newValue);
@@ -188,7 +188,7 @@ public class EGPatternedImpl extends EGRecurringImpl implements EGPatterned {
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case EventbasePackage.EG_PATTERNED__TIME:
-				return time != TIME_EDEFAULT;
+				return TIME_EDEFAULT == null ? time != null : !TIME_EDEFAULT.equals(time);
 			case EventbasePackage.EG_PATTERNED__PATTERN:
 				return PATTERN_EDEFAULT == null ? pattern != null : !PATTERN_EDEFAULT.equals(pattern);
 		}

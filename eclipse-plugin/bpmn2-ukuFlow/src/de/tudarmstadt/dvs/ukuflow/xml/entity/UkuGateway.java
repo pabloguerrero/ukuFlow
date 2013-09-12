@@ -104,7 +104,6 @@ public abstract class UkuGateway extends UkuElement {
 		for (UkuEntity flow : outgoingEntities) {
 			UkuEntity tmp = flow;
 			while (!(tmp instanceof UkuGateway)||((UkuGateway)tmp).isSkipped()) {
-				System.out.println("getNextGateways() is looping");
 				if (tmp instanceof UkuSequenceFlow) {
 					tmp = ((UkuSequenceFlow) tmp).getTargetEntity();
 				} else if (tmp instanceof UkuExecuteTask) {

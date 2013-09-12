@@ -79,7 +79,7 @@ public class RequestContainer{
 				int num = Integer.parseInt(newText);
 				return null;
 			} catch(Exception e){
-				return "expecting a number";
+				return "Expecting a number";
 			}
 		}
 	}

@@ -29,12 +29,12 @@ public interface EGRelative extends EGNonRecurring {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Delay Time</em>' attribute.
-	 * @see #setDelayTime(int)
+	 * @see #setDelayTime(String)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEGRelative_DelayTime()
 	 * @model required="true"
 	 * @generated
 	 */
-	int getDelayTime();
+	String getDelayTime();
 
 	/**
 	 * Sets the value of the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRelative#getDelayTime <em>Delay Time</em>}' attribute.
@@ -44,6 +44,6 @@ public interface EGRelative extends EGNonRecurring {
 	 * @see #getDelayTime()
 	 * @generated
 	 */
-	void setDelayTime(int value);
+	void setDelayTime(String value);
 
 } // EGRelative

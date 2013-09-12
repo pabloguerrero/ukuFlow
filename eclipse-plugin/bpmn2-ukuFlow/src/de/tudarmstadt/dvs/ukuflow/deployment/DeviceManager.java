@@ -98,7 +98,7 @@ public class DeviceManager {
 			devs = getDevices_mac();
 			break;
 		default:
-			System.err.println("your operating system is not supported yet");
+			log.error("your operating system is not supported yet");
 			return null;
 			// TODO:
 		}
@@ -116,11 +116,11 @@ public class DeviceManager {
 			CommPortIdentifier portIdentifier = portEnum.nextElement();
 			String name = portIdentifier.getName();
 			if (usedPort.contains(name)) {
-				System.out.println("port " + name + " is currently in use");
+				log.info("port " + name + " is currently in use");
 				continue;
 			}
 			if (!ports.contains(name)) {
-				System.out.println(name + " is not a sensor device");
+				log.info(name + " is not a sensor device");
 				continue;
 			}
 			if (portIdentifier.getPortType() == CommPortIdentifier.PORT_SERIAL) {
@@ -306,7 +306,7 @@ public class DeviceManager {
 							len = br.read(buffer);
 
 							String tmp = new String(buffer, 0, len);
-							System.out.println("[" + tmp + "]");
+							log.debug("[" + tmp + "]");
 							if (tmp.contains("\n")) {
 								String tmps[] = tmp.split("\n");
 								if (tmps.length <= 0) {

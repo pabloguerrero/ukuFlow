@@ -300,8 +300,7 @@ public class UkuConstants {
 				if (v == value) {
 					rs.add(name);
 				}
-			} catch (IllegalArgumentException | IllegalAccessException
-					| InstantiationException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 

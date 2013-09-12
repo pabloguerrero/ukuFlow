@@ -42,12 +42,14 @@ import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.ComputationalFu
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.LocalFunction;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.ScopeFunction;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.TaskScriptFunction;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.ScopeNotExistException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.UnspecifiedGatewayException;
 import de.tudarmstadt.dvs.ukuflow.xml.entity.*;
 
 public class UkuProcessValidation {
 	UkuProcess process = null;
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	// UkuErrorReporter reporter;
 	// UkuConsole console = UkuConsole.getConsole();
 	// public Set<ErrorMessage> errors = new HashSet<ErrorMessage>();
@@ -82,7 +84,7 @@ public class UkuProcessValidation {
 					}
 				} else {
 					// not supported ?
-					System.err.println(ev.getID() + " is not supported");
+					log.info(ev.getID() + " is not supported");
 				}
 				validate((UkuEvent) e);
 			} else if (e instanceof UkuExecuteTask) {
@@ -113,15 +115,15 @@ public class UkuProcessValidation {
 		if (!noCycle) {
 			ErrorManager.getInstance().addError(
 					new ErrorMessage(process.name, " Process contains cycle"));
-			System.err.println(" process contains circlus");
+			log.error(" process contains circlus");
 			return;
 		}
 		if (balanceCheck && ErrorManager.getInstance().isValid()) {
 			UkuElement last = wellformednessChecking3(start);
 			if (last != null && last instanceof UkuEvent && ((UkuEvent)last).getType()==UkuConstants.WorkflowOperators.END_EVENT)
-				System.out.println("workflow is well-formed");
+				log.info("workflow is well-formed");
 			else 
-				System.err.println("workflow is not well-formed "+ last);
+				log.error("workflow is not well-formed "+ last);
 		}
 
 	}
@@ -172,7 +174,7 @@ public class UkuProcessValidation {
 				return wellformednessChecking3((UkuElement) start
 						.getOutgoingEntity().get(0).getTargetEntity());
 			else {
-				System.err.println("Activity has more than one outgoing???");// TODO:ERROR:
+				log.debug("Activity has more than one outgoing???");// TODO:ERROR:
 				return null;
 			}
 
@@ -263,7 +265,7 @@ public class UkuProcessValidation {
 						UkuElement r = wellformednessChecking2((UkuElement) seq
 								.getTargetEntity());
 						if (r == null) {
-							System.err.println("couldn't found next gateway");
+							log.error("couldn't found next gateway");
 						}
 						if (!(r instanceof UkuGateway)) {
 							// TODO add an error
@@ -271,8 +273,7 @@ public class UkuProcessValidation {
 						} else if (((UkuGateway) r).calculateType() == 1) {
 							nextGateways.add(r);
 						} else {
-							System.err
-									.println("this statement will never be reached<UkuProcessValidation.wellformednessCheching2>");
+							log.error("this statement will never be reached<UkuProcessValidation.wellformednessCheching2>");
 						}
 					}
 					switch (nextGateways.size()) {
@@ -330,13 +331,13 @@ public class UkuProcessValidation {
 					if (lto.size() == 1 && lto.get(0).equals(g)) {
 						to.setSkip();
 						g.setSkip();
-						System.out.println(g + " & " + to + " are skipped");
+						log.info(g + " & " + to + " are skipped");
 						diverging.remove(g);
 						converging.remove(to);
 						done = false;
 						break;
 					} else {
-						System.out.println("not match: " + g + " -> " + lfrom
+						log.info("not match: " + g + " -> " + lfrom
 								+ "\n" + to + " -> " + lto);
 					}
 				}
@@ -345,7 +346,7 @@ public class UkuProcessValidation {
 		if (diverging.size() != 0 || converging.size() != 0) {
 			ErrorManager.getInstance().addError(process.name,
 					"The process is not balanced");
-			System.err.println("workflow is not balanced");
+			log.error("workflow is not balanced");
 		}
 	}
 

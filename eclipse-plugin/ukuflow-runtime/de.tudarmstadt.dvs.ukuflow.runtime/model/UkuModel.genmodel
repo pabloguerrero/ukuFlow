@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"
+    modelDirectory="/de.tudarmstadt.dvs.ukuflow.runtime/src" modelPluginID="de.tudarmstadt.dvs.ukuflow.runtime"
+    modelName="UkuModel" importerID="org.eclipse.emf.importer.ecore" complianceLevel="6.0"
+    copyrightFields="false" usedGenPackages="platform:/plugin/org.eclipse.bpmn2/model/BPMN20.genmodel#//bpmn2 platform:/plugin/org.eclipse.bpmn2/model/BPMN20.genmodel#//di platform:/plugin/org.eclipse.bpmn2/model/BPMN20.genmodel#//di.1 platform:/plugin/org.eclipse.bpmn2/model/BPMN20.genmodel#//dc">
+  <foreignModel>UkuModel.ecore</foreignModel>
+  <genPackages prefix="UkuModel" resource="XML" disposableProviderFactory="true" ecorePackage="UkuModel.ecore#/">
+    <genClasses ecoreClass="UkuModel.ecore#//DocumentRoot"/>
+  </genPackages>
+</genmodel:GenModel>

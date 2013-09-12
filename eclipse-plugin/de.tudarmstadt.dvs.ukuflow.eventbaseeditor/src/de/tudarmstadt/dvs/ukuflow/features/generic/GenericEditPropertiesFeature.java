@@ -29,9 +29,10 @@ import de.tudarmstadt.dvs.ukuflow.eventbase.core.TimeUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.utils.DialogUtils;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.*;
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class GenericEditPropertiesFeature extends AbstractCustomFeature {
-
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	private boolean hasDoneChanges = false;
 
 	public GenericEditPropertiesFeature(IFeatureProvider fp) {
@@ -106,7 +107,7 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 				properties.put(EventbasePackage.EVENT_GENERATOR__SCOPE,
 						new RequestContainer(null, (eg.getScope() == null ? ""
 								: eg.getScope()),
-								"Scope identifier (optional):"));
+								"Scope identifier ('WORLD': for all nodes & 'LOCAL': only at base node):"));
 				if (bo instanceof EGImmediate) {
 
 					result = DialogUtils.askString(question, properties);
@@ -140,7 +141,7 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 							new RequestContainer(
 									new RequestContainer.OffsetTimeValidator(),
 									off.getOffsetTime() + "",
-									"Offset time (mm:ss)"));
+									"Offset time (in mm:ss format)"));
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
@@ -154,17 +155,15 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 					EGRelative off = (EGRelative) bo;
 					properties.put(EventbasePackage.EG_RELATIVE__DELAY_TIME,
 									new RequestContainer(
-											new RequestContainer.IntegerValidator(),
-											"" + off.getDelayTime(),
-											"Delay time (in second)"));
+											new RequestContainer.OffsetTimeValidator(),
+											 off.getDelayTime()+"",
+											"Delay time (in mm:ss format)"));
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
-					int currentTime = off.getDelayTime();
-					int newTime = Integer
-							.parseInt(result
-									.get(EventbasePackage.EG_RELATIVE__DELAY_TIME).result);
-					if (newTime != currentTime) {
+					String currentTime = off.getDelayTime();
+					String newTime = result.get(EventbasePackage.EG_RELATIVE__DELAY_TIME).result;
+					if (!newTime.equals(currentTime)) {
 						this.hasDoneChanges = true;
 						off.setDelayTime(newTime);
 						// updatePictogramElement(pes[0]);
@@ -176,7 +175,7 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 									new RequestContainer.DatePatternValidator(
 											TimeUtil.SHORT_TIME_PATTERN), ""
 											+ off.getTime(),
-									"Period duration (mm:ss)"));
+									"Period duration (in mm:ss format)"));
 
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
@@ -197,8 +196,8 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 					Integer key1 = EventbasePackage.EG_PATTERNED__TIME;
 					Integer key2 = EventbasePackage.EG_PATTERNED__PATTERN;
 					properties.put(key1, new RequestContainer(
-							new RequestContainer.IntegerValidator(),
-							"Period Time", "" + off.getTime()));
+							new RequestContainer.OffsetTimeValidator(), "" + off.getTime(),
+							"Period Time (in mm:ss format)"));
 					properties.put(key2,
 							new RequestContainer(
 									new RequestContainer.BinaryValidator(), ""
@@ -206,9 +205,9 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
-					int currentTime = off.getTime();
-					int newTime = Integer.parseInt(result.get(key1).result);
-					if (newTime != currentTime) {
+					String currentTime = off.getTime();
+					String newTime = result.get(key1).result;
+					if (!newTime.equals(currentTime)) {
 						this.hasDoneChanges = true;
 						off.setTime(newTime);
 					}
@@ -253,6 +252,9 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 				String scope = eg.getScope();
 				String newScope = result
 						.get(EventbasePackage.EVENT_GENERATOR__SCOPE).result;
+				if(newScope.equalsIgnoreCase("local") || newScope.equalsIgnoreCase("world")){
+					newScope = newScope.toUpperCase();
+				}
 				if (!newScope.equals(scope))
 					this.hasDoneChanges = true;
 				eg.setScope(newScope);
@@ -276,29 +278,26 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 			} else if (bo instanceof EventFilter) {
 				if (bo instanceof EFSimple) {
 					EFSimple efsimple = (EFSimple) bo;
-					String currentConstraints = "";
-					boolean multiple = false;
-					for (ESimpleFilterConstraint c : efsimple.getConstraints()) {
-						currentConstraints += c.getType() + c.getOperator()
-								+ c.getValue() + ",";
-						multiple = true;
-					}
-					if (multiple)
+					String currentConstraints = efsimple.getConstraints();
+					
+					/*
+					if (currentConstraints.contains(","))
 						currentConstraints = currentConstraints.substring(0,
 								currentConstraints.length() - 1);
+					*/
 					properties.put(EventbasePackage.EF_SIMPLE__CONSTRAINTS,
-							new RequestContainer(null, currentConstraints,
+							new RequestContainer(null, ""+currentConstraints,
 									"Filter's constraints"));
 
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
-					String newConstraint = result
-							.get(EventbasePackage.EF_SIMPLE__CONSTRAINTS).result;
+					String newConstraint = result.get(EventbasePackage.EF_SIMPLE__CONSTRAINTS).result;
 					if (!newConstraint.equals(currentConstraints)) {
 						this.hasDoneChanges = true;
+						efsimple.setConstraints(newConstraint);
 						for (String x : newConstraint.split(",")) {
-							System.out.println(x);
+							log.info(x);
 						}
 					}
 
@@ -317,12 +316,15 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 							.get(EventbasePackage.EF_PROCESSING__WINDOW_SIZE).result;
 					if (!newConstraint.equals(currentWindowSize)) {
 						this.hasDoneChanges = true;
+						int window = Integer.parseInt(newConstraint);
+						efCount.setWindowSize(window);
+						/*
 						for (String x : newConstraint.split(",")) {
 							System.out.println(x);
-						}
+						}*/
 					}
 				} else {
-					System.err.println("this element is not implemented yet");
+					log.error(bo.getClass().getSimpleName() + " is not implemented yet");
 				}
 			}
 			if (this.hasDoneChanges)

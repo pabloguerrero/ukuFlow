@@ -22,6 +22,7 @@ Bundle-ClassPath: lib/jdom-2.0.1.jar,
 Export-Package: de.tudarmstadt.dvs.ukuflow.script,
  de.tudarmstadt.dvs.ukuflow.script.eventbasescript,
  de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression,
+ de.tudarmstadt.dvs.ukuflow.tools.debugger,
  gnu.io,
  org.jdom2
 Bundle-NativeCode: 

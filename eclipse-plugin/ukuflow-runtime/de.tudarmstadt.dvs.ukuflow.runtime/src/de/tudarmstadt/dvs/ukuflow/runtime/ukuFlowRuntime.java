@@ -49,9 +49,27 @@ import org.eclipse.emf.ecore.EObject;
 public class ukuFlowRuntime implements IBpmn2RuntimeExtension {
 	private static final String UKUFLOW_NAMESPACE = "http://www.dvs.tu-darmstadt.de/ukuflow";
 	private static final String DROOLS_NAMESPACE = "http://www.jboss.org/drools";
+	private static final String[] typeLanguages = new String[] {
+			"http://www.w3.org/2001/XMLSchema", "XML Schema",
+			"http://www.java.com/javaTypes", "Java", };
+	private static final String[] expressionLanguages = new String[] {
+			"http://www.w3.org/1999/XPath", "XPath", "http://www.mvel.org/2.0",
+			"mvel", "http://www.java.com/java", "java", };
+
+	@Override
+	public String[] getTypeLanguages() {
+		return typeLanguages;
+	}
+
+	@Override
+	public String[] getExpressionLanguages() {
+		return expressionLanguages;
+	}
 
 	@Override
 	public boolean isContentForRuntime(IEditorInput input) {
+		if ("1".equals("1"))
+			return true;
 		RootElementParser jparser = new RootElementParser(DROOLS_NAMESPACE);
 		RootElementParser uparser = new RootElementParser(UKUFLOW_NAMESPACE);
 		jparser.parse(new InputSource(FileService.getInputContents(input)));
@@ -152,20 +170,8 @@ public class ukuFlowRuntime implements IBpmn2RuntimeExtension {
 	}
 
 	@Override
-	public String[] getExpressionLanguages() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String[] getTypeLanguages() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void modelObjectCreated(EObject object) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

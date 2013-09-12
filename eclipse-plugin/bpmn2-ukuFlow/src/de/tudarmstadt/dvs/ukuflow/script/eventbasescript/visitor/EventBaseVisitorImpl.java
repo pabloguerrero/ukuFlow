@@ -32,6 +32,8 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
@@ -51,13 +53,23 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EPeriodicEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleFilterConstraint;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleFilterNestedConstraint;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ETopExpression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EVariable;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventGenerator;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.ScopeManager;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.DuplicateScopeNameException;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.ScopeNotExistException;
+import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyScopeException;
 
 public class EventBaseVisitorImpl implements EventBaseVisitor{
+	@Override
+	public void reset(){
+		out.clear();
+	}
+
 	Vector<Byte> out = new Vector<Byte>();
 	@Override
 	public void visit(EEventBaseScript eventBaseScript) {
@@ -94,21 +106,22 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		out.add(sef.getOperatorID());
 		out.add(sef.getChannel());
 		out.add((byte)sef.getConstraints().size());
-		for(ESimpleFilterConstraint c : sef.getConstraints()){
-			visit(c);
+		for(ESimpleFilterNestedConstraint c : sef.getConstraints()){
+			c.accept(this);
 		}
+		sef.getSource().accept(this);
 	}
 
 	@Override
 	public void visit(ESimpleFilterConstraint sec) {
-		int length = out.size();
-		out.add((byte) 0);
 		out.add((byte)sec.comparator);
-		//TODO
-		//if(sec.isValueFirst()){
-		//	out.add(sec.)
-		
-		
+		if(sec.isValueFirst()){
+			out.addAll(sec.getValues());
+			out.add((byte)sec.type);
+		} else {
+			out.add((byte)sec.type);
+			out.addAll(sec.getValues());
+		}
 	}
 
 	
@@ -137,13 +150,32 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 
 	private byte getScope(EventGenerator e){
 		String scope = e.getScope();
+		Random rand = new Random(System.currentTimeMillis());
 		byte result = 0;
-		if(scope != null && !scope.equals("")){
-			while(result == 0){
-				result = (byte)scope.hashCode();
-				scope += "_";
-			}
+		if(scope.equalsIgnoreCase("world"))
+			return (byte)255;
+		if(scope.equalsIgnoreCase("local")){
+			return (byte)0;
 		}
+		try {
+			return (byte) ScopeManager.getInstance().getScopeID(scope);
+		} catch (ScopeNotExistException e1) {
+			
+		}
+		try {
+			result = (byte)ScopeManager.getInstance().registerScope(scope);
+		} catch (DuplicateScopeNameException e1) {
+			e1.printStackTrace();
+		} catch (TooManyScopeException e1) {
+			e1.printStackTrace();
+		}
+		/*
+		if(scope != null && !scope.equals("")){
+			while(result == 0 || result == 255){
+				result = (byte)scope.hashCode();
+				scope += rand.nextInt();
+			}
+		}*/
 		return result;
 	}
 
@@ -180,12 +212,6 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	}
 
 	
-	@Override
-	public void reset(){
-		out.clear();
-		OperatorIDGenerator.init();
-	}
-
 	/* (non-Javadoc)
 	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAbsoluteEG)
 	 */
@@ -240,9 +266,15 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		out.add(e.getSensorType()); 
 		out.add(getScope(e)); 
 		out.addAll(e.getTimeExpression().getValue(2));
-		out.add(e.getSource().getChannel());
+		// switching: the input is now the whole event description, not only the channel
+		// out.add(e.getSource().getChannel());
+		// ->
+		
+		e.getSource().accept(this);
 		//done
 	}
+
+	
 
 	/* (non-Javadoc)
 	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EVariable)
@@ -298,5 +330,32 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	@Override
 	public Vector<Byte> getOutput() {
 		return out;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleFilterNestedConstraint)
+	 */
+	@Override
+	public void visit(ESimpleFilterNestedConstraint e) {
+		List<ESimpleFilterConstraint> cons = e.getConstraints();
+		if(cons.size() == 1){
+			int length = out.size();
+			out.add((byte)0);// placeholder
+			cons.get(0).accept(this);
+			out.set(length, (byte)(out.size() - length));// update length
+		}
+		if(cons.size() > 1){
+			int length = out.size();
+			out.add((byte)0);//placeholder
+			out.add(UkuConstants.OperatorConstants.OPERATOR_OR);
+			cons.get(0).accept(this);
+			for(int i = 1; i < cons.size(); i++){
+				if(i < cons.size()-1){
+					out.add(UkuConstants.OperatorConstants.OPERATOR_OR);
+				}
+				cons.get(i).accept(this);
+			}
+			out.set(length,(byte)(out.size() - length)); // update length
+		}
 	}
 }
