@@ -98,7 +98,8 @@ public class BPMN2XMLParser {
 		if (root.getName().equals("definitions")) {
 			for (Element child : root.getChildren()) {
 				if (child.getName().equals("process")) {
-					UkuProcess process = new UkuProcess(fetchID(child),fetchName(child));
+					UkuProcess process = new UkuProcess(fetchID(child),
+							fetchName(child));
 					return process.getWorkflowID();
 				}
 			}
@@ -117,13 +118,13 @@ public class BPMN2XMLParser {
 
 		for (UkuProcess process : processes) {
 			// optimization
-			//optimize(process);
-			
+			// optimize(process);
+
 			// set reference
 			for (UkuEntity entity : process.getEntities()) {
 				entity.setReference(reference);
 			}
-						
+
 		}
 	}
 
@@ -193,13 +194,27 @@ public class BPMN2XMLParser {
 	private UkuProcess fetchUkuProcess(Element e) {
 		UkuProcess result = null;
 		if (e.getName().equals("process")) {
-			//String name = fetchName(e);
-			result = new UkuProcess(fetchID(e),fetchName(e));			
+			// String name = fetchName(e);
+			result = new UkuProcess(fetchID(e), fetchName(e));
+			log.debug(e.getAttributes());
+			String attr = e.getAttributeValue("mindotInstances");
+			result.minInstance = attr == null?1:Integer.parseInt(attr);
+			
+			attr = e.getAttributeValue("number_ofLoops");
+			result.numberOfLoop = attr == null? 0 :Integer.parseInt(attr);
+			
+			attr = e.getAttributeValue("maxdotInstances");
+			result.maxInstance = attr == null? 1 : Integer.parseInt(attr);
+			log.info("fetching max, min, loop successfully");
 			result.setEntities(fetchEntities(e));
-			if(result.name==null || result.name.equals("")){
-				errorManager.addError(result.id, "name of the process is not specified");
-			} else if(result.name.equals("Default Process")){
-				errorManager.addWarning("process: " +result.name, "default name for process is used, it could lead to interference with other processes");
+			if (result.name == null || result.name.equals("")) {
+				errorManager.addError(result.id,
+						"name of the process is not specified");
+			} else if (result.name.equals("Default Process")) {
+				errorManager
+						.addWarning(
+								"process: " + result.name,
+								"default name for process is used, it could lead to interference with other processes");
 			}
 		} else {
 			log.debug("WARNING: element '" + e.getName()
@@ -224,6 +239,7 @@ public class BPMN2XMLParser {
 		}
 		return result;
 	}
+
 	/**
 	 * 
 	 * @param e
@@ -240,8 +256,8 @@ public class BPMN2XMLParser {
 			log.debug(name + " is not supported : " + e1.getMessage());
 			return null;
 		}
-		log.debug("["+this.getClass().getSimpleName()+"]" +"\t"+type);
-		
+		// log.debug("["+e.getClass().getSimpleName()+"]" +"\t"+type);
+
 		String id = fetchID(e);
 		switch (type) {
 		case 1:
@@ -303,7 +319,7 @@ public class BPMN2XMLParser {
 									+ " -> ignored");
 				}
 			}
-			
+
 			try {
 				event.setType(classifier.getEventType(name));
 			} catch (UnsupportedElementException e1) {
@@ -314,7 +330,8 @@ public class BPMN2XMLParser {
 		case 4: // gateways
 			UkuGateway gway = null;
 			try {
-				gway = (UkuGateway) classifier.getGatewayClass(name).getConstructor(String.class).newInstance(id);
+				gway = (UkuGateway) classifier.getGatewayClass(name)
+						.getConstructor(String.class).newInstance(id);
 			} catch (IllegalArgumentException e1) {
 				e1.printStackTrace();
 			} catch (SecurityException e1) {
@@ -327,13 +344,13 @@ public class BPMN2XMLParser {
 				e1.printStackTrace();
 			} catch (NoSuchMethodException e1) {
 				e1.printStackTrace();
-			}			
+			}
 			gway.setElementType(name);
 			String direction = e.getAttributeValue("gatewayDirection");
 			String isdefaultGway = e.getAttributeValue("default");
-			gway.setDefaultGway(isdefaultGway);			
+			gway.setDefaultGway(isdefaultGway);
 			gway.setDirection(direction);
-			
+
 			for (Element child : e.getChildren()) {
 				String n = child.getName();
 				String n_id = child.getTextTrim();
@@ -360,9 +377,9 @@ public class BPMN2XMLParser {
 			}
 			return scope;
 		case 6: // Receive Task
-			//TODO UkuR
+			// TODO UkuR
 			UkuReceiveTask rTask = new UkuReceiveTask(id);
-			for(Element ee : e.getChildren()){
+			for (Element ee : e.getChildren()) {
 				String n = ee.getName();
 				String n_id = ee.getTextTrim();
 				if (n.equals("incoming")) {
@@ -372,7 +389,7 @@ public class BPMN2XMLParser {
 				}
 			}
 			String script = fetchEBScript(e);
-			log.debug("fetching script of " + e + " is "+ script);
+			log.debug("fetching script of " + e + " is " + script);
 			rTask.setScript(script);
 			return rTask;
 		default:
@@ -380,31 +397,35 @@ public class BPMN2XMLParser {
 			return null;
 		}
 	}
-	private Element getChildwithName(Element e, String name){
-		for(Element ee : e.getChildren()){
-			if(ee.getName().equals(name))
+
+	private Element getChildwithName(Element e, String name) {
+		for (Element ee : e.getChildren()) {
+			if (ee.getName().equals(name))
 				return ee;
 		}
 		return null;
 	}
-	private String fetchEBScript(Element e){
-		Element dataInputA  = getChildwithName(e,"dataInputAssociation");
-		if(dataInputA == null)
+
+	private String fetchEBScript(Element e) {
+		Element dataInputA = getChildwithName(e, "dataInputAssociation");
+		if (dataInputA == null)
 			return null;
-		Element assignment = getChildwithName(dataInputA,"assignment");
-		if(assignment == null)
+		Element assignment = getChildwithName(dataInputA, "assignment");
+		if (assignment == null)
 			return null;
-		Element from = getChildwithName(assignment,"from");
-		if(from == null)
+		Element from = getChildwithName(assignment, "from");
+		if (from == null)
 			return null;
 		return from.getTextTrim();
 	}
+
 	private String fetchID(Element e) {
 		String id = e.getAttributeValue("id");
 		idPool.add(id);
 		return id;
 	}
-	private String fetchName(Element e){
+
+	private String fetchName(Element e) {
 		String name = e.getAttributeValue("name");
 		return name;
 	}
@@ -413,7 +434,7 @@ public class BPMN2XMLParser {
 	 * this function will search for a mixed gateway in a process and try to
 	 * split it in 2 simple gateway and also add a sequence flow between them
 	 * 
-	 * @param process 
+	 * @param process
 	 * @deprecated
 	 */
 	private void optimize(UkuProcess process) {
@@ -460,7 +481,7 @@ public class BPMN2XMLParser {
 				}
 			}
 			done = true;
-		}		
+		}
 	}
 
 	private String generateID(String rootID) {

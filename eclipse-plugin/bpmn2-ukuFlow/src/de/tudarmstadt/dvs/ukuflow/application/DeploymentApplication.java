@@ -35,13 +35,11 @@ public class DeploymentApplication implements org.eclipse.equinox.app.IApplicati
 
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
-		System.out.println("start");		
 		return null;
 	}
 
 	@Override
 	public void stop() {
-		System.out.println("stop");
 		// TODO Auto-generated method stub
 		
 	}

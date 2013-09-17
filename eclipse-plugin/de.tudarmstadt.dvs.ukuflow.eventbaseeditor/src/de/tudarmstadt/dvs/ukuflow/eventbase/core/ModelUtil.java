@@ -19,4 +19,28 @@ public class ModelUtil {
 		e.setElementName(tmp);
 		return tmp;
 	}
+	public static String toDisplayName(String anyName) {
+		// get rid of the "Impl" java suffix
+		anyName = anyName.replaceAll("Impl$", "");
+		
+		String displayName = "";
+		boolean first = true;
+		char[] chars = anyName.toCharArray();
+		for (int i=0; i<chars.length; ++i) {
+			char c = chars[i];
+			if (Character.isUpperCase(c)) {
+				if (displayName.length()>0 && i+1<chars.length && !Character.isUpperCase(chars[i+1]))
+					displayName += " ";
+			}
+			if (first) {
+				c = Character.toUpperCase(c);
+				first = false;
+			}
+			if (c=='_')
+				c = ' ';
+			displayName += c;
+		}
+		displayName = displayName.replaceAll("dot", ".");
+		return displayName.trim();
+	}
 }

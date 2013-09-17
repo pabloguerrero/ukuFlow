@@ -49,41 +49,65 @@ public interface EventBaseScriptConstants {
   /** RegularExpression Id. */
   int SEF = 23;
   /** RegularExpression Id. */
-  int CEF = 24;
+  int AND_COMPOSITION_EF = 24;
   /** RegularExpression Id. */
-  int TOP = 25;
+  int OR_COMPOSITION_EF = 25;
   /** RegularExpression Id. */
-  int SENSOR_TYPE = 26;
+  int NOT_COMPOSITION_EF = 26;
   /** RegularExpression Id. */
-  int POSITIVE_NUMBER = 27;
+  int SEQUENCE_COMPOSITION_EF = 27;
   /** RegularExpression Id. */
-  int BINARY = 28;
+  int MIN_COMPOSITION_EF = 28;
   /** RegularExpression Id. */
-  int PATTERN = 29;
+  int MAX_COMPOSITION_EF = 29;
   /** RegularExpression Id. */
-  int REPETITION = 30;
+  int COUNT_COMPOSITION_EF = 30;
   /** RegularExpression Id. */
-  int M = 31;
+  int SUM_COMPOSITION_EF = 31;
   /** RegularExpression Id. */
-  int V = 32;
+  int AVG_COMPOSITION_EF = 32;
   /** RegularExpression Id. */
-  int A = 33;
+  int STDEV_COMPOSITION_EF = 33;
   /** RegularExpression Id. */
-  int K = 34;
+  int INCREASE_EF = 34;
   /** RegularExpression Id. */
-  int I = 35;
+  int DECREASE_EF = 35;
   /** RegularExpression Id. */
-  int GAUSSIAN_DISTRIBUTION = 36;
+  int REMAIN_EF = 36;
   /** RegularExpression Id. */
-  int CHI_SQUARE_DISTRIBUTION = 37;
+  int TOP = 37;
   /** RegularExpression Id. */
-  int PARETO_DISTRIBUTION = 38;
+  int SENSOR_TYPE = 38;
   /** RegularExpression Id. */
-  int IDENTIFIER = 39;
+  int POSITIVE_NUMBER = 39;
   /** RegularExpression Id. */
-  int LETTER = 40;
+  int BINARY = 40;
   /** RegularExpression Id. */
-  int DIGIT = 41;
+  int PATTERN = 41;
+  /** RegularExpression Id. */
+  int REPETITION = 42;
+  /** RegularExpression Id. */
+  int M = 43;
+  /** RegularExpression Id. */
+  int V = 44;
+  /** RegularExpression Id. */
+  int A = 45;
+  /** RegularExpression Id. */
+  int K = 46;
+  /** RegularExpression Id. */
+  int I = 47;
+  /** RegularExpression Id. */
+  int GAUSSIAN_DISTRIBUTION = 48;
+  /** RegularExpression Id. */
+  int CHI_SQUARE_DISTRIBUTION = 49;
+  /** RegularExpression Id. */
+  int PARETO_DISTRIBUTION = 50;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 51;
+  /** RegularExpression Id. */
+  int LETTER = 52;
+  /** RegularExpression Id. */
+  int DIGIT = 53;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -114,7 +138,19 @@ public interface EventBaseScriptConstants {
     "\"PATTERN_EG\"",
     "\"DISTRIBUTION_EG\"",
     "\"SIMPLE_EF\"",
-    "\"COMPLEX_EF\"",
+    "\"AND_COMPOSITION_EF\"",
+    "\"OR_COMPOSITION_EF\"",
+    "\"NOT_COMPOSITION_EF\"",
+    "\"SEQUENCE_COMPOSITION_EF\"",
+    "\"MIN_COMPOSITION_EF\"",
+    "\"MAX_COMPOSITION_EF\"",
+    "\"COUNT_COMPOSITION_EF\"",
+    "\"SUM_COMPOSITION_EF\"",
+    "\"AVG_COMPOSITION_EF\"",
+    "\"STDEV_COMPOSITION_EF\"",
+    "\"INCREASE_EF\"",
+    "\"DECREASE_EF\"",
+    "\"REMAIN_EF\"",
     "\"TOP\"",
     "<SENSOR_TYPE>",
     "<POSITIVE_NUMBER>",
@@ -139,9 +175,10 @@ public interface EventBaseScriptConstants {
     "\"^\"",
     "\":\"",
     "\"-\"",
-    "\"{\"",
+    "\"[\"",
     "\",\"",
-    "\"}\"",
+    "\"]\"",
+    "\"FFF\"",
     "\"/\"",
   };
 

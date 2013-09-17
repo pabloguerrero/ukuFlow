@@ -2,7 +2,6 @@
  */
 package de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase;
 
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -12,8 +11,8 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple#getConstraints <em>Constraints</em>}</li>
  *   <li>{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple#getSourceEvent <em>Source Event</em>}</li>
+ *   <li>{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple#getConstraints <em>Constraints</em>}</li>
  * </ul>
  * </p>
  *
@@ -22,22 +21,6 @@ import org.eclipse.emf.common.util.EList;
  * @generated
  */
 public interface EFSimple extends EventFilter {
-	/**
-	 * Returns the value of the '<em><b>Constraints</b></em>' reference list.
-	 * The list contents are of type {@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESimpleFilterConstraint}.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Constraints</em>' reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Constraints</em>' reference list.
-	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEFSimple_Constraints()
-	 * @model required="true"
-	 * @generated
-	 */
-	EList<ESimpleFilterConstraint> getConstraints();
-
 	/**
 	 * Returns the value of the '<em><b>Source Event</b></em>' reference.
 	 * <!-- begin-user-doc -->
@@ -63,5 +46,31 @@ public interface EFSimple extends EventFilter {
 	 * @generated
 	 */
 	void setSourceEvent(EventBaseOperator value);
+
+	/**
+	 * Returns the value of the '<em><b>Constraints</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Constraints</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Constraints</em>' attribute.
+	 * @see #setConstraints(String)
+	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEFSimple_Constraints()
+	 * @model
+	 * @generated
+	 */
+	String getConstraints();
+
+	/**
+	 * Sets the value of the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple#getConstraints <em>Constraints</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Constraints</em>' attribute.
+	 * @see #getConstraints()
+	 * @generated
+	 */
+	void setConstraints(String value);
 
 } // EFSimple

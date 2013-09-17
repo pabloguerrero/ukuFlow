@@ -57,7 +57,6 @@ public class EventbaseFactoryImpl extends EFactoryImpl implements EventbaseFacto
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case EventbasePackage.ESEQUENCE_FLOW: return createESequenceFlow();
-			case EventbasePackage.ESIMPLE_FILTER_CONSTRAINT: return createESimpleFilterConstraint();
 			case EventbasePackage.EVENT_GENERATOR: return createEventGenerator();
 			case EventbasePackage.EG_NON_RECURRING: return createEGNonRecurring();
 			case EventbasePackage.EG_IMMEDIATE: return createEGImmediate();
@@ -103,16 +102,6 @@ public class EventbaseFactoryImpl extends EFactoryImpl implements EventbaseFacto
 	public ESequenceFlow createESequenceFlow() {
 		ESequenceFlowImpl eSequenceFlow = new ESequenceFlowImpl();
 		return eSequenceFlow;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ESimpleFilterConstraint createESimpleFilterConstraint() {
-		ESimpleFilterConstraintImpl eSimpleFilterConstraint = new ESimpleFilterConstraintImpl();
-		return eSimpleFilterConstraint;
 	}
 
 	/**

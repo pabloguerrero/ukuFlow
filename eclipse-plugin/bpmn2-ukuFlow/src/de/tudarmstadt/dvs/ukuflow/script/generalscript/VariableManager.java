@@ -23,7 +23,7 @@ import de.tudarmstadt.dvs.ukuflow.validation.ErrorManager;
 public class VariableManager {
 	private ErrorManager errM = ErrorManager.getInstance();
 	private static VariableManager INSTANCE = null;
-	public static final int NODE_ID = UkuConstants.SensorTypeConstants.NODE_ID;
+	public static final int NODE_TIME = UkuConstants.SensorTypeConstants.NODE_TIME;
 	private int current_id;
 	private static BpmnLog log = BpmnLog.getInstance(VariableManager.class
 			.getSimpleName());
@@ -35,7 +35,7 @@ public class VariableManager {
 
 	private VariableManager() {
 		variables = new HashMap<String, Integer>();
-		current_id = NODE_ID + 1;
+		current_id = NODE_TIME + 1;
 	}
 	
 	/**
@@ -59,7 +59,7 @@ public class VariableManager {
 
 	public void reInit() {
 		variables = new HashMap<String, Integer>();
-		current_id = NODE_ID;
+		current_id = NODE_TIME;
 	}
 	public void addErrorMessage(String msg){
 		errM.addError("ErrorManager", msg);

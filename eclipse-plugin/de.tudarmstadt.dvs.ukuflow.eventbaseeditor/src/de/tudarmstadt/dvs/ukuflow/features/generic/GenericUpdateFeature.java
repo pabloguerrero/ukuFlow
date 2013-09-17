@@ -69,13 +69,15 @@ public class GenericUpdateFeature extends AbstractUpdateFeature {
 		boolean updateNameNeeded = ((pictogramName == null && businessName != null) || (pictogramName != null && !pictogramName
 				.equals(businessName)));
 		if (updateNameNeeded) {
-			return Reason.createTrueReason("Name is out of date"); //$NON-NLS-1$
+			return Reason.createFalseReason();
+			//return Reason.createTrueReason("Name is out of date"); //$NON-NLS-1$
 		} else {
 			return Reason.createFalseReason();
 		}
 	}
 
 	public boolean update(IUpdateContext context) {
+		//update the graphical representation of a element hier!!
 		// retrieve name from business model
 		String businessName = null;
 		PictogramElement pictogramElement = context.getPictogramElement();

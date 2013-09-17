@@ -49,6 +49,7 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERecurringEG
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleFilterConstraint;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleFilterNestedConstraint;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ETopExpression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EVariable;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator;
@@ -75,6 +76,7 @@ public interface EventBaseVisitor {
 	void visit(EOffsetEG e);
 	void visit(ERelativeEG e);
 	void visit(EVariable e);
+	void visit(ESimpleFilterNestedConstraint e);
 	void reset();
 	/**
 	 * @param eChiSquareFunction

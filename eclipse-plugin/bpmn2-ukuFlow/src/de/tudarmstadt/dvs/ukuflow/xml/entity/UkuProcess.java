@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 /**
  * 
@@ -42,7 +43,7 @@ import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
  */
 
 public class UkuProcess implements VisitableElement {
-
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	private List<UkuEntity> entities;
 	public UkuEvent startEvent = null;
 	// private HashMap<String,UkuEntity> ref = new HashMap<String, UkuEntity>();
@@ -75,7 +76,7 @@ public class UkuProcess implements VisitableElement {
 			scopes.add((UkuScope) newEntity);
 			return;
 		} else if (entities.contains(newEntity)) {
-			System.err.println("double element " + newEntity.getID());
+			log.error("FATAL: there is 2 elements with a same id: " + newEntity.getID());
 			return;
 		}
 		if (startEvent == null && newEntity instanceof UkuEvent

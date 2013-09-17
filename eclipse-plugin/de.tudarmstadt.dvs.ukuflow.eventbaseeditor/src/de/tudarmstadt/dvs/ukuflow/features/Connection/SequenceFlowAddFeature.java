@@ -94,7 +94,7 @@ public class SequenceFlowAddFeature extends AbstractAddFeature {
 
 	private Polyline createArrow(GraphicsAlgorithmContainer gaContainer) {
 		Polyline polyline = Graphiti.getGaCreateService().createPlainPolyline(gaContainer,
-				new int[] { -15, 10, 0, 0, -15, -10 });
+				new int[] { -10, 8, 0, 0, -10, -8 });
 		polyline.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
 		return polyline;
 	}

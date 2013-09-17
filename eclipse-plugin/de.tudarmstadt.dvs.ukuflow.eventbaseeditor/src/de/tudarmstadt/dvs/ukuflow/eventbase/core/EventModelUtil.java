@@ -38,8 +38,14 @@ import org.eclipse.emf.ecore.resource.impl.BinaryResourceImpl;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 
-public class TutorialUtil {
-
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
+/**
+ * this class is a helper for accessing the model, extracting information from the file quickly
+ * @author ”Hien Quoc Dang”
+ *
+ */
+public class EventModelUtil {
+	static BpmnLog log = BpmnLog.getInstance(EventModelUtil.class.getSimpleName());
 	public static Collection<Diagram> getDiagrams(IProject p) {
 		final List<IFile> files = getDiagramFiles(p);
 		final List<Diagram> diagramList = new ArrayList<Diagram>();
@@ -82,8 +88,8 @@ public class TutorialUtil {
 					ret.addAll(getDiagramFiles((IContainer) resource));
 				} else if (resource instanceof IFile) {
 					final IFile file = (IFile) resource;
-					System.out.println("Location: " + file.getLocation().toString() );
-					System.out.println("Location: " + file.getLocation().toFile().getAbsolutePath() );
+					log.debug("Location: " + file.getLocation().toString() );
+					log.debug("Location: " + file.getLocation().toFile().getAbsolutePath() );
 					if (file.getName().endsWith(".diagram")) { //$NON-NLS-1$
 						ret.add(file);
 					}
@@ -102,9 +108,9 @@ public class TutorialUtil {
 		// Demand load the resource for this file.
 		Resource resource;
 		try {
-			System.out.println("Has absolute path: "+ resourceURI.hasAbsolutePath());
-			System.out.println(file.getLocation().toFile().getAbsolutePath());
-			System.out.println("File URI: " + resourceURI.toString());
+			log.debug("Has absolute path: "+ resourceURI.hasAbsolutePath());
+			log.debug(file.getLocation().toFile().getAbsolutePath());
+			log.debug("File URI: " + resourceURI.toString());
 			resource = resourceSet.getResource(resourceURI, true);
 			if (resource != null) {
 				// does resource contain a diagram as root object?
@@ -127,7 +133,7 @@ public class TutorialUtil {
 		URI resourceURI = URI.createFileURI(pathName);
 		resourceURI = resourceSet.getURIConverter().normalize(resourceURI);
 		
-		System.out.println("getFileURI: " + pathName + "; resourceURI: " + resourceURI.toString());
+		log.debug("getFileURI: " + pathName + "; resourceURI: " + resourceURI.toString());
 		return resourceURI;
 	}
 

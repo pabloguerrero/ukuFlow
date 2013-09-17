@@ -56,7 +56,7 @@ public class TimeExpression extends EEvaluableExpression {
 	@Override
 	public String toString(){
 		String r = "";		
-		r += day + ":"+month+":" +year + " "+hour+":"+minute+":"+second+":"+minisecond;
+		r += day + "-"+month+"-" +year + " "+hour+":"+minute+":"+second;
 		
 		return r;
 	}
@@ -69,9 +69,17 @@ public class TimeExpression extends EEvaluableExpression {
 		// TODO Auto-generated method stub
 		
 	}
+	public String getOffsetTime(){
+		int t = getValueInt();
+		return "" + t/60 + ":" + t%60;
+	}
+	/**
+	 * return the time in seconds
+	 * @return
+	 */
 	public int getValueInt(){
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String date = String.format("%04d-%02d-%02d %02d:%02d:%02d", year,month,day,hour,minute,second);
+		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		String date = String.format("%02d-%02d-%04d %02d:%02d:%02d", day,month,year,hour,minute,second);
 		format.setTimeZone(TimeZone.getTimeZone("UTC"));
 			Date d;
 			try {
@@ -98,7 +106,7 @@ public class TimeExpression extends EEvaluableExpression {
 	 */
 	public Collection<? extends Byte> getValue(int length) {
 		Collection<Byte> result = new ArrayList<Byte>();		
-		String date = String.format("%04d-%02d-%02d %02d:%02d:%02d", year,month,day,hour,minute,second);
+		String date = String.format("%02d-%02d-%04d %02d:%02d:%02d", day,month,year,hour,minute,second);
 		long seconds = TimeUtil.convert(TimeUtil.FULL_PATTERN, date);
 		if (seconds < 0)
 			seconds = (hour * 60 + minute) * 60 + second;

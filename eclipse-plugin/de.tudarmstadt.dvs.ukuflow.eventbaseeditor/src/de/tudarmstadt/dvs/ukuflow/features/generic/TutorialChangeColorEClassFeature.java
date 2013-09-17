@@ -1,7 +1,6 @@
 package de.tudarmstadt.dvs.ukuflow.features.generic;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.graphiti.examples.common.ExampleUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
@@ -55,10 +54,10 @@ public class TutorialChangeColorEClassFeature extends AbstractCustomFeature {
 
 		// let the user choose the new color
 		Color currentColor = style.getForeground();
-		Color newColor = ExampleUtil.editColor(currentColor);
-		if (newColor == null) { // user did not choose new color
-			return;
-		}
-		style.setForeground(newColor);
+		//Color newColor = ExampleUtil.editColor(currentColor);
+		//if (newColor == null) { // user did not choose new color
+		//	return;
+		//}
+		//style.setForeground(newColor);
 	}
 }

@@ -33,7 +33,7 @@ public class EGOffsetImpl extends EGNonRecurringImpl implements EGOffset {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int OFFSET_TIME_EDEFAULT = 0;
+	protected static final String OFFSET_TIME_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getOffsetTime() <em>Offset Time</em>}' attribute.
@@ -43,7 +43,7 @@ public class EGOffsetImpl extends EGNonRecurringImpl implements EGOffset {
 	 * @generated
 	 * @ordered
 	 */
-	protected int offsetTime = OFFSET_TIME_EDEFAULT;
+	protected String offsetTime = OFFSET_TIME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -69,7 +69,7 @@ public class EGOffsetImpl extends EGNonRecurringImpl implements EGOffset {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getOffsetTime() {
+	public String getOffsetTime() {
 		return offsetTime;
 	}
 
@@ -78,8 +78,8 @@ public class EGOffsetImpl extends EGNonRecurringImpl implements EGOffset {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setOffsetTime(int newOffsetTime) {
-		int oldOffsetTime = offsetTime;
+	public void setOffsetTime(String newOffsetTime) {
+		String oldOffsetTime = offsetTime;
 		offsetTime = newOffsetTime;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, EventbasePackage.EG_OFFSET__OFFSET_TIME, oldOffsetTime, offsetTime));
@@ -108,7 +108,7 @@ public class EGOffsetImpl extends EGNonRecurringImpl implements EGOffset {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case EventbasePackage.EG_OFFSET__OFFSET_TIME:
-				setOffsetTime((Integer)newValue);
+				setOffsetTime((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -138,7 +138,7 @@ public class EGOffsetImpl extends EGNonRecurringImpl implements EGOffset {
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case EventbasePackage.EG_OFFSET__OFFSET_TIME:
-				return offsetTime != OFFSET_TIME_EDEFAULT;
+				return OFFSET_TIME_EDEFAULT == null ? offsetTime != null : !OFFSET_TIME_EDEFAULT.equals(offsetTime);
 		}
 		return super.eIsSet(featureID);
 	}

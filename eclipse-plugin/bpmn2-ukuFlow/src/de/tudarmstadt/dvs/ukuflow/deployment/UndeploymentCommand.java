@@ -48,10 +48,11 @@ import org.eclipse.ui.services.IServiceLocator;
 import de.tudarmstadt.dvs.ukuflow.converter.Activator;
 import de.tudarmstadt.dvs.ukuflow.handler.ConvertCommand;
 import de.tudarmstadt.dvs.ukuflow.preference.UkuPreference;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class UndeploymentCommand extends ContributionItem implements
 		IWorkbenchContribution {
-
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	private ISelectionService srv;
 	private Object selected;	
 
@@ -107,7 +108,7 @@ public class UndeploymentCommand extends ContributionItem implements
 
 	@Override
 	public void initialize(IServiceLocator serviceLocator) {
-		System.out.println("DynamicNode is initialized");
+		log.debug("DynamicNode is initialized");
 
 		srv = (ISelectionService) serviceLocator
 				.getService(ISelectionService.class);

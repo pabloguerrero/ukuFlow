@@ -39,7 +39,10 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
+
 public class DeviceFinderLinux {
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	String[] dev_prefix = { "/dev/usb/tts/", "/dev/ttyUSB", "/dev/tts/USB" };
 	String kernel;
 
@@ -106,12 +109,12 @@ public class DeviceFinderLinux {
 						&& usbProduct.startsWith("ea60")
 						&& ProductString.startsWith("Zolertia Z1")) {
 					found = true;
-					System.out.println("z1 found");
+					log.debug("z1 found");
 				}
 				if (usbVendor.startsWith("0403")
 						&& usbProduct.startsWith("6001")) {
 					found = true;
-					System.out.println("sky found");
+					log.debug("sky found");
 				}
 				if (!found) {
 					continue;

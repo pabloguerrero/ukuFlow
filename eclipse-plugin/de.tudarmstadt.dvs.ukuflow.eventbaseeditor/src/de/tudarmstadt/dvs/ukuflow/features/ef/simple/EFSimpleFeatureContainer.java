@@ -25,7 +25,6 @@ import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.BoxRelativeAnchor;
-import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -36,13 +35,10 @@ import org.eclipse.graphiti.services.IPeCreateService;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.ModelUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram.UkuFlowFeatureProvider;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.features.ef.EFFeatureContainer;
-import de.tudarmstadt.dvs.ukuflow.features.eg.EGFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericDirectEditFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericLayoutFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericMoveFeature;
@@ -107,7 +103,7 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 	class EFSimpleCreateFeature extends AbstractCreateFeature{
 
 		public EFSimpleCreateFeature (IFeatureProvider fp){
-			super(fp,"Simple","Create an simple event filter");
+			super(fp,"Simple","Create a simple event filter");
 		}
 		public EFSimpleCreateFeature (IFeatureProvider fp, String name,
 				String description) {
@@ -223,9 +219,8 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 						false);
 
 				// create and set text graphics algorithm
-				String name = addedClass.getClass().getSimpleName();
-				final Text text = gaService.createPlainText(shape,
-						name.substring(0, name.length() - 4));
+				String name = addedClass.getElementName();
+				final Text text = gaService.createPlainText(shape, name);
 				text.setStyle(StyleUtil.getStyleForEClassText(getDiagram()));
 				gaService.setLocationAndSize(text, 0, 10, width, 20);
 

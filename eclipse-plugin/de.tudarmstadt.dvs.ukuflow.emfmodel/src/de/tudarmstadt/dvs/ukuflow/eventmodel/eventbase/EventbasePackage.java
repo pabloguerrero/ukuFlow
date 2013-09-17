@@ -139,52 +139,6 @@ public interface EventbasePackage extends EPackage {
 	int ESEQUENCE_FLOW_FEATURE_COUNT = 2;
 
 	/**
-	 * The meta object id for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.ESimpleFilterConstraintImpl <em>ESimple Filter Constraint</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.ESimpleFilterConstraintImpl
-	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getESimpleFilterConstraint()
-	 * @generated
-	 */
-	int ESIMPLE_FILTER_CONSTRAINT = 2;
-
-	/**
-	 * The feature id for the '<em><b>Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ESIMPLE_FILTER_CONSTRAINT__TYPE = 0;
-
-	/**
-	 * The feature id for the '<em><b>Value</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ESIMPLE_FILTER_CONSTRAINT__VALUE = 1;
-
-	/**
-	 * The feature id for the '<em><b>Operator</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ESIMPLE_FILTER_CONSTRAINT__OPERATOR = 2;
-
-	/**
-	 * The number of structural features of the '<em>ESimple Filter Constraint</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ESIMPLE_FILTER_CONSTRAINT_FEATURE_COUNT = 3;
-
-	/**
 	 * The meta object id for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventGeneratorImpl <em>Event Generator</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -192,7 +146,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEventGenerator()
 	 * @generated
 	 */
-	int EVENT_GENERATOR = 3;
+	int EVENT_GENERATOR = 2;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -256,7 +210,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEGNonRecurring()
 	 * @generated
 	 */
-	int EG_NON_RECURRING = 4;
+	int EG_NON_RECURRING = 3;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -320,7 +274,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEGImmediate()
 	 * @generated
 	 */
-	int EG_IMMEDIATE = 5;
+	int EG_IMMEDIATE = 4;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -384,7 +338,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEGAbsolute()
 	 * @generated
 	 */
-	int EG_ABSOLUTE = 6;
+	int EG_ABSOLUTE = 5;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -457,7 +411,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEGOffset()
 	 * @generated
 	 */
-	int EG_OFFSET = 7;
+	int EG_OFFSET = 6;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -530,7 +484,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEGRelative()
 	 * @generated
 	 */
-	int EG_RELATIVE = 8;
+	int EG_RELATIVE = 7;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -603,7 +557,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEGRecurring()
 	 * @generated
 	 */
-	int EG_RECURRING = 9;
+	int EG_RECURRING = 8;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -676,7 +630,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEGPeriodic()
 	 * @generated
 	 */
-	int EG_PERIODIC = 10;
+	int EG_PERIODIC = 9;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -758,7 +712,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEGPatterned()
 	 * @generated
 	 */
-	int EG_PATTERNED = 11;
+	int EG_PATTERNED = 10;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -849,7 +803,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEGDistribution()
 	 * @generated
 	 */
-	int EG_DISTRIBUTION = 12;
+	int EG_DISTRIBUTION = 11;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -940,7 +894,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEventFilter()
 	 * @generated
 	 */
-	int EVENT_FILTER = 13;
+	int EVENT_FILTER = 12;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -986,7 +940,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFSimple()
 	 * @generated
 	 */
-	int EF_SIMPLE = 14;
+	int EF_SIMPLE = 13;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1016,22 +970,22 @@ public interface EventbasePackage extends EPackage {
 	int EF_SIMPLE__ELEMENT_NAME = EVENT_FILTER__ELEMENT_NAME;
 
 	/**
-	 * The feature id for the '<em><b>Constraints</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EF_SIMPLE__CONSTRAINTS = EVENT_FILTER_FEATURE_COUNT + 0;
-
-	/**
 	 * The feature id for the '<em><b>Source Event</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EF_SIMPLE__SOURCE_EVENT = EVENT_FILTER_FEATURE_COUNT + 1;
+	int EF_SIMPLE__SOURCE_EVENT = EVENT_FILTER_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Constraints</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_SIMPLE__CONSTRAINTS = EVENT_FILTER_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>EF Simple</em>' class.
@@ -1050,7 +1004,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFComposite()
 	 * @generated
 	 */
-	int EF_COMPOSITE = 15;
+	int EF_COMPOSITE = 14;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1096,7 +1050,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFStatusEvent()
 	 * @generated
 	 */
-	int EF_STATUS_EVENT = 16;
+	int EF_STATUS_EVENT = 15;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1142,7 +1096,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFLogic()
 	 * @generated
 	 */
-	int EF_LOGIC = 17;
+	int EF_LOGIC = 16;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1188,7 +1142,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFProcessing()
 	 * @generated
 	 */
-	int EF_PROCESSING = 18;
+	int EF_PROCESSING = 17;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1218,13 +1172,22 @@ public interface EventbasePackage extends EPackage {
 	int EF_PROCESSING__ELEMENT_NAME = EF_STATUS_EVENT__ELEMENT_NAME;
 
 	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING__WINDOW_SIZE = EF_STATUS_EVENT_FEATURE_COUNT + 0;
+
+	/**
 	 * The number of structural features of the '<em>EF Processing</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EF_PROCESSING_FEATURE_COUNT = EF_STATUS_EVENT_FEATURE_COUNT + 0;
+	int EF_PROCESSING_FEATURE_COUNT = EF_STATUS_EVENT_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EFTemporalImpl <em>EF Temporal</em>}' class.
@@ -1234,7 +1197,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFTemporal()
 	 * @generated
 	 */
-	int EF_TEMPORAL = 19;
+	int EF_TEMPORAL = 18;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1280,7 +1243,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFLogicAnd()
 	 * @generated
 	 */
-	int EF_LOGIC_AND = 20;
+	int EF_LOGIC_AND = 19;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1326,7 +1289,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFLogicOr()
 	 * @generated
 	 */
-	int EF_LOGIC_OR = 21;
+	int EF_LOGIC_OR = 20;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1372,7 +1335,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFLogicNot()
 	 * @generated
 	 */
-	int EF_LOGIC_NOT = 22;
+	int EF_LOGIC_NOT = 21;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1418,7 +1381,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFProcessingMin()
 	 * @generated
 	 */
-	int EF_PROCESSING_MIN = 23;
+	int EF_PROCESSING_MIN = 22;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1448,6 +1411,15 @@ public interface EventbasePackage extends EPackage {
 	int EF_PROCESSING_MIN__ELEMENT_NAME = EF_PROCESSING__ELEMENT_NAME;
 
 	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING_MIN__WINDOW_SIZE = EF_PROCESSING__WINDOW_SIZE;
+
+	/**
 	 * The number of structural features of the '<em>EF Processing Min</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1464,7 +1436,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFProcessingMax()
 	 * @generated
 	 */
-	int EF_PROCESSING_MAX = 24;
+	int EF_PROCESSING_MAX = 23;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1494,6 +1466,15 @@ public interface EventbasePackage extends EPackage {
 	int EF_PROCESSING_MAX__ELEMENT_NAME = EF_PROCESSING__ELEMENT_NAME;
 
 	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING_MAX__WINDOW_SIZE = EF_PROCESSING__WINDOW_SIZE;
+
+	/**
 	 * The number of structural features of the '<em>EF Processing Max</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1510,7 +1491,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFProcessingSum()
 	 * @generated
 	 */
-	int EF_PROCESSING_SUM = 25;
+	int EF_PROCESSING_SUM = 24;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1540,6 +1521,15 @@ public interface EventbasePackage extends EPackage {
 	int EF_PROCESSING_SUM__ELEMENT_NAME = EF_PROCESSING__ELEMENT_NAME;
 
 	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING_SUM__WINDOW_SIZE = EF_PROCESSING__WINDOW_SIZE;
+
+	/**
 	 * The number of structural features of the '<em>EF Processing Sum</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1556,7 +1546,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFProcessingCount()
 	 * @generated
 	 */
-	int EF_PROCESSING_COUNT = 26;
+	int EF_PROCESSING_COUNT = 25;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1586,6 +1576,15 @@ public interface EventbasePackage extends EPackage {
 	int EF_PROCESSING_COUNT__ELEMENT_NAME = EF_PROCESSING__ELEMENT_NAME;
 
 	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING_COUNT__WINDOW_SIZE = EF_PROCESSING__WINDOW_SIZE;
+
+	/**
 	 * The number of structural features of the '<em>EF Processing Count</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1602,7 +1601,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFProcessingAvg()
 	 * @generated
 	 */
-	int EF_PROCESSING_AVG = 27;
+	int EF_PROCESSING_AVG = 26;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1632,6 +1631,15 @@ public interface EventbasePackage extends EPackage {
 	int EF_PROCESSING_AVG__ELEMENT_NAME = EF_PROCESSING__ELEMENT_NAME;
 
 	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING_AVG__WINDOW_SIZE = EF_PROCESSING__WINDOW_SIZE;
+
+	/**
 	 * The number of structural features of the '<em>EF Processing Avg</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1648,7 +1656,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFProcessingStDev()
 	 * @generated
 	 */
-	int EF_PROCESSING_ST_DEV = 28;
+	int EF_PROCESSING_ST_DEV = 27;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1678,6 +1686,15 @@ public interface EventbasePackage extends EPackage {
 	int EF_PROCESSING_ST_DEV__ELEMENT_NAME = EF_PROCESSING__ELEMENT_NAME;
 
 	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_PROCESSING_ST_DEV__WINDOW_SIZE = EF_PROCESSING__WINDOW_SIZE;
+
+	/**
 	 * The number of structural features of the '<em>EF Processing St Dev</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1694,7 +1711,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFTemporalSequence()
 	 * @generated
 	 */
-	int EF_TEMPORAL_SEQUENCE = 29;
+	int EF_TEMPORAL_SEQUENCE = 28;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1740,7 +1757,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFChangeEvent()
 	 * @generated
 	 */
-	int EF_CHANGE_EVENT = 30;
+	int EF_CHANGE_EVENT = 29;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1786,7 +1803,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFChangeIncrease()
 	 * @generated
 	 */
-	int EF_CHANGE_INCREASE = 31;
+	int EF_CHANGE_INCREASE = 30;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1832,7 +1849,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFChangeDecrease()
 	 * @generated
 	 */
-	int EF_CHANGE_DECREASE = 32;
+	int EF_CHANGE_DECREASE = 31;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1878,7 +1895,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getEFChangeRemain()
 	 * @generated
 	 */
-	int EF_CHANGE_REMAIN = 33;
+	int EF_CHANGE_REMAIN = 32;
 
 	/**
 	 * The feature id for the '<em><b>Incoming</b></em>' reference list.
@@ -1924,7 +1941,7 @@ public interface EventbasePackage extends EPackage {
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getRootDocument()
 	 * @generated
 	 */
-	int ROOT_DOCUMENT = 34;
+	int ROOT_DOCUMENT = 33;
 
 	/**
 	 * The feature id for the '<em><b>Sequence Flow</b></em>' reference list.
@@ -2201,49 +2218,6 @@ public interface EventbasePackage extends EPackage {
 	EReference getESequenceFlow_Target();
 
 	/**
-	 * Returns the meta object for class '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESimpleFilterConstraint <em>ESimple Filter Constraint</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>ESimple Filter Constraint</em>'.
-	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESimpleFilterConstraint
-	 * @generated
-	 */
-	EClass getESimpleFilterConstraint();
-
-	/**
-	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESimpleFilterConstraint#getType <em>Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Type</em>'.
-	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESimpleFilterConstraint#getType()
-	 * @see #getESimpleFilterConstraint()
-	 * @generated
-	 */
-	EAttribute getESimpleFilterConstraint_Type();
-
-	/**
-	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESimpleFilterConstraint#getValue <em>Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESimpleFilterConstraint#getValue()
-	 * @see #getESimpleFilterConstraint()
-	 * @generated
-	 */
-	EAttribute getESimpleFilterConstraint_Value();
-
-	/**
-	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESimpleFilterConstraint#getOperator <em>Operator</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Operator</em>'.
-	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESimpleFilterConstraint#getOperator()
-	 * @see #getESimpleFilterConstraint()
-	 * @generated
-	 */
-	EAttribute getESimpleFilterConstraint_Operator();
-
-	/**
 	 * Returns the meta object for class '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventGenerator <em>Event Generator</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2485,17 +2459,6 @@ public interface EventbasePackage extends EPackage {
 	EClass getEFSimple();
 
 	/**
-	 * Returns the meta object for the reference list '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple#getConstraints <em>Constraints</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Constraints</em>'.
-	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple#getConstraints()
-	 * @see #getEFSimple()
-	 * @generated
-	 */
-	EReference getEFSimple_Constraints();
-
-	/**
 	 * Returns the meta object for the reference '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple#getSourceEvent <em>Source Event</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2505,6 +2468,17 @@ public interface EventbasePackage extends EPackage {
 	 * @generated
 	 */
 	EReference getEFSimple_SourceEvent();
+
+	/**
+	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple#getConstraints <em>Constraints</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Constraints</em>'.
+	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple#getConstraints()
+	 * @see #getEFSimple()
+	 * @generated
+	 */
+	EAttribute getEFSimple_Constraints();
 
 	/**
 	 * Returns the meta object for class '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFComposite <em>EF Composite</em>}'.
@@ -2545,6 +2519,17 @@ public interface EventbasePackage extends EPackage {
 	 * @generated
 	 */
 	EClass getEFProcessing();
+
+	/**
+	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessing#getWindowSize <em>Window Size</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Window Size</em>'.
+	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessing#getWindowSize()
+	 * @see #getEFProcessing()
+	 * @generated
+	 */
+	EAttribute getEFProcessing_WindowSize();
 
 	/**
 	 * Returns the meta object for class '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFTemporal <em>EF Temporal</em>}'.
@@ -3020,40 +3005,6 @@ public interface EventbasePackage extends EPackage {
 		EReference ESEQUENCE_FLOW__TARGET = eINSTANCE.getESequenceFlow_Target();
 
 		/**
-		 * The meta object literal for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.ESimpleFilterConstraintImpl <em>ESimple Filter Constraint</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.ESimpleFilterConstraintImpl
-		 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventbasePackageImpl#getESimpleFilterConstraint()
-		 * @generated
-		 */
-		EClass ESIMPLE_FILTER_CONSTRAINT = eINSTANCE.getESimpleFilterConstraint();
-
-		/**
-		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute ESIMPLE_FILTER_CONSTRAINT__TYPE = eINSTANCE.getESimpleFilterConstraint_Type();
-
-		/**
-		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute ESIMPLE_FILTER_CONSTRAINT__VALUE = eINSTANCE.getESimpleFilterConstraint_Value();
-
-		/**
-		 * The meta object literal for the '<em><b>Operator</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute ESIMPLE_FILTER_CONSTRAINT__OPERATOR = eINSTANCE.getESimpleFilterConstraint_Operator();
-
-		/**
 		 * The meta object literal for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventGeneratorImpl <em>Event Generator</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -3262,20 +3213,20 @@ public interface EventbasePackage extends EPackage {
 		EClass EF_SIMPLE = eINSTANCE.getEFSimple();
 
 		/**
-		 * The meta object literal for the '<em><b>Constraints</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference EF_SIMPLE__CONSTRAINTS = eINSTANCE.getEFSimple_Constraints();
-
-		/**
 		 * The meta object literal for the '<em><b>Source Event</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EReference EF_SIMPLE__SOURCE_EVENT = eINSTANCE.getEFSimple_SourceEvent();
+
+		/**
+		 * The meta object literal for the '<em><b>Constraints</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EF_SIMPLE__CONSTRAINTS = eINSTANCE.getEFSimple_Constraints();
 
 		/**
 		 * The meta object literal for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EFCompositeImpl <em>EF Composite</em>}' class.
@@ -3316,6 +3267,14 @@ public interface EventbasePackage extends EPackage {
 		 * @generated
 		 */
 		EClass EF_PROCESSING = eINSTANCE.getEFProcessing();
+
+		/**
+		 * The meta object literal for the '<em><b>Window Size</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EF_PROCESSING__WINDOW_SIZE = eINSTANCE.getEFProcessing_WindowSize();
 
 		/**
 		 * The meta object literal for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EFTemporalImpl <em>EF Temporal</em>}' class.

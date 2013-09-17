@@ -32,7 +32,6 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGPeriodic;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRecurring;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRelative;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESequenceFlow;
-import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESimpleFilterConstraint;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventFilter;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventGenerator;
@@ -67,13 +66,6 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 	 * @generated
 	 */
 	private EClass eSequenceFlowEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass eSimpleFilterConstraintEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -428,42 +420,6 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getESimpleFilterConstraint() {
-		return eSimpleFilterConstraintEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getESimpleFilterConstraint_Type() {
-		return (EAttribute)eSimpleFilterConstraintEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getESimpleFilterConstraint_Value() {
-		return (EAttribute)eSimpleFilterConstraintEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getESimpleFilterConstraint_Operator() {
-		return (EAttribute)eSimpleFilterConstraintEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getEventGenerator() {
 		return eventGeneratorEClass;
 	}
@@ -671,7 +627,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getEFSimple_Constraints() {
+	public EReference getEFSimple_SourceEvent() {
 		return (EReference)efSimpleEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -680,8 +636,8 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getEFSimple_SourceEvent() {
-		return (EReference)efSimpleEClass.getEStructuralFeatures().get(1);
+	public EAttribute getEFSimple_Constraints() {
+		return (EAttribute)efSimpleEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -718,6 +674,15 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 	 */
 	public EClass getEFProcessing() {
 		return efProcessingEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEFProcessing_WindowSize() {
+		return (EAttribute)efProcessingEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1090,11 +1055,6 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		createEReference(eSequenceFlowEClass, ESEQUENCE_FLOW__SOURCE);
 		createEReference(eSequenceFlowEClass, ESEQUENCE_FLOW__TARGET);
 
-		eSimpleFilterConstraintEClass = createEClass(ESIMPLE_FILTER_CONSTRAINT);
-		createEAttribute(eSimpleFilterConstraintEClass, ESIMPLE_FILTER_CONSTRAINT__TYPE);
-		createEAttribute(eSimpleFilterConstraintEClass, ESIMPLE_FILTER_CONSTRAINT__VALUE);
-		createEAttribute(eSimpleFilterConstraintEClass, ESIMPLE_FILTER_CONSTRAINT__OPERATOR);
-
 		eventGeneratorEClass = createEClass(EVENT_GENERATOR);
 		createEAttribute(eventGeneratorEClass, EVENT_GENERATOR__SENSOR_TYPE);
 		createEAttribute(eventGeneratorEClass, EVENT_GENERATOR__SCOPE);
@@ -1129,8 +1089,8 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		eventFilterEClass = createEClass(EVENT_FILTER);
 
 		efSimpleEClass = createEClass(EF_SIMPLE);
-		createEReference(efSimpleEClass, EF_SIMPLE__CONSTRAINTS);
 		createEReference(efSimpleEClass, EF_SIMPLE__SOURCE_EVENT);
+		createEAttribute(efSimpleEClass, EF_SIMPLE__CONSTRAINTS);
 
 		efCompositeEClass = createEClass(EF_COMPOSITE);
 
@@ -1139,6 +1099,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		efLogicEClass = createEClass(EF_LOGIC);
 
 		efProcessingEClass = createEClass(EF_PROCESSING);
+		createEAttribute(efProcessingEClass, EF_PROCESSING__WINDOW_SIZE);
 
 		efTemporalEClass = createEClass(EF_TEMPORAL);
 
@@ -1264,14 +1225,9 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		initEReference(getESequenceFlow_Source(), this.getEventBaseOperator(), this.getEventBaseOperator_Outgoing(), "source", null, 1, 1, ESequenceFlow.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 		initEReference(getESequenceFlow_Target(), this.getEventBaseOperator(), this.getEventBaseOperator_Incoming(), "target", null, 1, 1, ESequenceFlow.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
-		initEClass(eSimpleFilterConstraintEClass, ESimpleFilterConstraint.class, "ESimpleFilterConstraint", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getESimpleFilterConstraint_Type(), ecorePackage.getEString(), "type", null, 1, 1, ESimpleFilterConstraint.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getESimpleFilterConstraint_Value(), ecorePackage.getEString(), "value", null, 1, 1, ESimpleFilterConstraint.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getESimpleFilterConstraint_Operator(), ecorePackage.getEInt(), "operator", null, 1, 1, ESimpleFilterConstraint.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
 		initEClass(eventGeneratorEClass, EventGenerator.class, "EventGenerator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getEventGenerator_SensorType(), ecorePackage.getEString(), "sensorType", null, 0, 1, EventGenerator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getEventGenerator_Scope(), ecorePackage.getEString(), "scope", null, 0, 1, EventGenerator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEventGenerator_Scope(), ecorePackage.getEString(), "scope", "WORLD", 0, 1, EventGenerator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(egNonRecurringEClass, EGNonRecurring.class, "EGNonRecurring", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1281,10 +1237,10 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		initEAttribute(getEGAbsolute_AbsoluteTime(), ecorePackage.getEString(), "absoluteTime", null, 1, 1, EGAbsolute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(egOffsetEClass, EGOffset.class, "EGOffset", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getEGOffset_OffsetTime(), ecorePackage.getEInt(), "offsetTime", null, 1, 1, EGOffset.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEGOffset_OffsetTime(), ecorePackage.getEString(), "offsetTime", null, 1, 1, EGOffset.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(egRelativeEClass, EGRelative.class, "EGRelative", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getEGRelative_DelayTime(), ecorePackage.getEInt(), "delayTime", null, 1, 1, EGRelative.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEGRelative_DelayTime(), ecorePackage.getEString(), "delayTime", null, 1, 1, EGRelative.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(egRecurringEClass, EGRecurring.class, "EGRecurring", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getEGRecurring_Repetition(), ecorePackage.getEInt(), "repetition", null, 0, 1, EGRecurring.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1293,7 +1249,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		initEAttribute(getEGPeriodic_Time(), ecorePackage.getEString(), "time", null, 0, 1, EGPeriodic.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(egPatternedEClass, EGPatterned.class, "EGPatterned", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getEGPatterned_Time(), ecorePackage.getEInt(), "time", null, 0, 1, EGPatterned.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEGPatterned_Time(), ecorePackage.getEString(), "time", null, 0, 1, EGPatterned.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getEGPatterned_Pattern(), ecorePackage.getEString(), "pattern", null, 0, 1, EGPatterned.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(egDistributionEClass, EGDistribution.class, "EGDistribution", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1303,8 +1259,8 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		initEClass(eventFilterEClass, EventFilter.class, "EventFilter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(efSimpleEClass, EFSimple.class, "EFSimple", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getEFSimple_Constraints(), this.getESimpleFilterConstraint(), null, "constraints", null, 1, -1, EFSimple.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getEFSimple_SourceEvent(), this.getEventBaseOperator(), null, "sourceEvent", null, 1, 1, EFSimple.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEFSimple_Constraints(), ecorePackage.getEString(), "constraints", null, 0, 1, EFSimple.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(efCompositeEClass, EFComposite.class, "EFComposite", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1313,6 +1269,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		initEClass(efLogicEClass, EFLogic.class, "EFLogic", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(efProcessingEClass, EFProcessing.class, "EFProcessing", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getEFProcessing_WindowSize(), ecorePackage.getEInt(), "windowSize", null, 0, 1, EFProcessing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(efTemporalEClass, EFTemporal.class, "EFTemporal", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

@@ -21,7 +21,7 @@ public class UkuEventEditor extends DiagramEditor{
 	@Override
 	protected void setInput(IEditorInput input) {
 		super.setInput(input);
-		org.eclipse.graphiti.examples.common.ui.CreateDiagramWizard t;
+		//org.eclipse.graphiti.examples.common.ui.CreateDiagramWizard t;
 		// Hook a transaction exception handler so we can get diagnostics about EMF validation errors.
 		//getEditingDomainListener();
 		

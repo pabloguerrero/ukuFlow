@@ -59,7 +59,7 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 
 	public byte toByte(int v) {
 		if (v > 255) {
-			System.out.println("error");
+			log.info("Error: the value should not bigger than 255("+v+")");
 			return (byte)255;
 		}
 		// TODO checking v

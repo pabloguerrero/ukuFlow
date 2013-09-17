@@ -83,13 +83,13 @@ public class UkuSequenceFlow extends UkuEntity {
 		if (ref.containsKey(source)) {
 			sourceEntity = (UkuElement) ref.get(source);
 		} else {
-			System.out.println("error, no sourceentity in " + id);
+			log.error("no source entity in " + id);
 			addErrorMessage(" no source entity");
 		}
 		if (ref.containsKey(target)) {
 			targetEntity = (UkuElement) ref.get(target);
 		} else {
-			System.out.println("error, no target entity in " + id);
+			log.error("no target entity in " + id);
 			addErrorMessage(" no target entity");
 		}
 	}

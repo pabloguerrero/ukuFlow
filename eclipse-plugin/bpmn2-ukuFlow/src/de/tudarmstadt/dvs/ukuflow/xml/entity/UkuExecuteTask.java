@@ -38,12 +38,13 @@ import de.tudarmstadt.dvs.ukuflow.script.generalscript.ParseException;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.Token;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ukuFlowScript;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.TaskScriptFunction;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class UkuExecuteTask extends UkuActivity {
 	private List<TaskScriptFunction> statements;
 	private boolean hasScript = false;
 	private boolean valid = false;
-
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	public UkuExecuteTask(String id) {
 		super(id);
 	}
@@ -67,13 +68,13 @@ public class UkuExecuteTask extends UkuActivity {
 	public void setScript(String script) {
 		// this.script = script;
 		if (script == null || script.equals("")) {
-			System.out.println(this.getClass().getSimpleName() + "\t no script");
+			log.info("the script is null or emtpy!!!!");
 			return;
 		}
 		hasScript = true;
 		ukuFlowScript parser = ukuFlowScript.getInstance(script);
 		try {
-			System.out.println("parsing "+script);
+			log.info("parsing "+script);
 			statements = parser.parseTaskScript();
 			valid = true;
 		} catch (Error error) {

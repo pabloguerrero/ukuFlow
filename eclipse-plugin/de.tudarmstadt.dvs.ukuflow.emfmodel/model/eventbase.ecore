@@ -16,15 +16,10 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" ordered="false"
         lowerBound="1" eType="#//EventBaseOperator" resolveProxies="false" eOpposite="#//EventBaseOperator/incoming"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ESimpleFilterConstraint">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EventGenerator" eSuperTypes="#//EventBaseOperator">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sensorType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scope" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scope" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="WORLD"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EGNonRecurring" eSuperTypes="#//EventGenerator"/>
   <eClassifiers xsi:type="ecore:EClass" name="EGImmediate" eSuperTypes="#//EGNonRecurring"/>
@@ -34,11 +29,11 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EGOffset" eSuperTypes="#//EGNonRecurring">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="offsetTime" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EGRelative" eSuperTypes="#//EGNonRecurring">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="delayTime" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EGRecurring" eSuperTypes="#//EventGenerator">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="repetition" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
@@ -47,7 +42,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EGPatterned" eSuperTypes="#//EGRecurring">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EGDistribution" eSuperTypes="#//EGRecurring">
@@ -56,15 +51,16 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EventFilter" eSuperTypes="#//EventBaseOperator"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFSimple" eSuperTypes="#//EventFilter">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="constraints" lowerBound="1"
-        upperBound="-1" eType="#//ESimpleFilterConstraint"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sourceEvent" lowerBound="1"
         eType="#//EventBaseOperator"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="constraints" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EFComposite" eSuperTypes="#//EventFilter"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFStatusEvent" eSuperTypes="#//EFComposite"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFLogic" eSuperTypes="#//EFStatusEvent"/>
-  <eClassifiers xsi:type="ecore:EClass" name="EFProcessing" eSuperTypes="#//EFStatusEvent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFProcessing" eSuperTypes="#//EFStatusEvent">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="windowSize" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EFTemporal" eSuperTypes="#//EFStatusEvent"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFLogicAnd" eSuperTypes="#//EFLogic"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFLogicOr" eSuperTypes="#//EFLogic"/>

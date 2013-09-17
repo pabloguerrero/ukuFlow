@@ -76,7 +76,7 @@ public class EAperiodicPatternedEG extends ERecurringEG{
 	public void setPattern(String pattern){
 		if(pattern.startsWith("p"))
 			pattern = pattern.substring(1);
-		if(!pattern.matches("[0-1]+")){
+		if(pattern.matches("[0-1]+")){
 			//double check?! too much?
 			this.pattern = pattern;
 			//TODO
