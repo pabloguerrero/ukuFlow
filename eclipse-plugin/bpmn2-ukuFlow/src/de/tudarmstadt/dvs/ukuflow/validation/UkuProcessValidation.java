@@ -30,6 +30,7 @@
 
 package de.tudarmstadt.dvs.ukuflow.validation;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -74,7 +75,7 @@ public class UkuProcessValidation {
 					if (start == null) {
 						start = ev;
 					} else {
-						ev.addErrorMessage("process should have only one Start Event");
+						ev.addErrorMessage("Process should have only one Start Event");
 					}
 				} else if (ev.getType() == UkuConstants.WorkflowOperators.END_EVENT) {
 					if (end == null) {
@@ -135,12 +136,12 @@ public class UkuProcessValidation {
 	 */
 	private void validate(UkuReceiveTask e) {
 		if (e.getIncomingEntity() == null || e.getIncomingEntity().size() == 0) {
-			e.addErrorMessage("this Receive Task can not be reached from the start event");
+			e.addErrorMessage("This Receive Task can not be reached from the start event");
 		} else if (!(e.getIncomingEntity().get(0).getSourceEntity() instanceof UkuEventGateway)) {
 			e.addErrorMessage("Receive Task should only be placed after a Event Based Gateway");
 		}
 		if (e.getOutgoingEntity() == null || e.getOutgoingEntity().size() == 0) {
-			e.addErrorMessage("this ReceiveTask has no outgoing sequence flow");
+			e.addErrorMessage("This ReceiveTask has no outgoing sequence flow");
 		}
 
 	}
@@ -218,7 +219,7 @@ public class UkuProcessValidation {
 						msg += " (Note that each diverging gateway must have one and only one matched converging gateway)";
 						start.addErrorMessage(msg);
 					} else {
-						start.addErrorMessage("couldn't find a matched converging gateway for diverging gateway "
+						start.addErrorMessage("Couldn't find a matched converging gateway for diverging gateway "
 								+ start.getID());
 					}
 					return null;
@@ -325,7 +326,7 @@ public class UkuProcessValidation {
 					diverging.add(g);
 				} else {
 					// TODO
-					g.addErrorMessage("this error shouldn't happend, please contact dangquochien@gmail.com");
+					g.addErrorMessage("This error shouldn't happend, please contact dangquochien@gmail.com");
 					return;
 				}
 			}
@@ -378,7 +379,7 @@ public class UkuProcessValidation {
 				event.addErrorMessage("StartEvent cannot have incoming connection");
 			break;
 		default:
-			event.addErrorMessage("this type of event is not supported yet");
+			event.addErrorMessage("This type of event is not supported yet");
 			break;
 		}
 	}
@@ -388,7 +389,7 @@ public class UkuProcessValidation {
 				|| task.getOutgoingID().size() != 1)
 			task.addErrorMessage("A Script task must have exactly one incoming and one outgoing connection");
 		if (!task.hasScript()) {
-			task.addErrorMessage("has no script");
+			task.addErrorMessage("Has no script");
 		} else if (task.isValid()) {
 			for (TaskScriptFunction tsf : task.getStatements()) {
 				validate(task, tsf);
@@ -406,8 +407,13 @@ public class UkuProcessValidation {
 			try {
 				ScopeManager.getInstance().getScopeID(sName);
 			} catch (ScopeNotExistException e) {
-				parent.addErrorMessage("couldn't found the declaration for scope "
-						+ sName);
+				List<String> scopes = new ArrayList<String>();
+				for(UkuScope sp : process.getScope()){
+					scopes.add(sp.getName());
+				}
+				parent.addErrorMessage("No declaration for scope '"
+						+ sName + "'. Declared scopes are "+scopes);
+				
 			}
 		}
 	}
@@ -429,12 +435,12 @@ public class UkuProcessValidation {
 			case UkuConstants.WorkflowOperators.INCLUSIVE_DECISION_GATEWAY:
 			case UkuConstants.WorkflowOperators.EXCLUSIVE_DECISION_GATEWAY:
 				if (!sef.hasCondition() && !sef.isDefault()) {
-					sef.addErrorMessage("sequence Flow has no condition or condition expression has incorrect syntax");
+					sef.addErrorMessage("Sequence Flow has no condition or condition expression has incorrect syntax");
 				}
 				break;
 			case UkuConstants.WorkflowOperators.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY:
 				if (sef.hasCondition()) {
-					sef.addErrorMessage("this sequence flow shouldn't have condition");
+					sef.addErrorMessage("This sequence flow shouldn't have condition");
 				}
 			default:
 				break;

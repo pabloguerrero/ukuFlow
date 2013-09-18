@@ -132,7 +132,7 @@ public abstract class UkuElement extends UkuEntity {
 			if (ref.containsKey(entity)) {
 				incomingEntities.add((UkuSequenceFlow)ref.get(entity));
 			} else {
-				addErrorMessage("the reference of '" + id
+				addErrorMessage("The reference of '" + id
 						+ "' doesnot contain element " + entity
 						+ "(outgoing entity)");
 			}
@@ -142,7 +142,7 @@ public abstract class UkuElement extends UkuEntity {
 			if (ref.containsKey(entity)) {
 				outgoingEntities.add((UkuSequenceFlow)ref.get(entity));
 			} else {
-				addErrorMessage("the reference of '" + id
+				addErrorMessage("The reference of '" + id
 						+ "' does not contain element " + entity
 						+ "(outgoing entity)");
 			}

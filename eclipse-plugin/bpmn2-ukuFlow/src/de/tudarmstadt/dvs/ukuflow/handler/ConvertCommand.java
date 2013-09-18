@@ -182,17 +182,19 @@ public class ConvertCommand extends AbstractHandler {
 	private static boolean reporting(UkuProcess process, ErrorManager em,
 			ScopeManager sm) {
 		console.println();
-		console.info("Validator", "checking process " + process.name);
+		console.info("Validator", "Checking process '" + process.name+"'");
 		em.exportTo(console);
-		console.info("Validator", "Report:");
-		console.info("Validator", "Issued " + em.getWarnings().size()
-				+ (em.getWarnings().size() == 1 ? " warming" : " warnings "));
+		
+		String msg1 = "Issued " + em.getWarnings().size()
+				+ (em.getWarnings().size() == 1 ? " warning" : " warnings ");
 		int errs = em.getErrors().size();
 		if (!em.isValid()) {
-			console.info("Validator", "There "+(errs>1?"are":"is") + em.getErrors().size()
-					+ " errors in the diagram, please fix "+(errs>1?"them":"it")+" first");
+			String msg2 = "There "+(errs>1?"are ":"is ") + em.getErrors().size()
+					+ " errors in the diagram, please fix "+(errs>1?"them":"it")+" first";
+			console.info("Validator", "Report:\n\t"+msg1+"\n\t"+msg2);
 			return false;
 		}
+		console.info("Validator", "Report:\n\t"+msg1);
 		return true;
 	}
 

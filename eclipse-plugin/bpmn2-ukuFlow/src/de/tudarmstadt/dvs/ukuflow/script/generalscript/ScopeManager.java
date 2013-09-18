@@ -88,8 +88,21 @@ public class ScopeManager {
 		namePool.put(sName, result);
 		return result;
 	}
-
+	
+	/**
+	 * return id of the given scope name <br />
+	 * Predefined keywords are "local" and "world", which are interpreted into 0 and 255 <br />
+	 * predefined keywords are not case sensitive, but normal scope names are case sensitive. That means 
+	 * scope 'windows' and 'Windows' are different
+	 * @param sName
+	 * @return
+	 * @throws ScopeNotExistException
+	 */
 	public int getScopeID(String sName) throws ScopeNotExistException {
+		if(sName.equalsIgnoreCase("local"))
+			return 0;
+		if(sName.equalsIgnoreCase("world"))
+			return 255;
 		if (namePool.containsKey(sName))
 			return namePool.get(sName);
 		log.debug("cannot find scope \""+sName +"\"");

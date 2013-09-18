@@ -212,9 +212,8 @@ public class BPMN2XMLParser {
 						"name of the process is not specified");
 			} else if (result.name.equals("Default Process")) {
 				errorManager
-						.addWarning(
-								"process: " + result.name,
-								"default name for process is used, it could lead to interference with other processes");
+						.addWarning("process",
+								"Process 'Default Process' uses the default name, change it to prevent it from colliding with other default processes");
 			}
 		} else {
 			log.debug("WARNING: element '" + e.getName()
@@ -257,6 +256,8 @@ public class BPMN2XMLParser {
 		try {
 			type = classifier.getType(name);
 		} catch (UnsupportedElementException e1) {
+			if(name.equals("association"))
+				return null;
 			errorManager.addWarning(e.getParentElement()
 					.getAttributeValue("id"), name + " is not supported");
 			log.debug(name + " is not supported : " + e1.getMessage());
