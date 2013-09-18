@@ -229,7 +229,13 @@ public class BPMN2XMLParser {
 			for (Element child : e.getChildren()) {
 				UkuEntity tmp = fetchEntity(child);
 				if (tmp != null) {
-					result.add(tmp);
+					// 18.09.2013
+					// fixing bug: the start event should be placed as the first element
+					if(tmp instanceof UkuEvent && ((UkuEvent)tmp).hasOutgoings()){
+						result.add(0,tmp);
+					}else {
+						result.add(tmp);
+					}
 					reference.put(tmp.getID(), tmp);
 				} else {
 					// System.out.println("not a process");
