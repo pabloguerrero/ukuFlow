@@ -34,18 +34,20 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.DuplicateScopeNameException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.ScopeNotExistException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyScopeException;
 
 public class ScopeManager {
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	private static ScopeManager instance = null;
 	private List<Integer> availableID = null;
 	private HashMap<String, Integer> namePool;
 
 	private ScopeManager() {
 		availableID = new LinkedList<Integer>();
-		for (int i = 0; i < 256; i++)
+		for (int i = 1; i < 255; i++)
 			availableID.add(i);
 		namePool = new HashMap<String, Integer>();
 	}
@@ -57,14 +59,16 @@ public class ScopeManager {
 	}
 
 	public void reset() {
+		log.debug("reset scope name pool");
 		availableID = new LinkedList<Integer>();
-		for (int i = 0; i < 256; i++)
+		for (int i = 1; i < 255; i++)
 			availableID.add(i);
 		namePool = new HashMap<String, Integer>();
 	}
 
 	public int registerScope(String sName) throws DuplicateScopeNameException,
 			TooManyScopeException {
+		log.debug("register scope: " +sName);
 		if (namePool.containsKey(sName)) {
 			throw new DuplicateScopeNameException(sName);
 		}
@@ -88,6 +92,7 @@ public class ScopeManager {
 	public int getScopeID(String sName) throws ScopeNotExistException {
 		if (namePool.containsKey(sName))
 			return namePool.get(sName);
+		log.debug("cannot find scope \""+sName +"\"");
 		//System.out.println(sName + " : " + namePool);
 		throw new ScopeNotExistException();
 	}

@@ -223,15 +223,18 @@ public class ConvertCommand extends AbstractHandler {
 			new UkuProcessValidation(process).validate(valid);
 
 			boolean isValid = reporting(process, em, sm);
-			em.reset();
-			sm.reset();
+			
 			if (!isValid) {
+				em.reset();
+				sm.reset();
 				return false;
 			}
 			
 			/* set ID & visit & writing output to file */
 			if (saveOutput)
 				visiting(file, process);
+			em.reset();
+			sm.reset();
 		}
 		return true;
 	}

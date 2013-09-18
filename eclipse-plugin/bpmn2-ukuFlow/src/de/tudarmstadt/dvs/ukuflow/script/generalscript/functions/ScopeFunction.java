@@ -50,8 +50,9 @@ public class ScopeFunction extends TaskScriptFunction{
 		try {
 			return (byte) ScopeManager.getInstance().getScopeID(scopeName);
 		} catch (ScopeNotExistException e) {			
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
+		System.out.println("something is wrong");
 		return -1;
 	}
 	public String getScopeName(){
