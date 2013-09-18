@@ -878,13 +878,22 @@ public interface EventbasePackage extends EPackage {
 	int EG_DISTRIBUTION__FUNCTION = EG_RECURRING_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Parameters</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EG_DISTRIBUTION__PARAMETERS = EG_RECURRING_FEATURE_COUNT + 2;
+
+	/**
 	 * The number of structural features of the '<em>EG Distribution</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EG_DISTRIBUTION_FEATURE_COUNT = EG_RECURRING_FEATURE_COUNT + 2;
+	int EG_DISTRIBUTION_FEATURE_COUNT = EG_RECURRING_FEATURE_COUNT + 3;
 
 	/**
 	 * The meta object id for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventFilterImpl <em>Event Filter</em>}' class.
@@ -2439,6 +2448,17 @@ public interface EventbasePackage extends EPackage {
 	EAttribute getEGDistribution_Function();
 
 	/**
+	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getParameters <em>Parameters</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Parameters</em>'.
+	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getParameters()
+	 * @see #getEGDistribution()
+	 * @generated
+	 */
+	EAttribute getEGDistribution_Parameters();
+
+	/**
 	 * Returns the meta object for class '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventFilter <em>Event Filter</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3191,6 +3211,14 @@ public interface EventbasePackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute EG_DISTRIBUTION__FUNCTION = eINSTANCE.getEGDistribution_Function();
+
+		/**
+		 * The meta object literal for the '<em><b>Parameters</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EG_DISTRIBUTION__PARAMETERS = eINSTANCE.getEGDistribution_Parameters();
 
 		/**
 		 * The meta object literal for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventFilterImpl <em>Event Filter</em>}' class.

@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <ul>
  *   <li>{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EGDistributionImpl#getTime <em>Time</em>}</li>
  *   <li>{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EGDistributionImpl#getFunction <em>Function</em>}</li>
+ *   <li>{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EGDistributionImpl#getParameters <em>Parameters</em>}</li>
  * </ul>
  * </p>
  *
@@ -65,6 +66,26 @@ public class EGDistributionImpl extends EGRecurringImpl implements EGDistributio
 	 * @ordered
 	 */
 	protected String function = FUNCTION_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getParameters() <em>Parameters</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getParameters()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String PARAMETERS_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getParameters() <em>Parameters</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getParameters()
+	 * @generated
+	 * @ordered
+	 */
+	protected String parameters = PARAMETERS_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -132,6 +153,27 @@ public class EGDistributionImpl extends EGRecurringImpl implements EGDistributio
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getParameters() {
+		return parameters;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setParameters(String newParameters) {
+		String oldParameters = parameters;
+		parameters = newParameters;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, EventbasePackage.EG_DISTRIBUTION__PARAMETERS, oldParameters, parameters));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -139,6 +181,8 @@ public class EGDistributionImpl extends EGRecurringImpl implements EGDistributio
 				return getTime();
 			case EventbasePackage.EG_DISTRIBUTION__FUNCTION:
 				return getFunction();
+			case EventbasePackage.EG_DISTRIBUTION__PARAMETERS:
+				return getParameters();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -156,6 +200,9 @@ public class EGDistributionImpl extends EGRecurringImpl implements EGDistributio
 				return;
 			case EventbasePackage.EG_DISTRIBUTION__FUNCTION:
 				setFunction((String)newValue);
+				return;
+			case EventbasePackage.EG_DISTRIBUTION__PARAMETERS:
+				setParameters((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -175,6 +222,9 @@ public class EGDistributionImpl extends EGRecurringImpl implements EGDistributio
 			case EventbasePackage.EG_DISTRIBUTION__FUNCTION:
 				setFunction(FUNCTION_EDEFAULT);
 				return;
+			case EventbasePackage.EG_DISTRIBUTION__PARAMETERS:
+				setParameters(PARAMETERS_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -191,6 +241,8 @@ public class EGDistributionImpl extends EGRecurringImpl implements EGDistributio
 				return time != TIME_EDEFAULT;
 			case EventbasePackage.EG_DISTRIBUTION__FUNCTION:
 				return FUNCTION_EDEFAULT == null ? function != null : !FUNCTION_EDEFAULT.equals(function);
+			case EventbasePackage.EG_DISTRIBUTION__PARAMETERS:
+				return PARAMETERS_EDEFAULT == null ? parameters != null : !PARAMETERS_EDEFAULT.equals(parameters);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -209,6 +261,8 @@ public class EGDistributionImpl extends EGRecurringImpl implements EGDistributio
 		result.append(time);
 		result.append(", function: ");
 		result.append(function);
+		result.append(", parameters: ");
+		result.append(parameters);
 		result.append(')');
 		return result.toString();
 	}

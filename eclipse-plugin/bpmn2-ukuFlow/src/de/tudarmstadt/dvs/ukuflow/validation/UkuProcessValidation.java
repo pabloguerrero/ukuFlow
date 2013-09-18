@@ -95,8 +95,8 @@ public class UkuProcessValidation {
 				validate((UkuSequenceFlow) e);
 			} else if (e instanceof UkuGateway) {
 				validate((UkuGateway) e);
-			} else if (e instanceof UkuReceiveTask){
-				validate((UkuReceiveTask)e);
+			} else if (e instanceof UkuReceiveTask) {
+				validate((UkuReceiveTask) e);
 			} else {
 				System.err.println(e);
 			}
@@ -120,10 +120,12 @@ public class UkuProcessValidation {
 		}
 		if (balanceCheck && ErrorManager.getInstance().isValid()) {
 			UkuElement last = wellformednessChecking3(start);
-			if (last != null && last instanceof UkuEvent && ((UkuEvent)last).getType()==UkuConstants.WorkflowOperators.END_EVENT)
+			if (last != null
+					&& last instanceof UkuEvent
+					&& ((UkuEvent) last).getType() == UkuConstants.WorkflowOperators.END_EVENT)
 				log.info("workflow is well-formed");
-			else 
-				log.error("workflow is not well-formed "+ last);
+			else
+				log.error("workflow is not well-formed " + last);
 		}
 
 	}
@@ -132,8 +134,15 @@ public class UkuProcessValidation {
 	 * @param e
 	 */
 	private void validate(UkuReceiveTask e) {
-		// TODO Auto-generated method stub
-		
+		if (e.getIncomingEntity() == null || e.getIncomingEntity().size() == 0) {
+			e.addErrorMessage("this Receive Task can not be reached from the start event");
+		} else if (!(e.getIncomingEntity().get(0).getSourceEntity() instanceof UkuEventGateway)) {
+			e.addErrorMessage("Receive Task should only be placed after a Event Based Gateway");
+		}
+		if (e.getOutgoingEntity() == null || e.getOutgoingEntity().size() == 0) {
+			e.addErrorMessage("this ReceiveTask has no outgoing sequence flow");
+		}
+
 	}
 
 	/**
@@ -174,7 +183,7 @@ public class UkuProcessValidation {
 				return wellformednessChecking3((UkuElement) start
 						.getOutgoingEntity().get(0).getTargetEntity());
 			else {
-				log.debug("Activity has more than one outgoing???");// TODO:ERROR:
+				log.debug("Activity has more than one outgoing???");
 				return null;
 			}
 
@@ -188,27 +197,29 @@ public class UkuProcessValidation {
 					UkuElement t = wellformednessChecking3((UkuElement) seq
 							.getTargetEntity());
 					nextElement.add(t);
-					
+
 				}
 				if (nextElement.size() > 1) {
-					String msg ="found "+nextElement.size() + " matched gateway:";
-					boolean coma= false;
-					for(UkuElement e : nextElement){
-						if(coma)
-							msg+=", ";
-						coma=true;
-						if(e!=null)
+					String msg = "found " + nextElement.size()
+							+ " matched gateway:";
+					boolean coma = false;
+					for (UkuElement e : nextElement) {
+						if (coma)
+							msg += ", ";
+						coma = true;
+						if (e != null)
 							msg += e.getID();
 						else {
-							msg =null;
+							msg = null;
 							break;
 						}
 					}
-					if(msg!=null){
-						msg+=" (Note that each diverging gateway must have one and only one matched converging gateway)";
+					if (msg != null) {
+						msg += " (Note that each diverging gateway must have one and only one matched converging gateway)";
 						start.addErrorMessage(msg);
-					} else{
-						start.addErrorMessage("couldn't find a matched converging gateway for diverging gateway "+start.getID());
+					} else {
+						start.addErrorMessage("couldn't find a matched converging gateway for diverging gateway "
+								+ start.getID());
 					}
 					return null;
 				} else {
@@ -216,8 +227,10 @@ public class UkuProcessValidation {
 					if (res instanceof UkuGateway) {
 						UkuGateway g = (UkuGateway) res;
 
-						if (checkmatchedGateway((UkuGateway)start, g))
-							return wellformednessChecking3((UkuElement) g.getOutgoingEntity().get(0).getTargetEntity());
+						if (checkmatchedGateway((UkuGateway) start, g))
+							return wellformednessChecking3((UkuElement) g
+									.getOutgoingEntity().get(0)
+									.getTargetEntity());
 					}
 					return null;
 				}
@@ -337,8 +350,8 @@ public class UkuProcessValidation {
 						done = false;
 						break;
 					} else {
-						log.info("not match: " + g + " -> " + lfrom
-								+ "\n" + to + " -> " + lto);
+						log.info("not match: " + g + " -> " + lfrom + "\n" + to
+								+ " -> " + lto);
 					}
 				}
 			}

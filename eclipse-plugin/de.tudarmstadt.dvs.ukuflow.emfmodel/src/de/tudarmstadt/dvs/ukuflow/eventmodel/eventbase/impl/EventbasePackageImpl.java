@@ -609,6 +609,15 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getEGDistribution_Parameters() {
+		return (EAttribute)egDistributionEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getEventFilter() {
 		return eventFilterEClass;
 	}
@@ -1085,6 +1094,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		egDistributionEClass = createEClass(EG_DISTRIBUTION);
 		createEAttribute(egDistributionEClass, EG_DISTRIBUTION__TIME);
 		createEAttribute(egDistributionEClass, EG_DISTRIBUTION__FUNCTION);
+		createEAttribute(egDistributionEClass, EG_DISTRIBUTION__PARAMETERS);
 
 		eventFilterEClass = createEClass(EVENT_FILTER);
 
@@ -1255,6 +1265,7 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		initEClass(egDistributionEClass, EGDistribution.class, "EGDistribution", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getEGDistribution_Time(), ecorePackage.getEInt(), "time", null, 0, 1, EGDistribution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getEGDistribution_Function(), ecorePackage.getEString(), "function", null, 0, 1, EGDistribution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEGDistribution_Parameters(), ecorePackage.getEString(), "parameters", null, 0, 1, EGDistribution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(eventFilterEClass, EventFilter.class, "EventFilter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

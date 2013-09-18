@@ -48,6 +48,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="EGDistribution" eSuperTypes="#//EGRecurring">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="function" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="parameters" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EventFilter" eSuperTypes="#//EventBaseOperator"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFSimple" eSuperTypes="#//EventFilter">
