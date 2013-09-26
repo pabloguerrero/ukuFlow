@@ -149,7 +149,7 @@ enum repository_fields {
 	USER_FIELD, /**							15*/
 };
 
-data_repository_id_t data_mgr_create(clock_time_t max_ttl);
+data_repository_id_t data_mgr_create(clock_time_t ttl);
 bool data_mgr_remove(data_repository_id_t id);
 
 void data_mgr_set_data(data_repository_id_t repo_id_param, entry_id_t entry_id,
