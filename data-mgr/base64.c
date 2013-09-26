@@ -103,7 +103,7 @@ static int base64_add_char(struct base64_decoder_state *s, char c,
 	}
 
 	s->tmpdata = (s->tmpdata << 6) | base64_decode_char(c);
-	PRINTF(3,
+	PRINTF(7,
 			"char: %c, sextet %u: %d\n", c, s->sextets, base64_decode_char(c));
 	++s->sextets;
 	if (s->sextets == 4) {
@@ -111,7 +111,7 @@ static int base64_add_char(struct base64_decoder_state *s, char c,
 		output[s->dataptr] = (uint8_t)(s->tmpdata >> 16);
 		output[s->dataptr + 1] = (uint8_t)(s->tmpdata >> 8);
 		output[s->dataptr + 2] = (uint8_t)(s->tmpdata);
-		PRINTF(3,
+		PRINTF(7,
 				"4 sextets decoded: [%u][%u][%u]\n", output[s->dataptr], output[s->dataptr + 1], output[s->dataptr + 2]);
 		s->dataptr += 3;
 		return (3 - (s->padding));
