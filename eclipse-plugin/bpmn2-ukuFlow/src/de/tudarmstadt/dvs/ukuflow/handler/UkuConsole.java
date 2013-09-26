@@ -130,7 +130,7 @@ public class UkuConsole {
 		while (sb.length() < 24) {
 			sb.append(" ");
 		}
-		sb.append(objs[objs.length - 1].toString());
+		sb.append("\n\t"+objs[objs.length - 1].toString());
 
 		return sb.toString();
 

@@ -256,6 +256,8 @@ public class ElementVisitorImpl implements ElementVisitor {
 		out.add((byte)p.minInstance);
 		out.add((byte)p.maxInstance);
 		out.add((byte)p.numberOfLoop);
+		
+		
 		for (UkuElement e : p.getElements()) {
 			if(e instanceof UkuReceiveTask)
 				continue;
@@ -265,6 +267,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 		for (UkuScope s : p.getScope()) {
 			s.accept(this);
 		}
+		
 	}
 
 	public void visit(UkuScope us) {

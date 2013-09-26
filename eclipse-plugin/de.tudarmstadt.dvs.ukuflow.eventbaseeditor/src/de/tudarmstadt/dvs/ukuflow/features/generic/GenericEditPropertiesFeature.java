@@ -17,6 +17,7 @@
 package de.tudarmstadt.dvs.ukuflow.features.generic;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.graphiti.features.IFeatureProvider;
@@ -228,9 +229,20 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 					properties.put(key2,
 							new RequestContainer(null,UkuConstants.DistributionFunction.FUNCTIONS ,
 									"Function",off.getFunction()));// off.getFunction());
+					String pa = off.getParameters();
+					if(pa == null ||pa.equals(""))
+						pa = "0 0 0";
+					RequestContainer rc = new RequestContainer(null,null,null);
+					rc.currentValue = pa;
+					properties.put(-1, rc);
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
+					//parameters:
+					// 1 element is the function type the rest are parameters
+					String params = result.get(-1).result;
+					log.debug(params);
+					off.setParameters(params);
 					int currentTime = off.getTime();
 					int newTime = Integer.parseInt(result.get(key1).result);
 					if (newTime != currentTime) {

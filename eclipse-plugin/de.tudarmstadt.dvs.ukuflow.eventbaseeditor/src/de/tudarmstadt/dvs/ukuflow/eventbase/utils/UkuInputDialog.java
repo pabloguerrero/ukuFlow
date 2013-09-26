@@ -11,6 +11,9 @@ package de.tudarmstadt.dvs.ukuflow.eventbase.utils;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+import java.awt.FlowLayout;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +28,19 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Combo;
 
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage;
 import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
@@ -133,9 +141,11 @@ public class UkuInputDialog extends Dialog {
 					req.result = ((Text) tmp).getText();
 				// requests.put(key, request.get);//
 				if (tmp instanceof CCombo) {
+					function_changed();
 					CCombo combo = ((CCombo) tmp);
 					req.result = combo.getItem(combo.getSelectionIndex());
-					log.debug("result >"+combo.getSelectionIndex()+">" + req.result);
+					log.debug("result >" + combo.getSelectionIndex() + ">"
+							+ req.result);
 
 				}
 			} else {
@@ -178,25 +188,17 @@ public class UkuInputDialog extends Dialog {
 
 		// texts.get("").setFocus();
 		/*
-		for (Integer key : requests.keySet())
-			if (requests.get(key) != null)
-				if (requests.get(key).requests instanceof String) {
-
-					((Text) texts.get(key)).setText(requests.get(key).requests
-							.toString());
-					((Text) texts.get(key)).selectAll();
-				} else {
-					List<?> l = (List<?>) requests.get(key).requests;
-					String[] a = new String[l.size()];
-					for (int i = 0; i < l.size(); i++) {
-						a[i] = l.get(i).toString();
-					}
-					System.out.println(key);
-					((CCombo) texts.get(key)).setItems(a);
-					//((CCombo) texts.get(key)).select(1);
-					texts.get(key).setFocus();
-				}
-	*/			
+		 * for (Integer key : requests.keySet()) if (requests.get(key) != null)
+		 * if (requests.get(key).requests instanceof String) {
+		 * 
+		 * ((Text) texts.get(key)).setText(requests.get(key).requests
+		 * .toString()); ((Text) texts.get(key)).selectAll(); } else { List<?> l
+		 * = (List<?>) requests.get(key).requests; String[] a = new
+		 * String[l.size()]; for (int i = 0; i < l.size(); i++) { a[i] =
+		 * l.get(i).toString(); } System.out.println(key); ((CCombo)
+		 * texts.get(key)).setItems(a); //((CCombo) texts.get(key)).select(1);
+		 * texts.get(key).setFocus(); }
+		 */
 	}
 
 	/*
@@ -205,8 +207,12 @@ public class UkuInputDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		// create composite
 		Composite composite = (Composite) super.createDialogArea(parent);
+		
 		// create message
 		for (Integer message : requests.keySet()) {
+			// ignore a special one
+			if(message == -1)
+				continue;
 			if (message != null) {
 				Label label = new Label(composite, SWT.WRAP);
 				label.setText(requests.get(message).title);
@@ -215,38 +221,50 @@ public class UkuInputDialog extends Dialog {
 						| GridData.HORIZONTAL_ALIGN_FILL
 						| GridData.VERTICAL_ALIGN_CENTER);
 				data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+				log.debug("widthhint="+data.widthHint);
 				label.setLayoutData(data);
 				label.setFont(parent.getFont());
 			}
 			Control text = null;
-			log.debug("requests of "+message+" : " + requests.get(message).requests );
+			log.debug("requests of " + message + " : "
+					+ requests.get(message).requests);
 			if (requests.get(message).requests instanceof String) {
 				text = new Text(composite, getInputTextStyle());
 				text.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 						| GridData.HORIZONTAL_ALIGN_FILL));
-				((Text)text).setText(requests.get(message).requests.toString());
+				((Text) text)
+						.setText(requests.get(message).requests.toString());
 				((Text) text).addModifyListener(new ModifyListener() {
 					public void modifyText(ModifyEvent e) {
 						validateInput();
 					}
 				});
-			} else  {
+			} else {
 				CCombo combo = new CCombo(composite, getInputTextStyle());
-				System.out.println(requests.get(message).requests);
+				// System.out.println(requests.get(message).requests);
 				combo.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 						| GridData.HORIZONTAL_ALIGN_FILL));
 				List l = (List<?>) requests.get(message).requests;
-				log.debug(message + ">"+l);
 				String[] a = new String[l.size()];
 				int selectIndex = 0;
 				for (int j = 0; j < l.size(); j++) {
 					a[j] = l.get(j).toString();
-					if(a[j].equals(requests.get(message).currentValue))
+					if (a[j].equals(requests.get(message).currentValue))
 						selectIndex = j;
 				}
 				combo.setItems(a);
 				combo.select(selectIndex);
 				combo.setEditable(false);
+				if (message == EventbasePackage.EG_DISTRIBUTION__FUNCTION) {
+					combo_function = combo;
+					init_function_parameters(composite,parent);
+
+					combo.addListener(SWT.Selection, new Listener() {
+						public void handleEvent(Event event) {							
+							UkuInputDialog.this.function_changed();
+						}
+					});
+				}
 				text = combo;
 			}
 			texts.put(message, text);
@@ -262,6 +280,91 @@ public class UkuInputDialog extends Dialog {
 
 		applyDialogFont(composite);
 		return composite;
+	}
+	CCombo combo_function =null;
+	int choosen = -1;
+	Map<Integer,Tupel> parameters = new HashMap<Integer,Tupel>();
+	
+	private void init_function_parameters(Composite composite, Composite parent){
+		String val = requests.get(-1).currentValue.trim();
+		String[] vals = val.split("[a-z ]+");
+		for(String x : vals){
+			System.out.println("!"+x);
+		}
+		Composite subComp = new Composite(composite, SWT.NONE);
+		subComp.setLayoutData(new GridData(GridData.FILL_BOTH));
+	    GridLayout layout = new GridLayout(7, false);
+	    GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+	    gd.horizontalSpan=7;
+	    subComp.setLayoutData(gd);
+	    subComp.setLayout(layout);
+	    // label1:
+	    GridData data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+	    Label lb= new Label(subComp,SWT.WRAP);
+	    lb.setText("Parameters: ");
+	    lb.setLayoutData(data);
+	    subComp.setVisible(true);
+	    Label label;
+	    label = createLabel("  m", subComp);
+	    Text t = new Text(subComp,SWT.WRAP);
+		t.setText(vals[1]);
+	    parameters.put(1, new Tupel(label, t));
+		
+		label = createLabel("  v", subComp);
+		t = new Text(subComp,SWT.WRAP);
+		if(vals.length >2)
+			t.setText(vals[2]);
+		parameters.put(2, new Tupel(label,t));
+		
+			
+		label = createLabel("  a", subComp);
+		
+		t = new Text(subComp,SWT.WRAP);
+		if(vals.length >3)
+			t.setText(vals[3]);
+		parameters.put(3, new Tupel(label,t));
+		
+		function_changed();
+	}
+	
+	private Label createLabel(String label,Composite subComp ){
+		Label result = new Label(subComp,SWT.WRAP);
+		result.setText(label);
+		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		//data.widthHint = 450;
+		result.setLayoutData(data);
+		return result;
+	}
+	public void function_changed() {
+		log.info("changed: "+ combo_function.getSelectionIndex() + "/" + combo_function.getText());
+		choosen = combo_function.getSelectionIndex();
+		String params = "";
+		
+		switch(combo_function.getSelectionIndex()){
+		case 0: //Gausian
+			parameters.get(1).setText(" m");
+			for(int i = 1; i < 4; i++){
+				Tupel t = parameters.get(i);
+				t.setVisible(true);
+				params += t.lb.getText() + t.getValue();
+			}
+			break;
+		case 1: //Chi_square
+			parameters.get(2).setVisible(false);
+			parameters.get(3).setVisible(false);
+			parameters.get(1).setText(" k");
+			params += " k"+parameters.get(1).getValue();
+			break;
+		case 2: //Pareto
+			parameters.get(2).setVisible(false);
+			parameters.get(3).setVisible(false);
+			parameters.get(1).setText(" a");
+			params += " a"+parameters.get(1).getValue();
+			break;
+		}
+		RequestContainer rc = new RequestContainer(null, null, null);
+		rc.result = params;
+		requests.put(-1, rc);
 	}
 
 	/**
@@ -318,18 +421,30 @@ public class UkuInputDialog extends Dialog {
 		for (Integer key : requests.keySet()) {
 			if (texts.get(key) instanceof Text
 					&& requests.get(key).validator != null) {
-				String tmp = requests.get(key).validator
-						.isValid(((Text) texts.get(key)).getText());
-				if(tmp != null){
+				String tmp = requests.get(key).validator.isValid(((Text) texts
+						.get(key)).getText());
+				if (tmp != null) {
 					String meta = requests.get(key).title;
 					meta = meta.split("[(]")[0];
-					tmp = meta + ":  "+ tmp; 
-					errorMessage += tmp + "\n"; 
-					
+					tmp = meta + ":  " + tmp;
+					errorMessage += tmp + "\n";
+
 				}
 			}
 		}
-		setErrorMessage(errorMessage.equals("")?null:errorMessage);
+		if(combo_function!= null){
+			for(int i = 1; i < 4; i++){
+				try{
+					Integer.parseInt(parameters.get(i).getValue());
+				} catch (Exception e){
+					errorMessage+= "parameters must be numbers";
+					break;
+				}
+				if(combo_function.getSelectionIndex() != 0)
+					break;
+			}
+		}
+		setErrorMessage(errorMessage.equals("") ? null : errorMessage);
 	}
 
 	/**
@@ -355,7 +470,7 @@ public class UkuInputDialog extends Dialog {
 			errorMessageText.setEnabled(hasError);
 			errorMessageText.setVisible(hasError);
 			errorMessageText.getParent().update();
-			errorMessageText.setForeground(new Color(null,255,0,0));
+			errorMessageText.setForeground(new Color(null, 255, 0, 0));
 			// Access the ok button by id, in case clients have overridden
 			// button creation.
 			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=113643
@@ -378,26 +493,50 @@ public class UkuInputDialog extends Dialog {
 	protected int getInputTextStyle() {
 		return SWT.SINGLE | SWT.BORDER;
 	}
-
+	
 	public Map<Integer, RequestContainer> getValues() {
 		/*
-		for (String key : texts.keySet()) {
-			RequestContainer req = requests.get(key);
-			// if (buttonId == IDialogConstants.OK_ID) {
-			Control tmp = texts.get(key);
-			if (tmp instanceof Text)
-				req.result = ((Text) tmp).getText();
-			// requests.put(key, request.get);//
-			else if (tmp instanceof CCombo) {
-				CCombo combo = ((CCombo) tmp);
-				req.result = combo.getItem(combo.getSelectionIndex());
-				System.out.println("result > " + req.result);
-
-			} else {
-				req.result = "";
-			}
-			requests.put(key, req);
-		}*/
+		Map<Integer,RequestContainer> result = requests;
+		RequestContainer rc = new RequestContainer(null, "", "");
+		List<Integer> params = new ArrayList<Integer>();
+		params.add(choosen);
+		for(int i = 1; i <4; i++){
+			String v = parameters.get(i).getValue();
+			params.add(Integer.parseInt(v));
+			if(choosen!= 0)
+				break;
+		}
+		rc.requests = params;
+		result.put(-1, rc);
+		*/
 		return requests;
 	}
+
+	class Tupel {
+		private Label lb;
+		private Text text;
+		public Tupel(Label l, Text t){
+			this.lb = l;
+			this.text = t;
+			text.addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent e) {
+					validateInput();
+				}
+			});
+		}
+		public void setText(String newText){
+			lb.setText(newText);
+		}
+		public void setValue(Serializable value){
+			text.setText(value.toString());
+		}
+		public String getValue(){
+			return text.getText();
+		}
+		public void setVisible(boolean visible){
+			lb.setVisible(visible);
+			text.setVisible(visible);
+		}
+	}
+	
 }

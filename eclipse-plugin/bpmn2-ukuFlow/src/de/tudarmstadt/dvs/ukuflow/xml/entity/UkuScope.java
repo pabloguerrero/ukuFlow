@@ -52,7 +52,9 @@ public class UkuScope extends UkuEntity {
 	public UkuScope(String id) {
 		super(id);
 	}
-
+	public String getName(){
+		return name;
+	}
 	public void setScript(String script) {
 		if(script == null || script.equals("")){
 			return;

@@ -30,6 +30,7 @@
 
 package de.tudarmstadt.dvs.ukuflow.validation;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -74,7 +75,7 @@ public class UkuProcessValidation {
 					if (start == null) {
 						start = ev;
 					} else {
-						ev.addErrorMessage("process should have only one Start Event");
+						ev.addErrorMessage("Process should have only one Start Event");
 					}
 				} else if (ev.getType() == UkuConstants.WorkflowOperators.END_EVENT) {
 					if (end == null) {
@@ -95,8 +96,8 @@ public class UkuProcessValidation {
 				validate((UkuSequenceFlow) e);
 			} else if (e instanceof UkuGateway) {
 				validate((UkuGateway) e);
-			} else if (e instanceof UkuReceiveTask){
-				validate((UkuReceiveTask)e);
+			} else if (e instanceof UkuReceiveTask) {
+				validate((UkuReceiveTask) e);
 			} else {
 				System.err.println(e);
 			}
@@ -120,10 +121,12 @@ public class UkuProcessValidation {
 		}
 		if (balanceCheck && ErrorManager.getInstance().isValid()) {
 			UkuElement last = wellformednessChecking3(start);
-			if (last != null && last instanceof UkuEvent && ((UkuEvent)last).getType()==UkuConstants.WorkflowOperators.END_EVENT)
+			if (last != null
+					&& last instanceof UkuEvent
+					&& ((UkuEvent) last).getType() == UkuConstants.WorkflowOperators.END_EVENT)
 				log.info("workflow is well-formed");
-			else 
-				log.error("workflow is not well-formed "+ last);
+			else
+				log.error("workflow is not well-formed " + last);
 		}
 
 	}
@@ -132,8 +135,15 @@ public class UkuProcessValidation {
 	 * @param e
 	 */
 	private void validate(UkuReceiveTask e) {
-		// TODO Auto-generated method stub
-		
+		if (e.getIncomingEntity() == null || e.getIncomingEntity().size() == 0) {
+			e.addErrorMessage("This Receive Task can not be reached from the start event");
+		} else if (!(e.getIncomingEntity().get(0).getSourceEntity() instanceof UkuEventGateway)) {
+			e.addErrorMessage("Receive Task should only be placed after a Event Based Gateway");
+		}
+		if (e.getOutgoingEntity() == null || e.getOutgoingEntity().size() == 0) {
+			e.addErrorMessage("This ReceiveTask has no outgoing sequence flow");
+		}
+
 	}
 
 	/**
@@ -174,7 +184,7 @@ public class UkuProcessValidation {
 				return wellformednessChecking3((UkuElement) start
 						.getOutgoingEntity().get(0).getTargetEntity());
 			else {
-				log.debug("Activity has more than one outgoing???");// TODO:ERROR:
+				log.debug("Activity has more than one outgoing???");
 				return null;
 			}
 
@@ -188,27 +198,29 @@ public class UkuProcessValidation {
 					UkuElement t = wellformednessChecking3((UkuElement) seq
 							.getTargetEntity());
 					nextElement.add(t);
-					
+
 				}
 				if (nextElement.size() > 1) {
-					String msg ="found "+nextElement.size() + " matched gateway:";
-					boolean coma= false;
-					for(UkuElement e : nextElement){
-						if(coma)
-							msg+=", ";
-						coma=true;
-						if(e!=null)
+					String msg = "found " + nextElement.size()
+							+ " matched gateway:";
+					boolean coma = false;
+					for (UkuElement e : nextElement) {
+						if (coma)
+							msg += ", ";
+						coma = true;
+						if (e != null)
 							msg += e.getID();
 						else {
-							msg =null;
+							msg = null;
 							break;
 						}
 					}
-					if(msg!=null){
-						msg+=" (Note that each diverging gateway must have one and only one matched converging gateway)";
+					if (msg != null) {
+						msg += " (Note that each diverging gateway must have one and only one matched converging gateway)";
 						start.addErrorMessage(msg);
-					} else{
-						start.addErrorMessage("couldn't find a matched converging gateway for diverging gateway "+start.getID());
+					} else {
+						start.addErrorMessage("Couldn't find a matched converging gateway for diverging gateway "
+								+ start.getID());
 					}
 					return null;
 				} else {
@@ -216,8 +228,10 @@ public class UkuProcessValidation {
 					if (res instanceof UkuGateway) {
 						UkuGateway g = (UkuGateway) res;
 
-						if (checkmatchedGateway((UkuGateway)start, g))
-							return wellformednessChecking3((UkuElement) g.getOutgoingEntity().get(0).getTargetEntity());
+						if (checkmatchedGateway((UkuGateway) start, g))
+							return wellformednessChecking3((UkuElement) g
+									.getOutgoingEntity().get(0)
+									.getTargetEntity());
 					}
 					return null;
 				}
@@ -312,7 +326,7 @@ public class UkuProcessValidation {
 					diverging.add(g);
 				} else {
 					// TODO
-					g.addErrorMessage("this error shouldn't happend, please contact dangquochien@gmail.com");
+					g.addErrorMessage("This error shouldn't happend, please contact dangquochien@gmail.com");
 					return;
 				}
 			}
@@ -337,8 +351,8 @@ public class UkuProcessValidation {
 						done = false;
 						break;
 					} else {
-						log.info("not match: " + g + " -> " + lfrom
-								+ "\n" + to + " -> " + lto);
+						log.info("not match: " + g + " -> " + lfrom + "\n" + to
+								+ " -> " + lto);
 					}
 				}
 			}
@@ -365,7 +379,7 @@ public class UkuProcessValidation {
 				event.addErrorMessage("StartEvent cannot have incoming connection");
 			break;
 		default:
-			event.addErrorMessage("this type of event is not supported yet");
+			event.addErrorMessage("This type of event is not supported yet");
 			break;
 		}
 	}
@@ -375,7 +389,7 @@ public class UkuProcessValidation {
 				|| task.getOutgoingID().size() != 1)
 			task.addErrorMessage("A Script task must have exactly one incoming and one outgoing connection");
 		if (!task.hasScript()) {
-			task.addErrorMessage("has no script");
+			task.addErrorMessage("Has no script");
 		} else if (task.isValid()) {
 			for (TaskScriptFunction tsf : task.getStatements()) {
 				validate(task, tsf);
@@ -393,8 +407,13 @@ public class UkuProcessValidation {
 			try {
 				ScopeManager.getInstance().getScopeID(sName);
 			} catch (ScopeNotExistException e) {
-				parent.addErrorMessage("couldn't found the declaration for scope "
-						+ sName);
+				List<String> scopes = new ArrayList<String>();
+				for(UkuScope sp : process.getScope()){
+					scopes.add(sp.getName());
+				}
+				parent.addErrorMessage("No declaration for scope '"
+						+ sName + "'. Declared scopes are "+scopes);
+				
 			}
 		}
 	}
@@ -416,12 +435,12 @@ public class UkuProcessValidation {
 			case UkuConstants.WorkflowOperators.INCLUSIVE_DECISION_GATEWAY:
 			case UkuConstants.WorkflowOperators.EXCLUSIVE_DECISION_GATEWAY:
 				if (!sef.hasCondition() && !sef.isDefault()) {
-					sef.addErrorMessage("sequence Flow has no condition or condition expression has incorrect syntax");
+					sef.addErrorMessage("Sequence Flow has no condition or condition expression has incorrect syntax");
 				}
 				break;
 			case UkuConstants.WorkflowOperators.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY:
 				if (sef.hasCondition()) {
-					sef.addErrorMessage("this sequence flow shouldn't have condition");
+					sef.addErrorMessage("This sequence flow shouldn't have condition");
 				}
 			default:
 				break;
