@@ -337,7 +337,7 @@ static long int eval_predicate_get(void) {
 static long int eval_uint8_value(void) {
 	uint8_t retval = read_byte();
 
-	PRINTF(5, "uint8 converted value is %li\n", retval);
+	PRINTF(5, "uint8 converted value is %li\n", (long int)retval);
 	return (retval);
 }
 
@@ -393,11 +393,11 @@ static long int eval_repository_value(void) {
 		if (data != NULL) {
 			uint16_t retval = *((uint16_t*) data);
 
-			PRINTF(5, "(EXPRESSION-EVAL) repo value: %u\n", retval);
+			PRINTF(5, "(EXPR-EVAL) repo value: %u\n", retval);
 
 			return (retval);
 		}
-		PRINTF(5, "(EXPRESSION-EVAL) Repository entry not found!\n");
+		PRINTF(5, "(EXPR-EVAL) Repository entry not found!\n");
 	}
 	return (0);
 }
