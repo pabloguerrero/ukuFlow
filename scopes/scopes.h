@@ -84,7 +84,7 @@
 #define SCOPES_MAX_SUBSCRIBER 2
 
 /** \brief Constant specifying the frequency (in seconds) with which dynamic scopes will be checked */
-#define SCOPES_TIMER_DURATION 2
+#define SCOPES_TIMER_DURATION 20 //2
 
 /** \brief Constant specifying the factor for re announcements of scopes (compared to a scope's TTL)*/
 #define SCOPES_REANNOUNCE_FACTOR 0.3
@@ -143,8 +143,6 @@ struct scope {
 	scope_id_t super_scope_id;
 	/** \brief Subscribed application that owns (uses) this scope */
 	struct scopes_subscriber *owner;
-	/** \brief Usage counter (in case the application opens it more than once) */
-	uint8_t use_counter;
 	/** \brief Time to live of the scope */
 	scope_ttl_t ttl;
 	/** \brief Callback timer for invoking the handling function when the ttl expires */
@@ -153,55 +151,14 @@ struct scope {
 	scope_status_t status;
 	/** \brief Flags of this scope */
 	scope_flags_t flags;
+	/** \brief Usage counter (in case the application opens it more than once) */
+	uint8_t use_counter;
+	/** \brief Length of the specification */
+	data_len_t spec_len;
 	/** \brief Pointer to specification of the scope */
 	void *specs;
-	/** \brief Length of the specification */
-	data_len_t spec_len;
 };
 
-/* Message types */
-/** \brief	Structure defining the contents of a message requesting to open a scope */
-struct scopes_msg_open {
-	/** \brief Scope id of the parent scope*/
-	scope_id_t scope_id;
-	/** \brief Type of the message (see message types as constants) */
-	msg_type_t type;
-	/** \brief Scope id of the scope to open*/
-	scope_id_t sub_scope_id;
-	/** \brief Subscriber id of the owning application */
-	subscriber_id_t owner_sid;
-	/** \brief Time to live of the scope */
-	scope_ttl_t ttl;
-	/** \brief Flags of the scope being opened */
-	scope_flags_t flags;
-	/** \brief Length of the specification */
-	data_len_t spec_len;
-/** followed by the byte array containing the specification */
-};
-
-/** \brief	Structure defining the contents of a message requesting to close a scope */
-struct scopes_msg_close {
-	/** \brief Scope id of the parent scope */
-	scope_id_t scope_id;
-	/** \brief Type of the message (see message types as constants) */
-	msg_type_t type;
-	/** \brief Scope id of the scope to close */
-	scope_id_t sub_scope_id;
-};
-
-/** \brief	Structure defining the header of a message containing data to be sent through a scope */
-struct scopes_msg_data {
-	/** \brief Scope id of the scope through which the message should be sent */
-	scope_id_t scope_id;
-	/** \brief Type of the message (see message types as constants) */
-	msg_type_t type;
-	/** \brief Direction of the message (0: to members, 1: to creator) */
-	msg_direction_t to_creator;
-	/** \brief Length, in bytes, of the payload */
-	data_len_t data_len;
-	/** \brief Address of the originating node which sent the message */
-	rimeaddr_t source;
-};
 
 #endif
 /** @} */
