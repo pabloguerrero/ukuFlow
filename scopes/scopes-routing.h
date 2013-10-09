@@ -112,14 +112,58 @@ struct scopes_routing name = { /**/ \
 /** \brief Constant specifying the scope id of the world scope (the universe) */
 #define SCOPES_WORLD_SCOPE_ID 255
 
+/* Message types */
 /**
  * \brief		Data structure for all scope messages
  */
-struct scopes_msg_generic {
+struct __attribute__((__packed__)) scopes_msg_generic {
 	/** \brief Scope id that this message refers to */
 	scope_id_t scope_id;
 	/** \brief Type of scope message */
 	msg_type_t type;
+};
+
+/** \brief	Structure defining the contents of a message requesting to open a scope */
+struct __attribute__((__packed__)) scopes_msg_open {
+	/** \brief Scope id of the parent scope*/
+	scope_id_t scope_id;
+	/** \brief Type of the message (see message types as constants) */
+	msg_type_t type;
+	/** \brief Scope id of the scope to open*/
+	scope_id_t sub_scope_id;
+	/** \brief Subscriber id of the owning application */
+	subscriber_id_t owner_sid;
+	/** \brief Time to live of the scope */
+	scope_ttl_t ttl;
+	/** \brief Flags of the scope being opened */
+	scope_flags_t flags;
+	/** \brief Length of the specification */
+	data_len_t spec_len;
+/** followed by the byte array containing the specification */
+};
+
+/** \brief	Structure defining the contents of a message requesting to close a scope */
+struct __attribute__((__packed__)) scopes_msg_close {
+	/** \brief Scope id of the parent scope */
+	scope_id_t scope_id;
+	/** \brief Type of the message (see message types as constants) */
+	msg_type_t type;
+	/** \brief Scope id of the scope to close */
+	scope_id_t sub_scope_id;
+};
+
+/** \brief	Structure defining the header of a message containing data to be sent through a scope */
+struct __attribute__((__packed__)) scopes_msg_data {
+	/** \brief Scope id of the scope through which the message should be sent */
+	scope_id_t scope_id;
+	/** \brief Type of the message (see message types as constants) */
+	msg_type_t type;
+	/** \brief Direction of the message (0: to members, 1: to creator) */
+	msg_direction_t to_creator;
+	/** \brief Length, in bytes, of the payload */
+	data_len_t data_len;
+	/** \brief Address of the originating node which sent the message */
+	rimeaddr_t source;
 };
 
 extern void scopes_receive(struct scopes_msg_generic *gmsg);

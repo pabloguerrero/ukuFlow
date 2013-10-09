@@ -142,7 +142,7 @@ static int receive_tree_update(struct netflood_conn *c, const rimeaddr_t *from,
 
 	PRINTF(5,
 			"(SCOPES-SELFUR) Received a tree update from [%u.%u], hop-count: %u.\n",
-			from->u8[1], from->u8[0], hops + 1);
+			from->u8[0], from->u8[1], hops);
 
 	/* check if the local node is the originator of the message */
 	if (!rimeaddr_cmp(&rimeaddr_node_addr, originator)) {
@@ -151,14 +151,14 @@ static int receive_tree_update(struct netflood_conn *c, const rimeaddr_t *from,
 		if (r != NULL) {
 			PRINTF(5,
 					"(SCOPES-SELFUR) there was already a routing entry for the originator [%u.%u]\n",
-					originator->u8[1], originator->u8[0]);
+					originator->u8[0], originator->u8[1]);
 
 			/* update the originator's existing routing entry */
 			update_routing_entry(r, from, hops + 1);
 		} else {
 			PRINTF(5,
 					"(SCOPES-SELFUR) there wasn't a routing entry for the originator [%u.%u], so one will be created.\n",
-					originator->u8[1], originator->u8[0]);
+					originator->u8[0], originator->u8[1]);
 
 			/* add a new routing entry for the originator */
 			add_routing_entry(originator, from, hops + 1);
@@ -215,10 +215,10 @@ static void receive_activation(struct runicast_conn *c, const rimeaddr_t *from,
 static int receive_flood_data(struct netflood_conn *c, const rimeaddr_t *from,
 		const rimeaddr_t *originator, uint8_t seqno, uint8_t hops) {
 	PRINTF(5,
-			"(SCOPES-SELFUR) Received flood data from [%u.%u] orig [%u.%u] num scope_e %u, num rou_e %d\n",
+			"(SCOPES-SELFUR) Received flood data from [%u.%u] orig [%u.%u] num scope_e %u, num rou_e %d, hops %d\n",
 			from->u8[0], from->u8[1], originator->u8[0], originator->u8[1],
-			list_length(scopes_list), list_length(routing_list));
-	PRINT_ARR(3, packetbuf_dataptr(), packetbuf_datalen());
+			list_length(scopes_list), list_length(routing_list), hops);
+	PRINT_ARR(5, packetbuf_dataptr(), packetbuf_datalen());
 
 	/* bail out if address is invalid! */
 	if (rimeaddr_cmp(originator, &rimeaddr_null))
@@ -273,12 +273,14 @@ static int receive_flood_data(struct netflood_conn *c, const rimeaddr_t *from,
 		}
 
 		/* call scopes */
-		PRINTF(4,
+		PRINTF(5,
 				"(SCOPES-SELFUR) Invoking scopes_receive() with payload: from [%u.%u], orig [%u.%u], ",
 				from->u8[0], from->u8[1], originator->u8[0], originator->u8[1]);
-		PRINT_ARR(3, (uint8_t* )gmsg, packetbuf_datalen());
+		PRINT_ARR(5, (uint8_t* )gmsg, packetbuf_datalen());
 		scopes_receive(gmsg);
 	}
+	else
+		PRINTF(5, "(SCOPES-SELFUR) Received flood data but no routing entry for that originator node [%u.%u]!\n", originator->u8[0], originator->u8[1]);
 
 	/* return rebroadcast decision */
 	return (rebroadcast);
@@ -312,7 +314,7 @@ static void receive_unicast_data(struct unicast_conn *c, const rimeaddr_t *from)
 	/* Call scopes */
 	scopes_receive(gmsg);
 
-	PRINTF(4, "(SCOPES-SELFUR) Data passed to scopes_received ()\n");
+	PRINTF(5, "(SCOPES-SELFUR) Data passed to scopes_received ()\n");
 
 	/* Remaining code commented out to avoid forwarding the message automatically.
 	 * Instead, the upper layer will request the reforwarding based on its processing.
@@ -718,7 +720,7 @@ static void remove_routing_entry(struct routing_entry *r) {
 /** \brief		TODO */
 static void add_scope_entry(scope_id_t scope_id, struct routing_entry *r) {
 	/* check if memory is available */
-	PRINTF(4, "(SCOPES-SELFUR) Adding scope routing entry with root %u.%u\n",
+	PRINTF(5, "(SCOPES-SELFUR) Adding scope routing entry with root %u.%u\n",
 			r->root.u8[0], r->root.u8[1]);
 	struct scope_entry *s = (struct scope_entry *) memb_alloc(&scopes_mem);
 	if (s != NULL) {

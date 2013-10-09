@@ -20,7 +20,7 @@ static uint8_t seqno = SCOPES_FLOODING_FIRST_SEQNO;
 
 static void scopes_flooding_init(void) {
 	netflood_open(&netflood, SCOPES_FLOODING_QUEUE_TIME,
-			SCOPES_FLOODING_CHANNEL, &callbacks);
+	SCOPES_FLOODING_CHANNEL, &callbacks);
 }
 
 static void scopes_flooding_send(scope_id_t scope_id, bool to_creator) {
@@ -51,6 +51,7 @@ static uint8_t *scopes_flooding_buffer_ptr(bool to_creator) {
 	return (packetbuf_dataptr());
 }
 
+
 static void scopes_flooding_buffer_setlen(bool to_creator, uint16_t len) {
 	packetbuf_set_datalen(len);
 }
@@ -66,5 +67,8 @@ ROUTING(scopes_flooding, //
 		scopes_flooding_leave,//
 		scopes_flooding_buffer_clear,//
 		scopes_flooding_buffer_ptr,//
-		scopes_flooding_buffer_setlen);
+		scopes_flooding_buffer_setlen,//
+		NULL,//
+		NULL);
+
 /** @} */

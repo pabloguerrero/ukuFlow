@@ -64,10 +64,10 @@ static bool check(void *specs, data_len_t spec_len) {
 
 	if (scopes_repository_id != 0) {
 		expression_eval_set_repository(scopes_repository_id);
-		return expression_eval_evaluate(specs, spec_len);
+		return (expression_eval_evaluate(specs, spec_len));
 	} else {
 		PRINTF(5,"(SCOPES-MEMBER) No data repository to use for checking expression, canceling!\n");
-		return FALSE;
+		return (FALSE);
 	}
 }
 
