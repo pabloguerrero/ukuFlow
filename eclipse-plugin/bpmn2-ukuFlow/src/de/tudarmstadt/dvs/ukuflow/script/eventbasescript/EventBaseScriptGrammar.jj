@@ -26,7 +26,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- */options{  LOOKAHEAD= 2;  CHOICE_AMBIGUITY_CHECK = 2;  OTHER_AMBIGUITY_CHECK = 1;  STATIC = false;  DEBUG_PARSER = false;  DEBUG_LOOKAHEAD = false;  DEBUG_TOKEN_MANAGER = false;  ERROR_REPORTING = true;  JAVA_UNICODE_ESCAPE = false;  UNICODE_INPUT = true;  IGNORE_CASE = true;  USER_TOKEN_MANAGER = false;  USER_CHAR_STREAM = false;  BUILD_PARSER = true;  BUILD_TOKEN_MANAGER = true;  SANITY_CHECK = true;  FORCE_LA_CHECK = false;}PARSER_BEGIN(EventBaseScript)package de.tudarmstadt.dvs.ukuflow.script.eventbasescript;import java.io.*;import java.util.List;import java.util.ArrayList;import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.*;import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.ChannelIDManager;public class EventBaseScript{  private static EventBaseScript INSTANCE;  public static void main(String args []) throws ParseException  {    String fileName = "eventbasescript.txt";    EventBaseScript INSTANCE = null;    try    {      INSTANCE = new EventBaseScript(new FileInputStream(fileName));    }    catch (FileNotFoundException e1)    {      e1.printStackTrace();    }    System.out.println("testbegin");    INSTANCE.validate();    System.out.println("testdone");  }  public static EventBaseScript getInstance(String text)  {    InputStream is = null;    try    {      is = new ByteArrayInputStream(text.getBytes("UTF-8"));    }    catch (UnsupportedEncodingException e)    {      e.printStackTrace();    }    if (INSTANCE == null) INSTANCE = new EventBaseScript(is);    else INSTANCE.ReInit(is);    //INSTANCE.errors = new LinkedList < String > ();
+ */options{  LOOKAHEAD= 3;  CHOICE_AMBIGUITY_CHECK = 2;  OTHER_AMBIGUITY_CHECK = 1;  STATIC = false;  DEBUG_PARSER = false;  DEBUG_LOOKAHEAD = false;  DEBUG_TOKEN_MANAGER = false;  ERROR_REPORTING = true;  JAVA_UNICODE_ESCAPE = false;  UNICODE_INPUT = true;  IGNORE_CASE = true;  USER_TOKEN_MANAGER = false;  USER_CHAR_STREAM = false;  BUILD_PARSER = true;  BUILD_TOKEN_MANAGER = true;  SANITY_CHECK = true;  FORCE_LA_CHECK = false;}PARSER_BEGIN(EventBaseScript)package de.tudarmstadt.dvs.ukuflow.script.eventbasescript;import java.io.*;import java.util.List;import java.util.ArrayList;import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.*;import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.ChannelIDManager;import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
+public class EventBaseScript{  private static EventBaseScript INSTANCE;  private static BpmnLog log = BpmnLog.getInstance(EventBaseScript.class.getSimpleName());  public static void main(String args []) throws ParseException  {    String fileName = "eventbasescript.txt";    EventBaseScript INSTANCE = null;    try    {      INSTANCE = new EventBaseScript(new FileInputStream(fileName));    }    catch (FileNotFoundException e1)    {      e1.printStackTrace();    }    log.debug("testbegin");    INSTANCE.validate();    log.debug("testdone");  }  public static EventBaseScript getInstance(String text)  {    InputStream is = null;    try    {      is = new ByteArrayInputStream(text.getBytes("UTF-8"));    }    catch (UnsupportedEncodingException e)    {      e.printStackTrace();    }    if (INSTANCE == null) INSTANCE = new EventBaseScript(is);    else INSTANCE.ReInit(is);    //INSTANCE.errors = new LinkedList < String > ();
     //INSTANCE.variables = new LinkedList < String > ();
     return INSTANCE;  }}PARSER_END(EventBaseScript)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* binary logical operators */{  < AND :    (      "AND"      //    | "&"
     | "&&"    ) >| < OR :    (      "OR"      //    | "|"
@@ -46,22 +47,24 @@ TOKEN :{  < EVENT_OUTPUT_TYPE :    (      "TYPE"    | "OPERATOR_ID"    | "
 | < STDEV_COMPOSITION_EF : "STDEV_COMPOSITION_EF" >
 | < INCREASE_EF : "INCREASE_EF" >
 | < DECREASE_EF : "DECREASE_EF" >
-| < REMAIN_EF : "REMAIN_EF" >| < TOP : "TOP" >}TOKEN : /* SENSOR TYPE */{  < SENSOR_TYPE :    (      "SENSOR_LIGHT_PAR_RAW"    | "SENSOR_LIGHT_TSR_RAW"    | "SENSOR_TEMPERATURE_RAW"    | "SENSOR_TEMPERATURE_CELSIUS"    | "SENSOR_TEMPERATURE_FAHRENHEIT"    | "SENSOR_HUMIDITY_RAW"    | "SENSOR_HUMIDITY_PERCENT"    | "SENSOR_ACCM_X_AXIS"    | "SENSOR_ACCM_Y_AXIS"    | "SENSOR_ACCM_Z_AXIS"    | "SENSOR_VOLTAGE_RAW"    | "SENSOR_CO2"    | "SENSOR_CO"    | "NODE_ID"    ) >}TOKEN : /* Numeric CONSTANTS */{ < POSITIVE_NUMBER : (["0"-"9"])+ >
+| < REMAIN_EF : "REMAIN_EF" >| < TOP : "TOP" >}TOKEN : /* SENSOR TYPE */{  < SENSOR_TYPE :    (      "SENSOR_LIGHT_PAR_RAW"    | "SENSOR_LIGHT_TSR_RAW"    | "SENSOR_TEMPERATURE_RAW"    | "SENSOR_TEMPERATURE_CELSIUS"    | "SENSOR_TEMPERATURE_FAHRENHEIT"    | "SENSOR_HUMIDITY_RAW"    | "SENSOR_HUMIDITY_PERCENT"    | "SENSOR_ACCM_X_AXIS"    | "SENSOR_ACCM_Y_AXIS"    | "SENSOR_ACCM_Z_AXIS"    | "SENSOR_VOLTAGE_RAW"    | "SENSOR_CO2"    | "SENSOR_CO"    | "NODE_ID"    ) >}TOKEN :
+{
+  
+    < M : "m" < POSITIVE_NUMBER >>
+    |
+    < V : "v" < POSITIVE_NUMBER >>
+    |
+    < A : "a" < POSITIVE_NUMBER >>
+    |
+    < K : "k" < POSITIVE_NUMBER >>
+  	|
+  	< I : "i" < POSITIVE_NUMBER >> 
+ 
+}TOKEN : /* Numeric CONSTANTS */{ < POSITIVE_NUMBER : (["0"-"9"])+ >
 //| < NEGATIVE_NUMBER : "-" (["0"-"9"])+ >}TOKEN :{  < BINARY : ([ "0", "1" ])+ >}TOKEN : /**/{  < PATTERN :    (      "p"    | "P"    )    < BINARY >>}TOKEN :
 {
   < REPETITION : "x" < POSITIVE_NUMBER >>}
- TOKEN :
-{
-  
-    < M : "m" >
-    |
-    < V : "v" >
-    |
-    < A : "a" >
-    |
-    < K : "k" >
-  	|
-  	< I : "i" >  }/*
+ /*
 TOKEN :
 {
   < PERIODIC:"PERIODIC_EG" >
@@ -160,42 +163,52 @@ String variable():{
     {      result.minute = Integer.parseInt(token.image.trim());    }    ":" < POSITIVE_NUMBER > /// second
     {      result.second = Integer.parseInt(token.image.trim());    }  )  {    return result;  }}EAperiodicPatternedEG APEG() : /* APERIODIC PATTERNED*/{  EAperiodicPatternedEG result = new EAperiodicPatternedEG();  TimeExpression time;}{  < APEG > < SENSOR_TYPE >  {    result.setSensorType(token.image.trim());  }  < PATTERN >  {
     result.setPattern(token.image.trim());  }  "^"   time = timeExpression()  {    result.setTime(time);  }  "@s" < IDENTIFIER >  {    result.setScope(token.image.trim());    return result;  }}EAperiodicDistributionEG ADEG() : /*APERIODIC DISTRIBUTED */{  EAperiodicDistributionEG result = new EAperiodicDistributionEG();  //String function = null; //List < Integer > params = new ArrayList < Integer > ();
-  EDistributionFunction func = null;  int tmp = 0;  TimeExpression period_length = null;  TimeExpression evaluation_frequency = null;}{  < ADEG > < SENSOR_TYPE >  {    result.setSensorType(token.image.trim());  }  "^"   period_length = timeExpression()   < I >   evaluation_frequency = timeExpression()   //function
+  EDistributionFunction func = null;  int tmp = 0;  TimeExpression period_length = null;  TimeExpression evaluation_frequency = null;}{  < ADEG > < SENSOR_TYPE >  {    result.setSensorType(token.image.trim());  }  "^"   period_length = timeExpression()
+  {
+    log.debug("parse time exp was successful");
+    result.setPeriodInterval(period_length);  }  //< I >
+  "#"  evaluation_frequency = timeExpression()
+  {
+    log.debug("2. parse time exp was successful");
+    result.setEvaluationInterval(evaluation_frequency);
+  }   //function
   (
     (      < GAUSSIAN_DISTRIBUTION >
-      < M >
-      < POSITIVE_NUMBER >
       {
-        EGausianFunction func_t = new EGausianFunction();        func_t.setM(Integer.parseInt(token.image));
+        log.debug("gaussian");      }
+      < M >
+      {
+        EGausianFunction func_t = new EGausianFunction();        func_t.setM(Integer.parseInt(token.image.trim().replace("m","")));
         //SET M
       }
       < V >
-      < POSITIVE_NUMBER >
       {
         //SET V
-        func_t.setV(Integer.parseInt(token.image));      }
+        func_t.setV(Integer.parseInt(token.image.trim().replace("v","")));      }
       < A >
-      < POSITIVE_NUMBER >
       {
-        func_t.setA(Integer.parseInt(token.image));
+        func_t.setA(Integer.parseInt(token.image.trim().replace("a","")));
         func = func_t;      }
     )
     |
     (      < CHI_SQUARE_DISTRIBUTION >
       < K >
-      < POSITIVE_NUMBER >
       {
-        //set k      }
+        EChiSquareFunction func_t = new EChiSquareFunction();
+        func_t.setK(Integer.parseInt(token.image.trim().replace("k","")));
+        func = func_t;      }
      )
     |
     (
     < PARETO_DISTRIBUTION >
     < A >
-    < POSITIVE_NUMBER >
+    //< POSITIVE_NUMBER >
     {
-      //SET A    }
-    )  )
-    {   result.setFunction(func);  }  "@s" < IDENTIFIER >  {    result.setScope(token.image.trim());    return result;  }}ESimpleEF SEF() : /* SIMPLE EVENT FILTER*/{  ESimpleEF result = new ESimpleEF();  List < ESimpleFilterNestedConstraint > constraints = new ArrayList < ESimpleFilterNestedConstraint > ();  ESimpleFilterNestedConstraint constr = null;
+     	EParetoFunction func_t = new EParetoFunction();
+     	func_t.setA(Integer.parseInt(token.image.trim().replace("a","")));
+     	func=func_t;    }
+    )  
+)  {   result.setFunction(func);  }  "@s" < IDENTIFIER >  {    result.setScope(token.image.trim());    return result;  }}ESimpleEF SEF() : /* SIMPLE EVENT FILTER*/{  ESimpleEF result = new ESimpleEF();  List < ESimpleFilterNestedConstraint > constraints = new ArrayList < ESimpleFilterNestedConstraint > ();  ESimpleFilterNestedConstraint constr = null;
   EventBaseOperator source = null;}{  < SEF > "[" constr = nestedConstraint()  {    if (constr != null)    {      constraints.add(constr);    }  }  (    "," constr = nestedConstraint()    {      if (constr != null)      {        constraints.add(constr);      }      else      { //TODO error
       }    }  )*  "]"
   "(" 	source = Terminate_Operand()   ")"  {

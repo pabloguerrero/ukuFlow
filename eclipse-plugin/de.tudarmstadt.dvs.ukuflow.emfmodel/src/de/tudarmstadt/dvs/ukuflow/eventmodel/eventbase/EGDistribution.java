@@ -11,9 +11,10 @@ package de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getTime <em>Time</em>}</li>
+ *   <li>{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getPeriodInterval <em>Period Interval</em>}</li>
  *   <li>{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getFunction <em>Function</em>}</li>
  *   <li>{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getParameters <em>Parameters</em>}</li>
+ *   <li>{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getEvaluationInterval <em>Evaluation Interval</em>}</li>
  * </ul>
  * </p>
  *
@@ -23,30 +24,30 @@ package de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase;
  */
 public interface EGDistribution extends EGRecurring {
 	/**
-	 * Returns the value of the '<em><b>Time</b></em>' attribute.
+	 * Returns the value of the '<em><b>Period Interval</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Time</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Period Interval</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Time</em>' attribute.
-	 * @see #setTime(int)
-	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEGDistribution_Time()
+	 * @return the value of the '<em>Period Interval</em>' attribute.
+	 * @see #setPeriodInterval(String)
+	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEGDistribution_PeriodInterval()
 	 * @model
 	 * @generated
 	 */
-	int getTime();
+	String getPeriodInterval();
 
 	/**
-	 * Sets the value of the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getTime <em>Time</em>}' attribute.
+	 * Sets the value of the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getPeriodInterval <em>Period Interval</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Time</em>' attribute.
-	 * @see #getTime()
+	 * @param value the new value of the '<em>Period Interval</em>' attribute.
+	 * @see #getPeriodInterval()
 	 * @generated
 	 */
-	void setTime(int value);
+	void setPeriodInterval(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Function</b></em>' attribute.
@@ -99,5 +100,31 @@ public interface EGDistribution extends EGRecurring {
 	 * @generated
 	 */
 	void setParameters(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Evaluation Interval</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Evaluation Interval</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Evaluation Interval</em>' attribute.
+	 * @see #setEvaluationInterval(String)
+	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEGDistribution_EvaluationInterval()
+	 * @model
+	 * @generated
+	 */
+	String getEvaluationInterval();
+
+	/**
+	 * Sets the value of the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getEvaluationInterval <em>Evaluation Interval</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Evaluation Interval</em>' attribute.
+	 * @see #getEvaluationInterval()
+	 * @generated
+	 */
+	void setEvaluationInterval(String value);
 
 } // EGDistribution

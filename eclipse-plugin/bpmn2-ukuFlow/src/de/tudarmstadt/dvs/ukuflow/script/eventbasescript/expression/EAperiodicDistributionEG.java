@@ -29,18 +29,19 @@
  */
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
-import java.util.List;
-
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
 public class EAperiodicDistributionEG extends ERecurringEG{
 	private String functionName;
-	private List<Integer> parameters;
+	//private List<Integer> parameters;
 	private EDistributionFunction function;
-	public void setFunction(String name, List<Integer> params){
-		this.functionName = name;
-		this.parameters = params;
-	}
+	private TimeExpression periodInterval;
+	private TimeExpression evaluationInterval;
+	
+	//public void setFunction(String name, List<Integer> params){
+	//	this.functionName = name;
+		//this.parameters = params;
+	//}
 	public void setFunction(EDistributionFunction f){
 		function = f;
 	}
@@ -48,22 +49,33 @@ public class EAperiodicDistributionEG extends ERecurringEG{
 		return function;
 	}
 	
-	public List<Integer> getParameters(){
-		return parameters;
-	}
+	//public List<Integer> getParameters(){
+	//	return parameters;
+	//}
 	@Override
 	public void accept(EventBaseVisitor visitor) {
 		visitor.visit(this);
 	}
-	
+	public void setPeriodInterval(TimeExpression period){
+		this.periodInterval = period;
+	}
+	public void setEvaluationInterval(TimeExpression eval){
+		this.evaluationInterval = eval;
+	}
+	public TimeExpression getPeriodInterval(){
+		return periodInterval;
+	}
+	public TimeExpression getEvaluationInterval(){
+		return evaluationInterval;
+	}
 	@Override
 	public String toString(){
 		String s="";
 		s+= "[DISTRIBUTION="+functionName+"(";	
-		if(parameters != null)
-		for(Integer i : parameters){
-			s+= i +",";
-		}
+		//if(parameters != null)
+		//for(Integer i : parameters){
+		//	s+= i +",";
+		//}
 		s+="__";
 		s= s.replace(",__",")");
 		return "PEG_"+getSensorType()+"_"+s+"@"+getScope();

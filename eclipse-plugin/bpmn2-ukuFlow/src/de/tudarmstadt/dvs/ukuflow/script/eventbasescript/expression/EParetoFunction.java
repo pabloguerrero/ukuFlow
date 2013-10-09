@@ -51,8 +51,4 @@ public class EParetoFunction extends EDistributionFunction {
 	public void setA(int a){
 		this.a = a;
 	}
-	public void setParameter(int a){
-		this.a = a;
-	}
-
 }

@@ -860,13 +860,13 @@ public interface EventbasePackage extends EPackage {
 	int EG_DISTRIBUTION__REPETITION = EG_RECURRING__REPETITION;
 
 	/**
-	 * The feature id for the '<em><b>Time</b></em>' attribute.
+	 * The feature id for the '<em><b>Period Interval</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EG_DISTRIBUTION__TIME = EG_RECURRING_FEATURE_COUNT + 0;
+	int EG_DISTRIBUTION__PERIOD_INTERVAL = EG_RECURRING_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Function</b></em>' attribute.
@@ -887,13 +887,22 @@ public interface EventbasePackage extends EPackage {
 	int EG_DISTRIBUTION__PARAMETERS = EG_RECURRING_FEATURE_COUNT + 2;
 
 	/**
+	 * The feature id for the '<em><b>Evaluation Interval</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EG_DISTRIBUTION__EVALUATION_INTERVAL = EG_RECURRING_FEATURE_COUNT + 3;
+
+	/**
 	 * The number of structural features of the '<em>EG Distribution</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EG_DISTRIBUTION_FEATURE_COUNT = EG_RECURRING_FEATURE_COUNT + 3;
+	int EG_DISTRIBUTION_FEATURE_COUNT = EG_RECURRING_FEATURE_COUNT + 4;
 
 	/**
 	 * The meta object id for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventFilterImpl <em>Event Filter</em>}' class.
@@ -2426,15 +2435,15 @@ public interface EventbasePackage extends EPackage {
 	EClass getEGDistribution();
 
 	/**
-	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getTime <em>Time</em>}'.
+	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getPeriodInterval <em>Period Interval</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Time</em>'.
-	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getTime()
+	 * @return the meta object for the attribute '<em>Period Interval</em>'.
+	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getPeriodInterval()
 	 * @see #getEGDistribution()
 	 * @generated
 	 */
-	EAttribute getEGDistribution_Time();
+	EAttribute getEGDistribution_PeriodInterval();
 
 	/**
 	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getFunction <em>Function</em>}'.
@@ -2457,6 +2466,17 @@ public interface EventbasePackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getEGDistribution_Parameters();
+
+	/**
+	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getEvaluationInterval <em>Evaluation Interval</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Evaluation Interval</em>'.
+	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution#getEvaluationInterval()
+	 * @see #getEGDistribution()
+	 * @generated
+	 */
+	EAttribute getEGDistribution_EvaluationInterval();
 
 	/**
 	 * Returns the meta object for class '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventFilter <em>Event Filter</em>}'.
@@ -3197,12 +3217,12 @@ public interface EventbasePackage extends EPackage {
 		EClass EG_DISTRIBUTION = eINSTANCE.getEGDistribution();
 
 		/**
-		 * The meta object literal for the '<em><b>Time</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Period Interval</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute EG_DISTRIBUTION__TIME = eINSTANCE.getEGDistribution_Time();
+		EAttribute EG_DISTRIBUTION__PERIOD_INTERVAL = eINSTANCE.getEGDistribution_PeriodInterval();
 
 		/**
 		 * The meta object literal for the '<em><b>Function</b></em>' attribute feature.
@@ -3219,6 +3239,14 @@ public interface EventbasePackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute EG_DISTRIBUTION__PARAMETERS = eINSTANCE.getEGDistribution_Parameters();
+
+		/**
+		 * The meta object literal for the '<em><b>Evaluation Interval</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EG_DISTRIBUTION__EVALUATION_INTERVAL = eINSTANCE.getEGDistribution_EvaluationInterval();
 
 		/**
 		 * The meta object literal for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventFilterImpl <em>Event Filter</em>}' class.

@@ -62,11 +62,13 @@ public class EAperiodicPatternedEG extends ERecurringEG{
 			return null;
 		try{
 			int length = pattern.length()/8 + 1;
-			int t =  Integer.parseInt(pattern, 2);
 			List<Byte> result = new ArrayList<Byte>(length);
+			
+			int t =  Integer.parseInt(pattern, 2);
 			for(int i = 0; i < length; i++){
 				byte tmp = (byte) (t % 256);
 				result.add(length-i-1,tmp);
+				log.debug((i+1) + ". byte of the pattern!");
 			}
 			return result;
 		} catch (Exception e){

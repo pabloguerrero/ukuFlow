@@ -35,6 +35,7 @@ import java.util.List;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ScopeManager;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.visitor.ScriptVisitor;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.ScopeNotExistException;
 
 
@@ -42,7 +43,7 @@ public class ScopeFunction extends TaskScriptFunction{
 	private String scopeName;
 	private String functionName;
 	private List<UkuExpression> params;
-	
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	public ScopeFunction(String name) {
 		scopeName = name;
 	}
@@ -52,7 +53,7 @@ public class ScopeFunction extends TaskScriptFunction{
 		} catch (ScopeNotExistException e) {			
 			//e.printStackTrace();
 		}
-		System.out.println("something is wrong");
+		log.info("Captain Sum Ting Wong");
 		return -1;
 	}
 	public String getScopeName(){

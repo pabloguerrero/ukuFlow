@@ -79,23 +79,23 @@ public interface EventBaseScriptConstants {
   /** RegularExpression Id. */
   int SENSOR_TYPE = 38;
   /** RegularExpression Id. */
-  int POSITIVE_NUMBER = 39;
+  int M = 39;
   /** RegularExpression Id. */
-  int BINARY = 40;
+  int V = 40;
   /** RegularExpression Id. */
-  int PATTERN = 41;
+  int A = 41;
   /** RegularExpression Id. */
-  int REPETITION = 42;
+  int K = 42;
   /** RegularExpression Id. */
-  int M = 43;
+  int I = 43;
   /** RegularExpression Id. */
-  int V = 44;
+  int POSITIVE_NUMBER = 44;
   /** RegularExpression Id. */
-  int A = 45;
+  int BINARY = 45;
   /** RegularExpression Id. */
-  int K = 46;
+  int PATTERN = 46;
   /** RegularExpression Id. */
-  int I = 47;
+  int REPETITION = 47;
   /** RegularExpression Id. */
   int GAUSSIAN_DISTRIBUTION = 48;
   /** RegularExpression Id. */
@@ -153,15 +153,15 @@ public interface EventBaseScriptConstants {
     "\"REMAIN_EF\"",
     "\"TOP\"",
     "<SENSOR_TYPE>",
+    "<M>",
+    "<V>",
+    "<A>",
+    "<K>",
+    "<I>",
     "<POSITIVE_NUMBER>",
     "<BINARY>",
     "<PATTERN>",
     "<REPETITION>",
-    "\"m\"",
-    "\"v\"",
-    "\"a\"",
-    "\"k\"",
-    "\"i\"",
     "\"GAUSSIAN_DISTRIBUTION\"",
     "\"CHI_SQUARE_DISTRIBUTION\"",
     "\"PARETO_DISTRIBUTION\"",
@@ -175,6 +175,7 @@ public interface EventBaseScriptConstants {
     "\"^\"",
     "\":\"",
     "\"-\"",
+    "\"#\"",
     "\"[\"",
     "\",\"",
     "\"]\"",

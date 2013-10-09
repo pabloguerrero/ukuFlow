@@ -3,12 +3,8 @@
    <description name="UkuFlow Workflow Editor" url="www.dvs.tu-darmstadt.de/research/ukuflow/">
       ukuFlow is a workflow engine for wireless sensor networks and energy-efficient networked embedded devices. With ukuFlow, developers model the application logic using processes, or workflows, as programming abstraction. This macroprogramming approach enables domain experts to focus on the application logic, hiding away low-level system issues.
    </description>
-   <feature url="features/de.tudarmstadt.dvs.ukuflow.feature_1.0.0.201309182158.jar" id="de.tudarmstadt.dvs.ukuflow.feature" version="1.0.0.201309182158">
-      <category name="ukuflowID"/>
+   <feature url="features/de.tudarmstadt.dvs.ukuflow.feature_1.0.0.201310090837.jar" id="de.tudarmstadt.dvs.ukuflow.feature" version="1.0.0.201310090837">
+      <category name="de.tudarmstadt.dvs.ukuflow.category"/>
    </feature>
-   <category-def name="ukuflowID" label="UkuFlow">
-      <description>
-         ukuFlow is a workflow engine for wireless sensor networks and energy-efficient networked embedded devices. With ukuFlow, developers model the application logic using processes, or workflows, as programming abstraction. This macroprogramming approach enables domain experts to focus on the application logic, hiding away low-level system issues.
-      </description>
-   </category-def>
+   <category-def name="de.tudarmstadt.dvs.ukuflow.category" label="UkuFLow"/>
 </site>
