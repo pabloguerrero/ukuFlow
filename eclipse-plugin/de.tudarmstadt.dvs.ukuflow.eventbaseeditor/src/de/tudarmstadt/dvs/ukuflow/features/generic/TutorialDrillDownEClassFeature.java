@@ -65,7 +65,6 @@ public class TutorialDrillDownEClassFeature extends AbstractDrillDownFeature {
 			}
 		}
 		
-		System.out.println("Can Execute DrillDown? " + result);
 		return result;
 	}
 	
@@ -79,7 +78,6 @@ public class TutorialDrillDownEClassFeature extends AbstractDrillDownFeature {
 			result = possibleDiagramsList.size() >= 1;
 		}
 		
-		System.out.println("canExecutesUPER, result: " + result);
 		return result;
 	}
 	
@@ -90,7 +88,6 @@ public class TutorialDrillDownEClassFeature extends AbstractDrillDownFeature {
 		final Object[] businessObjectsForPictogramElement = getAllBusinessObjectsForPictogramElement(pe);
 
 		final Collection<Diagram> allDiagrams = getDiagrams();
-		System.out.println("getLinkedDiagrams, allDiagrams " + allDiagrams.size());
 		for (final Diagram d : allDiagrams) {
 			final Diagram currentDiagram = getDiagram();
 			if (!EcoreUtil.equals(currentDiagram, d)) { // always filter out the
@@ -133,7 +130,6 @@ public class TutorialDrillDownEClassFeature extends AbstractDrillDownFeature {
 			
 		}
 		
-		System.out.println("getDiagrams, returning " + resource.toString());
 		return result;
 	}
 	

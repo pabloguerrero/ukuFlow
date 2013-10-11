@@ -212,7 +212,8 @@ public class BPMN2XMLParser {
 						"name of the process is not specified");
 			} else if (result.name.equals("Default Process")) {
 				errorManager
-						.addWarning("process",
+						.addWarning(
+								"process",
 								"Process 'Default Process' uses the default name, change it to prevent it from colliding with other default processes");
 			}
 		} else {

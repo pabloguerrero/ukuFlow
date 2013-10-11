@@ -220,12 +220,15 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 					}
 				} else if (bo instanceof EGDistribution) {
 					EGDistribution off = (EGDistribution) bo;
-					Integer key1 = EventbasePackage.EG_DISTRIBUTION__TIME;
+					Integer key0 = EventbasePackage.EG_DISTRIBUTION__PERIOD_INTERVAL;
+					Integer key1 = EventbasePackage.EG_DISTRIBUTION__EVALUATION_INTERVAL;
 					Integer key2 = EventbasePackage.EG_DISTRIBUTION__FUNCTION;
+					properties.put(key0,new RequestContainer(new RequestContainer.OffsetTimeValidator(),
+							"" +off.getPeriodInterval(),"Period Interval (mm:ss)"));
 					properties.put(key1,
 							new RequestContainer(
-									new RequestContainer.IntegerValidator(), ""
-											+ off.getTime(), "Time unit"));// TODO
+									new RequestContainer.OffsetTimeValidator(), ""
+											+ off.getEvaluationInterval(), "Evaluation Interval (mm:ss)"));// TODO
 					properties.put(key2,
 							new RequestContainer(null,UkuConstants.DistributionFunction.FUNCTIONS ,
 									"Function",off.getFunction()));// off.getFunction());
@@ -243,13 +246,24 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 					String params = result.get(-1).result;
 					log.debug(params);
 					off.setParameters(params);
-					int currentTime = off.getTime();
-					int newTime = Integer.parseInt(result.get(key1).result);
-					if (newTime != currentTime) {
+					String currentTime = off.getPeriodInterval();
+					String newTime = result.get(key0).result;
+					//int newTime = Integer.parseInt(result.get(key1).result);
+					if (!newTime.equals(currentTime)) {
 						this.hasDoneChanges = true;
-						off.setTime(newTime);
+						off.setPeriodInterval(newTime);
 						// updatePictogramElement(pes[0]);
 					}
+					
+					currentTime = off.getEvaluationInterval();
+					newTime = result.get(key1).result;
+					//int newTime = Integer.parseInt(result.get(key1).result);
+					if (!newTime.equals(currentTime)) {
+						this.hasDoneChanges = true;
+						off.setEvaluationInterval(newTime);
+						// updatePictogramElement(pes[0]);
+					}
+					
 					String currentPattern = off.getFunction();
 					String newPattern = result.get(key2).result;
 					if (!newPattern.equals(currentPattern)) {

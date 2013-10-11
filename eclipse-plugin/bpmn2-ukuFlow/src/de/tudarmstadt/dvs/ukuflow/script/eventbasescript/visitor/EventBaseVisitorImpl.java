@@ -124,7 +124,6 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		}
 	}
 
-	
 
 	@Override
 	public void visit(EAperiodicDistributionEG a) {
@@ -138,13 +137,16 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		
 		//TODO:
 		//1. period length(2bytes in seconds)
+		out.addAll(a.getPeriodInterval().getValue(2));
 		//2. evaluation frequency (2 bytes, in seconds)
+		out.addAll(a.getEvaluationInterval().getValue(2));
 		//3. mathematical function (1 byte)
-		
+		a.getFunction().accept(this);
+		/*
 		//4. list of parameters
 		for(int param : a.getParameters()){
 			out.add((byte)param);
-		}
+		}*/
 		
 	}
 
@@ -312,6 +314,7 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	public void visit(EParetoFunction eParetoFunction) {
 		out.add((byte)UkuConstants.DistributionFunction.PARETO_DISTRIBUTION);
 		out.addAll(convertToArray(eParetoFunction.getA(), 2));
+		
 	}
 	
 	private Collection<Byte> convertToArray(int input, int size){

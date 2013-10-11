@@ -123,6 +123,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 
 	@Override
 	public void visit(UkuExecuteTask task) {
+		log.debug("visiting executeTask: " + task);
 		out.add(task.getWorkflowElementID());
 		out.add(toByte(UkuConstants.WorkflowOperators.EXECUTE_TASK));
 		if (task.getOutgoingEntity().size() != 1) {
@@ -234,6 +235,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 
 	@Override
 	public void visit(UkuSequenceFlow task) {
+		log.debug("visiting sequeceFlow: " + task);
 		out.add(((UkuElement)task.getTargetEntity()).getWorkflowElementID());
 		
 		if (task.hasCondition()) {
@@ -249,6 +251,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 
 	@Override
 	public void visit(UkuProcess p) {
+		log.debug("visiting process: " + p);
 		out.add(p.getWorkflowID());
 		out.add((byte) p.getElements().size());
 		out.add(p.getNumberOfScope());
@@ -271,6 +274,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 	}
 
 	public void visit(UkuScope us) {
+		log.debug("visiting UkuScope: "+us);
 		if(!us.hasScript()){
 			us.addWarningMessage("no script");
 			return;
@@ -290,6 +294,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 	 */
 	@Override
 	public void visit(UkuReceiveTask rTask) {
+		log.debug("visiting ReceiveTask: " + rTask);
 		if(!rTask.hasScript()){
 			rTask.addWarningMessage("no script");
 			return;

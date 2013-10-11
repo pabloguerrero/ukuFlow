@@ -52,8 +52,4 @@ public class EChiSquareFunction extends EDistributionFunction {
 	public void setK(int k){
 		this.k = k;
 	}
-	public void setParameter(int k ){
-		this.k = k;
-	}
-
 }
