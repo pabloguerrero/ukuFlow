@@ -30,7 +30,7 @@ local blink 2;</bpmn2:script>
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:textAnnotation id="TextAnnotation_1">
-      <bpmn2:text>SCOPE windows ( NODE_ID &lt; 3 )</bpmn2:text>
+      <bpmn2:text>SCOPE windows 60 ( NODE_ID &lt; 3 )</bpmn2:text>
     </bpmn2:textAnnotation>
     <bpmn2:association id="Association_1" sourceRef="TextAnnotation_1" targetRef="ScriptTask_3"/>
   </bpmn2:process>
@@ -68,10 +68,10 @@ local blink 2;</bpmn2:script>
         <dc:Bounds height="50.0" width="110.0" x="550.0" y="93.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_1" bpmnElement="TextAnnotation_1">
-        <dc:Bounds height="50.0" width="204.0" x="627.0" y="170.0"/>
+        <dc:Bounds height="50.0" width="231.0" x="632.0" y="170.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_Association_1" bpmnElement="Association_1" sourceElement="BPMNShape_TextAnnotation_1" targetElement="BPMNShape_ScriptTask_3">
-        <di:waypoint xsi:type="dc:Point" x="627.0" y="195.0"/>
+        <di:waypoint xsi:type="dc:Point" x="632.0" y="195.0"/>
         <di:waypoint xsi:type="dc:Point" x="605.0" y="143.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
