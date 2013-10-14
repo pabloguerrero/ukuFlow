@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://sample.bpmn2.org/bpmn2/sample/process">
   <bpmn2:collaboration id="Collaboration_1">
     <bpmn2:participant id="Participant_1" name="Internal" processRef="Process_1"/>
     <bpmn2:participant id="Participant_2" name="Pool nr 4" processRef="Process_2"/>
@@ -24,22 +24,22 @@
       <bpmn2:outgoing>SequenceFlow_12</bpmn2:outgoing>
     </bpmn2:task>
     <bpmn2:sequenceFlow id="SequenceFlow_12" name="" sourceRef="Task_3" targetRef="ParallelGateway_4"/>
-    <bpmn2:parallelGateway id="ParallelGateway_2">
+    <bpmn2:parallelGateway id="ParallelGateway_2" gatewayDirection="Converging">
       <bpmn2:incoming>SequenceFlow_14</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_16</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_18</bpmn2:outgoing>
     </bpmn2:parallelGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_18" name="" sourceRef="ParallelGateway_2" targetRef="EndEvent_1"/>
-    <bpmn2:parallelGateway id="ParallelGateway_3">
+    <bpmn2:parallelGateway id="ParallelGateway_3" gatewayDirection="Diverging">
       <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
     </bpmn2:parallelGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_6" name="" sourceRef="ParallelGateway_3" targetRef="Task_2"/>
     <bpmn2:sequenceFlow id="SequenceFlow_8" name="" sourceRef="ParallelGateway_3" targetRef="Task_3"/>
-    <bpmn2:parallelGateway id="ParallelGateway_4">
-      <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
+    <bpmn2:parallelGateway id="ParallelGateway_4" gatewayDirection="Converging">
       <bpmn2:incoming>SequenceFlow_12</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_16</bpmn2:outgoing>
     </bpmn2:parallelGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_16" name="" sourceRef="ParallelGateway_4" targetRef="ParallelGateway_2"/>
@@ -60,7 +60,7 @@
       <bpmn2:outgoing>SequenceFlow_20</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_20" name="" sourceRef="StartEvent_1" targetRef="ParallelGateway_1"/>
-    <bpmn2:parallelGateway id="ParallelGateway_1">
+    <bpmn2:parallelGateway id="ParallelGateway_1" gatewayDirection="Diverging">
       <bpmn2:incoming>SequenceFlow_20</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
@@ -70,29 +70,29 @@
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="_LTZh4HacEeGshYHUd848Vg">
     <bpmndi:BPMNPlane id="_LTZh4XacEeGshYHUd848Vg" bpmnElement="Process_1">
-      <bpmndi:BPMNShape id="BPMNShape_Participant_1" bpmnElement="Participant_2">
+      <bpmndi:BPMNShape id="BPMNShape_Participant_1" bpmnElement="Participant_2" isHorizontal="false">
         <dc:Bounds height="321.0" width="771.0" x="50.0" y="50.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_Lane_1" bpmnElement="Lane_2">
+      <bpmndi:BPMNShape id="BPMNShape_Lane_1" bpmnElement="Lane_2" isHorizontal="false">
         <dc:Bounds height="321.0" width="756.0" x="65.0" y="50.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
-        <dc:Bounds height="51.0" width="36.0" x="115.0" y="190.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="115.0" y="190.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="EndEvent_1">
-        <dc:Bounds height="51.0" width="36.0" x="765.0" y="190.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="765.0" y="190.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ParallelGateway_1" bpmnElement="ParallelGateway_1">
-        <dc:Bounds height="65.0" width="50.0" x="195.0" y="182.0"/>
+        <dc:Bounds height="50.0" width="50.0" x="195.0" y="182.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ParallelGateway_2" bpmnElement="ParallelGateway_2">
-        <dc:Bounds height="65.0" width="50.0" x="675.0" y="182.0"/>
+        <dc:Bounds height="50.0" width="50.0" x="675.0" y="182.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ParallelGateway_3" bpmnElement="ParallelGateway_3">
-        <dc:Bounds height="65.0" width="50.0" x="295.0" y="230.0"/>
+        <dc:Bounds height="50.0" width="50.0" x="295.0" y="230.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ParallelGateway_4" bpmnElement="ParallelGateway_4">
-        <dc:Bounds height="65.0" width="50.0" x="565.0" y="230.0"/>
+        <dc:Bounds height="50.0" width="50.0" x="565.0" y="230.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_Task_1" bpmnElement="Task_1">
         <dc:Bounds height="50.0" width="110.0" x="400.0" y="90.0"/>
