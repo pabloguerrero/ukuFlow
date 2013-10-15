@@ -20,14 +20,14 @@
 var2 = 1 + $var1;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_5" name="" sourceRef="ScriptTask_1" targetRef="ParallelGateway_2"/>
-    <bpmn2:parallelGateway id="ParallelGateway_1" name="Parallel Gateway 1">
+    <bpmn2:parallelGateway id="ParallelGateway_1" name="Parallel Gateway 1" gatewayDirection="Diverging">
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_10</bpmn2:outgoing>
     </bpmn2:parallelGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_4" name="" sourceRef="ParallelGateway_1" targetRef="ScriptTask_1"/>
     <bpmn2:sequenceFlow id="SequenceFlow_10" name="" sourceRef="ParallelGateway_1" targetRef="ParallelGateway_3"/>
-    <bpmn2:parallelGateway id="ParallelGateway_3" name="Parallel Gateway 3">
+    <bpmn2:parallelGateway id="ParallelGateway_3" name="Parallel Gateway 3" gatewayDirection="Diverging">
       <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
@@ -38,16 +38,16 @@ var2 = 1 + $var1;</bpmn2:script>
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_2" name="" sourceRef="StartEvent_1" targetRef="ParallelGateway_1"/>
-    <bpmn2:parallelGateway id="ParallelGateway_2" name="Parallel Gateway 2">
-      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+    <bpmn2:parallelGateway id="ParallelGateway_2" name="Parallel Gateway 2" gatewayDirection="Converging">
       <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
     </bpmn2:parallelGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_3" name="" sourceRef="ParallelGateway_2" targetRef="EndEvent_1"/>
     <bpmn2:endEvent id="EndEvent_1">
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
     </bpmn2:endEvent>
-    <bpmn2:parallelGateway id="ParallelGateway_4" name="Parallel Gateway 4">
+    <bpmn2:parallelGateway id="ParallelGateway_4" name="Parallel Gateway 4" gatewayDirection="Converging">
       <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
