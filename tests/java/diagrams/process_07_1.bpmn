@@ -7,7 +7,7 @@
       <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
-    <bpmn2:sequenceFlow id="SequenceFlow_5" name="Process 7-1" sourceRef="ExclusiveGateway_1" targetRef="ScriptTask_2">
+    <bpmn2:sequenceFlow id="SequenceFlow_5" name="" sourceRef="ExclusiveGateway_1" targetRef="ScriptTask_2">
       <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression" id="FormalExpression_1">$var1 > 35</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_7" name="" sourceRef="ExclusiveGateway_1" targetRef="ScriptTask_3">
@@ -58,7 +58,7 @@ var3 = 50;</bpmn2:script>
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
     </bpmn2:endEvent>
   </bpmn2:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Process 7-2">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Process 7-1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process_07_1">
       <bpmndi:BPMNShape id="BPMNShape_2" bpmnElement="EndEvent_1">
         <dc:Bounds height="36.0" width="36.0" x="650.0" y="134.0"/>
