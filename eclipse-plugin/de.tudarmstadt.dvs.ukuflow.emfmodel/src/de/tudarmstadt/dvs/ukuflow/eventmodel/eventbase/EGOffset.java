@@ -22,6 +22,7 @@ package de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase;
 public interface EGOffset extends EGNonRecurring {
 	/**
 	 * Returns the value of the '<em><b>Offset Time</b></em>' attribute.
+	 * The default value is <code>"01:00"</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Offset Time</em>' attribute isn't clear,
@@ -31,7 +32,7 @@ public interface EGOffset extends EGNonRecurring {
 	 * @return the value of the '<em>Offset Time</em>' attribute.
 	 * @see #setOffsetTime(String)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEGOffset_OffsetTime()
-	 * @model required="true"
+	 * @model default="01:00" required="true"
 	 * @generated
 	 */
 	String getOffsetTime();

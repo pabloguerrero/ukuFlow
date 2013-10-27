@@ -22,6 +22,7 @@ package de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase;
 public interface EGRelative extends EGNonRecurring {
 	/**
 	 * Returns the value of the '<em><b>Delay Time</b></em>' attribute.
+	 * The default value is <code>"01:00"</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Delay Time</em>' attribute isn't clear,
@@ -31,7 +32,7 @@ public interface EGRelative extends EGNonRecurring {
 	 * @return the value of the '<em>Delay Time</em>' attribute.
 	 * @see #setDelayTime(String)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEGRelative_DelayTime()
-	 * @model required="true"
+	 * @model default="01:00" required="true"
 	 * @generated
 	 */
 	String getDelayTime();

@@ -83,8 +83,8 @@ public class UkuExecuteTask extends UkuActivity {
 			if (tk != null) {
 				if (tk.next != null)
 					tk = tk.next;
-				addErrorMessage(id + ", at line: "
-						+ tk.beginLine + "& col: "
+				addErrorMessage(" In element "+id + ",\""+getName()+"\", at line "
+						+ tk.beginLine + ": col "
 						+ tk.beginColumn, "error near the token "
 						+ tk);
 			} else
@@ -99,11 +99,11 @@ public class UkuExecuteTask extends UkuActivity {
 				tkn = tk.image;
 				msg = "error near the token " + tkn;
 				//if (e.getMessage() != null && e.getMessage().startsWith(tkn)) msg = e.getMessage();
-				addErrorMessage("element " + id + ", at line: "
-						+ tk.beginLine + "& col: "
+				addErrorMessage("In element " + id + ", \""+getName() +"\", at line "
+						+ tk.beginLine + " : column "
 						+ tk.beginColumn, msg);
 			} else {
-				addErrorMessage("element " + id,
+				addErrorMessage("In element " + id +", \""+getName()+"\"",
 						"there is an unknown error in the script");
 			}			
 		}

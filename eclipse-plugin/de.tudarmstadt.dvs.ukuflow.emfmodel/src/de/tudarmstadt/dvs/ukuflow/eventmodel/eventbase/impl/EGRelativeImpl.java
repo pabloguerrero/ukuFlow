@@ -33,7 +33,7 @@ public class EGRelativeImpl extends EGNonRecurringImpl implements EGRelative {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String DELAY_TIME_EDEFAULT = null;
+	protected static final String DELAY_TIME_EDEFAULT = "01:00";
 
 	/**
 	 * The cached value of the '{@link #getDelayTime() <em>Delay Time</em>}' attribute.

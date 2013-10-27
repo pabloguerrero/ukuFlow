@@ -33,8 +33,8 @@ import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class GenericEditPropertiesFeature extends AbstractCustomFeature {
-	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
-	private boolean hasDoneChanges = false;
+	private BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
+	protected boolean hasDoneChanges = false;
 
 	public GenericEditPropertiesFeature(IFeatureProvider fp) {
 		super(fp);
@@ -69,7 +69,7 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 		return ret;
 	}
 
-	private String getQuestion(Object o) {
+	protected String getQuestion(Object o) {
 		String className = o.getClass().getSimpleName();
 		String question = ModelUtil.toDisplayName(
 				className.substring(2, className.length() - 4)).toLowerCase()
@@ -83,7 +83,18 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 		question = "Properties of " + question + "'";
 		return question;
 	}
-
+	protected Map<Integer,RequestContainer> asking(Object bo, Map<Integer,RequestContainer> properties){
+		return DialogUtils.askString(getQuestion(bo), properties);
+	}
+	
+	protected Object getBusinessObj(ICustomContext context){
+		PictogramElement[] pes = context.getPictogramElements();
+		if(pes != null && pes.length==1){
+			return getBusinessObjectForPictogramElement(pes[0]);
+		}
+		return null;
+	}
+	
 	public void execute(ICustomContext context) {
 		PictogramElement[] pes = context.getPictogramElements();
 		if (pes != null && pes.length == 1) {
@@ -109,8 +120,9 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 						new RequestContainer(null, (eg.getScope() == null ? ""
 								: eg.getScope()),
 								"Scope identifier ('WORLD': for all nodes & 'LOCAL': only at base node):"));
+				// switched
 				if (bo instanceof EGImmediate) {
-
+					
 					result = DialogUtils.askString(question, properties);
 					if (result == null)
 						return;
@@ -124,7 +136,7 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 									new RequestContainer(
 											new RequestContainer.AbsoluteTimeValidator(),
 											currentTime,
-											"Absolute time (dd-MM-yyy hh:mm:ss)"));
+											"Absolute time (" + TimeUtil.TIME_PATTERN + ")"));
 
 					result = DialogUtils.askString(question, properties);
 					if (result == null)

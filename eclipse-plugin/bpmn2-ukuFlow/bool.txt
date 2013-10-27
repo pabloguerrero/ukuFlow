@@ -1,1 +1,1 @@
-SCOPE windows 1023 ((SENSOR_TEMPERATURE_RAW >(2-2+2*(2-2)) &&($v+2)>2 > 2+$v2/3-2)-2)
+SCOPE windows 1023 ((NODE_TIME >(2-2+2*(2-2)) &&($v+2)>2 > 2+$v2/3-2)-2)

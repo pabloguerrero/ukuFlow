@@ -1,5 +1,8 @@
 package de.tudarmstadt.dvs.ukuflow.features.ef.simple;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -14,6 +17,8 @@ import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
+import org.eclipse.graphiti.features.context.ICustomContext;
+import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.AbstractAddShapeFeature;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
@@ -36,18 +41,24 @@ import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
+import de.tudarmstadt.dvs.ukuflow.eventbase.utils.DialogUtils;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage;
 import de.tudarmstadt.dvs.ukuflow.features.ef.EFFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericDirectEditFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.GenericEditPropertiesFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericLayoutFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericMoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class EFSimpleFeatureContainer extends EFFeatureContainer{
-
+	private BpmnLog log = BpmnLog.getInstance(getClass().getSimpleName());
 	@Override
 	public Object getApplyObject(IContext context) {
 		return super.getApplyObject(context);
@@ -140,6 +151,7 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 		}
 
 	}
+	
 	public class EFSimpleAddFeature extends AbstractAddShapeFeature{
 
 		public static final int INVISIBLE_RECT_RIGHT = 6;
@@ -276,103 +288,42 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer{
 		}
 
 	}
-}
-		/*
-		public PictogramElement add(IAddContext context) {
-			final EFSimple addedClass = (EFSimple)context.getNewObject(); 
-			String oldName = addedClass.getElementName();
-			String newname = ModelUtil.setName(addedClass);
-			System.out.println(oldName + " -> new: " + newname);
-			final Diagram targetDiagram = (Diagram) context.getTargetContainer();
-			// CONTAINER SHAPE WITH ROUNDED RECTANGLE
-					final IPeCreateService peCreateService = Graphiti.getPeCreateService();
-					final ContainerShape containerShape = peCreateService.createContainerShape(targetDiagram, true);
-					
-					// check whether the context has a size (e.g. from a create feature)
-					// otherwise define a default size for the shape
-					final int width = context.getWidth() <= 0 ? 100 : context.getWidth();
-					final int height = context.getHeight() <= 0 ? 50 : context.getHeight();
+	public class EFSimpleDoubleClickFeature extends GenericEditPropertiesFeature {
 
-					final IGaService gaService = Graphiti.getGaService();
-					RoundedRectangle roundedRectangle; // need to access it later
-					{
-						// create invisible outer rectangle expanded by
-						// the width needed for the anchor
-						final Rectangle invisibleRectangle = gaService.createInvisibleRectangle(containerShape);			
-						gaService.setLocationAndSize(invisibleRectangle, context.getX(), context.getY(), width + INVISIBLE_RECT_RIGHT, height);
-
-						// create and set visible rectangle inside invisible rectangle
-						//gaService.create
-						roundedRectangle = gaService.createPlainRoundedRectangle(invisibleRectangle, 5, 5);
-						roundedRectangle.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
-						gaService.setLocationAndSize(roundedRectangle, 0, 0, width, height);
-
-						// if addedClass has no resource we add it to the resource of the diagram
-						// in a real scenario the business model would have its own resource
-						if (addedClass.eResource() == null) {
-							getDiagram().eResource().getContents().add(addedClass);
-						}
-
-						// create link and wire it
-						link(containerShape, addedClass);
-					}
-					
-
-					// SHAPE WITH TEXT
-					{
-						// create shape for text
-						final Shape shape = peCreateService.createShape(containerShape, false);
-
-						// create and set text graphics algorithm
-						final Text text = gaService.createPlainText(shape, addedClass.getClass().getSimpleName());
-						text.setStyle(StyleUtil.getStyleForEClassText(getDiagram()));
-						gaService.setLocationAndSize(text, 2, 10, width, 20);
-
-						// create link and wire it
-						link(shape, addedClass);
-						//addedClass.setName(addedClass.getClass().getSimpleName());
-						updatePictogramElement(shape);
-						// provide information to support direct-editing directly
-						// after object creation (must be activated additionally)
-						final IDirectEditingInfo directEditingInfo = getFeatureProvider().getDirectEditingInfo();
-						// set container shape for direct editing after object creation
-						directEditingInfo.setMainPictogramElement(containerShape);
-						// set shape and graphics algorithm where the editor for
-						// direct editing shall be opened after object creation
-						directEditingInfo.setPictogramElement(shape);
-						directEditingInfo.setGraphicsAlgorithm(text);
-					}
-
-					// add a chopbox anchor to the shape
-					peCreateService.createChopboxAnchor(containerShape);
-					//peCreateService.createBoxRelativeAnchor(containerShape);
-
-					// create an additional box relative anchor at middle-right
-					final BoxRelativeAnchor boxAnchor = peCreateService.createBoxRelativeAnchor(containerShape);
-					boxAnchor.setRelativeWidth(1.0);
-					boxAnchor.setRelativeHeight(0.38); // Use golden section
-
-					// anchor references visible rectangle instead of invisible rectangle
-					boxAnchor.setReferencedGraphicsAlgorithm(roundedRectangle);
-
-					// assign a graphics algorithm for the box relative anchor
-					final Ellipse ellipse = gaService.createPlainEllipse(boxAnchor);
-
-					// anchor is located on the right border of the visible rectangle
-					// and touches the border of the invisible rectangle
-					final int w = INVISIBLE_RECT_RIGHT;
-					gaService.setLocationAndSize(ellipse, 50, 25, 2 * w, 2 * w);
-					ellipse.setStyle(StyleUtil.getStyleForEClass(getDiagram()));
-
-					
-					//ChopboxAnchor chopboxAnchor = peCreateService.createChopboxAnchor(containerShape);				
-					//TutorialFeatureProvider tfp = (TutorialFeatureProvider)getFeatureProvider();
-					
-					// call the layout feature
-					layoutPictogramElement(containerShape);
-
-					return containerShape;
+		public EFSimpleDoubleClickFeature(IFeatureProvider fp) {
+			super(fp);
 		}
-		
+		public void execute(ICustomContext context){
+			EventBaseOperator bo = (EventBaseOperator) getBusinessObj(context);
+			EFSimple efsimple = (EFSimple) bo;
+			String currentConstraints = efsimple.getConstraints();
+			
+			/*
+			if (currentConstraints.contains(","))
+				currentConstraints = currentConstraints.substring(0,
+						currentConstraints.length() - 1);
+			*/
+			Map<Integer,RequestContainer> properties = new HashMap<Integer, RequestContainer>();
+			properties.put(EventbasePackage.EF_SIMPLE__CONSTRAINTS,
+					new RequestContainer(null, ""+currentConstraints,
+							"Filter's constraints"));
+
+			Map<Integer,RequestContainer> result = asking(bo,properties);
+			if (result == null)
+				return;
+			String newConstraint = result.get(EventbasePackage.EF_SIMPLE__CONSTRAINTS).result;
+			if (!newConstraint.equals(currentConstraints)) {
+				this.hasDoneChanges = true;
+				efsimple.setConstraints(newConstraint);
+				for (String x : newConstraint.split(",")) {
+					log.info(x);
+				}
+			}
+		}
 	}
-}*/
+	@Override
+	public AbstractCustomFeature getDoubleClickFeature(IFeatureProvider fb) {
+		return new EFSimpleDoubleClickFeature(fb);
+	}
+}
+	

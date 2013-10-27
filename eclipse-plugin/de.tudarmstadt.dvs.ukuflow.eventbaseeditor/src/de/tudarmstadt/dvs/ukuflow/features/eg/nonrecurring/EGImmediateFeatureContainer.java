@@ -1,5 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring;
 
+import java.util.Map;
+
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -13,6 +15,8 @@ import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
+import org.eclipse.graphiti.features.context.ICustomContext;
+import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 
@@ -20,7 +24,9 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGImmediate;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
+import de.tudarmstadt.dvs.ukuflow.features.FeatureUtil;
 import de.tudarmstadt.dvs.ukuflow.features.eg.EGFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.generic.*;
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractAddShapeFeature;
@@ -140,5 +146,23 @@ public class EGImmediateFeatureContainer extends EGFeatureContainer {
 		}
 
 		
+	}
+	public class EGImmediateDoubleClickFeature extends GenericEditPropertiesFeature{
+
+		public EGImmediateDoubleClickFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+		public void execute(ICustomContext context){
+			EventBaseOperator bo = (EventBaseOperator)getBusinessObj(context);
+			if(bo == null)
+				return;
+			Map<Integer,RequestContainer> properties = FeatureUtil.createQuestions((EventBaseOperator)bo);
+			Map<Integer,RequestContainer> results = asking(bo,properties);
+			hasDoneChanges = FeatureUtil.fetchAnswer(bo, results);
+		}
+	}
+	@Override
+	public AbstractCustomFeature getDoubleClickFeature(IFeatureProvider fb) {
+		return new EGImmediateDoubleClickFeature(fb);
 	}
 }

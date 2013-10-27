@@ -34,7 +34,7 @@ public class EGPatternedImpl extends EGRecurringImpl implements EGPatterned {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String TIME_EDEFAULT = null;
+	protected static final String TIME_EDEFAULT = "01:00";
 
 	/**
 	 * The cached value of the '{@link #getTime() <em>Time</em>}' attribute.

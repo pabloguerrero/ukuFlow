@@ -156,7 +156,6 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     exp = ConditionalOrFunction();
     jj_consume_token(34);
     {if (true) return new ComputationalFunction(variable, exp);}
-    log.debug(exp);
     throw new Error("Missing return statement in function");
   }
 
@@ -388,6 +387,7 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
   UkuExpression result = null;
     if (jj_2_27(2)) {
       result = ConstantExpression();
+    System.out.println("javacc: " + result);
     {if (true) return result;}
     } else if (jj_2_28(2)) {
       jj_consume_token(VARIABLE);
@@ -734,6 +734,11 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     return false;
   }
 
+  private boolean jj_3_34() {
+    if (jj_scan_token(INTEGER_LITERAL)) return true;
+    return false;
+  }
+
   private boolean jj_3_17() {
     Token xsp;
     xsp = jj_scanpos;
@@ -748,11 +753,6 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     }
     }
     if (jj_3R_17()) return true;
-    return false;
-  }
-
-  private boolean jj_3_34() {
-    if (jj_scan_token(INTEGER_LITERAL)) return true;
     return false;
   }
 
@@ -805,13 +805,13 @@ public class ukuFlowScript implements ukuFlowScriptConstants {
     return false;
   }
 
-  private boolean jj_3_10() {
-    if (jj_3R_13()) return true;
+  private boolean jj_3_33() {
+    if (jj_scan_token(INTEGER_LITERAL)) return true;
     return false;
   }
 
-  private boolean jj_3_33() {
-    if (jj_scan_token(INTEGER_LITERAL)) return true;
+  private boolean jj_3_10() {
+    if (jj_3R_13()) return true;
     return false;
   }
 

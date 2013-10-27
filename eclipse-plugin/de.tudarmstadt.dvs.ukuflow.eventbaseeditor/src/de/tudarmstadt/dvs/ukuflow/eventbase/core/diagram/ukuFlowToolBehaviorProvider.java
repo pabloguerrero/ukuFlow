@@ -16,7 +16,6 @@
 package de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -42,7 +41,6 @@ import org.eclipse.graphiti.palette.impl.ConnectionCreationToolEntry;
 import org.eclipse.graphiti.palette.impl.ObjectCreationToolEntry;
 import org.eclipse.graphiti.palette.impl.PaletteCompartmentEntry;
 import org.eclipse.graphiti.palette.impl.PaletteSeparatorEntry;
-import org.eclipse.graphiti.platform.IPlatformImageConstants;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.tb.ContextButtonEntry;
 import org.eclipse.graphiti.tb.ContextEntryHelper;
@@ -52,20 +50,22 @@ import org.eclipse.graphiti.tb.IContextButtonEntry;
 import org.eclipse.graphiti.tb.IContextButtonPadData;
 import org.eclipse.graphiti.tb.IContextMenuEntry;
 import org.eclipse.graphiti.tb.IDecorator;
-import org.eclipse.graphiti.tb.ImageDecorator;
-import org.eclipse.graphiti.ui.internal.editor.DefaultFlyoutPalettePreferences;
 
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.features.FeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.features.TutorialCollapseDummyFeature;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericEditPropertiesFeature;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 
 	public ukuFlowToolBehaviorProvider(IDiagramTypeProvider dtp) {
 		super(dtp);
 	}
-
+	
+	private BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
+	
 	@Override
 	public IContextButtonPadData getContextButtonPad(
 			IPictogramElementContext context) {
@@ -161,34 +161,14 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 				"Event Generator", null); //$NON-NLS-1$
 		PaletteCompartmentEntry eventFilterEntry = new PaletteCompartmentEntry(
 				"Event Filter", null); //$NON-NLS-1$
-		/*
-		 * PaletteCompartmentEntry nonRecurringEG = new
-		 * PaletteCompartmentEntry("non Rec. EG", null); PaletteCompartmentEntry
-		 * recurringEG = new PaletteCompartmentEntry("Rec. EG", null);
-		 * PaletteCompartmentEntry simpleEF = new
-		 * PaletteCompartmentEntry("Simple EF", null); ret.add(connectionEntry);
-		 * ret.add(nonRecurringEG); ret.add(recurringEG); ret.add(simpleEF);
-		 */
+		
+		
 		// simple fashion
 		ret.add(connectionEntry);
 		ret.add(eventGeneratorEntry);
 		ret.add(eventFilterEntry);
 
-		// testing with stacked group
-		// PaletteCompartmentEntry testGroup = new
-		// PaletteCompartmentEntry("GROUP", null);
-
-		// StackEntry eg = new StackEntry("Event Generator 1",
-		// "Event Generator", null);
-		// StackEntry ef = new StackEntry("Event Filter 1", "Event Filter",
-		// null);
-		// testGroup.addToolEntry(eg);
-		// testGroup.addToolEntry(ef);
-		// ret.add(testGroup);
-
-		// add new stack entry to new compartment
-		//StackEntry stackEntry = new StackEntry("Event Filter", "Filter of events", null); //$NON-NLS-1$ //$NON-NLS-2$
-		// compartmentEntry.addToolEntry(stackEntry);
+		
 
 		IFeatureProvider featureProvider = getFeatureProvider();
 
@@ -242,7 +222,7 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 		
 		return ret.toArray(new IPaletteCompartmentEntry[ret.size()]);
 	}
-
+	/*
 	private void createEntries(List<Class> neededEntries,
 			PaletteCompartmentEntry compartmentEntry) {
 		for (Object o : neededEntries) {
@@ -270,17 +250,31 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 			compartmentEntry.addToolEntry(connectionCreationToolEntry);
 		}
 
-	}
+	}*/
 
 	@Override
 	public ICustomFeature getDoubleClickFeature(IDoubleClickContext context) {
+		PictogramElement[] pes = context.getPictogramElements();
+		if(pes.length != 1){
+			//debug needed
+			log.warn("2 objects were passed to DoubleClickFeature. -> ignored!");
+			return super.getDoubleClickFeature(context);
+		}
+		log.debug("Double Click feature activated: obj: "+pes[0]);
+		Object bo = getFeatureProvider().getBusinessObjectForPictogramElement(pes[0]);
+		FeatureContainer fc = UkuFlowFeatureProvider.getFeatureContainer(bo);
+		if(fc != null){
+			log.debug("return doubleClickFeature from FeatureContainer");
+			return fc.getDoubleClickFeature(getFeatureProvider());
+		}
 		ICustomFeature customFeature = new GenericEditPropertiesFeature(
 				getFeatureProvider());
 		// canExecute() tests especially if the context contains a EClass
 		if (customFeature.canExecute(context)) {
+			log.debug("return GenericEditProperties feature as DoubleClickFeature");
 			return customFeature;
 		}
-
+		log.debug("return super.getDoubeclickFeature()");
 		return super.getDoubleClickFeature(context);
 	}
 
@@ -295,8 +289,8 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 					&& !(name.charAt(0) >= 'A' && name.charAt(0) <= 'Z')) {
 				// IDecorator imageRenderingDecorator = new
 				// ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_WARNING_TSK);
-				//imageRenderingDecorator.setMessage("Name should start with upper case letter"); //$NON-NLS-1$
-				// return new IDecorator[] { imageRenderingDecorator };
+				// imageRenderingDecorator.setMessage("Name should start with upper case letter"); //$NON-NLS-1$
+				// return new IDecorator[] { imageRenderingDecorator};
 			}
 		}
 
@@ -310,20 +304,11 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 		if (bo instanceof EventBaseOperator) {
 			Iterator<PictogramElement> iterator = Graphiti.getPeService()
 					.getPictogramElementChildren(pe).iterator();
-			// Collection<PictogramElement> col =
-			// Graphiti.getPeService().getPictogramElementChildren(pe);
 			GraphicsAlgorithm[] algorithms = new GraphicsAlgorithm[2];
 
 			algorithms[0] = iterator.next().getGraphicsAlgorithm();
 			algorithms[1] = iterator.next().getGraphicsAlgorithm();
-			// col.toArray(algorithms);
-			return algorithms;
-			/*
-			 * old: GraphicsAlgorithm invisible = pe.getGraphicsAlgorithm();
-			 * GraphicsAlgorithm rectangle =
-			 * invisible.getGraphicsAlgorithmChildren().get(0); return new
-			 * GraphicsAlgorithm[] { rectangle };
-			 */
+			return algorithms;			
 		}
 		return super.getClickArea(pe);
 	}

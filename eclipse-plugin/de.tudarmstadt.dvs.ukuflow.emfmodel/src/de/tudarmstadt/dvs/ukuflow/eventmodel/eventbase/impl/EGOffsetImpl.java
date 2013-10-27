@@ -33,7 +33,7 @@ public class EGOffsetImpl extends EGNonRecurringImpl implements EGOffset {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String OFFSET_TIME_EDEFAULT = null;
+	protected static final String OFFSET_TIME_EDEFAULT = "01:00";
 
 	/**
 	 * The cached value of the '{@link #getOffsetTime() <em>Offset Time</em>}' attribute.

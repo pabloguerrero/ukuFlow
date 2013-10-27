@@ -72,11 +72,27 @@ public class RequestContainer{
 		}
 	}
 	public static class IntegerValidator implements IInputValidator{
+		int min = 0;
+		int max = 0;
+		boolean minmaxset = false;
+		public IntegerValidator(){
+			
+		}
+		public IntegerValidator(int min, int max){
+			minmaxset = true;
+			this.min = min;
+			this.max = max;
+		}
 		public String isValid(String newText){
 			if(newText == null || newText.equals(""))
 				return "Empty input";
 			try {
 				int num = Integer.parseInt(newText);
+				if(minmaxset){
+					if(num < min || num > max){
+						return num + " is not in range of ("+min + ", "+max+")";
+					}
+				}
 				return null;
 			} catch(Exception e){
 				return "Expecting a number";

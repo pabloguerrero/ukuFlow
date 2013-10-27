@@ -1,0 +1,3 @@
+[submodule "eclipse-plugin/bpmn2"]
+	path = eclipse-plugin/bpmn2
+	url = git://git.eclipse.org/gitroot/bpmn2

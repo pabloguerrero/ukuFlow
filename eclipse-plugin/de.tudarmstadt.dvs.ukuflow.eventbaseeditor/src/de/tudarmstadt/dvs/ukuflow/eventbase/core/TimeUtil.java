@@ -2,7 +2,9 @@ package de.tudarmstadt.dvs.ukuflow.eventbase.core;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 public class TimeUtil {
@@ -41,8 +43,15 @@ public class TimeUtil {
 		return format.format(d);
 	}
 	
+	public static String getCurrentTime(){
+		DateFormat format = getFormatter(FULL_PATTERN);
+		Date d = new Date();	
+		return format.format(d);
+	}
+	
 	public static void main(String[] args) {
 		System.out.println(convertToString(FULL_PATTERN, 0));
 		System.out.println(convertToString(TIME_PATTERN, 12030));
+		System.out.println(getCurrentTime());
 	}
 }

@@ -41,9 +41,6 @@
          <imageProvider
                id="de.tudarmstadt.dvs.ukuflow.EventImageProvider">
          </imageProvider>
-         <imageProvider
-               id="org.eclipse.graphiti.examples.common.ExampleImageProvider">
-         </imageProvider>
       </diagramTypeProvider>
    </extension>
    
@@ -55,42 +52,8 @@
       </imageProvider>
    </extension>
  
-	<extension
-	    point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
-	    <propertyContributor contributorId="tutorial.PropertyContributor">
-	        <propertyCategory category="Graphiti">
-	        </propertyCategory>
-	    </propertyContributor>
-	</extension>
 	 
-	<extension
-	    point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
-	    <propertyTabs contributorId="tutorial.PropertyContributor">
-	        <propertyTab label="Main" category="Graphiti" 
-	            id="graphiti.main.tab">
-	        </propertyTab>
-	        
-	        <!--
-	        Defines a property sheet tab for the Eclipse tabbed property sheet for EReferences.
-	        -->
-	    </propertyTabs>
-	</extension>
 	 
-	<extension
-	    point="org.eclipse.ui.views.properties.tabbed.propertySections">
-	    <propertySections contributorId="tutorial.PropertyContributor">
-	        <propertySection tab="graphiti.main.tab"            
-	         class="de.tudarmstadt.dvs.ukuflow.eventbase.core.property.TutorialEClassSection"
-	         filter="de.tudarmstadt.dvs.ukuflow.eventbase.core.property.TutorialEClassFilter"
-	         id="graphiti.main.tab.emfclass">
-	        </propertySection>
-	        
-	        <!--
-	        Defines a standard (table format) property sheet section using the table property sheet
-	        integration into the Eclipse tabbed property sheet for EReferences.
-	        -->
-	    </propertySections>
-	</extension>
  
 	<extension point="org.eclipse.ui.commands">
 		<command id="org.eclipse.graphiti.examples.tutorial.commands.createDiagramWithAllClasses" name="Create Diagram with all Classes" /> 

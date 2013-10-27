@@ -371,12 +371,18 @@ public class UkuProcessValidation {
 				event.addErrorMessage("End Event should have at least one incoming connection");
 			if (event.getOutgoingID().size() > 0)
 				event.addErrorMessage("End Event cannot have outoging connection");
+			if (event.getIncomingID().size() != 1){
+				event.addErrorMessage("End Events should not have more than one incoming branch");
+			}
 			break;
 		case UkuConstants.WorkflowOperators.START_EVENT:
 			if (event.getOutgoingID().size() == 0)
 				event.addErrorMessage("Start Event should have at least one outgoing connection");
 			if (event.getIncomingID().size() > 0)
-				event.addErrorMessage("StartEvent cannot have incoming connection");
+				event.addErrorMessage("Start Event cannot have incoming connection");
+			if (event.getOutgoingID().size() != 1){
+				event.addErrorMessage("Start Events should not have more than one outgoing branch");
+			}
 			break;
 		default:
 			event.addErrorMessage("This type of event is not supported yet");
@@ -389,7 +395,7 @@ public class UkuProcessValidation {
 				|| task.getOutgoingID().size() != 1)
 			task.addErrorMessage("A Script task must have exactly one incoming and one outgoing connection");
 		if (!task.hasScript()) {
-			task.addErrorMessage("Has no script");
+			task.addErrorMessage("-the element has no script");
 		} else if (task.isValid()) {
 			for (TaskScriptFunction tsf : task.getStatements()) {
 				validate(task, tsf);

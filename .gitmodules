@@ -1,6 +1,6 @@
-[submodule "eclipse-plugin/bpmn2-modeler"]
-	path = eclipse-plugin/bpmn2-modeler
-	url = git://git.eclipse.org/gitroot/bpmn2-modeler/org.eclipse.bpmn2-modeler.git
 [submodule "eclipse-plugin/bpmn2"]
 	path = eclipse-plugin/bpmn2
 	url = git://git.eclipse.org/gitroot/bpmn2
+[submodule "eclipse-plugin/bpmn2-modeler"]
+	path = eclipse-plugin/bpmn2-modeler
+	url = git://git.eclipse.org/gitroot/bpmn2-modeler/org.eclipse.bpmn2-modeler.git

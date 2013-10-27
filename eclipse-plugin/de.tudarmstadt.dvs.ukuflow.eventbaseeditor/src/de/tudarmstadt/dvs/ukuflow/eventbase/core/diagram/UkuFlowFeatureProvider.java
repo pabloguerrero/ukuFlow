@@ -67,8 +67,8 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRelative;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESequenceFlow;
 import de.tudarmstadt.dvs.ukuflow.features.connection.SequenceFlowAddFeature;
 import de.tudarmstadt.dvs.ukuflow.features.connection.SequenceFlowCreateFeature;
-import de.tudarmstadt.dvs.ukuflow.features.ef.EFProcessingCountFeatureContainer;
-import de.tudarmstadt.dvs.ukuflow.features.ef.EFProcessingMinFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProcessingCountFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProcessingMinFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.simple.EFSimpleFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.distribution.EGDistributionFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring.EGAbsoluteFeatureContainer;
@@ -106,13 +106,28 @@ public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
 		containers.put(EGRelative.class, new EGRelativeFeatureContainer());
 		containers.put(EGPeriodic.class, new EGPeriodicFeatureContainer());
 		containers.put(EGPatterned.class, new EGPatternedFeatureContainer());
-		containers.put(EGDistribution.class,
-				new EGDistributionFeatureContainer());
+		containers.put(EGDistribution.class, new EGDistributionFeatureContainer());
 
 		containers.put(EFSimple.class, new EFSimpleFeatureContainer());
 		containers.put(EFProcessingCount.class, new EFProcessingCountFeatureContainer());
 		containers.put(EFProcessingMin.class, new EFProcessingMinFeatureContainer());
 	}
+	
+	/**
+	 *  return the matched feature container
+	 * @param bo
+	 * @return
+	 */
+	public static FeatureContainer getFeatureContainer(Object bo){
+		FeatureContainer result = null;
+		for(Class<?> c : bo.getClass().getInterfaces()){
+			result = containers.get(c);
+			if(result!= null)
+				break;
+		}
+		return result;
+	}
+	
 	EventObjIndependenceSolver solver;
 
 	public UkuFlowFeatureProvider(IDiagramTypeProvider dtp) {
@@ -152,40 +167,58 @@ public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
 	public EventObjIndependenceSolver getCustomIndependenceSolver() {
 		return solver;
 	}
-
+	@Override
+	public ICustomFeature[] getCustomFeatures(ICustomContext context) {
+		ICustomFeature[] superFeatures = super.getCustomFeatures(context);
+		ICustomFeature[] thisFeatures = null;
+		PictogramElement[] pes = context.getPictogramElements();
+		if(pes.length==1 && pes[0] instanceof ContainerShape){
+			Object bo = getBusinessObjectForPictogramElement(pes[0]);
+			FeatureContainer fc = getFeatureContainer(bo);
+			if(fc != null){
+				thisFeatures = fc.getCustomFeatures(this);
+			}
+		}
+		return mergeFeatures(thisFeatures, superFeatures);
+	}
+	
+	/**
+	 * merge 2 list of ICustomFeature into one
+	 * @param thisFeatures
+	 * @param superFeatures
+	 * @return
+	 */
+	private ICustomFeature[] mergeFeatures(ICustomFeature[] thisFeatures, ICustomFeature[] superFeatures){
+		if(superFeatures == null)
+			return thisFeatures;
+		if(thisFeatures== null)
+			return superFeatures;
+		ICustomFeature[] mergeFeatures = new ICustomFeature[thisFeatures.length+superFeatures.length];		
+	
+			for (int i = 0; i < thisFeatures.length; i++) {
+				mergeFeatures[i] = thisFeatures[i];
+			}
+			for(int i = 0; i < superFeatures.length;i++){
+				mergeFeatures[i+thisFeatures.length] = superFeatures[i];
+			}
+		return mergeFeatures;
+	}
+	
 	@Override
 	public IAddFeature getAddFeature(IAddContext context) {
 		// is object for add request a EClass or EReference?
 		final Object newObject = context.getNewObject();
 		if (newObject instanceof ESequenceFlow)
 			return new SequenceFlowAddFeature(this);
-		/*
-		 * if (context.getNewObject() instanceof eventbase.ESequenceFlow) {
-		 * return new TutorialAddEReferenceFeature(this); } else if (newObject
-		 * instanceof eventbase.EPeriodicEG){ return new
-		 * EPeriodicEGAddFeature(this); } else if (newObject instanceof
-		 * EDistributionEG){ return new
-		 * EAperiodicDistributionEGAddFeature(this); } else if(newObject
-		 * instanceof EPatternedEG){ return new
-		 * EAperiodicPatternedEGAddFeature(this); } else if(newObject instanceof
-		 * EFSimple){ return new ESimpleEFAddFeature(this); //} else
-		 * if(newObject instanceof EComplexEF){ // return new
-		 * EComplexEFAddFeature(this); }
-		 */
-		FeatureContainer fc = null;
-		for (@SuppressWarnings("rawtypes")
-		Class c : newObject.getClass().getInterfaces()) {
-			fc = containers.get(c);
-			if (fc != null)
-				break;
-		}
-		if (fc != null)
-			if (fc.getAddFeature(this) != null)
-				return fc.getAddFeature(this);
+		
+		FeatureContainer fc = getFeatureContainer(newObject);
+		
+		if (fc != null && fc.getAddFeature(this) != null)
+			return fc.getAddFeature(this);
 
 		return super.getAddFeature(context);
 	}
-
+	
 	@Override
 	public ICreateFeature[] getCreateFeatures() {
 		if (creates == null)
@@ -244,14 +277,7 @@ public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
 		return super.getLayoutFeature(context);
 	}
 
-	@Override
-	public ICustomFeature[] getCustomFeatures(ICustomContext context) {
-		return new ICustomFeature[] { new GenericEditPropertiesFeature(this),
-				new TutorialDrillDownEClassFeature(this),
-				new TutorialAssociateDiagramEClassFeature(this),
-				new TutorialCollapseDummyFeature(this)
-		/*,new TutorialChangeColorEClassFeature(this)*/ };
-	}
+	
 
 	@Override
 	public ICreateConnectionFeature[] getCreateConnectionFeatures() {
@@ -274,10 +300,9 @@ public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
 			return super.getDirectEditingFeature(context);
 		return new GenericDirectEditFeature(this);
 		// TODO the container contains the interface classes, but "bo" is the implemented version of this interface!!
-		/*
+		/**
 		FeatureContainer fc = containers.get(bo.getClass());
-		if (fc != null)
-			if (fc.getDirectEditingFeature(this) != null)
+		if (fc != null && fc.getDirectEditingFeature(this) != null)
 				return fc.getDirectEditingFeature(this);
 		return super.getDirectEditingFeature(context);
 		*/

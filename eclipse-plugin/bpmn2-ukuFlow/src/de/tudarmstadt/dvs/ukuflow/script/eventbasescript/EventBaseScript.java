@@ -1136,30 +1136,6 @@ public class EventBaseScript implements EventBaseScriptConstants {
     finally { jj_save(60, xla); }
   }
 
-  private boolean jj_3R_13() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_8()) {
-    jj_scanpos = xsp;
-    if (jj_3_9()) {
-    jj_scanpos = xsp;
-    if (jj_3_10()) {
-    jj_scanpos = xsp;
-    if (jj_3_11()) {
-    jj_scanpos = xsp;
-    if (jj_3_12()) return true;
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3_51() {
-    if (jj_scan_token(STDEV_COMPOSITION_EF)) return true;
-    return false;
-  }
-
   private boolean jj_3_50() {
     if (jj_scan_token(AVG_COMPOSITION_EF)) return true;
     return false;
@@ -1727,6 +1703,30 @@ public class EventBaseScript implements EventBaseScriptConstants {
 
   private boolean jj_3_8() {
     if (jj_3R_8()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_13() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_8()) {
+    jj_scanpos = xsp;
+    if (jj_3_9()) {
+    jj_scanpos = xsp;
+    if (jj_3_10()) {
+    jj_scanpos = xsp;
+    if (jj_3_11()) {
+    jj_scanpos = xsp;
+    if (jj_3_12()) return true;
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3_51() {
+    if (jj_scan_token(STDEV_COMPOSITION_EF)) return true;
     return false;
   }
 

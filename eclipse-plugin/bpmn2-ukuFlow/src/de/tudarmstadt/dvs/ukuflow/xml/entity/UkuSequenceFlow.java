@@ -116,18 +116,17 @@ public class UkuSequenceFlow extends UkuEntity {
 			conditionExp = parser.parseCondition();			
 		}catch (Error error) {
 			if (parser.token != null)
-				addErrorMessage("element " + id + ", at line: "
-						+ parser.token.beginLine + "& col: "
+				addErrorMessage("in sequence flow " + id + ", at line: "
+						+ parser.token.beginLine + " column: "
 						+ parser.token.beginColumn, "error near the token "
 						+ parser.token);
 			else
 				addErrorMessage(error.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			String msg = "Error found at element " + id + " : "
-					+ e.getMessage().replace("\n", " ");
-			String location = "Element " + id + ", line: "
-					+ parser.token.beginLine + "colum:"
+			String msg =e.getMessage().replace("\n", " ");
+			String location = "in sequence flow " + id + ", line: "
+					+ parser.token.beginLine + " column: "
 					+ parser.token.beginColumn;
 			addErrorMessage(location, msg);
 		}

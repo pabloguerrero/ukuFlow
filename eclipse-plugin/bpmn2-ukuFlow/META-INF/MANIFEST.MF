@@ -10,7 +10,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources;bundle-version="3.7.101",
  org.eclipse.ui.console;bundle-version="3.5.100",
  org.eclipse.core.expressions;bundle-version="3.4.300",
- org.eclipse.emf;bundle-version="2.6.0",
  org.eclipse.emf.ecore;bundle-version="2.8.3",
  de.tudarmstadt.dvs.ukuflow.emfmodel;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
@@ -34,11 +33,11 @@ Bundle-NativeCode:
  osname=Linux; processor=ia64,
  
  lib/rxtx/Linux/x86_64-unknown-linux-gnu/librxtxSerial.so;
- osname=Linux; processor=x86-64,
+ osname=Linux; processor=x86_64,
  
   
  lib/rxtx/Mac_OS_X/librxtxSerial.jnilib;
- osname=Mac OS X; processor=x86; processor=PowerPC; processor=x86-64,
+ osname=Mac OS X; processor=x86; processor=PowerPC; processor=x86_64,
  
  
  lib/rxtx/Solaris/sparc-solaris/sparc32-sun-solaris2.8/librxtxSerial-2.1-7.so;

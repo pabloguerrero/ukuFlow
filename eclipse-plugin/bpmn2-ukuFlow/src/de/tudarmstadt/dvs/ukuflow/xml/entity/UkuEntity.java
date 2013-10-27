@@ -32,6 +32,7 @@ package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
 import java.util.Map;
 
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.validation.ErrorManager;
 import de.tudarmstadt.dvs.ukuflow.validation.ErrorMessage;
 import de.tudarmstadt.dvs.ukuflow.validation.WarningMessage;
@@ -42,6 +43,8 @@ import de.tudarmstadt.dvs.ukuflow.validation.WarningMessage;
  */
 public abstract class UkuEntity implements VisitableElement {
 
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
+	
 	// protected boolean syntax = false;
 	private ErrorManager errsManager;
 
@@ -49,6 +52,19 @@ public abstract class UkuEntity implements VisitableElement {
 	 * an unique id of for each entity
 	 */
 	protected String id;
+
+	/**
+	 * name that is displayed for user
+	 */
+	protected String name;
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
 
 	public UkuEntity(String id, ErrorManager errsM) {
 		this.id = id;
@@ -73,8 +89,9 @@ public abstract class UkuEntity implements VisitableElement {
 	public void addErrorMessage(String location, String msg) {
 		String l = location;
 		if (l == null) {
-			l = "element " + id;
+			l = " in element " + id +", \""+(name==null?"":name) + "\"";
 		}
+		log.info("l:"+l);
 		ErrorMessage em = new ErrorMessage(l, msg);
 		errsManager.addError(em);
 	}
@@ -86,7 +103,7 @@ public abstract class UkuEntity implements VisitableElement {
 	public void addWarningMessage(String location, String msg) {
 		String l = location;
 		if (l == null) {
-			l = "element " + id;
+			l = "element " + id + ",\"" + name == null ? "" : name + "\"";
 		}
 		WarningMessage wm = new WarningMessage(l, msg);
 		errsManager.addWarning(wm);

@@ -21,30 +21,6 @@
       <update url="http://www.student.informatik.tu-darmstadt.de/~q_dang/ukuflow"/>
    </url>
 
-   <includes
-         id="org.eclipse.bpmn2.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.bpmn2.modeler.examples.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.bpmn2.modeler.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.bpmn2.modeler.jboss.runtime.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.bpmn2.modeler.updatesite.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.bpmn2.modeler.wsil.feature"
-         version="0.0.0"/>
-
    <plugin
          id="de.tudarmstadt.dvs.ukuflow.converter"
          download-size="0"
@@ -61,6 +37,83 @@
 
    <plugin
          id="de.tudarmstadt.dvs.ukuflow.eventbaseeditor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.bpmn2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.bpmn2.modeler.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.bpmn2.modeler.examples.customtask"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.bpmn2.modeler.runtime.example"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.bpmn2.modeler.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.bpmn2.modeler.wsil"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.bpmn2.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.bpmn2.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.bpmn2.editor"
          download-size="0"
          install-size="0"
          version="0.0.0"

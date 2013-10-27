@@ -267,6 +267,8 @@ public class BPMN2XMLParser {
 		// log.debug("["+e.getClass().getSimpleName()+"]" +"\t"+type);
 
 		String id = fetchID(e);
+		String bpmn2_name = e.getAttributeValue("name");
+		
 		switch (type) {
 		case 1:
 			String sourceRef = e.getAttributeValue("sourceRef");
@@ -275,7 +277,7 @@ public class BPMN2XMLParser {
 
 			UkuSequenceFlow result = new UkuSequenceFlow(id, sourceRef,
 					targetRef);
-
+			result.setName(bpmn2_name);
 			if (priority != null)
 				try {
 					int p = Integer.parseInt(priority);
@@ -297,6 +299,7 @@ public class BPMN2XMLParser {
 			return result;
 		case 2:
 			UkuExecuteTask et = new UkuExecuteTask(id);
+			et.setName(bpmn2_name);
 			for (Element child : e.getChildren()) {
 				log.debug(et.getID() + " " + child.getName());
 				if (child.getName().equals("incoming")) {
@@ -314,6 +317,7 @@ public class BPMN2XMLParser {
 			return et;
 		case 3:
 			UkuEvent event = new UkuEvent(id);
+			event.setName(bpmn2_name);
 			for (Element child : e.getChildren()) {
 				String n = child.getName();
 				String n_id = child.getTextTrim();
@@ -336,7 +340,7 @@ public class BPMN2XMLParser {
 			}
 			return event;
 		case 4: // gateways
-			UkuGateway gway = null;
+			UkuGateway gway = null;			
 			try {
 				gway = (UkuGateway) classifier.getGatewayClass(name)
 						.getConstructor(String.class).newInstance(id);
@@ -372,9 +376,11 @@ public class BPMN2XMLParser {
 									+ " -> ignored");
 				}
 			}
+			gway.setName(bpmn2_name);
 			return gway;
 		case 5: // Text Annotation
 			UkuScope scope = new UkuScope(id);
+			scope.setName(bpmn2_name);
 			String scope_desc = "";
 			for (Element child : e.getChildren()) {
 				if (child.getName().equals("text")) {
@@ -387,6 +393,7 @@ public class BPMN2XMLParser {
 		case 6: // Receive Task
 			// TODO UkuR
 			UkuReceiveTask rTask = new UkuReceiveTask(id);
+			rTask.setName(bpmn2_name);
 			for (Element ee : e.getChildren()) {
 				String n = ee.getName();
 				String n_id = ee.getTextTrim();

@@ -1,5 +1,7 @@
 package de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring;
 
+import java.util.Map;
+
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDeleteFeature;
@@ -13,6 +15,8 @@ import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
+import org.eclipse.graphiti.features.context.ICustomContext;
+import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 
@@ -20,15 +24,22 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
+import de.tudarmstadt.dvs.ukuflow.eventbase.utils.DialogUtils;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGOffset;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRelative;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage;
+import de.tudarmstadt.dvs.ukuflow.features.FeatureUtil;
 import de.tudarmstadt.dvs.ukuflow.features.eg.EGFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericDirectEditFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.GenericEditPropertiesFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericLayoutFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericMoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractAddShapeFeature;
 
 public class EGRelativeFeatureContainer extends EGFeatureContainer {
@@ -144,5 +155,40 @@ public class EGRelativeFeatureContainer extends EGFeatureContainer {
 			return false;
 		}
 
+	}
+	public class EGRelativeDoubleClickFeature extends GenericEditPropertiesFeature{
+
+		public EGRelativeDoubleClickFeature(IFeatureProvider fp) {
+			super(fp);
+		}
+		
+		public void execute(ICustomContext context){
+			EventBaseOperator bo = (EventBaseOperator) getBusinessObj(context);
+			Map<Integer, RequestContainer> properties = FeatureUtil
+					.createQuestions(bo);
+			
+			EGRelative off = (EGRelative) bo;
+			properties.put(EventbasePackage.EG_RELATIVE__DELAY_TIME,
+							new RequestContainer(
+									new RequestContainer.OffsetTimeValidator(),
+									 off.getDelayTime()+"",
+									"Delay time (in mm:ss format)"));
+			Map<Integer,RequestContainer> result = asking(bo,properties);
+			if (result == null)
+				return;
+			hasDoneChanges = FeatureUtil.fetchAnswer(bo, result);
+			String currentTime = off.getDelayTime();
+			String newTime = result.get(EventbasePackage.EG_RELATIVE__DELAY_TIME).result;
+			if (!newTime.equals(currentTime)) {
+				this.hasDoneChanges = true;
+				off.setDelayTime(newTime);				
+			}
+		}
+		
+	}
+	@Override
+	public AbstractCustomFeature getDoubleClickFeature(IFeatureProvider fb) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -44,7 +44,7 @@ public class UkuRepositoryField extends PrimaryExpression {
 			throws InvalidRepositoryNameException {
 		if (name.startsWith("NODE_") || name.startsWith("SENSOR_")) {
 			int t = UkuConstants.getConstantByName(name);
-			if (0<=t && t <=UkuConstants.getConstantByName("NODE_ID") )
+			if (0<=t && t <=UkuConstants.getConstantByName("NODE_TIME") )
 				fieldID = t;
 			else
 				throw new InvalidRepositoryNameException();
