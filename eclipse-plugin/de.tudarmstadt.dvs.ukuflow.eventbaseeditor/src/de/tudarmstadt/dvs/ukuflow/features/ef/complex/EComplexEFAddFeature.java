@@ -26,7 +26,7 @@ import de.tudarmstadt.dvs.ukuflow.eventbase.utils.EventObjIndependenceSolver;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexEF;
 /**
  * 
- * @author ”Hien Quoc Dang”
+ * @author ï¿½Hien Quoc Dangï¿½
  * @deprecated no thing for complex event
  */
 public class EComplexEFAddFeature extends AbstractAddShapeFeature{
@@ -144,8 +144,8 @@ public class EComplexEFAddFeature extends AbstractAddShapeFeature{
 				
 				ChopboxAnchor chopboxAnchor = peCreateService.createChopboxAnchor(containerShape);				
 				UkuFlowFeatureProvider tfp = (UkuFlowFeatureProvider)getFeatureProvider();
-				EventObjIndependenceSolver pojoIndependenceSolver = tfp.getCustomIndependenceSolver();										
-				pojoIndependenceSolver.registerGraphicalObject(ChopboxAnchor.class, addedClass, chopboxAnchor);
+				//EventObjIndependenceSolver pojoIndependenceSolver = tfp.getCustomIndependenceSolver();										
+				//pojoIndependenceSolver.registerGraphicalObject(ChopboxAnchor.class, addedClass, chopboxAnchor);
 				// call the layout feature
 				layoutPictogramElement(containerShape);
 

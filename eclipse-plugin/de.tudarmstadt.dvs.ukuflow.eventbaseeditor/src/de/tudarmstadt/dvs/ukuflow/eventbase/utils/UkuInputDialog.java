@@ -244,6 +244,8 @@ public class UkuInputDialog extends Dialog {
 				// System.out.println(requests.get(message).requests);
 				combo.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 						| GridData.HORIZONTAL_ALIGN_FILL));
+				System.out.println("map: "+requests);	 
+				System.out.println("mesg:"+message + "/ req:"+requests.get(message).requests);
 				List l = (List<?>) requests.get(message).requests;
 				String[] a = new String[l.size()];
 				int selectIndex = 0;

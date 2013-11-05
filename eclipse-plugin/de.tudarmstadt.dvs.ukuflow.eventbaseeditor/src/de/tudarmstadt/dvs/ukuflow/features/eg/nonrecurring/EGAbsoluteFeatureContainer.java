@@ -25,6 +25,7 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.TimeUtil;
 import de.tudarmstadt.dvs.ukuflow.eventbase.utils.DialogUtils;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGAbsolute;
@@ -41,15 +42,10 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
-import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGAddShapeFeature;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
-
-	@Override
-	public Object getApplyObject(IContext context) {
-		return super.getApplyObject(context);
-	}
 
 	public boolean canApplyTo(Object o) {
 		return (o instanceof EGAbsolute);
@@ -63,41 +59,6 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 		return new EGAbsoluteAddFeature(fp);
 	}
 
-	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
-
-		return new GenericUpdateFeature(fp);
-	}
-
-	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
-		return new GenericDirectEditFeature(fp);
-	}
-
-	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new GenericLayoutFeature(fp);
-	}
-
-	public IRemoveFeature getRemoveFeature(IFeatureProvider fp) {
-		return new GenericRemoveFeature(fp);
-	}
-
-	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new GenericMoveFeature(fp);
-	}
-
-	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new GenericResizeFeature(fp);
-	}
-
-	public IDeleteFeature getDeleteFeature(IFeatureProvider fp) {
-		// TODO Auto-generated method stub
-		return new DefaultDeleteFeature(fp);
-	}
-
-	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	class EGAbsoluteCreateFeature extends AbstractCreateFeature {
 
 		public EGAbsoluteCreateFeature(IFeatureProvider fp) {
@@ -108,7 +69,9 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 				String description) {
 			super(fp, name, description);
 		}
-
+		public String getCreateImageId(){
+			return EventImageProvider.GEARS_ICON;
+		}
 		public boolean canCreate(ICreateContext context) {
 			return context.getTargetContainer() instanceof Diagram;
 		}
@@ -140,7 +103,7 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 
 	}
 
-	public class EGAbsoluteAddFeature extends UkuAbstractAddShapeFeature {
+	public class EGAbsoluteAddFeature extends UkuAbstractEGAddShapeFeature {
 
 		public static final int INVISIBLE_RECT_RIGHT = 6;
 
@@ -158,34 +121,41 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 		}
 
 	}
-	public class EGAbsoluteDoubleClickFeature extends GenericEditPropertiesFeature {
+
+	public class EGAbsoluteDoubleClickFeature extends
+			GenericEditPropertiesFeature {
 		BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
+
 		public EGAbsoluteDoubleClickFeature(IFeatureProvider fp) {
 			super(fp);
 		}
-		public void execute(ICustomContext context){
-			EventBaseOperator bo = (EventBaseOperator)getBusinessObj(context);
+
+		public void execute(ICustomContext context) {
+			EventBaseOperator bo = (EventBaseOperator) getBusinessObj(context);
 			EGAbsolute eClass = (EGAbsolute) bo;
-			Map<Integer,RequestContainer> properties = FeatureUtil.createQuestions(bo);
-			
+			Map<Integer, RequestContainer> properties = FeatureUtil
+					.createQuestions(bo);
+
 			String currentTime = eClass.getAbsoluteTime();
 			if (currentTime == null || currentTime.equals("")) {
-				
+
 				currentTime = TimeUtil.getCurrentTime();
-				log.debug("absolute time is null or \"\"-> replace with default : " + currentTime);
+				log.debug("absolute time is null or \"\"-> replace with default : "
+						+ currentTime);
 			}
 			properties.put(EventbasePackage.EG_ABSOLUTE__ABSOLUTE_TIME,
-							new RequestContainer(
-									new RequestContainer.AbsoluteTimeValidator(),
-									currentTime,
-									"Absolute time (" + TimeUtil.TIME_PATTERN + ")"));
+					new RequestContainer(
+							new RequestContainer.AbsoluteTimeValidator(),
+							currentTime, "Absolute time ("
+									+ TimeUtil.TIME_PATTERN + ")"));
 
-			Map<Integer,RequestContainer> result = asking(bo,properties);
+			Map<Integer, RequestContainer> result = asking(bo, properties);
 			if (result == null)
 				return;
 			hasDoneChanges = FeatureUtil.fetchAnswer(bo, result);
-			
-			String newTime = result.get(EventbasePackage.EG_ABSOLUTE__ABSOLUTE_TIME).result;
+
+			String newTime = result
+					.get(EventbasePackage.EG_ABSOLUTE__ABSOLUTE_TIME).result;
 			if (!newTime.equals(currentTime)) {
 				this.hasDoneChanges = true;
 				eClass.setAbsoluteTime(newTime);

@@ -129,12 +129,28 @@ public class UkuProcessValidation {
 				log.error("workflow is not well-formed " + last);
 		}
 
+	}	
+	
+	private void validateFakeReceiveTask(UkuReceiveTask e){
+		log.debug("validating fakeReceiveTask : " + e.getID());
+		if(e.getIncomingEntity() == null || e.getIncomingEntity().size() !=1){
+			e.addErrorMessage("Intermediate Catch Event should have one and only one incoming gateway");
+		}
+		if(e.getOutgoingEntity() == null || e.getOutgoingEntity().size() != 1){
+			e.addErrorMessage("Intermediate Catch Event should have one and only one outgoing gateway");
+		}
+		
 	}
-
+	
 	/**
 	 * @param e
 	 */
 	private void validate(UkuReceiveTask e) {
+		log.debug("validating a receiveTask : " + e.getID());
+		if (e.isFake()){
+			validateFakeReceiveTask(e);
+			return;
+		}
 		if (e.getIncomingEntity() == null || e.getIncomingEntity().size() == 0) {
 			e.addErrorMessage("This Receive Task can not be reached from the start event");
 		} else if (!(e.getIncomingEntity().get(0).getSourceEntity() instanceof UkuEventGateway)) {
@@ -156,7 +172,7 @@ public class UkuProcessValidation {
 	}
 
 	private boolean goToNextEntity(UkuEntity current, int max) {
-		if (max == 0)
+		if (max == 0 || current == null)
 			return false;
 		if (current instanceof UkuSequenceFlow) {
 			return goToNextEntity(

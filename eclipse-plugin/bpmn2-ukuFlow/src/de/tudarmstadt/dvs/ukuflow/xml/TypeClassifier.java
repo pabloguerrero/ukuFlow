@@ -138,6 +138,7 @@ public class TypeClassifier {
 	 * <li> 5 : textAnnotation </li>
 	 * <li> 6 : ReceiveTask </li>
 	 * <li> 7 : eventbaseGateway </li>
+	 * <li> 8 : immediateCatchEvent </li>
 	 * @throws UnsupportedElementException
 	 */
 	public int getType(String name) throws UnsupportedElementException {
@@ -155,6 +156,9 @@ public class TypeClassifier {
 			return 6;
 		if (name.equals("eventBasedGateway"))
 			return 7;
+		if(name.equals("intermediateCatchEvent")){
+			return 8;
+		}
 		throw new UnsupportedElementException(name);
 	}
 

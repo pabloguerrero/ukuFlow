@@ -66,7 +66,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="EFStatusEvent" eSuperTypes="#//EFComposite"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFLogic" eSuperTypes="#//EFStatusEvent"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFProcessing" eSuperTypes="#//EFStatusEvent">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="windowSize" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="windowSize" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="1:00"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EFTemporal" eSuperTypes="#//EFStatusEvent"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFLogicAnd" eSuperTypes="#//EFLogic"/>

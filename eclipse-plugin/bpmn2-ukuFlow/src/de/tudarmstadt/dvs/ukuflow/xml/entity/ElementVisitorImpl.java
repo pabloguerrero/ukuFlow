@@ -198,7 +198,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 			break;
 		case UkuConstants.WorkflowOperators.EXCLUSIVE_MERGE_GATEWAY:
 		case UkuConstants.WorkflowOperators.INCLUSIVE_JOIN_GATEWAY:
-			out.add(toByte(UkuConstants.WorkflowOperators.INCLUSIVE_JOIN_GATEWAY));
+			out.add(toByte(gateway.getUkuType()));
 			if (gateway.getOutgoingEntity().size() != 1) {
 			} else {
 				UkuEntity outg = gateway.getOutgoingEntity().get(0);

@@ -85,6 +85,7 @@ import org.eclipse.core.runtime.Status;
 
 import de.tudarmstadt.dvs.ukuflow.converter.Activator;
 import de.tudarmstadt.dvs.ukuflow.preference.UkuPreference;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.ChannelIDManager;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ScopeManager;
 import de.tudarmstadt.dvs.ukuflow.tools.Base64Converter;
 import de.tudarmstadt.dvs.ukuflow.tools.QuickFileReader;
@@ -246,6 +247,7 @@ public class ConvertCommand extends AbstractHandler {
 		 * set workflow-element-id for each element this id will be used later
 		 * in the bytecode format output
 		 */
+		ChannelIDManager.getInstance().reset();
 		byte id = 0;
 		for (UkuEntity ue : process.getEntities()) {
 			if (ue instanceof UkuElement && !(ue instanceof UkuReceiveTask)) {
@@ -306,7 +308,7 @@ public class ConvertCommand extends AbstractHandler {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static boolean saveAllResources(IFile file) {
-
+		//ALSO TODO: it works not correctly
 		List selected = new LinkedList();
 		Set<IEditorInput> inputs = new HashSet<IEditorInput>();
 		List result = new LinkedList();

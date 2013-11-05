@@ -22,6 +22,7 @@ import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
@@ -36,76 +37,40 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
-import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGAddShapeFeature;
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class EGDistributionFeatureContainer extends EGFeatureContainer {
 	private BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	
-	@Override
-	public Object getApplyObject(IContext context) {
-		return super.getApplyObject(context);
-	}
 
 	public boolean canApplyTo(Object o) {
 		return (o instanceof EGDistribution);
 	}
 
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
-		return new EGImmediateCreateFeature(fp);
+		return new EGDistributionCreateFeature(fp);
 	}
 
 	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new EGDistributionAddFeature(fp);
 	}
 
-	public IUpdateFeature getUpdateFeature(IFeatureProvider fp) {
 
-		return new GenericUpdateFeature(fp);
-	}
+	class EGDistributionCreateFeature extends AbstractCreateFeature {
 
-	public IDirectEditingFeature getDirectEditingFeature(IFeatureProvider fp) {
-		return new GenericDirectEditFeature(fp);
-	}
-
-	public ILayoutFeature getLayoutFeature(IFeatureProvider fp) {
-		return new GenericLayoutFeature(fp);
-	}
-
-	public IRemoveFeature getRemoveFeature(IFeatureProvider fp) {
-		return new GenericRemoveFeature(fp);
-	}
-
-	public IMoveShapeFeature getMoveFeature(IFeatureProvider fp) {
-		return new GenericMoveFeature(fp);
-	}
-
-	public IResizeShapeFeature getResizeFeature(IFeatureProvider fp) {
-		return new GenericResizeFeature(fp);
-	}
-
-	public IDeleteFeature getDeleteFeature(IFeatureProvider fp) {
-		// TODO Auto-generated method stub
-		return new DefaultDeleteFeature(fp);
-	}
-
-	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	class EGImmediateCreateFeature extends AbstractCreateFeature {
-
-		public EGImmediateCreateFeature(IFeatureProvider fp) {
+		public EGDistributionCreateFeature(IFeatureProvider fp) {
 			super(fp, "Distribution", "Create an distribution event generator");
 		}
 
-		public EGImmediateCreateFeature(IFeatureProvider fp, String name,
+		public EGDistributionCreateFeature(IFeatureProvider fp, String name,
 				String description) {
 			super(fp, name, description);
 		}
-
+		public String getCreateImageId(){
+			return EventImageProvider.GEARS_ICON;
+		}
 		public boolean canCreate(ICreateContext context) {
 			return context.getTargetContainer() instanceof Diagram;
 		}
@@ -138,7 +103,7 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 
 	}
 
-	public class EGDistributionAddFeature extends UkuAbstractAddShapeFeature {
+	public class EGDistributionAddFeature extends UkuAbstractEGAddShapeFeature {
 
 		public static final int INVISIBLE_RECT_RIGHT = 6;
 
@@ -163,8 +128,10 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 		}
 		public void execute(ICustomContext context){
 			EventBaseOperator bo = (EventBaseOperator)getBusinessObj(context);
-			if(bo == null)
+			if(bo == null){
+				System.out.println("dafuq?");
 				return;
+			}
 			Map<Integer,RequestContainer> properties = FeatureUtil.createQuestions((EventBaseOperator)bo);
 			EGDistribution off = (EGDistribution) bo;
 			Integer key0 = EventbasePackage.EG_DISTRIBUTION__PERIOD_INTERVAL;

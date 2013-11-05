@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.bpmn2.modeler.ui">
+      <importDialog
+            class="org.eclipse.bpmn2.modeler.wsil.ui.dialogs.SchemaImportDialogWithWSIL"
+            id="org.eclipse.bpmn2.modeler.wsil.importDialog"
+            runtimeId="org.eclipse.bpmn2.modeler.runtime.none">
+      </importDialog>
+   </extension>
+
+	<!-- Preference Page -->
+	
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.bpmn2.modeler.ui.preferences.Bpmn2HomePreferencePage"
+            class="org.eclipse.bpmn2.modeler.wsil.ui.preferences.WSILPreferencePage"
+            id="org.eclipse.bpmn2.wsil.ui.preferences.WSILPreferencePage"
+            name="%PREFERENCE_PAGE_WSIL"/>
+   </extension>
+
+</plugin>

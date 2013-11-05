@@ -26,8 +26,8 @@ public class FeatureUtil {
 		if (bo instanceof EventGenerator) {
 			EventGenerator eg = (EventGenerator) bo;
 			String scope = eg.getScope();
-			String newScope = result
-					.get(EventbasePackage.EVENT_GENERATOR__SCOPE).result;
+			// there is a null pointer exception!?: TODO FIXME
+			String newScope = result.get(EventbasePackage.EVENT_GENERATOR__SCOPE).result;
 			if (newScope.equalsIgnoreCase("local")
 					|| newScope.equalsIgnoreCase("world")) {
 				newScope = newScope.toUpperCase();
@@ -61,7 +61,7 @@ public class FeatureUtil {
 		if (element instanceof EGRecurring) {
 			RequestContainer repetitions = new RequestContainer(
 					new RequestContainer.IntegerValidator(0, 255),
-					((EGRecurring) element).getRepetition(),
+					((EGRecurring) element).getRepetition()+"",
 					"Number of repetitions (0-255, 0 means infinite)");
 			properties.put(EventbasePackage.EG_RECURRING__REPETITION,
 					repetitions);

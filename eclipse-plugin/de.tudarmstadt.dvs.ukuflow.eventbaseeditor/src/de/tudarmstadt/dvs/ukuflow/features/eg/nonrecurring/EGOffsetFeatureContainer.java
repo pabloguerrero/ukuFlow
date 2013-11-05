@@ -22,6 +22,7 @@ import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.TimeUtil;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGAbsolute;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGOffset;
@@ -38,7 +39,7 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
-import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGAddShapeFeature;
 
 public class EGOffsetFeatureContainer extends EGFeatureContainer {
 
@@ -105,6 +106,11 @@ public class EGOffsetFeatureContainer extends EGFeatureContainer {
 			super(fp, name, description);
 		}
 
+		@Override
+		public String getCreateImageId() {
+			return EventImageProvider.GEARS_ICON;
+		}
+
 		public boolean canCreate(ICreateContext context) {
 			return context.getTargetContainer() instanceof Diagram;
 		}
@@ -124,7 +130,7 @@ public class EGOffsetFeatureContainer extends EGFeatureContainer {
 
 	}
 
-	public class EGOffsetAddFeature extends UkuAbstractAddShapeFeature {
+	public class EGOffsetAddFeature extends UkuAbstractEGAddShapeFeature {
 
 		public static final int INVISIBLE_RECT_RIGHT = 6;
 

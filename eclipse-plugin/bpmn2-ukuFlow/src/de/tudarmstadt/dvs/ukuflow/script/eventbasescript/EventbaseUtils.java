@@ -55,7 +55,7 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 /**
- * @author ”Hien Quoc Dang”
+ * @author ï¿½Hien Quoc Dangï¿½
  * 
  */
 public class EventbaseUtils {
@@ -112,9 +112,13 @@ public class EventbaseUtils {
 							((de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventGenerator) ebo)
 									.getSensorType(),
 							UkuConstants.SensorTypeConstants.class);
-			if (sensors.length == 1)
+			if (sensors.length == 1){
 				((EventGenerator) result).setSensorType(sensors[0]);
+			} else {
+				log.error("there are more than one sensors with same value " + sensors);
+			}
 		} else if (ebo instanceof EEventFilter) {
+			log.error("TODO: implementing for event filter");
 			// TODO
 		} else {
 			log.error(ebo.getClass().getSimpleName() + "is unknown event base operator?");

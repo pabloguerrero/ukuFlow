@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://sample.bpmn2.org/bpmn2/sample/process">
+  <process id="VacationRequest" name="Default Process">
+    <laneSet id="LaneSet_1" name="Lane Set 1">
+      <lane id="Lane_1" name="System">
+        <flowNodeRef>ServiceTask_1</flowNodeRef>
+        <flowNodeRef>StartEvent_2</flowNodeRef>
+        <flowNodeRef>ManualTask_1</flowNodeRef>
+        <flowNodeRef>EndEvent_3</flowNodeRef>
+        <flowNodeRef>ManualTask_4</flowNodeRef>
+        <flowNodeRef>ManualTask_5</flowNodeRef>
+        <flowNodeRef>EndEvent_2</flowNodeRef>
+      </lane>
+      <lane id="Lane_2" name="Lane 2 (Charity Platform Administrator)">
+        <flowNodeRef>ExclusiveGateway_1</flowNodeRef>
+        <flowNodeRef>ExclusiveGateway_2</flowNodeRef>
+        <flowNodeRef>ManualTask_2</flowNodeRef>
+        <flowNodeRef>ExclusiveGateway_3</flowNodeRef>
+      </lane>
+      <lane id="Lane_3" name="Lane 3 (Charity Organization Reviewer)">
+        <flowNodeRef>ManualTask_3</flowNodeRef>
+      </lane>
+    </laneSet>
+    <dataObject id="DataObject_1" name="Vacation Request"/>
+    <serviceTask id="ServiceTask_1" name="Address Check">
+      <incoming>SequenceFlow_2</incoming>
+      <outgoing>SequenceFlow_3</outgoing>
+    </serviceTask>
+    <startEvent id="StartEvent_2" name="Request Received">
+      <outgoing>SequenceFlow_2</outgoing>
+    </startEvent>
+    <sequenceFlow id="SequenceFlow_2" name="" sourceRef="StartEvent_2" targetRef="ServiceTask_1"/>
+    <sequenceFlow id="SequenceFlow_3" sourceRef="ServiceTask_1" targetRef="ManualTask_1"/>
+    <exclusiveGateway id="ExclusiveGateway_1" name="Cross-check required?">
+      <incoming>SequenceFlow_4</incoming>
+      <outgoing>SequenceFlow_5</outgoing>
+      <outgoing>SequenceFlow_6</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="SequenceFlow_5" name="" sourceRef="ExclusiveGateway_1" targetRef="ManualTask_3"/>
+    <manualTask id="ManualTask_3" name="Perform Cross-check">
+      <incoming>SequenceFlow_5</incoming>
+      <outgoing>SequenceFlow_7</outgoing>
+    </manualTask>
+    <sequenceFlow id="SequenceFlow_6" sourceRef="ExclusiveGateway_1" targetRef="ExclusiveGateway_2"/>
+    <exclusiveGateway id="ExclusiveGateway_2" name="">
+      <incoming>SequenceFlow_6</incoming>
+      <incoming>SequenceFlow_7</incoming>
+      <outgoing>SequenceFlow_9</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="SequenceFlow_7" name="" sourceRef="ManualTask_3" targetRef="ExclusiveGateway_2"/>
+    <manualTask id="ManualTask_1" name="Dispatch to Organization">
+      <incoming>SequenceFlow_3</incoming>
+      <outgoing>SequenceFlow_8</outgoing>
+    </manualTask>
+    <sequenceFlow id="SequenceFlow_8" name="" sourceRef="ManualTask_1" targetRef="ManualTask_2"/>
+    <manualTask id="ManualTask_2" name="Review Request">
+      <incoming>SequenceFlow_8</incoming>
+      <outgoing>SequenceFlow_4</outgoing>
+    </manualTask>
+    <sequenceFlow id="SequenceFlow_4" sourceRef="ManualTask_2" targetRef="ExclusiveGateway_1"/>
+    <sequenceFlow id="SequenceFlow_9" sourceRef="ExclusiveGateway_2" targetRef="ExclusiveGateway_3"/>
+    <exclusiveGateway id="ExclusiveGateway_3" name="Request Approved?">
+      <incoming>SequenceFlow_9</incoming>
+      <outgoing>SequenceFlow_10</outgoing>
+      <outgoing>SequenceFlow_13</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="SequenceFlow_10" name="No" sourceRef="ExclusiveGateway_3" targetRef="ManualTask_4"/>
+    <endEvent id="EndEvent_3" name="">
+      <incoming>SequenceFlow_12</incoming>
+    </endEvent>
+    <sequenceFlow id="SequenceFlow_13" name="Yes" sourceRef="ExclusiveGateway_3" targetRef="ManualTask_5"/>
+    <manualTask id="ManualTask_4" name="Notify Applicant on Rejection">
+      <incoming>SequenceFlow_10</incoming>
+      <outgoing>SequenceFlow_11</outgoing>
+    </manualTask>
+    <sequenceFlow id="SequenceFlow_11" sourceRef="ManualTask_4" targetRef="EndEvent_2"/>
+    <manualTask id="ManualTask_5" name="Notify Applicant on Approval">
+      <incoming>SequenceFlow_13</incoming>
+      <outgoing>SequenceFlow_12</outgoing>
+    </manualTask>
+    <sequenceFlow id="SequenceFlow_12" sourceRef="ManualTask_5" targetRef="EndEvent_3"/>
+    <endEvent id="EndEvent_2" name="">
+      <incoming>SequenceFlow_11</incoming>
+    </endEvent>
+    <association id="Association_1" associationDirection="One" sourceRef="DataObject_1" targetRef="ServiceTask_1"/>
+    <association id="Association_2" associationDirection="One" sourceRef="DataObject_1" targetRef="ManualTask_1"/>
+    <association id="Association_3" associationDirection="One" sourceRef="DataObject_1" targetRef="ManualTask_3"/>
+    <association id="Association_4" associationDirection="One" sourceRef="DataObject_1" targetRef="ManualTask_4"/>
+    <association id="Association_5" associationDirection="One" sourceRef="DataObject_1" targetRef="ManualTask_5"/>
+    <association id="Association_6" associationDirection="One" sourceRef="DataObject_1" targetRef="ManualTask_2"/>
+  </process>
+</definitions>

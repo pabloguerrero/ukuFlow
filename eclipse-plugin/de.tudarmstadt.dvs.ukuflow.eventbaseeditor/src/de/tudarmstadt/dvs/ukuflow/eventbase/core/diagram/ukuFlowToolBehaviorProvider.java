@@ -54,6 +54,9 @@ import org.eclipse.graphiti.tb.IDecorator;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.features.FeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.features.TutorialCollapseDummyFeature;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFComposite;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFLogic;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessing;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericEditPropertiesFeature;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
@@ -213,13 +216,22 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 		// add separator
 		eventFilterEntry.addToolEntry(new PaletteSeparatorEntry());
 		// add complex event filter!;
-		for(ICreateFeature cf :FeatureManager.getComplexEFCreateFeatures(featureProvider)){
-			ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(
-					cf.getCreateName(), cf.getCreateDescription(),
-					cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
-			eventFilterEntry.addToolEntry(objectCreationToolEntry);
+		if (featureProvider instanceof UkuFlowFeatureProvider) {
+			UkuFlowFeatureProvider ufp = (UkuFlowFeatureProvider) featureProvider;
+			for (ICreateFeature cf : ufp.getCreateFeatures(EFLogic.class)) {
+				ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(
+						cf.getCreateName(), cf.getCreateDescription(),
+						cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
+				eventFilterEntry.addToolEntry(objectCreationToolEntry);
+			}
+			eventFilterEntry.addToolEntry(new PaletteSeparatorEntry());
+			for (ICreateFeature cf : ufp.getCreateFeatures(EFProcessing.class)) {
+				ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(
+						cf.getCreateName(), cf.getCreateDescription(),
+						cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
+				eventFilterEntry.addToolEntry(objectCreationToolEntry);
+			}
 		}
-		
 		return ret.toArray(new IPaletteCompartmentEntry[ret.size()]);
 	}
 	/*
@@ -264,7 +276,7 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 		Object bo = getFeatureProvider().getBusinessObjectForPictogramElement(pes[0]);
 		FeatureContainer fc = UkuFlowFeatureProvider.getFeatureContainer(bo);
 		if(fc != null){
-			log.debug("return doubleClickFeature from FeatureContainer");
+			log.debug("return doubleClickFeature from FeatureContainer : "+fc);
 			return fc.getDoubleClickFeature(getFeatureProvider());
 		}
 		ICustomFeature customFeature = new GenericEditPropertiesFeature(

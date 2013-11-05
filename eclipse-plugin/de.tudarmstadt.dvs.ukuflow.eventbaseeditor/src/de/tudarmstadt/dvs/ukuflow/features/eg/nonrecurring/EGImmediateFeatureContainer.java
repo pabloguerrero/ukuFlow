@@ -23,13 +23,14 @@ import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGImmediate;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.features.FeatureUtil;
 import de.tudarmstadt.dvs.ukuflow.features.eg.EGFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.generic.*;
-import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGAddShapeFeature;
 
 public class EGImmediateFeatureContainer extends EGFeatureContainer {
 
@@ -99,7 +100,10 @@ public class EGImmediateFeatureContainer extends EGFeatureContainer {
 		public boolean canCreate(ICreateContext context) {
 			return context.getTargetContainer() instanceof Diagram;
 		}
-
+		@Override
+		public String getCreateImageId() {
+			return EventImageProvider.GEARS_ICON;
+		}
 		public Object[] create(ICreateContext context) {
 			EGImmediate newClass = EventbaseFactory.eINSTANCE
 					.createEGImmediate();
@@ -128,7 +132,7 @@ public class EGImmediateFeatureContainer extends EGFeatureContainer {
 
 	}
 
-	public class EGImmediateAddFeature extends UkuAbstractAddShapeFeature {
+	public class EGImmediateAddFeature extends UkuAbstractEGAddShapeFeature {
 
 		public static final int INVISIBLE_RECT_RIGHT = 6;
 

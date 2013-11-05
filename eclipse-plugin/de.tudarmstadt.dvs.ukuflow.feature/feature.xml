@@ -99,13 +99,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.bpmn2.tests"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.bpmn2.edit"
          download-size="0"
          install-size="0"

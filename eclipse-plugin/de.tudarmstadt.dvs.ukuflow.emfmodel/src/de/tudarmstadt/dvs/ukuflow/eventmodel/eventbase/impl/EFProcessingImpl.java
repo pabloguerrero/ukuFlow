@@ -33,7 +33,7 @@ public class EFProcessingImpl extends EFStatusEventImpl implements EFProcessing 
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int WINDOW_SIZE_EDEFAULT = 0;
+	protected static final String WINDOW_SIZE_EDEFAULT = "1:00";
 
 	/**
 	 * The cached value of the '{@link #getWindowSize() <em>Window Size</em>}' attribute.
@@ -43,7 +43,7 @@ public class EFProcessingImpl extends EFStatusEventImpl implements EFProcessing 
 	 * @generated
 	 * @ordered
 	 */
-	protected int windowSize = WINDOW_SIZE_EDEFAULT;
+	protected String windowSize = WINDOW_SIZE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -69,7 +69,7 @@ public class EFProcessingImpl extends EFStatusEventImpl implements EFProcessing 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getWindowSize() {
+	public String getWindowSize() {
 		return windowSize;
 	}
 
@@ -78,8 +78,8 @@ public class EFProcessingImpl extends EFStatusEventImpl implements EFProcessing 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setWindowSize(int newWindowSize) {
-		int oldWindowSize = windowSize;
+	public void setWindowSize(String newWindowSize) {
+		String oldWindowSize = windowSize;
 		windowSize = newWindowSize;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, EventbasePackage.EF_PROCESSING__WINDOW_SIZE, oldWindowSize, windowSize));
@@ -108,7 +108,7 @@ public class EFProcessingImpl extends EFStatusEventImpl implements EFProcessing 
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case EventbasePackage.EF_PROCESSING__WINDOW_SIZE:
-				setWindowSize((Integer)newValue);
+				setWindowSize((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -138,7 +138,7 @@ public class EFProcessingImpl extends EFStatusEventImpl implements EFProcessing 
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case EventbasePackage.EF_PROCESSING__WINDOW_SIZE:
-				return windowSize != WINDOW_SIZE_EDEFAULT;
+				return WINDOW_SIZE_EDEFAULT == null ? windowSize != null : !WINDOW_SIZE_EDEFAULT.equals(windowSize);
 		}
 		return super.eIsSet(featureID);
 	}

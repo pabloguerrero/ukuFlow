@@ -18,10 +18,8 @@ package de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateConnectionFeature;
@@ -51,11 +49,16 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.ui.features.DefaultFeatureProvider;
 
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.features.FeatureContainer;
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.features.TutorialCollapseDummyFeature;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.features.TutorialReconnectionFeature;
-import de.tudarmstadt.dvs.ukuflow.eventbase.utils.EventObjIndependenceSolver;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFLogicAnd;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFLogicNot;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFLogicOr;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessingAvg;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessingCount;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessingMax;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessingMin;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessingStDev;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessingSum;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGAbsolute;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution;
@@ -67,8 +70,15 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRelative;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESequenceFlow;
 import de.tudarmstadt.dvs.ukuflow.features.connection.SequenceFlowAddFeature;
 import de.tudarmstadt.dvs.ukuflow.features.connection.SequenceFlowCreateFeature;
+import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.logical.EFLogicAndFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.logical.EFLogicNotFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.logical.EFLogicOrFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProcessingAvgFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProcessingCountFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProcessingMaxFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProcessingMinFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProcessingStDevFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProcessingSumFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.simple.EFSimpleFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.distribution.EGDistributionFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring.EGAbsoluteFeatureContainer;
@@ -78,18 +88,9 @@ import de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring.EGRelativeFeatureCont
 import de.tudarmstadt.dvs.ukuflow.features.eg.patterned.EGPatternedFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.periodic.EGPeriodicFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericDeleteFeature;
-import de.tudarmstadt.dvs.ukuflow.features.generic.TutorialAddEClassFeature;
-import de.tudarmstadt.dvs.ukuflow.features.generic.TutorialAssociateDiagramEClassFeature;
-import de.tudarmstadt.dvs.ukuflow.features.generic.TutorialChangeColorEClassFeature;
-import de.tudarmstadt.dvs.ukuflow.features.generic.TutorialCopyEClassFeature;
-import de.tudarmstadt.dvs.ukuflow.features.generic.TutorialCreateEClassFeature;
+
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericDirectEditFeature;
-import de.tudarmstadt.dvs.ukuflow.features.generic.TutorialDrillDownEClassFeature;
-import de.tudarmstadt.dvs.ukuflow.features.generic.GenericLayoutFeature;
-import de.tudarmstadt.dvs.ukuflow.features.generic.GenericMoveFeature;
-import de.tudarmstadt.dvs.ukuflow.features.generic.TutorialPasteEClassFeature;
-import de.tudarmstadt.dvs.ukuflow.features.generic.GenericEditPropertiesFeature;
-import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
+
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 
 public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
@@ -109,10 +110,26 @@ public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
 		containers.put(EGDistribution.class, new EGDistributionFeatureContainer());
 
 		containers.put(EFSimple.class, new EFSimpleFeatureContainer());
-		containers.put(EFProcessingCount.class, new EFProcessingCountFeatureContainer());
+		
+		containers.put(EFLogicAnd.class, new EFLogicAndFeatureContainer() );
+		containers.put(EFLogicOr.class, new EFLogicOrFeatureContainer());
+		containers.put(EFLogicNot.class, new EFLogicNotFeatureContainer());
+		
 		containers.put(EFProcessingMin.class, new EFProcessingMinFeatureContainer());
+		containers.put(EFProcessingMax.class, new EFProcessingMaxFeatureContainer());
+		containers.put(EFProcessingCount.class, new EFProcessingCountFeatureContainer());
+		containers.put(EFProcessingSum.class, new EFProcessingSumFeatureContainer());
+		containers.put(EFProcessingAvg.class, new EFProcessingAvgFeatureContainer());
+		containers.put(EFProcessingStDev.class, new EFProcessingStDevFeatureContainer());
+	}	
+	public List<ICreateFeature> getCreateFeatures(Class clazz){
+		List<ICreateFeature> result = new ArrayList<ICreateFeature>();
+		for(Class z : containers.keySet()){
+			if(clazz.isAssignableFrom(z))
+				result.add(containers.get(z).getCreateFeature(this));
+		}
+		return result;
 	}
-	
 	/**
 	 *  return the matched feature container
 	 * @param bo
@@ -128,13 +145,13 @@ public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
 		return result;
 	}
 	
-	EventObjIndependenceSolver solver;
+	//EventObjIndependenceSolver solver;
 
 	public UkuFlowFeatureProvider(IDiagramTypeProvider dtp) {
 		super(dtp);
-		if (solver == null) {
-			solver = new EventObjIndependenceSolver();
-		}
+		//if (solver == null) {
+		//	solver = new EventObjIndependenceSolver();
+		//}
 		// setIndependenceSolver(solver);
 	}
 
@@ -164,9 +181,9 @@ public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
 		return feature;
 	}
 
-	public EventObjIndependenceSolver getCustomIndependenceSolver() {
-		return solver;
-	}
+	//public EventObjIndependenceSolver getCustomIndependenceSolver() {
+	//	return solver;
+	//}
 	@Override
 	public ICustomFeature[] getCustomFeatures(ICustomContext context) {
 		ICustomFeature[] superFeatures = super.getCustomFeatures(context);
@@ -239,7 +256,6 @@ public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
 			}
 		}
 		return new GenericUpdateFeature(this);
-		//return super.getUpdateFeature(context);
 	}
 
 	@Override

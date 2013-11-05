@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WSIL Support for BPMN2 Modeler
+Bundle-SymbolicName: org.eclipse.bpmn2.modeler.wsil;singleton:=true
+Bundle-Version: 0.3.0.qualifier
+Bundle-Activator: org.eclipse.bpmn2.modeler.wsil.Activator
+Bundle-Vendor: Eclipse.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.bpmn2.modeler.core,
+ org.eclipse.bpmn2.modeler.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.bpel.wsil.model
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.bpel.wsil.model.inspection,
+ org.eclipse.bpmn2;version="0.7.0",
+ org.eclipse.core.resources,
+ org.eclipse.jdt.core,
+ org.eclipse.wst.wsdl,
+ org.eclipse.xsd

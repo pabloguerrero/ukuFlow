@@ -55,7 +55,7 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
-import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGAddShapeFeature;
 
 public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 
@@ -122,6 +122,11 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 			super(fp, name, description);
 		}
 
+		@Override
+		public String getCreateImageId() {
+			return EventImageProvider.GEARS_ICON;
+		}
+
 		public boolean canCreate(ICreateContext context) {
 			return context.getTargetContainer() instanceof Diagram;
 		}
@@ -153,7 +158,7 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 
 	}
 
-	public class EGPeriodicAddFeature extends UkuAbstractAddShapeFeature {
+	public class EGPeriodicAddFeature extends UkuAbstractEGAddShapeFeature {
 
 		public static final int INVISIBLE_RECT_RIGHT = 6;
 
@@ -282,33 +287,35 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 		}
 
 	}
-	public class EGPeriodicDoubleClickFeature extends GenericEditPropertiesFeature{
 
-		public EGPeriodicDoubleClickFeature (IFeatureProvider fp) {
+	public class EGPeriodicDoubleClickFeature extends
+			GenericEditPropertiesFeature {
+
+		public EGPeriodicDoubleClickFeature(IFeatureProvider fp) {
 			super(fp);
 		}
-		
-		public void execute(ICustomContext context){
+
+		public void execute(ICustomContext context) {
 			EventBaseOperator bo = (EventBaseOperator) getBusinessObj(context);
 			Map<Integer, RequestContainer> properties = FeatureUtil
 					.createQuestions(bo);
-			
+
 			EGPeriodic off = (EGPeriodic) bo;
-			properties.put(EventbasePackage.EG_PERIODIC__TIME,
+			properties.put(
+					EventbasePackage.EG_PERIODIC__TIME,
 					new RequestContainer(
 							new RequestContainer.DatePatternValidator(
 									TimeUtil.SHORT_TIME_PATTERN), ""
 									+ off.getTime(),
 							"Period duration (in mm:ss format)"));
 
-			Map<Integer,RequestContainer>result = asking(bo,properties);
+			Map<Integer, RequestContainer> result = asking(bo, properties);
 			if (result == null)
 				return;
 			hasDoneChanges = FeatureUtil.fetchAnswer(bo, result);
-			
+
 			String currentTime = off.getTime();
-			String newTime = result
-					.get(EventbasePackage.EG_PERIODIC__TIME).result;
+			String newTime = result.get(EventbasePackage.EG_PERIODIC__TIME).result;
 			if (newTime != currentTime) {
 				this.hasDoneChanges = true;
 				off.setTime(newTime);
@@ -316,6 +323,7 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 			}
 		}
 	}
+
 	@Override
 	public AbstractCustomFeature getDoubleClickFeature(IFeatureProvider fb) {
 		// TODO Auto-generated method stub

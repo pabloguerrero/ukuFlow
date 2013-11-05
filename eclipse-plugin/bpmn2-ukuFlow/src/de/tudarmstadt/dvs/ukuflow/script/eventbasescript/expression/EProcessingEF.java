@@ -32,34 +32,37 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 
 /**
- * @author ”Hien Quoc Dang”
- *
+ * @author ï¿½Hien Quoc Dangï¿½
+ * 
  */
 public class EProcessingEF extends EStatusEF {
 	private String type = null;
-	private int window = 0;
+	private TimeExpression window = null;
 	private EventBaseOperator source;
-	public EProcessingEF(String type){
+
+	public EProcessingEF(String type) {
 		this.type = type;
 	}
-	
-	public void setWindow(int time){
+
+	public void setWindow(TimeExpression time) {
 		window = time;
 	}
-	
-	public int getWindow(){
+
+	public TimeExpression getWindow() {
 		return window;
 	}
-	
-	public byte getTypecode(){
-		if(type != null)
+
+	public byte getTypecode() {
+		if (type != null)
 			return UkuConstants.getConstantByName(type);
 		return 0;
 	}
-	public EventBaseOperator getSource(){
+
+	public EventBaseOperator getSource() {
 		return source;
 	}
-	public void setSource(EventBaseOperator source){
+
+	public void setSource(EventBaseOperator source) {
 		this.source = source;
 	}
 }

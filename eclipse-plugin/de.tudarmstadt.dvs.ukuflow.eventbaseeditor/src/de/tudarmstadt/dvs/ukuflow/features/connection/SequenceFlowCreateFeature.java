@@ -25,6 +25,7 @@ import org.eclipse.graphiti.features.impl.AbstractCreateConnectionFeature;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRelative;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESequenceFlow;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
@@ -37,6 +38,11 @@ public class SequenceFlowCreateFeature extends AbstractCreateConnectionFeature {
 	public SequenceFlowCreateFeature(IFeatureProvider fp) {
 		// provide name and description for the UI, e.g. the palette
 		super(fp, "Connection", "Create SequenceFlow"); //$NON-NLS-1$ //$NON-NLS-2$
+	}
+
+	@Override
+	public String getCreateImageId() {
+		return EventImageProvider.IMG_EREFERENCE;
 	}
 
 	private boolean containCircle(EventBaseOperator source,
@@ -69,7 +75,7 @@ public class SequenceFlowCreateFeature extends AbstractCreateConnectionFeature {
 		EventBaseOperator target = getEClass(context.getTargetAnchor());
 		// if(source instanceof EPeriodicEG && target instanceof EPeriodicEG)
 		// return false;
-		
+
 		if (source != null && target != null && source != target) {
 			if (target.getIncoming().size() >= 2)
 				return false;

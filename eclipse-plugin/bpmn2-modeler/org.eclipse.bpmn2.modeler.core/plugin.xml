@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.eclipse.bpmn2.modeler.runtime" name="BPMN2 Modeler Runtime Specialization" schema="schema/org.eclipse.bpmn2.modeler.runtime.exsd"/>
+   
+	<!-- EMF Extensions -->
+   
+	<extension
+		point="org.eclipse.emf.ecore.factory_override">
+		<factory
+			class="org.eclipse.bpmn2.modeler.core.model.Bpmn2ModelerFactory"
+			uri="http://www.omg.org/spec/BPMN/20100524/MODEL-XMI">
+		</factory>
+	</extension>
+
+   <extension
+         point="org.eclipse.emf.validation.constraintProviders">
+      <category
+            name="Core BPMN 2.0 Constraints"
+            id="org.eclipse.bpmn2.modeler.core.validation"/>
+      <constraintProvider cache="true">
+         <package namespaceUri="http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"/>
+         <constraints categories="org.eclipse.bpmn2.modeler.core.validation">
+            <constraint
+                  lang="Java"
+                  class="org.eclipse.bpmn2.modeler.core.validation.ValidIdConstraint"
+                  severity="WARNING"
+                  mode="Batch"
+                  name="Valid IDs"
+                  id="org.eclipse.bpmn2.modeler.core.validation.ValidId"
+                  statusCode="1">
+               <description>
+                  IDs must be valid.
+               </description>
+               <message>
+                  The {0} ID must be a valid ID.
+               </message>
+               <target class="BaseElement">
+                  <event name="Set">
+                     <feature name="id"/>
+                  </event>
+                  <event name="Unset">
+                     <feature name="id"/>
+                  </event>
+               </target>
+            </constraint>
+            <constraint
+			        lang="OCL"
+			         severity="ERROR"
+			         mode="Live"
+			         name="StartEventIncoming"
+			         id="org.eclipse.bpmn2.modeler.core.validation.StartEvent.incoming"
+			         statusCode="2" isEnabledByDefault="true">
+			      <description>Start Event must not have incoming flows</description>
+			      <message>Start Event must not have incoming sequence flows.</message>
+			      <target class="StartEvent" />
+			      <![CDATA[
+			      	self.incoming->isEmpty()
+			      ]]>
+			</constraint>
+			<constraint
+			        lang="OCL"
+			         severity="ERROR"
+			         mode="Live"
+			         name="EndEventOutgoing"
+			         id="org.eclipse.bpmn2.modeler.core.validation.EndEvent.outgoing"
+			         statusCode="3" isEnabledByDefault="true">
+			      <description>End Event must not have outgoing flows</description>
+			      <message>End Event must not have outgoing sequence flows.</message>
+			      <target class="EndEvent" />
+			      <![CDATA[
+			         self.outgoing->isEmpty()
+			      ]]>
+			</constraint>
+			<constraint
+			        lang="OCL"
+			         severity="WARNING"
+			         mode="Live"
+			         name="UniqueId"
+			         id="org.eclipse.bpmn2.modeler.core.validation.BaseElement.id"
+			         statusCode="3" isEnabledByDefault="true">
+			      <description>ID must be unique.</description>
+			      <message>ID must be unqiue.</message>
+			      <target class="BaseElement" />
+					<![CDATA[
+						self.id->notEmpty() implies bpmn2::BaseElement.allInstances()->select(s | s.id = self.id)->size() <= 1
+					]]>
+			</constraint>
+			<constraint
+					class="org.eclipse.bpmn2.modeler.core.validation.BPMN2ValidationConstraints"
+					id="org.eclipse.bpmn2.modeler.core.validation.error"
+					isEnabledByDefault="true"
+					lang="Java"
+					mode="Batch"
+					name="Errors"
+					severity="ERROR"
+					statusCode="1">
+				<message>{0}</message>
+				<description>Diagram Validation Errors</description>
+				<target class="Definitions"/>
+				<target class="BaseElement"/>
+			</constraint>
+ 			<constraint
+					class="org.eclipse.bpmn2.modeler.core.validation.BPMN2ValidationConstraints"
+					id="org.eclipse.bpmn2.modeler.core.validation.warning"
+					isEnabledByDefault="true"
+					lang="Java"
+					mode="Batch"
+					name="Warnings"
+					severity="WARNING"
+					statusCode="1">
+				<message>{0}</message>
+				<description>Diagram Validation Warnings</description>
+				<target class="Definitions"/>
+				<target class="BaseElement"/>
+			</constraint>
+			<!-- Live validation constraints for user feedback during editing -->
+			<constraint
+					class="org.eclipse.bpmn2.modeler.core.validation.BPMN2ValidationConstraints"
+					id="org.eclipse.bpmn2.modeler.core.validation.live.error"
+					isEnabledByDefault="true"
+					lang="Java"
+					mode="Live"
+					name="Infos"
+					severity="INFO"
+					statusCode="1">
+				<message>{0}</message>
+				<description>Diagram Validation Errors</description>
+				<target class="Definitions"/>
+				<target class="BaseElement"/>
+			</constraint>
+		    <constraint
+		         class="org.eclipse.bpmn2.modeler.core.validation.TaskNameNotEmpty"
+		         id="org.eclipse.bpmn2.modeler.core.validation.TaskEmptyNameConstraint"
+		         lang="java"
+		         mode="Batch"
+		         name="TaskEmptyNameConstraint"
+		         severity="ERROR"
+		         statusCode="1">
+		      <message>
+		         The {0} Name must not be empty
+		      </message>
+		      <description>
+		         Name must not be empty
+		      </description>
+		      <target
+		            class="Task">
+		      </target>
+		   </constraint>
+		   <constraint
+		         class="org.eclipse.bpmn2.modeler.core.validation.FormalExpressionConstraint"
+		         id="org.eclipse.bpmn2.modeler.core.validation.FormalExpressionConstraint"
+		         lang="java"
+		         mode="Batch"
+		         name="FormalExpressionConstraint"
+		         severity="WARNING"
+		         statusCode="1">
+		      <message>
+		         Expression is blank
+		      </message>
+		      <description>
+		         Expressions should not be blank
+		      </description>
+		      <target
+		            class="FormalExpression">
+		      </target>
+		   </constraint>
+		 
+         </constraints>
+      </constraintProvider>
+   </extension>
+
+   <extension
+         point="org.eclipse.emf.validation.constraintBindings">
+      <clientContext
+            default="false"
+            id="org.eclipse.bpmn2.modeler.core.validationContext">
+         <enablement>
+            <or>
+	         	<test
+	                property="org.eclipse.bpmn2.modeler.property.targetRuntimeId"
+	                value="org.eclipse.bpmn2.modeler.runtime.none"/>
+	         	<test
+	                property="org.eclipse.bpmn2.modeler.property.doCoreValidation"
+	                value="true"/>
+            </or>
+         </enablement>
+      </clientContext>
+      <binding
+            context="org.eclipse.bpmn2.modeler.core.validationContext"
+            category="org.eclipse.bpmn2.modeler.core.validation"/>
+   </extension>
+	
+	<extension point="org.eclipse.emf.validation.validationListeners">
+		<listener class="org.eclipse.bpmn2.modeler.core.validation.LiveValidationListener">
+			<clientContext id="org.eclipse.bpmn2.modeler.core.validationContext"/>
+		</listener>
+	</extension>
+
+  <extension
+        id="org.eclipse.bpmn2.modeler.core.projectValidator"
+        name="BPMN 2.0 Project Validator"
+        point="org.eclipse.wst.validation.validatorV2">
+     <validator
+           class="org.eclipse.bpmn2.modeler.core.validation.BPMN2ProjectValidator"
+           markerId="org.eclipse.bpmn2.modeler.core.problemMarker">
+        <include>
+           <rules>
+              <contentType
+                    exactMatch="true"
+                    id="org.eclipse.bpmn2.content-type.xml">
+              </contentType>
+              <file
+                    caseSensitive="true"
+                    name="bpmn2.xml"
+                    type="file">
+              </file>
+           </rules>
+        </include>
+        <exclude>
+           <rules>
+              <file
+                    caseSensitive="true"
+                    name="bpmn2.xml.diagram"
+                    type="file">
+              </file>
+           </rules>
+        </exclude>
+     </validator>
+  </extension>
+  
+  <extension
+        id="org.eclipse.bpmn2.modeler.core.problemMarker"
+        name="Core BPMN 2.0 Problem"
+        point="org.eclipse.core.resources.markers">
+     <persistent
+           value="true">
+     </persistent>
+     <super
+           type="org.eclipse.emf.validation.problem">
+     </super>
+  </extension>
+  
+  <extension
+        id="org.eclipse.bpmn2.modeler.core.bpmn2Builder"
+        name="BPMN2 Validation Builder"
+        point="org.eclipse.core.resources.builders">
+     <builder
+           hasNature="true">
+        <run
+              class="org.eclipse.bpmn2.modeler.core.builder.BPMN2Builder">
+        </run>
+     </builder>
+  </extension>
+  <extension
+        id="org.eclipse.bpmn2.modeler.core.bpmn2Nature"
+        name="BPMN2 Project Nature"
+        point="org.eclipse.core.resources.natures">
+     <runtime>
+        <run
+              class="org.eclipse.bpmn2.modeler.core.builder.BPMN2Nature">
+        </run>
+     </runtime>
+     <builder
+           id="org.eclipse.bpmn2.modeler.core.bpmn2Builder">
+     </builder>
+  </extension>
+  <extension
+        id="xmlProblem"
+        name="XML Problem"
+        point="org.eclipse.core.resources.markers">
+     <super
+           type="org.eclipse.core.resources.problemmarker">
+     </super>
+     <persistent
+           value="true">
+     </persistent>
+  </extension>
+  <extension
+        point="org.eclipse.core.expressions.propertyTesters">
+     <propertyTester
+           class="org.eclipse.bpmn2.modeler.core.validation.ResourcePropertyTester"
+           id="org.eclipse.bpmn2.modeler.core.targetRuntimePropertyTester"
+           namespace="org.eclipse.bpmn2.modeler.property"
+           properties="targetRuntimeId,toolPaletteProfile,doCoreValidation"
+           type="org.eclipse.emf.ecore.EObject">
+     </propertyTester>
+  </extension>
+</plugin>

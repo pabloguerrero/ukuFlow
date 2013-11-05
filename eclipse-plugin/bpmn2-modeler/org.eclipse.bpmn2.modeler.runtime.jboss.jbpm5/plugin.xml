@@ -1,0 +1,1425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.drools.DroolsPackage"
+            genModel="model/jBPM5Extensions.genmodel"
+            uri="http://www.jboss.org/drools">
+      </package>
+   </extension>
+
+	<extension point="org.eclipse.bpmn2.modeler.runtime">
+		<runtime name="JBoss jBPM5 Business Process Engine" versions="5.1,5.2,5.3"
+			id="org.jboss.runtime.jbpm5"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.JBPM5RuntimeExtension"
+			description="BPMN2 Modeler customizations for the JBoss jBPM5 engine">
+		</runtime>
+
+		<model runtimeId="org.jboss.runtime.jbpm5"
+			uri="http://www.jboss.org/drools"
+			resourceFactory="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.drools.util.DroolsResourceFactoryImpl">
+		</model>
+
+<!-- Property Tabs -->
+		
+		<propertyTab
+			id="bpmn2.jbpm.description.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.description.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDescriptionPropertySection"
+			label="Description">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.diagram.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.process.diagram.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmProcessDiagramPropertySection"
+			type="org.eclipse.bpmn2.di.BPMNDiagram"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			label="Process">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.interface.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.interface.tab"
+			afterTab="org.eclipse.bpmn2.modeler.process.diagram.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmInterfacePropertySection"
+			type="org.eclipse.bpmn2.di.BPMNDiagram"
+			label="Interfaces">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.definitions.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.definitions.tab"
+			afterTab="org.eclipse.bpmn2.modeler.interface.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDefinitionsPropertySection"
+			type="org.eclipse.bpmn2.di.BPMNDiagram"
+			label="Definitions">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.dataitems.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.dataitems.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmDataItemsPropertySection"
+			type="org.eclipse.bpmn2.di.BPMNDiagram"
+			label="Data Items">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.customTask.tab"
+			replaceTab="bpmn2.jbpm.task.tab org.eclipse.bpmn2.modeler.task.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmCustomTaskPropertySection"
+			type="org.eclipse.bpmn2.Task"
+			label="Custom Task">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.task.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.task.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmTaskPropertySection"
+			type="org.eclipse.bpmn2.Task"
+			label="Task">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.userTask.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.userTask.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmUserTaskPropertySection"
+			type="org.eclipse.bpmn2.UserTask"
+			label="User Task">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.businessRuleTask.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.businessRuleTask.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmBusinessRuleTaskPropertySection"
+			type="org.eclipse.bpmn2.BusinessRuleTask"
+			label="Business Rule Task">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.callActivity.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.callActivity.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmCallActivityPropertySection"
+			type="org.eclipse.bpmn2.CallActivity"
+			label="Call Activity">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.SubProcess.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.subProcess.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmSubProcessPropertySection"
+			type="org.eclipse.bpmn2.SubProcess"
+			label="Sub Process">
+		</propertyTab>
+
+		<propertyTab
+			id="bpmn2.jbpm.empty.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.main.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmEmptyPropertySection"
+			label="Empty">
+		</propertyTab>
+
+		<propertyTab
+	        id="bpmn2.jbpm.scriptTask.tab"
+	        replaceTab="org.eclipse.bpmn2.modeler.scriptTask.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+		    class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmScriptTaskPropertySection"
+		    type="org.eclipse.bpmn2.ScriptTask"
+		    label="Script Task">
+		</propertyTab>
+
+		<propertyTab
+	        id="bpmn2.jbpm.serviceTask.tab"
+	        replaceTab="org.eclipse.bpmn2.modeler.serviceTask.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+		    class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmServiceTaskPropertySection"
+		    type="org.eclipse.bpmn2.ServiceTask"
+		    label="Service Task">
+		</propertyTab>
+
+		<propertyTab
+	        id="bpmn2.jbpm.receiveTask.tab"
+	        replaceTab="org.eclipse.bpmn2.modeler.receiveTask.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+		    class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmReceiveTaskPropertySection"
+		    type="org.eclipse.bpmn2.ReceiveTask"
+	        label="Receive Task">
+		</propertyTab>
+
+		<propertyTab
+	        id="bpmn2.jbpm.sendTask.tab"
+	        replaceTab="org.eclipse.bpmn2.modeler.sendTask.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+		    class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmSendTaskPropertySection"
+		    type="org.eclipse.bpmn2.SendTask"
+	        label="Send Task">
+		</propertyTab>
+
+		<propertyTab
+	        id="bpmn2.jbpm.manualTask.tab"
+	        replaceTab="org.eclipse.bpmn2.modeler.manualTask.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+		    class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmManualTaskPropertySection"
+		    type="org.eclipse.bpmn2.ManualTask"
+	        label="Manual Task">
+		</propertyTab>
+
+		<propertyTab
+			id="org.jboss.runtime.jbpm5.sequenceflow.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.sequenceflow.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmSequenceFlowPropertySection"
+			type="org.eclipse.bpmn2.SequenceFlow"
+			label="Sequence Flow">
+		</propertyTab>
+
+		<propertyTab
+			id="org.jboss.runtime.jbpm5.activitiy.io.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.activity.io.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmIoParametersPropertySection"
+			label="I/O Parameters">
+		</propertyTab>
+
+		<propertyTab
+			id="org.jboss.runtime.jbpm5.commonEvent.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.commonEvent.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmCommonEventPropertySection"
+			type="org.eclipse.bpmn2.Event"
+			label="Event">
+		</propertyTab>
+		
+		<propertyTab
+			id="org.jboss.runtime.jbpm5.gateway.tab"
+			replaceTab="org.eclipse.bpmn2.modeler.gateway.tab"
+			afterTab="org.eclipse.bpmn2.modeler.description.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.JbpmGatewayPropertySection"
+			type="org.eclipse.bpmn2.Gateway"
+			label="Gateway">
+		</propertyTab>
+		
+		<propertyTab
+			id="org.jboss.runtime.jbpm5.simulation.tab"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.SimulationPropertySection"
+			type="org.eclipse.bpmn2.BaseElement"
+			label="Simulation">
+		</propertyTab>
+
+<!-- Property Extension Adapters -->
+		
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.FormalExpression"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.FormalExpression"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmFormalExpressionPropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.OnEntryScript"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.drools.OnEntryScriptType"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmOnEntryScriptPropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.OnExitScript"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.drools.OnExitScriptType"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmOnExitScriptPropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.Property"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.Property"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmPropertyPropertiesAdapter">
+		</propertyExtension>
+		
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.dataInputAssociation"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.DataInputAssociation"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmDataAssociationPropertiesAdapter">
+		</propertyExtension>
+		
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.dataOutputAssociation"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.DataOutputAssociation"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmDataAssociationPropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.DataInput"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.DataInput"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmDataInputPropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.DataOutput"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.DataOutput"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmDataOutputPropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.GlobalType"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.model.drools.GlobalType"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmGlobalTypePropertiesAdapter">
+		</propertyExtension>
+
+<!-- This needs to go into the SwitchYard extension for the jBPM Target Runtime extension
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.serviceTask"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.ServiceTask"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmServiceTaskPropertiesAdapter">
+		</propertyExtension>
+-->
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.exclusiveGateway"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.ExclusiveGateway"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmGatewayPropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.inclusiveGateway"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.InclusiveGateway"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmGatewayPropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.eventBasedGateway"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.EventBasedGateway"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmGatewayPropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.parallelGateway"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.ParallelGateway"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmGatewayPropertiesAdapter">
+		</propertyExtension>
+		
+		<!-- Things that have ItemDefinition references (data types) need to include the java native types in combo boxes and such -->
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.CorrelationProperty"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.CorrelationProperty"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmCorrelationPropertyPropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.Error"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.Error"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmErrorPropertiesAdapter">
+		</propertyExtension>
+		
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.Escalation"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.Escalation"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmEscalationPropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.Message"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.Message"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmMessagePropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.ResourceParameter"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.ResourceParameter"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmResourceParameterPropertiesAdapter">
+		</propertyExtension>
+
+		<propertyExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.propertyExtension.Signal"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.Signal"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.property.adapters.JbpmSignalPropertiesAdapter">
+		</propertyExtension>
+		
+<!-- Graphiti Feature Container Overrides -->
+		
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.TimerEventDefinition"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmTimerEventDefinitionFeatureContainer">
+		</featureContainer>
+		
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.TerminateEventDefinition"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmTerminateEventDefinitionFeatureContainer">
+		</featureContainer>
+		
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.SignalEventDefinition"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmSignalEventDefinitionFeatureContainer">
+		</featureContainer>
+		
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.ErrorEventDefinition"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmErrorEventDefinitionFeatureContainer">
+		</featureContainer>
+				
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.StartEvent"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmStartEventFeatureContainer">
+		</featureContainer>
+
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.Task"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmTaskFeatureContainer">
+		</featureContainer>
+
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.UserTask"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmUserTaskFeatureContainer">
+		</featureContainer>
+
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.SendTask"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmSendTaskFeatureContainer">
+		</featureContainer>
+
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.ReceiveTask"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmReceiveTaskFeatureContainer">
+		</featureContainer>
+
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.ManualTask"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmManualTaskFeatureContainer">
+		</featureContainer>
+
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.ServiceTask"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmServiceTaskFeatureContainer">
+		</featureContainer>
+
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.BusinessRuleTask"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmBusinessRuleTaskFeatureContainer">
+		</featureContainer>
+
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.ScriptTask"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmScriptTaskFeatureContainer">
+		</featureContainer>
+				
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.SequenceFlow"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmSequenceFlowFeatureContainer">
+		</featureContainer>
+
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.EndEvent"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmEndEventFeatureContainer">
+		</featureContainer>
+				
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.IntermediateCatchEvent"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmIntermediateCatchEventFeatureContainer">
+		</featureContainer>
+				
+		<featureContainer
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="org.eclipse.bpmn2.IntermediateThrowEvent"
+			class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.features.JbpmIntermediateThrowEventFeatureContainer">
+		</featureContainer>
+		
+<!-- BPMN Model Element Extensions -->
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.process"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="Process Extensions"
+			type="Process">
+			<property name="version" value="1"/>
+			<property name="packageName" value="defaultPackage"/>
+			<property name="adHoc" value="false" type="EBoolean"/>
+			<property name="isExecutable" value="true" type="EBoolean"/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.sequenceFlow"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="SequenceFlow Extensions"
+			type="SequenceFlow">
+			<property name="priority" value="1" type="EInt"/>
+			<property name="name" value=""/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.businessRuleTask"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="BusinessRuleTask Extensions"
+			type="BusinessRuleTask">
+			<property name="ruleFlowGroup" value=""/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.callActivity"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="CallActivity Extensions"
+			type="CallActivity">
+			<property name="waitForCompletion" value="true" type="EBoolean"/>
+			<property name="independent" value="false" type="EBoolean"/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.exclusiveGateway"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="ExclusiveGateway Extensions"
+			type="ExclusiveGateway">
+			<property name="gatewayDirection" value="Diverging"/>
+			<property name="name" value=""/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.eventBasedGateway"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="EventBasedGateway Extensions"
+			type="EventBasedGateway">
+			<property name="gatewayDirection" value="Diverging"/>
+			<property name="name" value=""/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.inclusiveGateway"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="InclusiveGateway Extensions"
+			type="InclusiveGateway">
+			<property name="gatewayDirection" value="Diverging"/>
+			<property name="name" value=""/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.parallelGateway"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="ParallelGateway Extensions"
+			type="ParallelGateway">
+			<property name="gatewayDirection" value="Diverging"/>
+			<property name="name" value=""/>
+		</modelExtension>
+		
+		<!-- do not automatically generate name labels for these objects when created -->
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.startEvent"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="StartEvent Extensions"
+			type="StartEvent">
+			<property name="name" value=""/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.endEvent"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="EndEvent Extensions"
+			type="EndEvent">
+			<property name="name" value=""/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.boundaryEvent"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="BoundaryEvent Extensions"
+			type="BoundaryEvent">
+			<property name="name" value=""/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.intermediateCatchEvent"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="IntermediateCatchEvent Extensions"
+			type="IntermediateCatchEvent">
+			<property name="name" value=""/>
+		</modelExtension>
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.intermediateThrowEvent"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="IntermediateThrowEvent Extensions"
+			type="IntermediateThrowEvent">
+			<property name="name" value=""/>
+		</modelExtension>
+
+		<!-- customized User Task -->
+		
+		<modelExtension
+			id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.modelExtension.userTask"
+			runtimeId="org.jboss.runtime.jbpm5"
+			name="UserTask Extensions"
+			type="UserTask">
+			
+			<property name="ioSpecification">
+				<value>
+					<property name="outputSets">
+						<value>
+							<property name="name" value="Output Set" type="EString"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="TaskName" type="EString"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="Priority" type="EInt"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="Comment" type="EString"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="GroupId" type="ID"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="Skippable" type="EBoolean"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="Content" type="EString"/>
+						</value>
+					</property>
+					<property name="dataInputs">
+						<value>
+							<property name="name" value="Locale" type="EString"/>
+						</value>
+					</property>
+
+					<property name="inputSets">
+						<value>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#0"/>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#1"/>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#2"/>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#3"/>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#4"/>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#5"/>
+							<property name="dataInputRefs" ref="ioSpecification/dataInputs#6"/>
+						</value>
+					</property>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="targetRef" ref="ioSpecification/dataInputs#0"/>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="targetRef" ref="ioSpecification/dataInputs#1"/>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="targetRef" ref="ioSpecification/dataInputs#2"/>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="targetRef" ref="ioSpecification/dataInputs#3"/>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="targetRef" ref="ioSpecification/dataInputs#4"/>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="targetRef" ref="ioSpecification/dataInputs#5"/>
+				</value>
+			</property>
+			<property name="dataInputAssociations">
+				<value>
+					<property name="targetRef" ref="ioSpecification/dataInputs#6"/>
+				</value>
+			</property>
+		</modelExtension>
+
+<!-- Model Enablements and Profiles -->
+
+		<modelEnablement runtimeId="org.jboss.runtime.jbpm5" type="Process" profile="Full">
+			<disable object="all"/>
+			<enable object="AdHocSubProcess" feature="cancelRemainingInstances"/>
+			<enable object="AdHocSubProcess" feature="completionCondition"/>
+			<enable object="AdHocSubProcess" feature="flowElements"/>
+			<enable object="AdHocSubProcess" feature="isForCompensation"/>
+			<enable object="AdHocSubProcess" feature="name"/>
+			<enable object="AdHocSubProcess" feature="properties"/>
+			<enable object="Assignment" feature="anyAttribute"/>
+			<enable object="Assignment" feature="extensionValues"/>
+			<enable object="Assignment" feature="from"/>
+			<enable object="Assignment" feature="to"/>
+			<enable object="Association" feature="anyAttribute"/>
+			<enable object="Association" feature="associationDirection"/>
+			<enable object="Association" feature="documentation"/>
+			<enable object="Association" feature="extensionDefinitions"/>
+			<enable object="Association" feature="extensionValues"/>
+			<enable object="Association" feature="id"/>
+			<enable object="BaseElement" feature="anyAttribute"/>
+			<enable object="BaseElement" feature="extensionValues"/>
+			<enable object="BPSimDataType"/>
+			<enable object="BoundaryEvent" feature="attachedToRef"/>
+			<enable object="BoundaryEvent" feature="cancelActivity"/>
+			<enable object="BoundaryEvent" feature="eventDefinitions"/>
+			<enable object="BoundaryEvent" feature="name"/>
+			<enable object="BusinessRuleTask" feature="anyAttribute"/>
+			<enable object="BusinessRuleTask" feature="isForCompensation"/>
+			<enable object="BusinessRuleTask" feature="name"/>
+			<enable object="BusinessRuleTask" feature="ruleFlowGroup"/>
+			<enable object="CancelEventDefinition"/>
+			<enable object="CallActivity" feature="anyAttribute"/>
+			<enable object="CallActivity" feature="calledElementRef"/>
+			<enable object="CallActivity" feature="dataInputAssociations"/>
+			<enable object="CallActivity" feature="dataOutputAssociations"/>
+			<enable object="CallActivity" feature="extensionValues"/>
+			<enable object="CallActivity" feature="independent"/>
+			<enable object="CallActivity" feature="ioSpecification"/>
+			<enable object="CallActivity" feature="isForCompensation"/>
+			<enable object="CallActivity" feature="name"/>
+			<enable object="CallActivity" feature="waitForCompletion"/>
+			<enable object="CatchEvent" feature="dataOutputAssociation"/>
+			<enable object="CompensateEventDefinition" feature="activityRef"/>
+			<enable object="ConditionalEventDefinition" feature="condition"/>
+			<enable object="DataAssociation"/>
+			<enable object="DataInput" feature="anyAttribute"/>
+			<enable object="DataInput" feature="documentation"/>
+			<enable object="DataInput" feature="extensionDefinitions"/>
+			<enable object="DataInput" feature="extensionValues"/>
+			<enable object="DataInput" feature="id"/>
+			<enable object="DataInput" feature="itemSubjectRef"/>
+			<enable object="DataInput" feature="name"/>
+			<enable object="DataInputAssociation" feature="anyAttribute"/>
+			<enable object="DataInputAssociation" feature="assignment"/>
+			<enable object="DataInputAssociation" feature="extensionValues"/>
+			<enable object="DataInputAssociation" feature="sourceRef"/>
+			<enable object="DataInputAssociation" feature="targetRef"/>
+			<enable object="DataObject" feature="id"/>
+			<enable object="DataObject" feature="itemSubjectRef"/>
+			<enable object="DataOutput" feature="anyAttribute"/>
+			<enable object="DataOutput" feature="documentation"/>
+			<enable object="DataOutput" feature="extensionDefinitions"/>
+			<enable object="DataOutput" feature="extensionValues"/>
+			<enable object="DataOutput" feature="id"/>
+			<enable object="DataOutput" feature="itemSubjectRef"/>
+			<enable object="DataOutput" feature="name"/>
+			<enable object="DataOutputAssociation" feature="anyAttribute"/>
+			<enable object="DataOutputAssociation" feature="assignment"/>
+			<enable object="DataOutputAssociation" feature="extensionValues"/>
+			<enable object="DataOutputAssociation" feature="sourceRef"/>
+			<enable object="DataOutputAssociation" feature="targetRef"/>
+			<enable object="DataState" feature="anyAttribute"/>
+			<enable object="DataState" feature="extensionValues"/>
+			<enable object="DataState" feature="name"/>
+			<enable object="Definitions" feature="anyAttribute"/>
+			<enable object="Definitions" feature="diagrams"/>
+			<enable object="Definitions" feature="exporter"/>
+			<enable object="Definitions" feature="exporterVersion"/>
+			<enable object="Definitions" feature="extensionValues"/>
+			<enable object="Definitions" feature="extensions"/>
+			<enable object="Definitions" feature="rootElements"/>
+			<enable object="Documentation" feature="anyAttribute"/>
+			<enable object="Documentation" feature="extensionValues"/>
+			<enable object="Documentation" feature="text"/>
+			<enable object="Documentation" feature="textFormat"/>
+			<enable object="EndEvent" feature="dataInputAssociation"/>
+			<enable object="EndEvent" feature="dataInputs"/>
+			<enable object="EndEvent" feature="eventDefinitions"/>
+			<enable object="EndEvent" feature="name"/>
+			<enable object="Error" feature="anyAttribute"/>
+			<enable object="Error" feature="errorCode"/>
+			<enable object="Error" feature="extensionValues"/>
+			<enable object="Error" feature="name"/>
+			<enable object="Error" feature="structureRef"/>
+			<enable object="ErrorEventDefinition" feature="anyAttribute"/>
+			<enable object="ErrorEventDefinition" feature="errorRef"/>
+			<enable object="ErrorEventDefinition" feature="extensionValues"/>
+			<enable object="Escalation" feature="escalationCode"/>
+			<enable object="Escalation" feature="id"/>
+			<enable object="Escalation" feature="name"/>
+			<enable object="EscalationEventDefinition" feature="escalationRef"/>
+			<enable object="EventBasedGateway" feature="eventGatewayType"/>
+			<enable object="EventBasedGateway" feature="gatewayDirection"/>
+			<enable object="EventBasedGateway" feature="instantiate"/>
+			<enable object="EventBasedGateway" feature="name"/>
+			<enable object="EventDefinition" feature="anyAttribute"/>
+			<enable object="EventDefinition" feature="documentation"/>
+			<enable object="EventDefinition" feature="extensionDefinitions"/>
+			<enable object="EventDefinition" feature="extensionValues"/>
+			<enable object="EventDefinition" feature="id"/>
+			<enable object="ExclusiveGateway" feature="default"/>
+			<enable object="ExclusiveGateway" feature="gatewayDirection"/>
+			<enable object="ExclusiveGateway" feature="name"/>
+			<enable object="Expression" feature="anyAttribute"/>
+			<enable object="Expression" feature="extensionValues"/>
+			<enable object="FormalExpression" feature="body"/>
+			<enable object="FormalExpression" feature="language"/>
+			<enable object="GlobalType"/>
+			<enable object="Group" feature="anyAttribute"/>
+			<enable object="Group" feature="documentation"/>
+			<enable object="Group" feature="extensionDefinitions"/>
+			<enable object="Group" feature="extensionValues"/>
+			<enable object="Group" feature="id"/>
+			<enable object="ImportType"/>
+			<enable object="InclusiveGateway" feature="default"/>
+			<enable object="InclusiveGateway" feature="gatewayDirection"/>
+			<enable object="InclusiveGateway" feature="name"/>
+			<enable object="InputOutputSpecification" feature="anyAttribute"/>
+			<enable object="InputOutputSpecification" feature="dataInputs"/>
+			<enable object="InputOutputSpecification" feature="dataOutputs"/>
+			<enable object="InputOutputSpecification" feature="documentation"/>
+			<enable object="InputOutputSpecification" feature="extensionDefinitions"/>
+			<enable object="InputOutputSpecification" feature="extensionValues"/>
+			<enable object="InputOutputSpecification" feature="id"/>
+			<enable object="Interface" feature="anyAttribute"/>
+			<enable object="Interface" feature="documentation"/>
+			<enable object="Interface" feature="extensionDefinitions"/>
+			<enable object="Interface" feature="extensionValues"/>
+			<enable object="Interface" feature="id"/>
+			<enable object="Interface" feature="implementationRef"/>
+			<enable object="Interface" feature="name"/>
+			<enable object="Interface" feature="operations"/>
+			<enable object="IntermediateCatchEvent" feature="dataOutputAssociation"/>
+			<enable object="IntermediateCatchEvent" feature="dataOutputs"/>
+			<enable object="IntermediateCatchEvent" feature="eventDefinitions"/>
+			<enable object="IntermediateCatchEvent" feature="name"/>
+			<enable object="IntermediateThrowEvent" feature="eventDefinitions"/>
+			<enable object="IntermediateThrowEvent" feature="inputSet"/>
+			<enable object="IntermediateThrowEvent" feature="name"/>
+			<enable object="ItemAwareElement" feature="anyAttribute"/>
+			<enable object="ItemAwareElement" feature="documentation"/>
+			<enable object="ItemAwareElement" feature="extensionDefinitions"/>
+			<enable object="ItemAwareElement" feature="extensionValues"/>
+			<enable object="ItemAwareElement" feature="id"/>
+			<enable object="ItemAwareElement" feature="itemSubjectRef"/>
+			<enable object="ItemDefinition" feature="anyAttribute"/>
+			<enable object="ItemDefinition" feature="id"/>
+			<enable object="ItemDefinition" feature="structureRef"/>
+			<enable object="Lane" feature="flowNodeRefs"/>
+			<enable object="Lane" feature="id"/>
+			<enable object="Lane" feature="name"/>
+			<enable object="LaneSet" feature="name"/>
+			<enable object="ManualTask" feature="anyAttribute"/>
+			<enable object="ManualTask" feature="dataInputAssociations"/>
+			<enable object="ManualTask" feature="dataOutputAssociations"/>
+			<enable object="ManualTask" feature="extensionValues"/>
+			<enable object="ManualTask" feature="ioSpecification"/>
+			<enable object="ManualTask" feature="isForCompensation"/>
+			<enable object="ManualTask" feature="name"/>
+			<enable object="Message" feature="id"/>
+			<enable object="Message" feature="itemRef"/>
+			<enable object="MessageEventDefinition" feature="messageRef"/>
+			<enable object="MultiInstanceLoopCharacteristics" feature="inputDataItem"/>
+			<enable object="MultiInstanceLoopCharacteristics" feature="loopDataInputRef"/>
+			<enable object="OnEntryScriptType"/>
+			<enable object="OnExitScriptType"/>
+			<enable object="Operation" feature="anyAttribute"/>
+			<enable object="Operation" feature="documentation"/>
+			<enable object="Operation" feature="extensionDefinitions"/>
+			<enable object="Operation" feature="extensionValues"/>
+			<enable object="Operation" feature="id"/>
+			<enable object="Operation" feature="name"/>
+			<enable object="Operation" feature="inMessageRef"/>
+			<enable object="Operation" feature="outMessageRef"/>
+			<enable object="Operation" feature="errorRefs"/>
+			<enable object="ParallelGateway" feature="gatewayDirection"/>
+			<enable object="ParallelGateway" feature="name"/>
+			<enable object="Process" feature="adHoc"/>
+			<enable object="Process" feature="anyAttribute"/>
+			<enable object="Process" feature="flowElements"/>
+			<enable object="Process" feature="id"/>
+			<enable object="Process" feature="isExecutable"/>
+			<enable object="Process" feature="name"/>
+			<enable object="Process" feature="packageName"/>
+			<enable object="Process" feature="properties"/>
+			<enable object="Process" feature="version"/>
+			<enable object="Property" feature="id"/>
+			<enable object="Property" feature="itemSubjectRef"/>
+			<enable object="Property" feature="name"/>
+			<enable object="ReceiveTask" feature="dataOutputAssociations"/>
+			<enable object="ReceiveTask" feature="implementation"/>
+			<enable object="ReceiveTask" feature="instantiate"/>
+			<enable object="ReceiveTask" feature="ioSpecification"/>
+			<enable object="ReceiveTask" feature="isForCompensation"/>
+			<enable object="ReceiveTask" feature="messageRef"/>
+			<enable object="ReceiveTask" feature="name"/>
+			<enable object="ReceiveTask" feature="operationRef"/>
+			<enable object="RootElement" feature="anyAttribute"/>
+			<enable object="RootElement" feature="extensionValues"/>
+			<enable object="ScriptTask" feature="isForCompensation"/>
+			<enable object="ScriptTask" feature="name"/>
+			<enable object="ScriptTask" feature="script"/>
+			<enable object="ScriptTask" feature="scriptFormat"/>
+			<enable object="SendTask" feature="dataInputAssociations"/>
+			<enable object="SendTask" feature="ioSpecification"/>
+			<enable object="SendTask" feature="implementation"/>
+			<enable object="SendTask" feature="isForCompensation"/>
+			<enable object="SendTask" feature="messageRef"/>
+			<enable object="SendTask" feature="name"/>
+			<enable object="SendTask" feature="operationRef"/>
+			<enable object="SequenceFlow" feature="conditionExpression"/>
+			<enable object="SequenceFlow" feature="name"/>
+			<enable object="SequenceFlow" feature="priority"/>
+			<enable object="SequenceFlow" feature="sourceRef"/>
+			<enable object="SequenceFlow" feature="targetRef"/>
+			<enable object="ServiceTask" feature="anyAttribute"/>
+			<enable object="ServiceTask" feature="dataInputAssociations"/>
+			<enable object="ServiceTask" feature="dataOutputAssociations"/>
+			<enable object="ServiceTask" feature="ioSpecification"/>
+			<enable object="ServiceTask" feature="isForCompensation"/>
+			<enable object="ServiceTask" feature="implementation"/>
+			<enable object="ServiceTask" feature="name"/>
+			<enable object="ServiceTask" feature="operationRef"/>
+			<enable object="Signal" feature="id"/>
+			<enable object="Signal" feature="name"/>
+			<enable object="SignalEventDefinition" feature="signalRef"/>
+			<enable object="StartEvent" feature="name"/>
+			<enable object="StartEvent" feature="eventDefinitions"/>
+			<enable object="SubProcess" feature="flowElements"/>
+			<enable object="SubProcess" feature="isForCompensation"/>
+			<enable object="SubProcess" feature="loopCharacteristics"/>
+			<enable object="SubProcess" feature="name"/>
+			<enable object="SubProcess" feature="properties"/>
+			<enable object="Task" feature="anyAttribute"/>
+			<enable object="Task" feature="dataInputAssociations"/>
+			<enable object="Task" feature="dataOutputAssociations"/>
+			<enable object="Task" feature="extensionValues"/>
+			<enable object="Task" feature="ioSpecification"/>
+			<enable object="Task" feature="isForCompensation"/>
+			<enable object="Task" feature="name"/>
+			<enable object="TextAnnotation" feature="anyAttribute"/>
+			<enable object="TextAnnotation" feature="documentation"/>
+			<enable object="TextAnnotation" feature="extensionDefinitions"/>
+			<enable object="TextAnnotation" feature="extensionValues"/>
+			<enable object="TextAnnotation" feature="id"/>
+			<enable object="TextAnnotation" feature="text"/>
+			<enable object="TextAnnotation" feature="textFormat"/>
+			<enable object="TerminateEventDefinition"/>
+			<enable object="ThrowEvent" feature="dataInputAssociation"/>
+			<enable object="TimerEventDefinition" feature="timeCycle"/>
+			<enable object="TimerEventDefinition" feature="timeDuration"/>
+			<enable object="UserTask" feature="anyAttribute"/>
+			<enable object="UserTask" feature="dataInputAssociations"/>
+			<enable object="UserTask" feature="dataOutputAssociations"/>
+			<enable object="UserTask" feature="extensionValues"/>
+			<enable object="UserTask" feature="ioSpecification"/>
+			<enable object="UserTask" feature="isForCompensation"/>
+			<enable object="UserTask" feature="name"/>
+			<enable object="UserTask" feature="resources"/>
+		</modelEnablement>
+		
+		<modelEnablement runtimeId="org.jboss.runtime.jbpm5" type="Process" profile="Simple">
+			<disable object="all"/>
+			<!-- copy the enablements from "Process" diagram type -->
+			<enable object="org.jboss.runtime.jbpm5" feature="Process.Full"/>
+			
+			<!-- and then disable these objects and features -->
+			<disable object="AdHocSubProcess"/>
+			<disable object="Assignment"/>
+			<disable object="BPSimDataType"/>
+			<disable object="BusinessRuleTask" feature="isForCompensation"/>
+			<disable object="CallActivity" feature="extensionValues"/>
+			<disable object="CallActivity" feature="isForCompensation"/>
+			<disable object="CompensateEventDefinition"/>
+			<disable object="ConditionalEventDefinition"/>
+			<disable object="DataInputAssociation"/>
+			<disable object="DataObject"/>
+			<disable object="DataOutputAssociation"/>
+			<disable object="DataState"/>
+			<disable object="Documentation"/>
+			<disable object="Error"/>
+			<disable object="ErrorEventDefinition"/>
+			<disable object="Escalation"/>
+			<disable object="Interface"/>
+			<disable object="InputSet"/>
+			<disable object="IntermediateThrowEvent"/>
+			<disable object="Lane"/>
+			<disable object="LinkEventDefinition"/>
+			<disable object="ManualTask"/>
+			<disable object="Message"/>
+			<disable object="MessageEventDefinition"/>
+			<disable object="OutputSet"/>
+			<disable object="Process" feature="isExecutable"/>
+			<disable object="ReceiveTask"/>
+			<disable object="ScriptTask" feature="isForCompensation"/>
+			<disable object="SendTask"/>
+			<disable object="SubProcess" feature="isForCompensation"/>
+			<disable object="Task" feature="extensionValues"/>
+			<disable object="UserTask" feature="extensionValues"/>
+			<disable object="Process" feature="adHoc"/>
+
+			<enable object="BoundaryEvent" feature="attachedToRef"/>
+			<enable object="BoundaryEvent" feature="cancelActivity"/>
+			<enable object="BoundaryEvent" feature="eventDefinitions"/>
+			<enable object="BoundaryEvent" feature="name"/>
+			
+			<enable object="GlobalType"/>
+			<enable object="ImportType"/>
+			<enable object="OnEntryScriptType"/>
+			<enable object="OnExitScriptType"/>
+		</modelEnablement>
+		
+		<modelEnablement runtimeId="org.jboss.runtime.jbpm5" type="Process" profile="RuleFlow">
+			<disable object="all" />
+			<enable object="BusinessRuleTask" feature="anyAttribute"/>
+			<enable object="BusinessRuleTask" feature="name"/>
+			<enable object="BusinessRuleTask" feature="ruleFlowGroup"/>
+			<enable object="CallActivity" feature="anyAttribute"/>
+			<enable object="CallActivity" feature="calledElementRef"/>
+			<enable object="CallActivity" feature="dataInputAssociations"/>
+			<enable object="CallActivity" feature="dataOutputAssociations"/>
+			<enable object="CallActivity" feature="extensionValues"/>
+			<enable object="CallActivity" feature="independent"/>
+			<enable object="CallActivity" feature="ioSpecification"/>
+			<enable object="CallActivity" feature="name"/>
+			<enable object="CallActivity" feature="waitForCompletion"/>
+			<enable object="DataInput" feature="name"/>
+			<enable object="DataOutput" feature="name"/>
+			<enable object="EndEvent" feature="eventDefinitions"/>
+			<enable object="EndEvent" feature="inputSet"/>
+			<enable object="ExclusiveGateway" feature="default"/>
+			<enable object="ExclusiveGateway" feature="gatewayDirection"/>
+			<enable object="ExclusiveGateway" feature="id"/>
+			<enable object="ExclusiveGateway" feature="name"/>
+			<enable object="ExclusiveGateway" feature="outgoing"/>
+			<enable object="FormalExpression" feature="body"/>
+			<enable object="FormalExpression" feature="language"/>
+			<enable object="GlobalType"/>
+			<enable object="InputOutputSpecification" feature="anyAttribute"/>
+			<enable object="InputOutputSpecification" feature="dataInputs"/>
+			<enable object="InputOutputSpecification" feature="dataOutputs"/>
+			<enable object="InputOutputSpecification" feature="documentation"/>
+			<enable object="InputOutputSpecification" feature="extensionDefinitions"/>
+			<enable object="InputOutputSpecification" feature="extensionValues"/>
+			<enable object="InputOutputSpecification" feature="id"/>
+			<enable object="InputOutputSpecification" feature="inputSets"/>
+			<enable object="InputOutputSpecification" feature="outputSets"/>
+			<enable object="ItemDefinition" feature="id"/>
+			<enable object="ItemDefinition" feature="structureRef"/>
+			<enable object="OnEntryScriptType"/>
+			<enable object="OnExitScriptType"/>
+			<enable object="ParallelGateway" feature="gatewayDirection"/>
+			<enable object="ParallelGateway" feature="id"/>
+			<enable object="ParallelGateway" feature="name"/>
+			<enable object="ParallelGateway" feature="outgoing"/>
+			<enable object="Process" feature="anyAttribute"/>
+			<enable object="Process" feature="flowElements"/>
+			<enable object="Process" feature="id"/>
+			<enable object="Process" feature="name"/>
+			<enable object="Process" feature="packageName"/>
+			<enable object="Process" feature="properties"/>
+			<enable object="Process" feature="version"/>
+			<enable object="Property" feature="anyAttribute"/>
+			<enable object="Property" feature="documentation"/>
+			<enable object="Property" feature="extensionDefinitions"/>
+			<enable object="Property" feature="extensionValues"/>
+			<enable object="Property" feature="id"/>
+			<enable object="Property" feature="itemSubjectRef"/>
+			<enable object="Property" feature="name"/>
+			<enable object="ScriptTask" feature="name"/>
+			<enable object="ScriptTask" feature="script"/>
+			<enable object="ScriptTask" feature="scriptFormat"/>
+			<enable object="SequenceFlow" feature="anyAttribute"/>
+			<enable object="SequenceFlow" feature="auditing"/>
+			<enable object="SequenceFlow" feature="categoryValueRef"/>
+			<enable object="SequenceFlow" feature="conditionExpression"/>
+			<enable object="SequenceFlow" feature="documentation"/>
+			<enable object="SequenceFlow" feature="extensionDefinitions"/>
+			<enable object="SequenceFlow" feature="extensionValues"/>
+			<enable object="SequenceFlow" feature="id"/>
+			<enable object="SequenceFlow" feature="isImmediate"/>
+			<enable object="SequenceFlow" feature="monitoring"/>
+			<enable object="SequenceFlow" feature="name"/>
+			<enable object="SequenceFlow" feature="priority"/>
+			<enable object="SequenceFlow" feature="sourceRef"/>
+			<enable object="SequenceFlow" feature="targetRef"/>
+			<enable object="StartEvent" feature="name"/>
+			<enable object="TerminateEventDefinition" feature="id"/>
+		</modelEnablement>
+		
+<!-- Tool Palettes -->
+
+		<toolPalette
+			id="org.jboss.runtime.jbpm5.toolpalette.simple"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="Process" profile="Simple">
+			
+			<category id="org.jboss.runtime.jbpm5.toolpalette.simple.Activities" name="Activities">
+				<tool name="AdHoc Subprocess" object="AdHocSubProcess"/>
+				<tool name="Subprocess" object="SubProcess"/>
+				<tool name="Reusable Subprocess" object="CallActivity"/>
+				<tool name="Manual Task" object="ManualTask"/>
+				<tool name="User Task" object="UserTask"/>
+				<tool name="Script Task" object="ScriptTask"/>
+				<tool name="Business Rule Task" object="BusinessRuleTask"/>
+				<tool name="Send Task" object="SendTask"/>
+				<tool name="Receive Task" object="ReceiveTask"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.simple.BoundaryEvents" name="Boundary Events">
+				<tool name="Error" object="BoundaryEvent+ErrorEventDefinition" icon="ErrorCatchEvent.png"/>
+				<tool name="Timer" object="BoundaryEvent+TimerEventDefinition" icon="TimerCatchEvent.png"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.simple.Connection" name="Connections">
+				<tool name="Sequence Flow" object="SequenceFlow"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.simple.Events" name="Events">
+				<tool name="Start" object="StartEvent" icon="StartEvent.png"/>
+				<tool name="End" object="EndEvent" icon="EndEvent.png"/>
+				<tool name="Error End" object="EndEvent+ErrorEventDefinition" icon="ErrorEndEvent.png"/>
+				<tool name="Terminate End" object="EndEvent+TerminateEventDefinition" icon="TerminateEndEvent.png"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.simple.Gateways" name="Gateways">
+				<tool name="Data-based Exclusive (XOR)" object="ExclusiveGateway"/>
+				<tool name="Parallel" object="ParallelGateway"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.full.CatchEvents" name="Intermediate Catch Events">
+				<tool name="Signal" object="IntermediateCatchEvent+SignalEventDefinition" icon="SignalCatchEvent.png"/>
+				<tool name="Timer" object="IntermediateCatchEvent+TimerEventDefinition" icon="TimerCatchEvent.png"/>
+			</category>
+		</toolPalette>
+		
+		<toolPalette
+			id="org.jboss.runtime.jbpm5.toolpalette.ruleFlow"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="Process" profile="RuleFlow">
+			
+			<category id="org.jboss.runtime.jbpm5.toolpalette.ruleFlow.Activities" name="Activities">
+				<tool name="Business Rule Task" object="BusinessRuleTask"/>
+				<tool name="Call Activity" object="CallActivity"/>
+				<tool name="Script Task" object="ScriptTask"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.ruleFlow.Connections" name="Connections">
+				<tool name="Sequence Flow" object="SequenceFlow"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.ruleFlow.Events" name="Events">
+				<tool name="Start" object="StartEvent" icon="StartEvent.png"/>
+				<tool name="End" object="EndEvent" icon="EndEvent.png"/>
+				<tool name="Terminate" object="EndEvent+TerminateEventDefinition" icon="TerminateEndEvent.png"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.ruleFlow.Gateways" name="Gateways">
+				<tool name="Data-based Exclusive (XOR)" object="ExclusiveGateway"/>
+				<tool name="Parallel" object="ParallelGateway"/>
+			</category>
+		</toolPalette>
+		
+		<toolPalette
+			id="org.jboss.runtime.jbpm5.toolpalette.full"
+			runtimeId="org.jboss.runtime.jbpm5"
+			type="Process" profile="Full">
+			
+			<category id="org.jboss.runtime.jbpm5.toolpalette.full.Activities" name="Activities">
+				<tool name="AdHoc Subprocess" object="AdHocSubProcess"/>
+				<tool name="Subprocess" object="SubProcess"/>
+				<tool name="Reusable Subprocess" object="CallActivity"/>
+				<tool name="Task" object="Task"/>
+				<tool name="Manual Task" object="ManualTask"/>
+				<tool name="User Task" object="UserTask"/>
+				<tool name="Script Task" object="ScriptTask"/>
+				<tool name="Business Rule Task" object="BusinessRuleTask"/>
+				<tool name="Service Task" object="ServiceTask"/>
+				<tool name="Send Task" object="SendTask"/>
+				<tool name="Receive Task" object="ReceiveTask"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.full.Artifacts" name="Artifacts">
+				<tool name="Group" object="Group"/>
+				<tool name="Text Annotation" object="TextAnnotation"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.simple.BoundaryEvents" name="Boundary Events">
+				<tool name="Boundary" object="BoundaryEvent" icon="IntermediateEvent.png"/>
+				<tool name="Conditional" object="BoundaryEvent+ConditionalEventDefinition" icon="ConditionalCatchEvent.png"/>
+				<tool name="Error" object="BoundaryEvent+ErrorEventDefinition" icon="ErrorCatchEvent.png"/>
+				<tool name="Escalation" object="BoundaryEvent+EscalationEventDefinition" icon="EscalationCatchEvent.png"/>
+				<tool name="Message" object="BoundaryEvent+MessageEventDefinition" icon="MessageCatchEvent.png"/>
+				<tool name="Signal" object="BoundaryEvent+SignalEventDefinition" icon="SignalCatchEvent.png"/>
+				<tool name="Timer" object="BoundaryEvent+TimerEventDefinition" icon="TimerCatchEvent.png"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.full.Connections" name="Connections">
+				<tool name="Association (undirected)" object="Association[$associationDirection=None]"/>
+				<tool name="Association (one-way)" object="Association[$associationDirection=One]"/>
+				<tool name="Data Association" object="DataAssociation"/>
+				<tool name="Sequence Flow" object="SequenceFlow"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.full.DataObjects" name="Data Objects">
+				<tool name="Data Object" object="DataObject"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.full.EndEvents" name="End Events">
+				<tool name="Cancel" object="EndEvent+CancelEventDefinition" icon="CancelEndEvent.png"/>
+				<tool name="Compensation" object="EndEvent+CompensateEventDefinition" icon="CompensationEndEvent.png"/>
+				<tool name="End" object="EndEvent" icon="EndEvent.png"/>
+				<tool name="Error" object="EndEvent+ErrorEventDefinition" icon="ErrorEndEvent.png"/>
+				<tool name="Escalation" object="EndEvent+EscalationEventDefinition" icon="EscalationEndEvent.png"/>
+				<tool name="Message" object="EndEvent+MessageEventDefinition" icon="MessageEndEvent.png"/>
+				<tool name="Signal" object="EndEvent+SignalEventDefinition" icon="SignalEndEvent.png"/>
+				<tool name="Terminate" object="EndEvent+TerminateEventDefinition" icon="TerminateEndEvent.png"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.full.Gateways" name="Gateways">
+				<tool name="Data-based Exclusive (XOR)" object="ExclusiveGateway"/>
+				<tool name="Event-based" object="EventBasedGateway"/>
+				<tool name="Inclusive" object="InclusiveGateway"/>
+				<tool name="Parallel" object="ParallelGateway"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.full.CatchEvents" name="Intermediate Catch Events">
+				<tool name="Conditional" object="IntermediateCatchEvent+ConditionalEventDefinition" icon="ConditionalCatchEvent.png"/>
+				<tool name="Message" object="IntermediateCatchEvent+MessageEventDefinition" icon="MessageCatchEvent.png"/>
+				<tool name="Signal" object="IntermediateCatchEvent+SignalEventDefinition" icon="SignalCatchEvent.png"/>
+				<tool name="Timer" object="IntermediateCatchEvent+TimerEventDefinition" icon="TimerCatchEvent.png"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.full.ThrowEvents" name="Intermediate Throw Events">
+				<tool name="Compensation" object="IntermediateThrowEvent+CompensateEventDefinition" icon="CompensationEndEvent.png"/>
+				<tool name="Escalation" object="IntermediateThrowEvent+EscalationEventDefinition" icon="EscalationThrowEvent.png"/>
+				<tool name="Intermediate" object="IntermediateThrowEvent" icon="IntermediateEvent.png"/>
+				<tool name="Message" object="IntermediateThrowEvent+MessageEventDefinition" icon="MessageThrowEvent.png"/>
+				<tool name="Signal" object="IntermediateThrowEvent+SignalEventDefinition" icon="SignalThrowEvent.png"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.full.StartEvents" name="Start Events">
+				<tool name="Compensation" object="StartEvent+CompensateEventDefinition" icon="CompensationStartEvent.png"/>
+				<tool name="Conditional" object="StartEvent+ConditionalEventDefinition" icon="ConditionalStartEvent.png"/>
+				<tool name="Error" object="StartEvent+ErrorEventDefinition" icon="ErrorStartEvent.png"/>
+				<tool name="Escalation" object="StartEvent+EscalationEventDefinition" icon="EscalationStartEvent.png"/>
+				<tool name="Start" object="StartEvent" icon="StartEvent.png"/>
+				<tool name="Message" object="StartEvent+MessageEventDefinition" icon="MessageStartEvent.png"/>
+				<tool name="Signal" object="StartEvent+SignalEventDefinition" icon="SignalStartEvent.png"/>
+				<tool name="Timer" object="StartEvent+TimerEventDefinition" icon="TimerStartEvent.png"/>
+			</category>
+			<category id="org.jboss.runtime.jbpm5.toolpalette.full.SwimLanes" name="Swimlanes">
+				<tool name="Lane" object="Lane"/>
+			</category>
+			
+			<category id="org.bpmn2.modeler.toolpalette.process.patterns" fromPalette="org.bpmn2.modeler.toolpalette.process.default"/>
+			
+		</toolPalette>
+		
+		
+	</extension>
+
+ <extension
+       point="org.eclipse.graphiti.ui.imageProviders">
+    <imageProvider
+          class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.JBPM5ImageProvider"
+          id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.JBPM5ImageProvider">
+    </imageProvider>
+ </extension>
+	
+ <extension
+         point="org.eclipse.emf.validation.constraintProviders">
+      <category
+            name="jBPM Constraints"
+            id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validationCategory"/>
+      <constraintProvider cache="true">
+         <package namespaceUri="http://www.omg.org/spec/BPMN/20100524/MODEL-XMI"/>
+         <constraints categories="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validationCategory">
+            <constraint
+                  lang="Java"
+                  class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.ProcessConstraint"
+                  severity="ERROR"
+                  mode="Batch"
+                  name="Process Validation"
+                  id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.Process"
+                  statusCode="1">
+               <description>
+                  Process Name, ID and Package Name validation.
+               </description>
+               <message>
+                  {0}
+               </message>
+               <target class="Process"/>
+            </constraint>
+            <constraint
+                  lang="Java"
+                  class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.BusinessRuleTaskConstraint"
+                  severity="ERROR"
+                  mode="Batch"
+                  name="Business Rule Task Validation"
+                  id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.BusinessRuleTask"
+                  statusCode="1">
+               <description>
+                  Business Rule Task validation.
+               </description>
+               <message>
+                  {0}
+               </message>
+               <target class="BusinessRuleTask"/>
+            </constraint>
+            <constraint
+                  lang="Java"
+                  class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.UserTaskConstraint"
+                  severity="WARNING"
+                  mode="Batch"
+                  name="User Task Validation"
+                  id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.UserTask"
+                  statusCode="1">
+               <description>
+                  User Task validation.
+               </description>
+               <message>
+                  {0}
+               </message>
+               <target class="UserTask"/>
+            </constraint>
+            <constraint
+                  lang="Java"
+                  class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.TaskConstraint"
+                  severity="WARNING"
+                  mode="Batch"
+                  name="Task Validation"
+                  id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.Task"
+                  statusCode="1">
+               <description>
+                  Task validation.
+               </description>
+               <message>
+                  {0}
+               </message>
+               <target class="Task"/>
+            </constraint>
+            <constraint
+                  lang="Java"
+                  class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.GatewayConstraint"
+                  severity="WARNING"
+                  mode="Batch"
+                  name="Gateway Validation"
+                  id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.Gateway"
+                  statusCode="1">
+               <description>
+                  Gateway validation.
+               </description>
+               <message>
+                  {0}
+               </message>
+               <target class="Gateway"/>
+            </constraint>
+            <constraint
+                  lang="Java"
+                  class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.CallActivityConstraint"
+                  severity="WARNING"
+                  mode="Batch"
+                  name="CallActivity Validation"
+                  id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.CallActivity"
+                  statusCode="1">
+               <description>
+                  CallActivity validation.
+               </description>
+               <message>
+                  {0}
+               </message>
+               <target class="CallActivity"/>
+            </constraint>
+			<constraint
+					class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.ProcessVariableNameConstraint"
+					id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validation.VariableName"
+					isEnabledByDefault="true"
+					lang="Java"
+					mode="Live"
+					name="Infos"
+					severity="INFO"
+					statusCode="1">
+				<message>{0}</message>
+				<description>Variable Name Validation Errors</description>
+				<target class="BaseElement"/>
+				<target class="Property"/>
+				<target class="Message"/>
+				<target class="DataObject"/>
+			</constraint>
+         </constraints>
+      </constraintProvider>
+   </extension>
+
+   <extension
+         point="org.eclipse.emf.validation.constraintBindings">
+      <clientContext
+            default="false"
+            id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validationContext">
+         <enablement>
+         	<test
+                property="org.eclipse.bpmn2.modeler.property.targetRuntimeId"
+                value="org.jboss.runtime.jbpm5"/>
+         </enablement>
+      </clientContext>
+      <binding
+            context="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validationContext"
+            category="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.validationCategory">
+      </binding>
+   </extension>
+  
+  <extension
+        id="org.jboss.runtime.jbpm5.problemMarker"
+        name="jBPM Process Problem"
+        point="org.eclipse.core.resources.markers">
+     <persistent
+           value="true">
+     </persistent>
+     <super
+           type="org.eclipse.emf.validation.problem">
+     </super>
+  </extension>
+   
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.bpmn2.wizardCategory"
+            name="BPMN2">
+      </category>
+      <wizard
+            category="org.eclipse.bpmn2.wizardCategory"
+            class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wizards.NewJbpmProcessWizard"
+            icon="icons/wizard.gif"
+            id="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.wizards.NewJbpmProcessWizard"
+            name="jBPM Process Diagram">
+      </wizard>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.bpmn2.modeler.ui.preferences.Bpmn2HomePreferencePage"
+            class="org.eclipse.bpmn2.modeler.runtime.jboss.jbpm5.preferences.JbpmPreferencePage"
+            id="org.jboss.runtime.jbpm5.preferences"
+            name="%PREFERENCE_PAGE_JBPM"/>
+   </extension>
+	
+</plugin>

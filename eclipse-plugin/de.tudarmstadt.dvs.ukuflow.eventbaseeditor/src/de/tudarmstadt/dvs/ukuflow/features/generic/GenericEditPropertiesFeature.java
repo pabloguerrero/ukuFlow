@@ -341,7 +341,7 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 
 				} else if (bo instanceof EFProcessing) {
 					EFProcessing efCount = (EFProcessing) bo;
-					int currentWindowSize = efCount.getWindowSize();
+					String currentWindowSize = efCount.getWindowSize();
 
 					properties.put(EventbasePackage.EF_PROCESSING__WINDOW_SIZE,
 							new RequestContainer(
@@ -354,8 +354,8 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 							.get(EventbasePackage.EF_PROCESSING__WINDOW_SIZE).result;
 					if (!newConstraint.equals(currentWindowSize)) {
 						this.hasDoneChanges = true;
-						int window = Integer.parseInt(newConstraint);
-						efCount.setWindowSize(window);
+						//int window = Integer.parseInt(newConstraint);
+						efCount.setWindowSize(newConstraint);
 						/*
 						for (String x : newConstraint.split(",")) {
 							System.out.println(x);

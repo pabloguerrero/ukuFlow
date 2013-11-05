@@ -43,7 +43,7 @@ import de.tudarmstadt.dvs.ukuflow.validation.WarningMessage;
  */
 public abstract class UkuEntity implements VisitableElement {
 
-	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
+	BpmnLog log = BpmnLog.getInstance(UkuEntity.class.getClass().getSimpleName());
 	
 	// protected boolean syntax = false;
 	private ErrorManager errsManager;
@@ -91,7 +91,7 @@ public abstract class UkuEntity implements VisitableElement {
 		if (l == null) {
 			l = " in element " + id +", \""+(name==null?"":name) + "\"";
 		}
-		log.info("l:"+l);
+		log.debug("location :"+l);
 		ErrorMessage em = new ErrorMessage(l, msg);
 		errsManager.addError(em);
 	}

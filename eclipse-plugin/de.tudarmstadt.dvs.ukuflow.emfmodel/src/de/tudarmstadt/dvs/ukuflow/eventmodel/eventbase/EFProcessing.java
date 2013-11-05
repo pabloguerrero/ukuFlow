@@ -22,6 +22,7 @@ package de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase;
 public interface EFProcessing extends EFStatusEvent {
 	/**
 	 * Returns the value of the '<em><b>Window Size</b></em>' attribute.
+	 * The default value is <code>"1:00"</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Window Size</em>' attribute isn't clear,
@@ -29,12 +30,12 @@ public interface EFProcessing extends EFStatusEvent {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Window Size</em>' attribute.
-	 * @see #setWindowSize(int)
+	 * @see #setWindowSize(String)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEFProcessing_WindowSize()
-	 * @model
+	 * @model default="1:00"
 	 * @generated
 	 */
-	int getWindowSize();
+	String getWindowSize();
 
 	/**
 	 * Sets the value of the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessing#getWindowSize <em>Window Size</em>}' attribute.
@@ -44,6 +45,6 @@ public interface EFProcessing extends EFStatusEvent {
 	 * @see #getWindowSize()
 	 * @generated
 	 */
-	void setWindowSize(int value);
+	void setWindowSize(String value);
 
 } // EFProcessing

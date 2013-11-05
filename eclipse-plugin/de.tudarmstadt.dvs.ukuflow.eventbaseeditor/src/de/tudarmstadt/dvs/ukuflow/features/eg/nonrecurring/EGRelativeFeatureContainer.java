@@ -24,6 +24,7 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.utils.DialogUtils;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGOffset;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRelative;
@@ -40,7 +41,7 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
-import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGAddShapeFeature;
 
 public class EGRelativeFeatureContainer extends EGFeatureContainer {
 
@@ -107,6 +108,11 @@ public class EGRelativeFeatureContainer extends EGFeatureContainer {
 			super(fp, name, description);
 		}
 
+		@Override
+		public String getCreateImageId() {
+			return EventImageProvider.GEARS_ICON;
+		}
+
 		public boolean canCreate(ICreateContext context) {
 			return context.getTargetContainer() instanceof Diagram;
 		}
@@ -138,7 +144,7 @@ public class EGRelativeFeatureContainer extends EGFeatureContainer {
 
 	}
 
-	public class EGRelativeAddFeature extends UkuAbstractAddShapeFeature {
+	public class EGRelativeAddFeature extends UkuAbstractEGAddShapeFeature {
 
 		public static final int INVISIBLE_RECT_RIGHT = 6;
 
@@ -156,36 +162,41 @@ public class EGRelativeFeatureContainer extends EGFeatureContainer {
 		}
 
 	}
-	public class EGRelativeDoubleClickFeature extends GenericEditPropertiesFeature{
+
+	public class EGRelativeDoubleClickFeature extends
+			GenericEditPropertiesFeature {
 
 		public EGRelativeDoubleClickFeature(IFeatureProvider fp) {
 			super(fp);
 		}
-		
-		public void execute(ICustomContext context){
+
+		public void execute(ICustomContext context) {
 			EventBaseOperator bo = (EventBaseOperator) getBusinessObj(context);
 			Map<Integer, RequestContainer> properties = FeatureUtil
 					.createQuestions(bo);
-			
+
 			EGRelative off = (EGRelative) bo;
-			properties.put(EventbasePackage.EG_RELATIVE__DELAY_TIME,
-							new RequestContainer(
-									new RequestContainer.OffsetTimeValidator(),
-									 off.getDelayTime()+"",
-									"Delay time (in mm:ss format)"));
-			Map<Integer,RequestContainer> result = asking(bo,properties);
+			properties.put(
+					EventbasePackage.EG_RELATIVE__DELAY_TIME,
+					new RequestContainer(
+							new RequestContainer.OffsetTimeValidator(), off
+									.getDelayTime() + "",
+							"Delay time (in mm:ss format)"));
+			Map<Integer, RequestContainer> result = asking(bo, properties);
 			if (result == null)
 				return;
 			hasDoneChanges = FeatureUtil.fetchAnswer(bo, result);
 			String currentTime = off.getDelayTime();
-			String newTime = result.get(EventbasePackage.EG_RELATIVE__DELAY_TIME).result;
+			String newTime = result
+					.get(EventbasePackage.EG_RELATIVE__DELAY_TIME).result;
 			if (!newTime.equals(currentTime)) {
 				this.hasDoneChanges = true;
-				off.setDelayTime(newTime);				
+				off.setDelayTime(newTime);
 			}
 		}
-		
+
 	}
+
 	@Override
 	public AbstractCustomFeature getDoubleClickFeature(IFeatureProvider fb) {
 		// TODO Auto-generated method stub

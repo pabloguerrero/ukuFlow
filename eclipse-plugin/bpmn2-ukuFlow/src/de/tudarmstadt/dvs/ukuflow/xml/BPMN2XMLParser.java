@@ -198,13 +198,13 @@ public class BPMN2XMLParser {
 			result = new UkuProcess(fetchID(e), fetchName(e));
 			log.debug(e.getAttributes());
 			String attr = e.getAttributeValue("mindotInstances");
-			result.minInstance = attr == null?1:Integer.parseInt(attr);
-			
+			result.minInstance = attr == null ? 1 : Integer.parseInt(attr);
+
 			attr = e.getAttributeValue("number_ofLoops");
-			result.numberOfLoop = attr == null? 0 :Integer.parseInt(attr);
-			
+			result.numberOfLoop = attr == null ? 0 : Integer.parseInt(attr);
+
 			attr = e.getAttributeValue("maxdotInstances");
-			result.maxInstance = attr == null? 1 : Integer.parseInt(attr);
+			result.maxInstance = attr == null ? 1 : Integer.parseInt(attr);
 			log.info("fetching max, min, loop successfully");
 			result.setEntities(fetchEntities(e));
 			if (result.name == null || result.name.equals("")) {
@@ -230,10 +230,12 @@ public class BPMN2XMLParser {
 				UkuEntity tmp = fetchEntity(child);
 				if (tmp != null) {
 					// 18.09.2013
-					// fixing bug: the start event should be placed as the first element
-					if(tmp instanceof UkuEvent && ((UkuEvent)tmp).hasOutgoings()){
-						result.add(0,tmp);
-					}else {
+					// fixing bug: the start event should be placed as the first
+					// element
+					if (tmp instanceof UkuEvent
+							&& ((UkuEvent) tmp).hasOutgoings()) {
+						result.add(0, tmp);
+					} else {
 						result.add(tmp);
 					}
 					reference.put(tmp.getID(), tmp);
@@ -257,7 +259,7 @@ public class BPMN2XMLParser {
 		try {
 			type = classifier.getType(name);
 		} catch (UnsupportedElementException e1) {
-			if(name.equals("association"))
+			if (name.equals("association"))
 				return null;
 			errorManager.addWarning(e.getParentElement()
 					.getAttributeValue("id"), name + " is not supported");
@@ -268,7 +270,7 @@ public class BPMN2XMLParser {
 
 		String id = fetchID(e);
 		String bpmn2_name = e.getAttributeValue("name");
-		
+
 		switch (type) {
 		case 1:
 			String sourceRef = e.getAttributeValue("sourceRef");
@@ -340,7 +342,7 @@ public class BPMN2XMLParser {
 			}
 			return event;
 		case 4: // gateways
-			UkuGateway gway = null;			
+			UkuGateway gway = null;
 			try {
 				gway = (UkuGateway) classifier.getGatewayClass(name)
 						.getConstructor(String.class).newInstance(id);
@@ -377,6 +379,7 @@ public class BPMN2XMLParser {
 				}
 			}
 			gway.setName(bpmn2_name);
+			log.debug(gway + " is fetched!");
 			return gway;
 		case 5: // Text Annotation
 			UkuScope scope = new UkuScope(id);
@@ -407,10 +410,43 @@ public class BPMN2XMLParser {
 			log.debug("fetching script of " + e + " is " + script);
 			rTask.setScript(script);
 			return rTask;
+		case 7:
+			// TODO: donot need this, eventbase gateway is fetched with type = 4
+			break;
+		case 8:
+			UkuReceiveTask fakeReceiveTask = new UkuReceiveTask(id);
+			String fakeScript = "TOP = OFFSET_EG NODE_TIME pattern @s LOCAL";
+			fakeReceiveTask.setName(bpmn2_name);
+			for (Element ee : e.getChildren()) {
+				String n = ee.getName();
+				String n_id = ee.getTextTrim();
+				if (n.equals("incoming")) {
+					fakeReceiveTask.addIncoming(n_id);
+				} else if (n.equals("outgoing")) {
+					fakeReceiveTask.addOutgoing(n_id);
+				} else if (n.equals("timerEventDefinition")) {
+					for (Element eee : ee.getChildren()) {
+						if (eee.getName().equals("timeDuration")) {
+							String timeExp = eee.getTextTrim();
+							log.info("timer exp is: " + timeExp);
+							fakeScript = fakeScript.replace("pattern", timeExp);
+						}
+					}
+				}
+			}
+
+			// TODO:
+			fakeReceiveTask.setFake(true);
+			log.debug("encounter intermediate catch event -> replace with a fake receiveTask:"
+					+ fakeScript);
+			fakeReceiveTask.setScript(fakeScript);
+			// fakeReceiveTask.addErrorMessage("test error Message");
+			return fakeReceiveTask;
 		default:
 			log.debug("WARNING, unknown element: " + type + "/" + e.getName());
 			return null;
 		}
+		return null;
 	}
 
 	private Element getChildwithName(Element e, String name) {
@@ -422,16 +458,18 @@ public class BPMN2XMLParser {
 	}
 
 	private String fetchEBScript(Element e) {
-		Element dataInputA = getChildwithName(e, "dataInputAssociation");
-		if (dataInputA == null)
-			return null;
-		Element assignment = getChildwithName(dataInputA, "assignment");
-		if (assignment == null)
-			return null;
-		Element from = getChildwithName(assignment, "from");
-		if (from == null)
-			return null;
-		return from.getTextTrim();
+		// TODO fetch with attribute "eventScript"
+		String eScript = e.getAttributeValue("eventScript");
+		if (eScript == null)
+			return "";
+		return eScript;
+		/*
+		 * Element dataInputA = getChildwithName(e, "dataInputAssociation"); if
+		 * (dataInputA == null) return null; Element assignment =
+		 * getChildwithName(dataInputA, "assignment"); if (assignment == null)
+		 * return null; Element from = getChildwithName(assignment, "from"); if
+		 * (from == null) return null; return from.getTextTrim();
+		 */
 	}
 
 	private String fetchID(Element e) {

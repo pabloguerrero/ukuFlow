@@ -37,13 +37,15 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Token;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 /**
- * @author ”Hien Quoc Dang”
- *
+ * @author ï¿½Hien Quoc Dangï¿½
+ * 
  */
 public class UkuReceiveTask extends UkuActivity {
 	public EventBaseOperator topOperator;
 	EEventBaseScript ebScript;
 	private static BpmnLog log;
+	boolean isFake = false;
+
 	/**
 	 * @param id
 	 */
@@ -52,47 +54,65 @@ public class UkuReceiveTask extends UkuActivity {
 		log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	}
 
-	/* (non-Javadoc)
-	 * @see de.tudarmstadt.dvs.ukuflow.xml.entity.VisitableElement#accept(de.tudarmstadt.dvs.ukuflow.xml.entity.ElementVisitor)
+	public void setFake(boolean fake) {
+		isFake = fake;
+	}
+
+	public boolean isFake() {
+		return isFake;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.tudarmstadt.dvs.ukuflow.xml.entity.VisitableElement#accept(de.tudarmstadt
+	 * .dvs.ukuflow.xml.entity.ElementVisitor)
 	 */
 	@Override
 	public void accept(ElementVisitor visitor) {
 		visitor.visit(this);
 
 	}
+
 	/**
 	 * true if there is a valid top operator;
+	 * 
 	 * @return
 	 */
-	public boolean hasScript(){
+	public boolean hasScript() {
 		return topOperator != null;
 	}
-	
-	public void setScript(String script){
-		if(script == null || script.equals("")){
+
+	public void setScript(String script) {
+		if (script == null || script.equals("")) {
 			log.info(" receive task has no script !!");
 			return;
 		}
 		EventBaseScript parser = EventBaseScript.getInstance(script);
 		try {
+			log.info((isFake?"fake":"")+" receiveTask with script : " + script);
 			ebScript = parser.validate();
 			topOperator = ebScript.getTopExp();
 		} catch (ParseException e) {
 			String tkn = null;
 			String msg = null;
 			Token tk = parser.token;
+			if(isFake){
+				addErrorMessage("The timer expression is not correct. Please use following format 'mm:ss'");
+				return;
+			}
 			if (tk != null) {
-				if(tk.next != null)
+				if (tk.next != null)
 					tk = tk.next;
 				tkn = tk.image;
 				msg = "error near the token " + tkn;
-				addErrorMessage("element " + id + ", at line: "
-						+ tk.beginLine + "& col: "
-						+ tk.beginColumn, msg);
+				addErrorMessage("element " + id + ", at line: " + tk.beginLine
+						+ "& col: " + tk.beginColumn, msg);
 			} else {
 				addErrorMessage("element " + id,
 						"there is an unknown error in the script");
-			}			
+			}
 		}
 	}
 

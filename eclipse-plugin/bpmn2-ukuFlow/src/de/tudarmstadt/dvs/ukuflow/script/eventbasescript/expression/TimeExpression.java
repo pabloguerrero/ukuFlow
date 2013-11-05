@@ -40,7 +40,7 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisito
 import de.tudarmstadt.dvs.ukuflow.tools.TimeUtil;
 
 /**
- * @author ”Hien Quoc Dang”
+ * @author ï¿½Hien Quoc Dangï¿½
  *
  */
 public class TimeExpression extends EEvaluableExpression {
@@ -101,7 +101,7 @@ public class TimeExpression extends EEvaluableExpression {
 		return getValue(4);
 	}
 	/**
-	 * return the time in bytes of seconds
+	 * return the time (in seconds) in <code>length</code> bytes
 	 * @return
 	 */
 	public Collection<? extends Byte> getValue(int length) {

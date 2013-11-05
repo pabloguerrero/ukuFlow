@@ -62,7 +62,11 @@ public class FeatureManager {
 	}
 	
 	public static List<ICreateFeature> getComplexEFCreateFeatures(IFeatureProvider fp){
+		if(fp instanceof UkuFlowFeatureProvider){
+			UkuFlowFeatureProvider ufp = (UkuFlowFeatureProvider) fp;
+		}
 		List<ICreateFeature> features = new LinkedList<ICreateFeature>();
+		
 		//features.add((new EFSimpleFeatureContainer()).getCreateFeature(fp));
 		features.add((new EFProcessingCountFeatureContainer()).getCreateFeature(fp));
 		features.add((new EFProcessingMinFeatureContainer()).getCreateFeature(fp));

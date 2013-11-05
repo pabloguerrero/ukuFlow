@@ -23,6 +23,7 @@ import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
+import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.utils.DialogUtils;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGPatterned;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRelative;
@@ -39,7 +40,7 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
-import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGAddShapeFeature;
 
 public class EGPatternedFeatureContainer extends EGFeatureContainer {
 
@@ -106,6 +107,11 @@ public class EGPatternedFeatureContainer extends EGFeatureContainer {
 			super(fp, name, description);
 		}
 
+		@Override
+		public String getCreateImageId() {
+			return EventImageProvider.GEARS_ICON;
+		}
+
 		public boolean canCreate(ICreateContext context) {
 			return context.getTargetContainer() instanceof Diagram;
 		}
@@ -138,7 +144,7 @@ public class EGPatternedFeatureContainer extends EGFeatureContainer {
 
 	}
 
-	public class EGPatternedAddFeature extends UkuAbstractAddShapeFeature {
+	public class EGPatternedAddFeature extends UkuAbstractEGAddShapeFeature {
 
 		public static final int INVISIBLE_RECT_RIGHT = 6;
 
@@ -155,33 +161,38 @@ public class EGPatternedFeatureContainer extends EGFeatureContainer {
 			return false;
 		}
 	}
-	
-	public class EGPatternedDoubleClickFeature extends GenericEditPropertiesFeature{
+
+	public class EGPatternedDoubleClickFeature extends
+			GenericEditPropertiesFeature {
 
 		public EGPatternedDoubleClickFeature(IFeatureProvider fp) {
 			super(fp);
 		}
-		
-		public void execute(ICustomContext context){
+
+		public void execute(ICustomContext context) {
 			EventBaseOperator bo = (EventBaseOperator) getBusinessObj(context);
 			Map<Integer, RequestContainer> properties = FeatureUtil
 					.createQuestions(bo);
-			
+
 			EGPatterned off = (EGPatterned) bo;
 			Integer key1 = EventbasePackage.EG_PATTERNED__TIME;
 			Integer key2 = EventbasePackage.EG_PATTERNED__PATTERN;
-			properties.put(key1, new RequestContainer(
-					new RequestContainer.OffsetTimeValidator(), "" + off.getTime(),
-					"Period Time (in mm:ss format)"));
-			properties.put(key2,
+			properties.put(key1,
+					new RequestContainer(
+							new RequestContainer.OffsetTimeValidator(), ""
+									+ off.getTime(),
+							"Period Time (in mm:ss format)"));
+			properties.put(
+					key2,
 					new RequestContainer(
 							new RequestContainer.BinaryValidator(), ""
 									+ off.getPattern(), "Pattern"));
-			Map<Integer,RequestContainer>result = asking(bo, properties);
+			System.out.println("pattern is asking..");
+			Map<Integer, RequestContainer> result = asking(bo, properties);
 			if (result == null)
 				return;
 			hasDoneChanges = FeatureUtil.fetchAnswer(bo, result);
-			
+
 			String currentTime = off.getTime();
 			String newTime = result.get(key1).result;
 			if (!newTime.equals(currentTime)) {
@@ -199,7 +210,6 @@ public class EGPatternedFeatureContainer extends EGFeatureContainer {
 
 	@Override
 	public AbstractCustomFeature getDoubleClickFeature(IFeatureProvider fb) {
-		// TODO Auto-generated method stub
-		return null;
+		return new EGPatternedDoubleClickFeature(fb);
 	}
 }

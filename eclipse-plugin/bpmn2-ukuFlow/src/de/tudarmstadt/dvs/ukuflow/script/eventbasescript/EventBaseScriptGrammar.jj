@@ -244,7 +244,7 @@ String variable():{
 }ESimpleFilterConstraint Constraint() :{  ESimpleFilterConstraint result = null;  String type = null, value = null, op = null;  boolean valueFirst = true;}{  (    (      < EVENT_OUTPUT_TYPE >      {        valueFirst = false;        type = token.image.trim();      }      < COMPARISON >      {        op = token.image.trim();      }      Event_output_value()      {        value = token.image.trim();      }    )  |    (      Event_output_value()      {        value = token.image.trim();      }      < COMPARISON >      {        op = token.image.trim();      }      < EVENT_OUTPUT_TYPE >      {        type = token.image.trim();      }    )  )  {    result = new ESimpleFilterConstraint(type, op, value, valueFirst);    return result;  }}String Event_output_value() :{  String result = null;}{  (    < IDENTIFIER >  | Number()  | < SENSOR_TYPE >  )  {    result = token.image.trim();    return result;  }}EProcessingEF min_ef():{
   EProcessingEF result = null;
   EventBaseOperator source = null;
-  }{
+  TimeExpression time = null;}{
   (    < MIN_COMPOSITION_EF >
   | <MAX_COMPOSITION_EF >
   | < COUNT_COMPOSITION_EF >
@@ -254,10 +254,11 @@ String variable():{
   )
   {
     result = new EProcessingEF(token.image.trim());  }
-  < POSITIVE_NUMBER >
+  //< POSITIVE_NUMBER >
+  time = timeExpression()
   {
-    int window = Integer.parseInt(token.image.trim());
-    result.setWindow(window);  }
+    //int window = Integer.parseInt(token.image.trim());
+    result.setWindow(time);  }
   "(" 
     source = Terminate_Operand() 
   ")"

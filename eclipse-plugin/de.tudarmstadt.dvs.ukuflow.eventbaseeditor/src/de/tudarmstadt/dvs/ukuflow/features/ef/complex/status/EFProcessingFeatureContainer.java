@@ -21,6 +21,7 @@ import de.tudarmstadt.dvs.ukuflow.eventbase.utils.DialogUtils;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessing;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage;
+import de.tudarmstadt.dvs.ukuflow.features.ef.EFCompositeFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.EFFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericDirectEditFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericEditPropertiesFeature;
@@ -32,12 +33,9 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
-public abstract class EFProcessingFeatureContainer extends EFFeatureContainer{
+public abstract class EFProcessingFeatureContainer extends EFCompositeFeatureContainer{
 	private BpmnLog log = BpmnLog.getInstance(getClass().getSimpleName());
-	@Override
-	public Object getApplyObject(IContext context) {
-		return super.getApplyObject(context);
-	}
+	
 
 	public boolean canApplyTo(Object o) {
 		return (o instanceof EFProcessing);
@@ -81,7 +79,7 @@ public abstract class EFProcessingFeatureContainer extends EFFeatureContainer{
 	@Override
 	public AbstractCustomFeature getDoubleClickFeature(IFeatureProvider fb){
 		
-		return null;
+		return new EFProcessingDoubleClickFeature(fb);
 	}
 	public class EFProcessingDoubleClickFeature extends GenericEditPropertiesFeature{
 
@@ -91,12 +89,12 @@ public abstract class EFProcessingFeatureContainer extends EFFeatureContainer{
 		public void execute(ICustomContext context){
 			EventBaseOperator bo = (EventBaseOperator) getBusinessObj(context);
 			EFProcessing efCount = (EFProcessing) bo;
-			int currentWindowSize = efCount.getWindowSize();
+			String currentWindowSize = efCount.getWindowSize();
 			Map<Integer,RequestContainer> properties = new HashMap<Integer, RequestContainer>();
 			properties.put(EventbasePackage.EF_PROCESSING__WINDOW_SIZE,
 					new RequestContainer(
-							new RequestContainer.IntegerValidator(),
-							currentWindowSize + "", "Window Size"));
+							new RequestContainer.OffsetTimeValidator(),
+							currentWindowSize + "", "Window Size (mm:ss)"));
 			Map<Integer,RequestContainer> result = asking(bo,properties);
 			if (result == null)
 				return;
@@ -104,9 +102,9 @@ public abstract class EFProcessingFeatureContainer extends EFFeatureContainer{
 					.get(EventbasePackage.EF_PROCESSING__WINDOW_SIZE).result;
 			if (!newConstraint.equals(currentWindowSize)) {
 				this.hasDoneChanges = true;
-				int window = Integer.parseInt(newConstraint);
-				efCount.setWindowSize(window);
-				log.debug("new window size is " +window);
+				//int window = Integer.parseInt(newConstraint);
+				efCount.setWindowSize(newConstraint);
+				log.debug("new window size is " +newConstraint);
 			}
 		}
 		
