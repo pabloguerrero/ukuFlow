@@ -200,6 +200,6 @@ public class EGRelativeFeatureContainer extends EGFeatureContainer {
 	@Override
 	public AbstractCustomFeature getDoubleClickFeature(IFeatureProvider fb) {
 		// TODO Auto-generated method stub
-		return null;
+		return new EGRelativeDoubleClickFeature(fb);
 	}
 }

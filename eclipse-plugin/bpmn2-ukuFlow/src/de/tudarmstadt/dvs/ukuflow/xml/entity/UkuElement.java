@@ -67,13 +67,16 @@ public abstract class UkuElement extends UkuEntity {
 		element_id = id;
 		hasElementID = true;
 	}
+	
 	public List<UkuElement> getNextElements(){
 		List<UkuElement> result = new LinkedList<UkuElement>();
-		for(UkuEntity e: outgoingEntities){
-			
+		for(UkuSequenceFlow e: outgoingEntities){
+			if(e.getTargetEntity() instanceof UkuElement)
+			result.add((UkuElement)e.getTargetEntity());
 		}
 		return result;
 	}
+	
 	public byte getWorkflowElementID() {
 		return element_id;
 	}

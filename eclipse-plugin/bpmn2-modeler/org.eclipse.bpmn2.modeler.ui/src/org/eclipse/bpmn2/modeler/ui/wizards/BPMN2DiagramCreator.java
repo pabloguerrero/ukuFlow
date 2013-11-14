@@ -43,7 +43,7 @@ public class BPMN2DiagramCreator {
 		final Diagram diagram = Graphiti.getPeCreateService().createDiagram("BPMN2", modelName, true);
 
 		String diagramName = FileService.createTempName(modelName);
-		System.err.println(diagramName);
+
 		URI diagramUri = URI.createFileURI(diagramName);
 		FileService.createEmfFileForDiagram(diagramUri, diagram, diagramEditor);
 

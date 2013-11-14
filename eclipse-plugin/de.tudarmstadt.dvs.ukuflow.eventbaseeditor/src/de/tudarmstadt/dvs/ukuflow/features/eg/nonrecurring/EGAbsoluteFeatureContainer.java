@@ -79,19 +79,6 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 		public Object[] create(ICreateContext context) {
 			EGAbsolute newClass = EventbaseFactory.eINSTANCE.createEGAbsolute();
 			getDiagram().eResource().getContents().add(newClass);
-
-			// Use the following instead of the above line to store the model
-			// data in a seperate file parallel to the diagram file
-			// try {
-			// try {
-			// TutorialUtil.saveToModelFile(newClass, getDiagram());
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			// } catch (CoreException e) {
-			// e.printStackTrace();
-			// }
-
 			// do the add
 			addGraphicalRepresentation(context, newClass);
 
@@ -100,7 +87,6 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 			// return newly created business object(s)
 			return new Object[] { newClass };
 		}
-
 	}
 
 	public class EGAbsoluteAddFeature extends UkuAbstractEGAddShapeFeature {
@@ -140,6 +126,7 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 			if (currentTime == null || currentTime.equals("")) {
 
 				currentTime = TimeUtil.getCurrentTime();
+				eClass.setAbsoluteTime(currentTime);
 				log.debug("absolute time is null or \"\"-> replace with default : "
 						+ currentTime);
 			}
@@ -147,7 +134,7 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 					new RequestContainer(
 							new RequestContainer.AbsoluteTimeValidator(),
 							currentTime, "Absolute time ("
-									+ TimeUtil.TIME_PATTERN + ")"));
+									+ TimeUtil.FULL_PATTERN + ")"));
 
 			Map<Integer, RequestContainer> result = asking(bo, properties);
 			if (result == null)

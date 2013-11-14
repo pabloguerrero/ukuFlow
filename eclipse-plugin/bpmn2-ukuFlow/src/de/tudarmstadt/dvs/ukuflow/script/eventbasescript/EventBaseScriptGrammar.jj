@@ -33,9 +33,9 @@
     | "&&"    ) >| < OR :    (      "OR"      //    | "|"
     | "||"    ) >| < NOT :    (      "NOT"    | "~"    ) >}TOKEN :{  < COMPOSITION_POLICY :    (      "CP1"    | "CP2"    ) >  //TODO FIXME enter policy
 | < EVICTION :    (      "EV1"    | "EV2"    ) >}//< EVENT_OUTPUT_TYPE > <COMPARISON > <EVENT_OUTPUT_VALUE >
-TOKEN :{  < EVENT_OUTPUT_TYPE :    (      "TYPE"    | "OPERATOR_ID"    | "SOURCE" 
-    | "MAGNITUDE"    | "TIME"
-    | "NODE"    | "SCOPE"    ) >}TOKEN :{  < COMPARISON :    (      "<"    | ">"    | "<="    | ">="    | "=="    | "!="    ) >}TOKEN : /* BOOLEAN */{  < BOOLEAN :    (      < TRUE >    | < FALSE >    ) >| < #TRUE :    (      "TRUE"    | "true"    ) >| < #FALSE :    (      "FALSE"    | "false"    ) >}TOKEN : /** KEYWORD*/{  < immediate_EG : "IMMEDIATE_EG" >| < absolute_EG : "ABSOLUTE_EG" >| < offset_EG : "OFFSET_EG" >| < relative_EG : "RELATIVE_EG" >| < functional_EG : "FUNCTIONAL_EG" >| < PEG : "PERIODIC_EG" >| < APEG : "PATTERN_EG" >| < ADEG : "DISTRIBUTION_EG" >| < SEF : "SIMPLE_EF" >| < AND_COMPOSITION_EF : "AND_COMPOSITION_EF" >
+TOKEN :{  < EVENT_OUTPUT_TYPE :    (      "EVENT_TYPE"    | "EVENT_OPERATOR_ID"    | "SOURCE" 
+    | "MAGNITUDE"    | "TIMESTAMP"
+    | "ORIGIN_NODE"    | "ORIGIN_SCOPE"    ) >}TOKEN :{  < COMPARISON :    (      "<"    | ">"    | "<="    | ">="    | "=="    | "!="    ) >}TOKEN : /* BOOLEAN */{  < BOOLEAN :    (      < TRUE >    | < FALSE >    ) >| < #TRUE :    (      "TRUE"    | "true"    ) >| < #FALSE :    (      "FALSE"    | "false"    ) >}TOKEN : /** KEYWORD*/{  < immediate_EG : "IMMEDIATE_EG" >| < absolute_EG : "ABSOLUTE_EG" >| < offset_EG : "OFFSET_EG" >| < relative_EG : "RELATIVE_EG" >| < functional_EG : "FUNCTIONAL_EG" >| < PEG : "PERIODIC_EG" >| < APEG : "PATTERN_EG" >| < ADEG : "DISTRIBUTION_EG" >| < SEF : "SIMPLE_EF" >| < AND_COMPOSITION_EF : "AND_COMPOSITION_EF" >
 | < OR_COMPOSITION_EF : "OR_COMPOSITION_EF" >
 | < NOT_COMPOSITION_EF : "NOT_COMPOSITION_EF" >
 | < SEQUENCE_COMPOSITION_EF : "SEQUENCE_COMPOSITION_EF" >
@@ -103,13 +103,17 @@ String variable():{
 	)
 	{
 	  result = token.image.trim();
-	  return result;	}}EEventBaseScript validate() :{  EventBaseOperator top = null;  EventBaseOperator tmp;  List < EventBaseOperator > result = new ArrayList < EventBaseOperator > ();}{  (    tmp = any_function()    {      result.add(tmp);    }  )*  top = TOP()  (    tmp = any_function()    {      result.add(tmp);    }  )*  < EOF >  {    return new EEventBaseScript(result, top);  }}/**
+	  return result;	}}EEventBaseScript validate() :{  EventBaseOperator top = null;  EventBaseOperator tmp;  List < EventBaseOperator > result = new ArrayList < EventBaseOperator > ();}{  (    tmp = any_function()    {      result.add(tmp);    }  )*  top = TOP()  (    tmp = any_function()    {      result.add(tmp);    }  )*  < EOF >  {
+    log.debug("cerate ebscript with " + result + "/ top= " + top);    return new EEventBaseScript(result, top);  }}/**
 * assignment
 */EventBaseOperator any_function() :{  EventBaseOperator result = null;  String var = null;}{
   var = variable()
-  "="  (    result = eventbaseOperator()  )  {    EVariable evar = new EVariable(var, result);    ChannelIDManager.variableMapping.put(var, evar);    return result;  }}EventBaseOperator eventbaseOperator() :{  EventBaseOperator result = null;}{  (   result = Recurring_EG()  | result = SEF()  | result = CEF()
-  | result = min_ef()  | result = NonRecurring_EG()  )  {    return result;  }}EventBaseOperator TOP() :{  EventBaseOperator result = null;}{  < TOP > "="  (
+  "="  (    result = eventbaseOperator()  )  {    EVariable evar = new EVariable(var, result);    ChannelIDManager.variableMapping.put(var, evar);    return result;  }}EventBaseOperator eventbaseOperator() :{  EventBaseOperator result = null;
+  log.debug("fetching ebOperator");}{  (   result = Recurring_EG()  | result = SEF()  | result = CEF()
+  | result = min_ef()  | result = NonRecurring_EG()  )  {
+    log.debug("EB operator is " + result);    return result;  }}EventBaseOperator TOP() :{  EventBaseOperator result = null;}{  < TOP > "="  (
     {
+      log.debug("top expression detected");
     }    result = eventbaseOperator()  | variable()    {      result = ChannelIDManager.variableMapping.get(token.image.trim());    }  )  {    return result;  }}String scope() :{}{  "@s"   < IDENTIFIER >
   {	return token.image.trim();
   }}
@@ -253,7 +257,8 @@ String variable():{
   | < STDEV_COMPOSITION_EF >
   )
   {
-    result = new EProcessingEF(token.image.trim());  }
+    result = new EProcessingEF(token.image.trim());
+    log.debug("creating EProcessingEF " + token.image);  }
   //< POSITIVE_NUMBER >
   time = timeExpression()
   {

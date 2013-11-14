@@ -78,7 +78,7 @@ public class GotoEventViewerCustomFeature extends AbstractCustomFeature {
 	public String getImageId() {
 		return ImageProvider.IMG_16_TASK;
 	}
-
+	@Deprecated
 	private String createDataInputParameterifNeeded(ReceiveTask task) {
 		if("!".equals("!"))
 			return task.getEventScript();
@@ -190,7 +190,7 @@ public class GotoEventViewerCustomFeature extends AbstractCustomFeature {
 		try {
 			Object obj = getFeatureProvider().getBusinessObjectForPictogramElement(picto);
 			task = (ReceiveTask) obj;
-			text = createDataInputParameterifNeeded(task);
+			text = task.getEventScript();//createDataInputParameterifNeeded(task);
 			log.info("script from receiveTask: \"" + text + "\"");
 			try {
 				if (!text.equals("")) {

@@ -446,6 +446,12 @@ public class UkuProcessValidation {
 
 	private void validate(UkuGateway gway) {
 		// TODO is there anything to validate?
+		if(gway.getUkuType() == UkuConstants.WorkflowOperators.EVENT_BASED_EXCLUSIVE_DECISION_GATEWAY){
+			for(UkuElement e : gway.getNextElements()){
+				if(!(e instanceof UkuReceiveTask))
+					gway.addErrorMessage("Event based gateways are followed by a Catch Event or Receive Task. "+e.getName()+ " isn't satisfied.");
+			}
+		}
 	}
 
 	private void validate(UkuSequenceFlow sef) {

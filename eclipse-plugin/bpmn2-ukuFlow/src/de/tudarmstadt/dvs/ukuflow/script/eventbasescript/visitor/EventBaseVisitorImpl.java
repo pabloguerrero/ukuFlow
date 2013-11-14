@@ -47,9 +47,11 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilt
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilterUnaryExpression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EGausianFunction;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EImmediateEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ELogicalCompositionEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EOffsetEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EParetoFunction;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EPeriodicEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EProcessingEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleFilterConstraint;
@@ -60,11 +62,14 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOpe
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventGenerator;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ScopeManager;
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.DuplicateScopeNameException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.ScopeNotExistException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyScopeException;
 
 public class EventBaseVisitorImpl implements EventBaseVisitor{
+	
+	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	@Override
 	public void reset(){
 		out.clear();
@@ -102,6 +107,7 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 
 	@Override
 	public void visit(ESimpleEF sef) {
+		log.debug("visiting Simple EF : " +sef);
 		out.add(UkuConstants.EFConstants.SIMPLE_EF);
 		out.add(sef.getOperatorID());
 		out.add(sef.getChannel());
@@ -114,12 +120,12 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 
 	@Override
 	public void visit(ESimpleFilterConstraint sec) {
-		out.add((byte)sec.comparator);
+		out.add(sec.getComparator());
 		if(sec.isValueFirst()){
 			out.addAll(sec.getValues());
-			out.add((byte)sec.type);
+			out.addAll(sec.getType());
 		} else {
-			out.add((byte)sec.type);
+			out.addAll(sec.getType());
 			out.addAll(sec.getValues());
 		}
 	}
@@ -220,8 +226,7 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	@Override
 	public void visit(EAbsoluteEG e) {
 		out.add((byte)UkuConstants.EGConstants.ABSOLUTE_EG);
-		out.add(e.getOperatorID());
-		out.add(OperatorIDGenerator.getNextID());
+		out.add(e.getOperatorID());		
 		out.add(e.getChannel());
 		out.add(e.getSensorType());
 		out.add(getScope(e));
@@ -340,12 +345,13 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	 */
 	@Override
 	public void visit(ESimpleFilterNestedConstraint e) {
+		log.debug(" visiting nested constraint: "+e);
 		List<ESimpleFilterConstraint> cons = e.getConstraints();
 		if(cons.size() == 1){
 			int length = out.size();
-			out.add((byte)0);// placeholder
+			out.add((byte)-1);// placeholder
 			cons.get(0).accept(this);
-			out.set(length, (byte)(out.size() - length));// update length
+			out.set(length, (byte)(out.size() - length-1));// update length
 		}
 		if(cons.size() > 1){
 			int length = out.size();
@@ -360,5 +366,27 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 			}
 			out.set(length,(byte)(out.size() - length)); // update length
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EProcessingEF)
+	 */
+	@Override
+	public void visit(EProcessingEF f) {
+		log.debug("visiting Processing EF: " +f);
+		out.add(f.getTypecode()); // pcf type
+		out.add(f.getOperatorID());
+		out.add(f.getChannel());
+		out.addAll(f.getWindow().getValue(2));
+		f.getSource().accept(this);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ELogicalCompositionEF)
+	 */
+	@Override
+	public void visit(ELogicalCompositionEF ef) {
+		// TODO Auto-generated method stub
+		//TODO
 	}
 }

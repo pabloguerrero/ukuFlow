@@ -11,9 +11,7 @@ package de.tudarmstadt.dvs.ukuflow.eventbase.utils;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-import java.awt.FlowLayout;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +28,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
@@ -38,7 +35,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Combo;
 
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage;
 import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
@@ -241,11 +237,10 @@ public class UkuInputDialog extends Dialog {
 				});
 			} else {
 				CCombo combo = new CCombo(composite, getInputTextStyle());
-				// System.out.println(requests.get(message).requests);
 				combo.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 						| GridData.HORIZONTAL_ALIGN_FILL));
-				System.out.println("map: "+requests);	 
-				System.out.println("mesg:"+message + "/ req:"+requests.get(message).requests);
+				//System.out.println("map: "+requests);	 
+				//System.out.println("mesg:"+message + "/ req:"+requests.get(message).requests);
 				List l = (List<?>) requests.get(message).requests;
 				String[] a = new String[l.size()];
 				int selectIndex = 0;

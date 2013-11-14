@@ -94,6 +94,7 @@ public class UkuReceiveTask extends UkuActivity {
 			log.info((isFake?"fake":"")+" receiveTask with script : " + script);
 			ebScript = parser.validate();
 			topOperator = ebScript.getTopExp();
+			log.info("top operator is: " +topOperator);
 		} catch (ParseException e) {
 			String tkn = null;
 			String msg = null;

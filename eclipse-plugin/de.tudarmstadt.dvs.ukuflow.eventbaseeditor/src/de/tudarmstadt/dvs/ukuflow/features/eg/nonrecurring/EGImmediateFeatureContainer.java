@@ -162,6 +162,8 @@ public class EGImmediateFeatureContainer extends EGFeatureContainer {
 				return;
 			Map<Integer,RequestContainer> properties = FeatureUtil.createQuestions((EventBaseOperator)bo);
 			Map<Integer,RequestContainer> results = asking(bo,properties);
+			if(results == null)
+				return;
 			hasDoneChanges = FeatureUtil.fetchAnswer(bo, results);
 		}
 	}

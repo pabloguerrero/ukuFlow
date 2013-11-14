@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.Transaction;
 import org.eclipse.bpmn2.ReceiveTask;
@@ -41,6 +43,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.command.CommandStack;
 import org.eclipse.emf.common.util.EList;
@@ -64,17 +67,20 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageEditorSite;
-
+import org.eclipse.ui.internal.WorkbenchMessages;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
@@ -164,17 +170,49 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements
 
 			@Override
 			public void close(CTabFolderEvent event) {
-				//System.out.println("Convert phase should be here");
-
+				// System.out.println("Convert phase should be here");
+				
 				if (event.item.getData() == sourceViewer)
 					removeSourceViewer();
-				else if(event.item.getData() instanceof DiagramEditor){
+				else if (event.item.getData() instanceof DiagramEditor) {
 					// TODO: checking modification:
-					DiagramEditor editor = (DiagramEditor)event.item.getData();
-					if(editor.isDirty()){
-						//ASK FOR SAVE:
+					String MESSAGE = "Resource has been modified. Save changes?";
+					int choice = -1;
+					DiagramEditor editor = (DiagramEditor) event.item.getData();
+					if (editor.isDirty()) {
+						// ASK FOR SAVE:
+						Shell shell = PlatformUI.getWorkbench()
+								.getActiveWorkbenchWindow().getShell();
+						String[] buttons = new String[] {
+								IDialogConstants.YES_LABEL,
+								IDialogConstants.NO_LABEL
+								,IDialogConstants.CANCEL_LABEL 
+								};
+						MessageDialog d = new MessageDialog(shell,
+								WorkbenchMessages.Save_Resource, null, MESSAGE,
+								MessageDialog.QUESTION, buttons, 0) {
+							protected int getShellStyle() {
+								return super.getShellStyle() | SWT.SHEET;
+							}
+						};
+						choice = d.open();
+						switch (choice) {
+						case ISaveablePart2.YES: // yes
+							System.out.println("yes");
+							editor.doSave(new NullProgressMonitor());
+							break;
+						case ISaveablePart2.NO: // no
+							System.out.println("no");
+							break;
+						default:
+						case ISaveablePart2.CANCEL: // cancel
+							System.out.println("cancel");
+							event.doit = false;
+							return;
+						}
 					}
-					removeEventViewer((DiagramEditor) event.item.getData());
+					System.out.println("remove eventviewer!!!");
+					removeEventViewer(editor);
 				}
 			}
 
@@ -381,7 +419,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements
 	}
 
 	@Override
-	public void removePage(int pageIndex) {
+	public void removePage(int pageIndex) {		
 		Object page = tabFolder.getItem(pageIndex).getData();
 		super.removePage(pageIndex);
 		updateTabs();
@@ -567,7 +605,6 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements
 			}
 			// FileEditorInput input = new FileEditorInput();
 			String id = GraphitiUi.getExtensionManager().getDiagramTypeProviderId(ProviderID);
-			System.out.println("!1" + URI.createFileURI(target.getFullPath().toOSString()));
 			DiagramEditorInput input = new DiagramEditorInput(
 					// This is, folks, it works :D
 					//URI.createFileURI(target.getLocation().toOSString()),

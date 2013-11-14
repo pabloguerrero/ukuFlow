@@ -31,6 +31,7 @@
 package de.tudarmstadt.dvs.ukuflow.converter;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -44,6 +45,7 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 	
+	Bundle bundle = getBundle();
 	/**
 	 * The constructor
 	 */

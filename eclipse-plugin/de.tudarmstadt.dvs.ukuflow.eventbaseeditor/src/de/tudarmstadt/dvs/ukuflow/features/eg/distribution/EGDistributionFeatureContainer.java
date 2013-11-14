@@ -138,7 +138,7 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 			Integer key1 = EventbasePackage.EG_DISTRIBUTION__EVALUATION_INTERVAL;
 			Integer key2 = EventbasePackage.EG_DISTRIBUTION__FUNCTION;
 			properties.put(key0,new RequestContainer(new RequestContainer.OffsetTimeValidator(),
-					"" +off.getPeriodInterval(),"Period Interval (mm:ss)"));
+					"" +off.getPeriodInterval(),"Period duration (mm:ss)"));
 			properties.put(key1,
 					new RequestContainer(
 							new RequestContainer.OffsetTimeValidator(), ""

@@ -34,6 +34,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
+
 public class UkuConstants {
 	public static class WorkflowOperators {
 		/* workflow-types.h */
@@ -85,7 +87,7 @@ public class UkuConstants {
 		}
 	}
 
-	public class EGConstants {
+	public static class EGConstants {
 		public static final byte IMMEDIATE_EG = 0;
 		public static final byte ABSOLUTE_EG = 1;
 		public static final byte OFFSET_EG = 2;
@@ -95,7 +97,7 @@ public class UkuConstants {
 		public static final byte FUNCTIONAL_EG = 6;
 	}
 
-	public class EFConstants {
+	public static class EFConstants {
 		/* Event Filter */
 		public static final byte SIMPLE_EF = 7;
 		public static final byte AND_COMPOSITION_EF = 8;
@@ -113,7 +115,7 @@ public class UkuConstants {
 		public static final byte REMAIN_EF = 20;
 	}
 
-	public class OperatorConstants {
+	public static class OperatorConstants {
 		/* expression-types.h */
 		public static final byte OPERATOR_AND = 0;
 		public static final byte OPERATOR_OR = 1;
@@ -144,7 +146,7 @@ public class UkuConstants {
 		public static final byte CUSTOM_INPUT_VALUE = 20;
 	}
 
-	public class DataTypeConstants {
+	public static class DataTypeConstants {
 		public static final byte UINT8_VALUE = 14;
 		public static final byte UINT16_VALUE = 15;
 		public static final byte INT8_VALUE = 16;
@@ -310,9 +312,10 @@ public class UkuConstants {
 		result = (String[]) rs.toArray(new String[rs.size()]);
 		return result;
 	}
-
+	public static BpmnLog log = BpmnLog.getInstance(UkuConstants.class.getSimpleName());
 	public static byte getConstantByName(String name, Class clazz) {
 		byte r = -1;
+		
 		try {
 			Field f = clazz.getField(name);
 			if (f != null) {
@@ -320,7 +323,9 @@ public class UkuConstants {
 			}
 		} catch (Exception e) {
 		}
-
+		log.debug("look up for " + name + ": return " + r);
+		if(r == -1)
+			log.error(name + " is not a defined constant in UkuConstants");
 		return r;
 	}
 
@@ -363,6 +368,7 @@ public class UkuConstants {
 
 	public static void main(String[] args) {
 		// test:
-		System.out.println(getConstantByName("PUBLISH_TASK"));
+		System.out.println(getConstantByName("MAX_COMPOSITION_EF"));
+		System.out.println(getConstantByName("OPERATOR_AND"));
 	}
 }

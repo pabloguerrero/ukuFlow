@@ -310,6 +310,7 @@ public class ElementVisitorImpl implements ElementVisitor {
 			}
 		}
 		eVisitor.reset();
+		log.info("top operator is : " + rTask.topOperator);
 		rTask.topOperator.accept(eVisitor);
 		out.add(toByte(eVisitor.getOutput().size()));
 		out.addAll(eVisitor.getOutput());

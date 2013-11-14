@@ -21,9 +21,10 @@ public class DialogUtils {
 		int retDialog = inputDialog.open();
 		if (retDialog == Window.OK) {
 			ret = inputDialog.getValues();
+			return ret;
 		}
 		//PopupDialog
-		return ret;
+		return null;
 	}
 	
 	/**

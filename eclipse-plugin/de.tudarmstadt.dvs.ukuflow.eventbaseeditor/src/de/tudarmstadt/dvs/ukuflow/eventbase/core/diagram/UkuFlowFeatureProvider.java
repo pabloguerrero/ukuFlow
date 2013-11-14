@@ -50,6 +50,9 @@ import org.eclipse.graphiti.ui.features.DefaultFeatureProvider;
 
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.features.FeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.features.TutorialReconnectionFeature;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFChangeDecrease;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFChangeIncrease;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFChangeRemain;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFLogicAnd;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFLogicNot;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFLogicOr;
@@ -60,6 +63,7 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessingMin;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessingStDev;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessingSum;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFTemporalSequence;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGAbsolute;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGImmediate;
@@ -70,6 +74,9 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRelative;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESequenceFlow;
 import de.tudarmstadt.dvs.ukuflow.features.connection.SequenceFlowAddFeature;
 import de.tudarmstadt.dvs.ukuflow.features.connection.SequenceFlowCreateFeature;
+import de.tudarmstadt.dvs.ukuflow.features.ef.complex.changeevent.EFChangeDecreaseFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.complex.changeevent.EFChangeIncreaseFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.complex.changeevent.EFChangeRemainFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.logical.EFLogicAndFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.logical.EFLogicNotFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.logical.EFLogicOrFeatureContainer;
@@ -79,6 +86,7 @@ import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProces
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProcessingMinFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProcessingStDevFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProcessingSumFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.temporal.EFTemporalSequenceFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.simple.EFSimpleFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.distribution.EGDistributionFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring.EGAbsoluteFeatureContainer;
@@ -121,6 +129,11 @@ public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
 		containers.put(EFProcessingSum.class, new EFProcessingSumFeatureContainer());
 		containers.put(EFProcessingAvg.class, new EFProcessingAvgFeatureContainer());
 		containers.put(EFProcessingStDev.class, new EFProcessingStDevFeatureContainer());
+		
+		containers.put(EFTemporalSequence.class, new EFTemporalSequenceFeatureContainer());
+		containers.put(EFChangeDecrease.class, new EFChangeDecreaseFeatureContainer());
+		containers.put(EFChangeIncrease.class, new EFChangeIncreaseFeatureContainer());
+		containers.put(EFChangeRemain.class, new EFChangeRemainFeatureContainer());
 	}	
 	public List<ICreateFeature> getCreateFeatures(Class clazz){
 		List<ICreateFeature> result = new ArrayList<ICreateFeature>();

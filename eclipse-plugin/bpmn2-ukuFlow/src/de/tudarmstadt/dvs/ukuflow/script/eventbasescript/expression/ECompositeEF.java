@@ -32,18 +32,14 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
 /**
- * @author ”Hien Quoc Dang”
+ * @author ï¿½Hien Quoc Dangï¿½
  *
  */
-public class ECompositeEF extends EEventFilter {
+public abstract class ECompositeEF extends EEventFilter {
 
 	/* (non-Javadoc)
 	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable#accept(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor)
 	 */
 	@Override
-	public void accept(EventBaseVisitor visitor) {
-		// TODO Auto-generated method stub
-
-	}
-
+	public abstract void accept(EventBaseVisitor visitor);
 }

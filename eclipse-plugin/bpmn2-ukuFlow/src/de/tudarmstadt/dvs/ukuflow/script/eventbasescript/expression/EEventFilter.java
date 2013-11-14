@@ -30,7 +30,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
 /**
- * @author ”Hien Quoc Dang”
+ * @author ï¿½Hien Quoc Dangï¿½
  *
  */
 public abstract class EEventFilter extends EventBaseOperator {
@@ -41,7 +41,7 @@ public abstract class EEventFilter extends EventBaseOperator {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return null;
+		return "EEventFilter_";
 	}
 
 }

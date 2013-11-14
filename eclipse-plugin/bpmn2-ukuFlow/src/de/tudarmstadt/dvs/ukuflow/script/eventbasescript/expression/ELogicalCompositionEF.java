@@ -29,10 +29,20 @@
  */
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
+
 /**
- * @author ”Hien Quoc Dang”
+ * @author ï¿½Hien Quoc Dangï¿½
  *
  */
 public class ELogicalCompositionEF extends EStatusEF {
 
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EStatusEF#accept(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor)
+	 */
+	@Override
+	public void accept(EventBaseVisitor visitor) {
+		visitor.visit(this);
+	}
+	
 }

@@ -30,6 +30,7 @@
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
 /**
  * @author �Hien Quoc Dang�
@@ -53,8 +54,13 @@ public class EProcessingEF extends EStatusEF {
 	}
 
 	public byte getTypecode() {
-		if (type != null)
-			return UkuConstants.getConstantByName(type);
+		if (type != null){
+			byte result = 0;
+			result = UkuConstants.getConstantByName(type);
+			log.info("get type code for " + type + ">" + result);
+			return result;
+		}
+		log.debug("type is null???!:");
 		return 0;
 	}
 
@@ -64,5 +70,13 @@ public class EProcessingEF extends EStatusEF {
 
 	public void setSource(EventBaseOperator source) {
 		this.source = source;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EStatusEF#accept(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor)
+	 */
+	@Override
+	public void accept(EventBaseVisitor visitor) {
+		visitor.visit(this);
 	}
 }

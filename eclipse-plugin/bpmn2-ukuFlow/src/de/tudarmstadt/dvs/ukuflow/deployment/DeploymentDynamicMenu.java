@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -88,7 +90,7 @@ public class DeploymentDynamicMenu extends ContributionItem implements
 	}
 
 	@Override
-	public void fill(Menu menu, int index) {
+	public void fill(Menu menu, int index) {		
 		final int timeout = 1000*Activator.getDefault().getPreferenceStore().getInt(UkuPreference.TIMEOUT);
 		if (srv == null)
 			return;
@@ -107,10 +109,6 @@ public class DeploymentDynamicMenu extends ContributionItem implements
 			devItem.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					//System.out.println("selected->");
-					//System.out.println("\t"
-					//		+ file.getFullPath().toPortableString());
-					//System.out.println("\t" + key);
 					String fname;
 					String extension = file.getFileExtension();
 					boolean converted = false;
@@ -127,6 +125,7 @@ public class DeploymentDynamicMenu extends ContributionItem implements
 					
 					try {
 						DeviceManager.getInstance().deploy(key, fname, timeout);
+						
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}

@@ -41,7 +41,7 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 /**
  * this class is a helper for accessing the model, extracting information from the file quickly
- * @author ”Hien Quoc Dang”
+ * @author ï¿½Hien Quoc Dangï¿½
  *
  */
 public class EventModelUtil {
@@ -60,7 +60,6 @@ public class EventModelUtil {
 	}
 
 	public static void saveToModelFile(final EObject obj, final Diagram d) throws CoreException, IOException {
-		System.out.println(obj);
 		URI uri = d.eResource().getURI();
 		uri = uri.trimFragment();
 		uri = uri.trimFileExtension();
@@ -72,7 +71,6 @@ public class EventModelUtil {
 			Resource createResource = rSet.createResource(uri);
 			createResource.save(Collections.emptyMap());
 			createResource.setTrackingModification(true);
-			System.out.println(createResource);
 		}
 		final Resource resource = rSet.getResource(uri, true);		
 		resource.getContents().add(obj);

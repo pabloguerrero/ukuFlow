@@ -45,7 +45,8 @@ public class TimeUtil {
 	
 	public static String getCurrentTime(){
 		DateFormat format = getFormatter(FULL_PATTERN);
-		Date d = new Date();	
+		GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("Europe/Berlin"));		
+		Date d = cal.getTime();	
 		return format.format(d);
 	}
 	

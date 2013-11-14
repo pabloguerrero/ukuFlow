@@ -42,9 +42,11 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilt
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilterUnaryExpression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EGausianFunction;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EImmediateEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ELogicalCompositionEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EOffsetEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EParetoFunction;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EPeriodicEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EProcessingEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERecurringEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
@@ -90,4 +92,8 @@ public interface EventBaseVisitor {
 	 * @param eParetoFunction
 	 */
 	void visit(EParetoFunction eParetoFunction);
+	
+	void visit(EProcessingEF f);
+	
+	void visit(ELogicalCompositionEF ef);
 }

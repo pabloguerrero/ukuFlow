@@ -38,19 +38,28 @@ import gnu.io.SerialPort;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationType;
+import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+
+import de.tudarmstadt.dvs.ukuflow.deployment.launch.console.DeploymentConsoleView;
 import de.tudarmstadt.dvs.ukuflow.handler.UkuConsole;
 import de.tudarmstadt.dvs.ukuflow.tools.Base64Converter;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
@@ -60,10 +69,11 @@ public class DeviceManager {
 	public final static int WINDOWS_OS = 0;
 	public final static int LINUX_OS = 1;
 	public final static int MAC_OS = 2;
+	
 	private Map<String, String> devs;
 	private int os = -1;
 	private static DeviceManager INSTANCE = null;
-	private static UkuConsole console = UkuConsole.getConsole();
+	//private static UkuConsole console = UkuConsole.getConsole();
 	static LinkedBlockingDeque<String> usedPort = new LinkedBlockingDeque<String>();
 	private static BpmnLog log = BpmnLog.getInstance(DeviceManager.class
 			.getSimpleName());
@@ -100,7 +110,6 @@ public class DeviceManager {
 		default:
 			log.error("your operating system is not supported yet");
 			return null;
-			// TODO:
 		}
 		for (String used : usedPort) {
 			devs.remove(used);
@@ -110,8 +119,7 @@ public class DeviceManager {
 
 	private Set<String> portList(Set<String> ports) {
 		Set<String> portName = new HashSet<String>();
-		java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier
-				.getPortIdentifiers();
+		java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
 		while (portEnum.hasMoreElements()) {
 			CommPortIdentifier portIdentifier = portEnum.nextElement();
 			String name = portIdentifier.getName();
@@ -182,6 +190,7 @@ public class DeviceManager {
 	}
 
 	public void undeploy(String portName, int process_id, int timeout) {
+		DeploymentConsoleView console = getConsole("Process ID " +process_id, portName);
 		SerialPort serialPort = null;
 		try {
 			CommPortIdentifier portIdentifier = CommPortIdentifier
@@ -204,8 +213,8 @@ public class DeviceManager {
 					InputStream in = serialPort.getInputStream();
 					OutputStream out = serialPort.getOutputStream();
 
-					(new Thread(new SerialReader(in, timeout, serialPort,
-							portName))).start();
+					new Thread((new SerialReader(in, timeout, serialPort,
+							portName, console))).start();
 					(new Thread(new SerialWriter(out, process_id))).start();
 				} else {
 				}
@@ -218,17 +227,24 @@ public class DeviceManager {
 			console.error("ERROR", portName + " is busy");
 		}
 	}
-
+	private DeploymentConsoleView getConsole(String fileName, String portName){
+		IWorkbench wb = PlatformUI.getWorkbench();
+		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+		IWorkbenchPage page = win.getActivePage();
+		DeploymentConsoleView dConsole = DeploymentConsoleView.makeActive(page, fileName,portName);
+		return dConsole;
+	}
 	public void deploy(String portName, String fileName, int timeout) {
+		DeploymentConsoleView console = getConsole(fileName, portName);
 		File f = new File(fileName);
 		if (!f.exists()) {
 			console.error("file \"" + fileName + "\" doesn't exist");
 			return;
 		}
-		deploy(portName, f, timeout);
+		deploy(portName, f, timeout,console);
 	}
 
-	public void deploy(String portName, File file, int timeout) {
+	public void deploy(String portName, File file, int timeout,DeploymentConsoleView console) {
 		SerialPort serialPort = null;
 		try {
 			CommPortIdentifier portIdentifier = CommPortIdentifier
@@ -251,8 +267,7 @@ public class DeviceManager {
 					InputStream in = serialPort.getInputStream();
 					OutputStream out = serialPort.getOutputStream();
 
-					(new Thread(new SerialReader(in, timeout, serialPort,
-							portName))).start();
+					(new Thread(new SerialReader(in, timeout, serialPort, portName,console))).start();
 					(new Thread(
 							new SerialWriter(out, new FileInputStream(file))))
 							.start();
@@ -275,9 +290,10 @@ public class DeviceManager {
 		SerialPort serialPort;
 		String portName;
 		BufferedReader br;
-
+		DeploymentConsoleView console;
 		public SerialReader(InputStream in, int timeout, SerialPort port,
-				String portName) {
+				String portName,DeploymentConsoleView console) {
+			this.console = console;
 			this.in = in;
 			br = new BufferedReader(new InputStreamReader(in));
 			this.timeout = timeout;
@@ -290,12 +306,11 @@ public class DeviceManager {
 			char[] buffer = new char[1024];
 			int len = -1;
 			String newLine = "";
-			long startTime = System.currentTimeMillis();
 			try {
 				// while ((len = in.available()) >= 0) {
 				while (true) {
-					if (startTime + timeout < System.currentTimeMillis()) {
-						console.out("SYSTEM", portName + " is released");
+					if (console.isStopped()) {
+						console.error("SYSTEM", portName + " is released");
 						break;
 					}
 					// if (len == 0) {
@@ -337,7 +352,7 @@ public class DeviceManager {
 				}
 
 			} catch (IOException e) {
-				console.info("SYSTEM", "device may be disconnected");
+				console.error("SYSTEM", "device may be disconnected");
 			} finally {
 				usedPort.remove(portName);
 				try {				

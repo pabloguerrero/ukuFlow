@@ -38,65 +38,100 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
-public class ESimpleFilterConstraint implements Visitable{
+public class ESimpleFilterConstraint implements Visitable {
 	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
-	public int type = -1;
+	private int type = -1;
 	private int value = -1;
-	public int comparator = -1;
-	boolean valueFirst;
-	public ESimpleFilterConstraint(String type , String op, String value,boolean valueFirst){
+	private int comparator = -1;
+	private boolean valueFirst;
+
+	public ESimpleFilterConstraint(String type, String op, String value,
+			boolean valueFirst) {
 		setType(type);
 		setValue(value);
 		setComparator(op);
 		this.valueFirst = valueFirst;
 	}
-	public Collection<? extends Byte> getValues(){
+	public byte getComparator(){
+		return (byte) comparator;
+	}
+	public Collection<? extends Byte> getType() {
+		ArrayList<Byte> result = new ArrayList<Byte>();
+		result.add(UkuConstants.DataTypeConstants.CUSTOM_INPUT_VALUE);
+		result.add((byte)type);
+		return result;
+	}
+	
+	public Collection<? extends Byte> getValues() {
 		ArrayList<Byte> result = new ArrayList<Byte>();
 		int length = 0;
-		switch(type){
+		switch (type) {
 		case UkuConstants.EventFields.EVENT_OPERATOR_ID:
 		case UkuConstants.EventFields.SOURCE:
 		case UkuConstants.EventFields.ORIGIN_SCOPE:
 		case UkuConstants.EventFields.EVENT_TYPE:
-			length = 1; break;
+			result.add(UkuConstants.DataTypeConstants.UINT8_VALUE);
+			length = 1;
+			break;
 		case UkuConstants.EventFields.ORIGIN_NODE:
 		case UkuConstants.EventFields.MAGNITUDE:
-			length = 2; break;
+			result.add(UkuConstants.DataTypeConstants.UINT16_VALUE);
+			length = 2;
+			break;
 		case UkuConstants.EventFields.TIMESTAMP:
-			length= 4; break;
+			result.add(UkuConstants.DataTypeConstants.CUSTOM_INPUT_VALUE);
+			length = 4;
+			break;
 		}
 		int tmp = value;
-		log.debug(" getValues() : "+value);
-		for(int i = 0; i < length; i++){
-			result.add((byte)(tmp %256));
-			tmp = tmp/256;
+		log.debug(" getValues() : " + value);
+		for (int i = 0; i < length; i++) {
+			result.add((byte) (tmp % 256));
+			tmp = tmp / 256;
 		}
 		return result;
 	}
-	public void setType(String type){
-		this.type = UkuConstants.getConstantByName(type);		
+
+	public void setType(String type) {
+		this.type = UkuConstants.getConstantByName(type);
 	}
-	public void setValue(String value){
+
+	public void setValue(String value) {
 		int v = UkuConstants.getConstantByName(value);
-		if(v==-1)
-			try{
+		if (v == -1)
+			try {
 				v = Integer.parseInt(value);
-			} catch (Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
 				return;
 			}
-		this.value=v;
+		this.value = v;
 	}
-	
+
 	public void setComparator(String op){
-		comparator = UkuConstants.getConstantByName(op);
+		if(op.equals("=="))
+			comparator = UkuConstants.OperatorConstants.PREDICATE_EQ;
+		else if (op.equals("!="))
+			comparator = UkuConstants.OperatorConstants.PREDICATE_NEQ;
+		else if (op.equals(">"))
+			comparator = UkuConstants.OperatorConstants.PREDICATE_GT;
+		else if (op.equals(">="))
+			comparator = UkuConstants.OperatorConstants.PREDICATE_GET;
+		else if (op.equals("<"))
+			comparator = UkuConstants.OperatorConstants.PREDICATE_LT;
+		else if (op.equals("<="))
+			comparator = UkuConstants.OperatorConstants.PREDICATE_LET;
+		else 
+			log.error("Operation '"+op+"' is not supported");
 	}
-	public boolean isValueFirst(){
+
+	public boolean isValueFirst() {
 		return valueFirst;
 	}
+
 	@Override
 	public void accept(EventBaseVisitor visitor) {
-		visitor.visit(this);	
+		visitor.visit(this);
 	}
-	
+
 }
