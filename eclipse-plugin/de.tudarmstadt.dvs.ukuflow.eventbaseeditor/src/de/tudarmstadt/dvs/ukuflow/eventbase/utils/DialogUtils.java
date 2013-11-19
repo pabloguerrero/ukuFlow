@@ -2,7 +2,6 @@ package de.tudarmstadt.dvs.ukuflow.eventbase.utils;
 
 import java.util.Map;
 
-import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;

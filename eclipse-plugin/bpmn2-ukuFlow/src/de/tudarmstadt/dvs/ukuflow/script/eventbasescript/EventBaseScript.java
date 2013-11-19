@@ -537,7 +537,7 @@ public class EventBaseScript implements EventBaseScriptConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-    result = new ESimpleFilterConstraint(type, op, value, valueFirst);
+    result = new ESimpleFilterConstraint(type+"_F", op, value, valueFirst);
     {if (true) return result;}
     throw new Error("Missing return statement in function");
   }

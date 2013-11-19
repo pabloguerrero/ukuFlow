@@ -14,16 +14,13 @@ import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
-import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
-import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGImmediate;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
@@ -31,6 +28,7 @@ import de.tudarmstadt.dvs.ukuflow.features.FeatureUtil;
 import de.tudarmstadt.dvs.ukuflow.features.eg.EGFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.generic.*;
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGCreateFeature;
 
 public class EGImmediateFeatureContainer extends EGFeatureContainer {
 
@@ -86,50 +84,15 @@ public class EGImmediateFeatureContainer extends EGFeatureContainer {
 		return null;
 	}
 
-	class EGImmediateCreateFeature extends AbstractCreateFeature {
+	class EGImmediateCreateFeature extends UkuAbstractEGCreateFeature {
 
 		public EGImmediateCreateFeature(IFeatureProvider fp) {
 			super(fp, "Immediate", "Create an immediate event generator");
 		}
 
-		public EGImmediateCreateFeature(IFeatureProvider fp, String name,
-				String description) {
-			super(fp, name, description);
+		public EventBaseOperator getCreatingObject() {
+			return EventbaseFactory.eINSTANCE.createEGImmediate();
 		}
-
-		public boolean canCreate(ICreateContext context) {
-			return context.getTargetContainer() instanceof Diagram;
-		}
-		@Override
-		public String getCreateImageId() {
-			return EventImageProvider.GEARS_ICON;
-		}
-		public Object[] create(ICreateContext context) {
-			EGImmediate newClass = EventbaseFactory.eINSTANCE
-					.createEGImmediate();
-			getDiagram().eResource().getContents().add(newClass);
-
-			// Use the following instead of the above line to store the model
-			// data in a seperate file parallel to the diagram file
-			// try {
-			// try {
-			// TutorialUtil.saveToModelFile(newClass, getDiagram());
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			// } catch (CoreException e) {
-			// e.printStackTrace();
-			// }
-
-			// do the add
-			addGraphicalRepresentation(context, newClass);
-
-			// activate direct editing after object creation
-			getFeatureProvider().getDirectEditingInfo().setActive(true);
-			// return newly created business object(s)
-			return new Object[] { newClass };
-		}
-
 	}
 
 	public class EGImmediateAddFeature extends UkuAbstractEGAddShapeFeature {

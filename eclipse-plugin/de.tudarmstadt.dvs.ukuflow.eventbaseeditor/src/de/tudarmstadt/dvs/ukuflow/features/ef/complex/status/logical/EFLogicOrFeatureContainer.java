@@ -32,7 +32,9 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFLogicOr;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.EFLogicFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractECAddShapeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFCreateFeature;
 
 public class EFLogicOrFeatureContainer extends EFLogicFeatureContainer {
 
@@ -43,7 +45,7 @@ public class EFLogicOrFeatureContainer extends EFLogicFeatureContainer {
 
 	@Override
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
-		return new EFLogicAddCreateFeature(fp);
+		return new EFLogicOrCreateFeature(fp);
 	}
 
 	@Override
@@ -62,41 +64,22 @@ public class EFLogicOrFeatureContainer extends EFLogicFeatureContainer {
 		return null;
 	}
 
-	class EFLogicAddCreateFeature extends AbstractCreateFeature {
+	class EFLogicOrCreateFeature extends UkuAbstractEFCreateFeature {
 
-		public EFLogicAddCreateFeature(IFeatureProvider fp) {
-			super(fp, "OR Filter", "Create a logical 'OR' event filter");
-		}
-
-		public EFLogicAddCreateFeature(IFeatureProvider fp, String name,
-				String description) {
-			super(fp, name, description);
+		public EFLogicOrCreateFeature(IFeatureProvider fp) {
+			super(fp, "OR composer", "Create a logical 'OR' event composer");
 		}
 
 		@Override
-		public String getCreateImageId() {
-			return EventImageProvider.FUNNEL_ICON;
+		public EventBaseOperator getCreatingObject() {
+			return EventbaseFactory.eINSTANCE.createEFLogicOr();
 		}
 
-		public boolean canCreate(ICreateContext context) {
-			return context.getTargetContainer() instanceof Diagram;
-		}
-
-		public Object[] create(ICreateContext context) {
-			EFLogicOr newClass = EventbaseFactory.eINSTANCE.createEFLogicOr();
-			getDiagram().eResource().getContents().add(newClass);
-
-			addGraphicalRepresentation(context, newClass);
-
-			// activate direct editing after object creation
-			getFeatureProvider().getDirectEditingInfo().setActive(true);
-			// return newly created business object(s)
-			return new Object[] { newClass };
-		}
+		
 
 	}
 
-	public class EFLogicOrAddFeature extends UkuAbstractEFAddShapeFeature {
+	public class EFLogicOrAddFeature extends UkuAbstractECAddShapeFeature {
 
 		public EFLogicOrAddFeature(IFeatureProvider fp) {
 			super(fp);

@@ -66,19 +66,19 @@ public class ESimpleFilterConstraint implements Visitable {
 		ArrayList<Byte> result = new ArrayList<Byte>();
 		int length = 0;
 		switch (type) {
-		case UkuConstants.EventFields.EVENT_OPERATOR_ID:
-		case UkuConstants.EventFields.SOURCE:
-		case UkuConstants.EventFields.ORIGIN_SCOPE:
-		case UkuConstants.EventFields.EVENT_TYPE:
+		case UkuConstants.EventFields.EVENT_OPERATOR_ID_F:
+		case UkuConstants.EventFields.SOURCE_F:
+		case UkuConstants.EventFields.ORIGIN_SCOPE_F:
+		case UkuConstants.EventFields.EVENT_TYPE_F:
 			result.add(UkuConstants.DataTypeConstants.UINT8_VALUE);
 			length = 1;
 			break;
-		case UkuConstants.EventFields.ORIGIN_NODE:
-		case UkuConstants.EventFields.MAGNITUDE:
+		case UkuConstants.EventFields.ORIGIN_NODE_F:
+		case UkuConstants.EventFields.MAGNITUDE_F:
 			result.add(UkuConstants.DataTypeConstants.UINT16_VALUE);
 			length = 2;
 			break;
-		case UkuConstants.EventFields.TIMESTAMP:
+		case UkuConstants.EventFields.TIMESTAMP_F:
 			result.add(UkuConstants.DataTypeConstants.CUSTOM_INPUT_VALUE);
 			length = 4;
 			break;
@@ -93,6 +93,10 @@ public class ESimpleFilterConstraint implements Visitable {
 	}
 
 	public void setType(String type) {
+		// double check. type should end with _F. i.e EVENT_TYPE_F
+		if(!type.endsWith("_F")){
+			type += "_F";
+		}
 		this.type = UkuConstants.getConstantByName(type);
 	}
 

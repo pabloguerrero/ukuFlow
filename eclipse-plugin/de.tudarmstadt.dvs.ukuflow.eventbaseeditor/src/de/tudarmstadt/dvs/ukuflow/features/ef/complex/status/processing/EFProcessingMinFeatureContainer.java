@@ -38,6 +38,7 @@ import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessingMin;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.features.ef.EFFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.EFProcessingFeatureContainer;
@@ -47,11 +48,12 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericMoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractECAddShapeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFCreateFeature;
 
-public class EFProcessingMinFeatureContainer extends EFProcessingFeatureContainer {
-
-
+public class EFProcessingMinFeatureContainer extends
+		EFProcessingFeatureContainer {
 
 	public boolean canApplyTo(Object o) {
 		return (o instanceof EFProcessingMin);
@@ -65,56 +67,20 @@ public class EFProcessingMinFeatureContainer extends EFProcessingFeatureContaine
 		return new EFProcessingMinAddFeature(fp);
 	}
 
-
-	class EFProcessingMinCreateFeature extends AbstractCreateFeature {
+	class EFProcessingMinCreateFeature extends UkuAbstractEFCreateFeature {
 
 		public EFProcessingMinCreateFeature(IFeatureProvider fp) {
-			super(fp, "Min", "Create composition mininum event filter");
+			super(fp, "Min", "Create composition mininum event composer");
 		}
 
 		@Override
-		public String getCreateImageId() {
-			return EventImageProvider.FUNNEL_ICON;
-		}
-
-		public EFProcessingMinCreateFeature(IFeatureProvider fp, String name,
-				String description) {
-			super(fp, name, description);
-		}
-
-		public boolean canCreate(ICreateContext context) {
-			return context.getTargetContainer() instanceof Diagram;
-		}
-
-		public Object[] create(ICreateContext context) {
-			EFProcessingMin newClass = EventbaseFactory.eINSTANCE
-					.createEFProcessingMin();
-			getDiagram().eResource().getContents().add(newClass);
-
-			// Use the following instead of the above line to store the model
-			// data in a seperate file parallel to the diagram file
-			// try {
-			// try {
-			// TutorialUtil.saveToModelFile(newClass, getDiagram());
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			// } catch (CoreException e) {
-			// e.printStackTrace();
-			// }
-
-			// do the add
-			addGraphicalRepresentation(context, newClass);
-
-			// activate direct editing after object creation
-			getFeatureProvider().getDirectEditingInfo().setActive(true);
-			// return newly created business object(s)
-			return new Object[] { newClass };
+		public EventBaseOperator getCreatingObject() {
+			return EventbaseFactory.eINSTANCE.createEFProcessingMin();
 		}
 
 	}
 
-	public class EFProcessingMinAddFeature extends UkuAbstractEFAddShapeFeature {
+	public class EFProcessingMinAddFeature extends UkuAbstractECAddShapeFeature {
 
 		public EFProcessingMinAddFeature(IFeatureProvider fp) {
 			super(fp);
@@ -127,6 +93,6 @@ public class EFProcessingMinFeatureContainer extends EFProcessingFeatureContaine
 					return true;
 				}
 			return false;
-		}		
+		}
 	}
 }

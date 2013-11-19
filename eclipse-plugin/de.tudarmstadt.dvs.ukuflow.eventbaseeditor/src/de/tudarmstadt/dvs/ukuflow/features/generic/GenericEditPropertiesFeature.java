@@ -17,7 +17,6 @@
 package de.tudarmstadt.dvs.ukuflow.features.generic;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.graphiti.features.IFeatureProvider;

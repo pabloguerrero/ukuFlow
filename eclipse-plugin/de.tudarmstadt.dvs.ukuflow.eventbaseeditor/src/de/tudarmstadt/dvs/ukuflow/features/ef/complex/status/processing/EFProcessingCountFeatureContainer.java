@@ -39,6 +39,7 @@ import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessingCount;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.features.ef.EFFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.EFProcessingFeatureContainer;
@@ -49,7 +50,9 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericMoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractECAddShapeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFCreateFeature;
 
 public class EFProcessingCountFeatureContainer extends EFProcessingFeatureContainer{
 
@@ -105,37 +108,19 @@ public class EFProcessingCountFeatureContainer extends EFProcessingFeatureContai
 		return null;
 	}
 
-	class EFProcessingCountCreateFeature extends AbstractCreateFeature{
+	class EFProcessingCountCreateFeature extends UkuAbstractEFCreateFeature{
 
 		public EFProcessingCountCreateFeature (IFeatureProvider fp){
-			super(fp,"Count","Create a composition count event filter");
-		}
-		public EFProcessingCountCreateFeature (IFeatureProvider fp, String name,
-				String description) {
-			super(fp, name, description);
-		}
-		@Override
-		public String getCreateImageId(){
-			return EventImageProvider.FUNNEL_ICON;
-		}
-		public boolean canCreate(ICreateContext context) {
-			return context.getTargetContainer() instanceof Diagram;
+			super(fp,"Count","Create a composition count event composer");
 		}
 
-		public Object[] create(ICreateContext context) {
-			EFProcessingCount newClass = EventbaseFactory.eINSTANCE.createEFProcessingCount();
-			getDiagram().eResource().getContents().add(newClass);
-			
-			addGraphicalRepresentation(context, newClass);
-
-			// activate direct editing after object creation
-			getFeatureProvider().getDirectEditingInfo().setActive(true);
-			// return newly created business object(s)
-			return new Object[] { newClass };
+		public EventBaseOperator getCreatingObject() {
+			return EventbaseFactory.eINSTANCE.createEFProcessingCount();
 		}
+		
 
 	}
-	public class EFProcessingCountAddFeature extends UkuAbstractEFAddShapeFeature{
+	public class EFProcessingCountAddFeature extends UkuAbstractECAddShapeFeature{
 		
 		public EFProcessingCountAddFeature(IFeatureProvider fp) {
 			super(fp);

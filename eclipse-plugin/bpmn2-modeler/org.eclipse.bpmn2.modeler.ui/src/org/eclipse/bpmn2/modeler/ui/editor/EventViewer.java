@@ -304,6 +304,7 @@ public class EventViewer extends DiagramEditor {
 					}
 				} else if (top instanceof EFStatusEvent) {
 					if (top instanceof EFLogic) {
+						sb.append("TODO_EFLOGIC");
 						if (top instanceof EFLogicAnd) {
 							// TODO
 						} else if (top instanceof EFLogicOr) {
@@ -313,17 +314,17 @@ public class EventViewer extends DiagramEditor {
 						}
 					} else if (top instanceof EFProcessing) {
 						if (top instanceof EFProcessingAvg) {
-							sb.append(" AVG_COMPOSITION_EF");
+							sb.append(" AVG_EC");
 						} else if (top instanceof EFProcessingCount) {
-							sb.append(" COUNT_COMPOSITION_EF");
+							sb.append(" COUNT_EC");
 						} else if (top instanceof EFProcessingMax) {
-							sb.append(" MAX_COMPOSITION_EF");
+							sb.append(" MAX_EC");
 						} else if (top instanceof EFProcessingMin) {
-							sb.append(" MIN_COMPOSITION_EF");
+							sb.append(" MIN_EC");
 						} else if (top instanceof EFProcessingStDev) {
-							sb.append(" STDEV_COMPOSITION_EF");
+							sb.append(" STDEV_EC");
 						} else if (top instanceof EFProcessingSum) {
-							sb.append(" SUM_COMPOSITION_EF");
+							sb.append(" SUM_EC");
 						}
 						EFProcessing local = (EFProcessing) top;
 						sb.append(" " + local.getWindowSize());
@@ -370,14 +371,10 @@ public class EventViewer extends DiagramEditor {
 				elements.add((EventBaseOperator) i);
 			}
 		}
-		// System.out.println("> connections: ");
 		for (Connection con : lcon) {
-			// System.out.println("[EventViewer.doSave()]:");
-			// System.out.print("connection: "+con);
 			Object j = Graphiti.getLinkService()
 					.getBusinessObjectForLinkedPictogramElement(con);
 			if (j instanceof ESequenceFlow) {
-				// System.out.println("\tlink to> : " + j);
 				ESequenceFlow jj = (ESequenceFlow) j;
 				connections.add(jj);
 			}
@@ -399,22 +396,8 @@ public class EventViewer extends DiagramEditor {
 
 			@Override
 			protected void doExecute() {
-				task.setEventScript(newContent);
-				// remove this to not adding the script to input data
-				List<DataInputAssociation> l = task.getDataInputAssociations();
-				if (l.size() > 0) {
-					List<Assignment> la = l.get(0).getAssignment();
-					if (la.size() > 0) {
-						// new Assignment
-						((FormalExpression) la.get(0).getFrom())
-								.setBody(newContent);
-						// la.get(0).setTo(new Expression)
-					}
-				}
+				task.setEventScript(newContent);			
 			}
 		});
-		// task.setImplementation(sb.toString());
-		// inputSets.clear();
-		// TODO
 	}
 }

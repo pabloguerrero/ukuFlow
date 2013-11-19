@@ -100,19 +100,19 @@ public class UkuConstants {
 	public static class EFConstants {
 		/* Event Filter */
 		public static final byte SIMPLE_EF = 7;
-		public static final byte AND_COMPOSITION_EF = 8;
-		public static final byte OR_COMPOSITION_EF = 9;
-		public static final byte NOT_COMPOSITION_EF = 10;
-		public static final byte SEQUENCE_COMPOSITION_EF = 11;
-		public static final byte MIN_COMPOSITION_EF = 12;
-		public static final byte MAX_COMPOSITION_EF = 13;
-		public static final byte COUNT_COMPOSITION_EF = 14;
-		public static final byte SUM_COMPOSITION_EF = 15;
-		public static final byte AVG_COMPOSITION_EF = 16;
-		public static final byte STDEV_COMPOSITION_EF = 17;
-		public static final byte INCREASE_EF = 18;
-		public static final byte DECREASE_EF = 19;
-		public static final byte REMAIN_EF = 20;
+		public static final byte AND_EC = 8;
+		public static final byte OR_EC = 9;
+		public static final byte NOT_EC = 10;
+		public static final byte SEQUENCE_EC = 11;
+		public static final byte MIN_EC = 12;
+		public static final byte MAX_EC = 13;
+		public static final byte COUNT_EC = 14;
+		public static final byte SUM_EC = 15;
+		public static final byte AVG_EC = 16;
+		public static final byte STDEV_EC = 17;
+		public static final byte INCREASE_EC = 18;
+		public static final byte DECREASE_EC = 19;
+		public static final byte REMAIN_EC = 20;
 	}
 
 	public static class OperatorConstants {
@@ -133,17 +133,6 @@ public class UkuConstants {
 		public static final byte OPERATOR_DIV = 11;
 		public static final byte OPERATOR_MULT = 12;
 		public static final byte OPERATOR_MOD = 13;
-
-		public static final byte UINT8_VALUE = 14;
-		public static final byte UINT16_VALUE = 15;
-		public static final byte INT8_VALUE = 16;
-		public static final byte INT16_VALUE = 17;
-
-		public static final byte STRING_VALUE = 18;
-
-		public static final byte REPOSITORY_VALUE = 19;
-
-		public static final byte CUSTOM_INPUT_VALUE = 20;
 	}
 
 	public static class DataTypeConstants {
@@ -199,81 +188,15 @@ public class UkuConstants {
 	}
 
 	public static class EventFields {
-		public final static byte EVENT_TYPE = 0;
-		public final static byte EVENT_OPERATOR_ID = 1;
-		public final static byte SOURCE = 2;
-		public final static byte MAGNITUDE = 3;
-		public final static byte TIMESTAMP = 4;
-		public final static byte ORIGIN_NODE = 5;
-		public final static byte ORIGIN_SCOPE = 6;
+		public final static byte EVENT_TYPE_F = 0;
+		public final static byte EVENT_OPERATOR_ID_F = 1;
+		public final static byte SOURCE_F = 2;
+		public final static byte MAGNITUDE_F = 3;
+		public final static byte TIMESTAMP_F = 4;
+		public final static byte ORIGIN_NODE_F = 5;
+		public final static byte ORIGIN_SCOPE_F = 6;
 	}
 
-	/* event-types.h */
-	/* Event Generator */
-	/*
-	 * public static final byte IMMEDIATE_E_GEN = 0; public static final byte
-	 * ABSOLUTE_E_GEN = 1; public static final byte OFFSET_E_GEN = 2; public
-	 * static final byte RELATIVE_E_GEN = 3; public static final byte
-	 * PERIODIC_E_GEN = 4; public static final byte PATTERNED_E_GEN = 5; public
-	 * static final byte DISTRIBUTED_E_GEN = 6;
-	 */
-	/* Event Filter */
-	/*
-	 * public static final byte SIMPLE_FILTER = 7; public static final byte
-	 * AND_COMPOSITION_FILTER = 8; public static final byte
-	 * OR_COMPOSITION_FILTER = 9; public static final byte
-	 * NOT_COMPOSITION_FILTER = 10; public static final byte
-	 * SEQUENCE_COMPOSITION_FILTER = 11; public static final byte
-	 * MIN_COMPOSITION_FILTER = 12; public static final byte
-	 * MAX_COMPOSITION_FILTER = 13; public static final byte
-	 * COUNT_COMPOSITION_FILTER = 14; public static final byte
-	 * SUM_COMPOSITION_FILTER = 15; public static final byte
-	 * AVG_COMPOSITION_FILTER = 16; public static final byte
-	 * STDEV_COMPOSITION_FILTER = 17; public static final byte INCREASE_FILTER =
-	 * 18; public static final byte DECREASE_FILTER = 19; public static final
-	 * byte REMAIN_FILTER = 20;
-	 */
-	/* expression-types.h */
-	/*
-	 * public static final byte OPERATOR_AND = 0; public static final byte
-	 * OPERATOR_OR = 1; public static final byte OPERATOR_NOT = 2;
-	 * 
-	 * public static final byte PREDICATE_EQ = 3; public static final byte
-	 * PREDICATE_NEQ = 4; public static final byte PREDICATE_LT = 5; public
-	 * static final byte PREDICATE_GT = 6; public static final byte
-	 * PREDICATE_LET = 7; public static final byte PREDICATE_GET = 8;
-	 * 
-	 * public static final byte OPERATOR_ADD = 9; public static final byte
-	 * OPERATOR_SUB = 10; public static final byte OPERATOR_DIV = 11; public
-	 * static final byte OPERATOR_MULT = 12; public static final byte
-	 * OPERATOR_MOD = 13;
-	 * 
-	 * public static final byte UINT8_VALUE = 14; public static final byte
-	 * UINT16_VALUE = 15; public static final byte INT8_VALUE = 16; public
-	 * static final byte INT16_VALUE = 17;
-	 * 
-	 * public static final byte STRING_VALUE = 18;
-	 * 
-	 * public static final byte REPOSITORY_VALUE = 19;
-	 * 
-	 * public static final byte CUSTOM_INPUT_VALUE = 20;
-	 */
-	/*
-	 * sensor id
-	 */
-	/*
-	 * public final static byte SENSOR_LIGHT_PAR_RAW = 0; public final static
-	 * byte SENSOR_LIGHT_TSR_RAW = 1; public final static byte
-	 * SENSOR_TEMPERATURE_RAW = 2; public final static byte
-	 * SENSOR_TEMPERATURE_CELSIUS = 3; public final static byte
-	 * SENSOR_TEMPERATURE_FAHRENHEIT = 4; public final static byte
-	 * SENSOR_HUMIDITY_RAW = 5; public final static byte SENSOR_HUMIDITY_PERCENT
-	 * = 6; public final static byte SENSOR_ACCM_X_AXIS = 7; public final static
-	 * byte SENSOR_ACCM_Y_AXIS = 8; public final static byte SENSOR_ACCM_Z_AXIS
-	 * = 9; public final static byte SENSOR_VOLTAGE_RAW = 10; public final
-	 * static byte SENSOR_CO2 = 11; public final static byte SENSOR_CO = 12;
-	 * public final static byte NODE_ID = 13;
-	 */
 	/*
 	 * register and unregister code
 	 */
@@ -323,9 +246,7 @@ public class UkuConstants {
 			}
 		} catch (Exception e) {
 		}
-		log.debug("look up for " + name + ": return " + r);
-		if(r == -1)
-			log.error(name + " is not a defined constant in UkuConstants");
+		
 		return r;
 	}
 
@@ -362,13 +283,15 @@ public class UkuConstants {
 		if (result != -1)
 			return result;
 		result = getConstantByName(name, UkuConstants.class);
-
+		
+		if(result == -1)
+			log.error(name + " is not a defined constant in UkuConstants");
 		return result;
 	}
 
 	public static void main(String[] args) {
 		// test:
-		System.out.println(getConstantByName("MAX_COMPOSITION_EF"));
+		System.out.println(getConstantByName("MAX_EC"));
 		System.out.println(getConstantByName("OPERATOR_AND"));
 	}
 }

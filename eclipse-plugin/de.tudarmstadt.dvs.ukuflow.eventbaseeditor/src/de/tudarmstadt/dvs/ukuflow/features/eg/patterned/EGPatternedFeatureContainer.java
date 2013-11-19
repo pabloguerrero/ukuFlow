@@ -14,19 +14,14 @@ import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
-import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
-import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
-import de.tudarmstadt.dvs.ukuflow.eventbase.utils.DialogUtils;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGPatterned;
-import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGRelative;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage;
@@ -40,6 +35,7 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericRemoveFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGCreateFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGAddShapeFeature;
 
 public class EGPatternedFeatureContainer extends EGFeatureContainer {
@@ -92,54 +88,17 @@ public class EGPatternedFeatureContainer extends EGFeatureContainer {
 	}
 
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	class EGPatternedCreateFeature extends AbstractCreateFeature {
+	class EGPatternedCreateFeature extends UkuAbstractEGCreateFeature {
 
 		public EGPatternedCreateFeature(IFeatureProvider fp) {
 			super(fp, "Patterned", "Create an patterned event generator");
 		}
 
-		public EGPatternedCreateFeature(IFeatureProvider fp, String name,
-				String description) {
-			super(fp, name, description);
-		}
-
-		@Override
-		public String getCreateImageId() {
-			return EventImageProvider.GEARS_ICON;
-		}
-
-		public boolean canCreate(ICreateContext context) {
-			return context.getTargetContainer() instanceof Diagram;
-		}
-
-		public Object[] create(ICreateContext context) {
-			EGPatterned newClass = EventbaseFactory.eINSTANCE
-					.createEGPatterned();
-			getDiagram().eResource().getContents().add(newClass);
-
-			// Use the following instead of the above line to store the model
-			// data in a seperate file parallel to the diagram file
-			// try {
-			// try {
-			// TutorialUtil.saveToModelFile(newClass, getDiagram());
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			// } catch (CoreException e) {
-			// e.printStackTrace();
-			// }
-
-			// do the add
-			addGraphicalRepresentation(context, newClass);
-
-			// activate direct editing after object creation
-			getFeatureProvider().getDirectEditingInfo().setActive(true);
-			// return newly created business object(s)
-			return new Object[] { newClass };
+		public EventBaseOperator getCreatingObject() {
+			return EventbaseFactory.eINSTANCE.createEGPatterned();
 		}
 
 	}

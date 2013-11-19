@@ -32,7 +32,9 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFLogicAnd;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.EFLogicFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractECAddShapeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFCreateFeature;
 
 public class EFLogicAndFeatureContainer extends EFLogicFeatureContainer {
 
@@ -43,7 +45,7 @@ public class EFLogicAndFeatureContainer extends EFLogicFeatureContainer {
 
 	@Override
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
-		return new EFLogicAddCreateFeature(fp);
+		return new EFLogicAndCreateFeature(fp);
 	}
 
 	@Override
@@ -62,41 +64,20 @@ public class EFLogicAndFeatureContainer extends EFLogicFeatureContainer {
 		return null;
 	}
 
-	class EFLogicAddCreateFeature extends AbstractCreateFeature {
+	class EFLogicAndCreateFeature extends UkuAbstractEFCreateFeature {
 
-		public EFLogicAddCreateFeature(IFeatureProvider fp) {
-			super(fp, "AND Filter", "Create a logical 'AND' event filter");
+		public EFLogicAndCreateFeature(IFeatureProvider fp) {
+			super(fp, "AND Filter", "Create a logical 'AND' event composer");
 		}
-
-		public EFLogicAddCreateFeature(IFeatureProvider fp, String name,
-				String description) {
-			super(fp, name, description);
-		}
-
-		@Override
-		public String getCreateImageId() {
-			return EventImageProvider.FUNNEL_ICON;
-		}
-
-		public boolean canCreate(ICreateContext context) {
-			return context.getTargetContainer() instanceof Diagram;
-		}
-
-		public Object[] create(ICreateContext context) {
-			EFLogicAnd newClass = EventbaseFactory.eINSTANCE.createEFLogicAnd();
-			getDiagram().eResource().getContents().add(newClass);
-
-			addGraphicalRepresentation(context, newClass);
-
-			// activate direct editing after object creation
-			getFeatureProvider().getDirectEditingInfo().setActive(true);
-			// return newly created business object(s)
-			return new Object[] { newClass };
+		
+		public EventBaseOperator getCreatingObject() {
+			
+			return EventbaseFactory.eINSTANCE.createEFLogicAnd();
 		}
 
 	}
 
-	public class EFLogicAndAddFeature extends UkuAbstractEFAddShapeFeature {
+	public class EFLogicAndAddFeature extends UkuAbstractECAddShapeFeature {
 
 
 		public EFLogicAndAddFeature(IFeatureProvider fp) {

@@ -101,6 +101,7 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericDirectEditFeature;
 
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 
+@SuppressWarnings("rawtypes")
 public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
 	private static HashMap<Class, IFeature> mapBusinessObjectClassToCreateFeature;
 	private static Hashtable<Class, FeatureContainer> containers;
@@ -135,6 +136,7 @@ public class UkuFlowFeatureProvider extends DefaultFeatureProvider {
 		containers.put(EFChangeIncrease.class, new EFChangeIncreaseFeatureContainer());
 		containers.put(EFChangeRemain.class, new EFChangeRemainFeatureContainer());
 	}	
+	@SuppressWarnings("unchecked")
 	public List<ICreateFeature> getCreateFeatures(Class clazz){
 		List<ICreateFeature> result = new ArrayList<ICreateFeature>();
 		for(Class z : containers.keySet()){

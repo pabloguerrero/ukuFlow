@@ -32,7 +32,9 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFLogicNot;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.EFLogicFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractECAddShapeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFCreateFeature;
 
 public class EFLogicNotFeatureContainer extends EFLogicFeatureContainer {
 
@@ -43,7 +45,7 @@ public class EFLogicNotFeatureContainer extends EFLogicFeatureContainer {
 
 	@Override
 	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
-		return new EFLogicAddCreateFeature(fp);
+		return new EFLogicNotCreateFeature(fp);
 	}
 
 	@Override
@@ -62,41 +64,21 @@ public class EFLogicNotFeatureContainer extends EFLogicFeatureContainer {
 		return null;
 	}
 
-	class EFLogicAddCreateFeature extends AbstractCreateFeature {
+	class EFLogicNotCreateFeature extends UkuAbstractEFCreateFeature {
 
-		public EFLogicAddCreateFeature(IFeatureProvider fp) {
-			super(fp, "NOT Filter", "Create a logical 'NOT' event filter");
-		}
-
-		public EFLogicAddCreateFeature(IFeatureProvider fp, String name,
-				String description) {
-			super(fp, name, description);
+		public EFLogicNotCreateFeature(IFeatureProvider fp) {
+			super(fp, "NOT Filter", "Create a logical 'NOT' event composer");
 		}
 
 		@Override
-		public String getCreateImageId() {
-			return EventImageProvider.FUNNEL_ICON;
-		}
+		public EventBaseOperator getCreatingObject() {
 
-		public boolean canCreate(ICreateContext context) {
-			return context.getTargetContainer() instanceof Diagram;
-		}
-
-		public Object[] create(ICreateContext context) {
-			EFLogicNot newClass = EventbaseFactory.eINSTANCE.createEFLogicNot();
-			getDiagram().eResource().getContents().add(newClass);
-
-			addGraphicalRepresentation(context, newClass);
-
-			// activate direct editing after object creation
-			getFeatureProvider().getDirectEditingInfo().setActive(true);
-			// return newly created business object(s)
-			return new Object[] { newClass };
+			return EventbaseFactory.eINSTANCE.createEFLogicNot();
 		}
 
 	}
 
-	public class EFLogicNotAddFeature extends UkuAbstractEFAddShapeFeature {
+	public class EFLogicNotAddFeature extends UkuAbstractECAddShapeFeature {
 
 		public EFLogicNotAddFeature(IFeatureProvider fp) {
 			super(fp);

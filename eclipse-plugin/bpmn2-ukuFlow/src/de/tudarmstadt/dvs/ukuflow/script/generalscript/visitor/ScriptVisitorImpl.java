@@ -70,7 +70,7 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 	public void visit(UkuConstant uConstant) {
 		if (uConstant.isBoolValue()) {
 			boolean v = (Boolean) uConstant.getValue();
-			out.add(toByte(UkuConstants.OperatorConstants.UINT8_VALUE));
+			out.add(toByte(UkuConstants.DataTypeConstants.UINT8_VALUE));
 			if (v)
 				out.add(toByte(1));
 			else
@@ -93,7 +93,7 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 
 	@Override
 	public void visit(UkuString uString) {
-		out.add(toByte(UkuConstants.OperatorConstants.STRING_VALUE));
+		out.add(toByte(UkuConstants.DataTypeConstants.STRING_VALUE));
 		log.debug("string :" + uString.getString());
 
 		out.add((byte) (uString.getLength() - 2));
@@ -105,13 +105,13 @@ public class ScriptVisitorImpl implements ScriptVisitor {
 
 	@Override
 	public void visit(UkuVariable uVariable) {
-		out.add(toByte(UkuConstants.OperatorConstants.REPOSITORY_VALUE));
+		out.add(toByte(UkuConstants.DataTypeConstants.REPOSITORY_VALUE));
 		out.add(toByte(uVariable.getID()));
 	}
 
 	@Override
 	public void visit(UkuRepositoryField field) {
-		out.add(toByte(UkuConstants.OperatorConstants.REPOSITORY_VALUE));
+		out.add(toByte(UkuConstants.DataTypeConstants.REPOSITORY_VALUE));
 		out.add(toByte(field.getFieldID()));
 
 	}

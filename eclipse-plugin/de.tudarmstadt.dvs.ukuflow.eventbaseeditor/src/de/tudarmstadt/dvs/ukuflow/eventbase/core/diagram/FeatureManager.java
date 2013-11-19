@@ -7,8 +7,6 @@ import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 
 import de.tudarmstadt.dvs.ukuflow.features.eg.distribution.EGDistributionFeatureContainer;
-import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProcessingCountFeatureContainer;
-import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.processing.EFProcessingMinFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.ef.simple.EFSimpleFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring.EGAbsoluteFeatureContainer;
 import de.tudarmstadt.dvs.ukuflow.features.eg.nonrecurring.EGImmediateFeatureContainer;
@@ -58,18 +56,6 @@ public class FeatureManager {
 		List<ICreateFeature> features = new LinkedList<ICreateFeature>();
 		features.add((new EFSimpleFeatureContainer()).getCreateFeature(fp));
 
-		return features;
-	}
-	
-	public static List<ICreateFeature> getComplexEFCreateFeatures(IFeatureProvider fp){
-		if(fp instanceof UkuFlowFeatureProvider){
-			UkuFlowFeatureProvider ufp = (UkuFlowFeatureProvider) fp;
-		}
-		List<ICreateFeature> features = new LinkedList<ICreateFeature>();
-		
-		//features.add((new EFSimpleFeatureContainer()).getCreateFeature(fp));
-		features.add((new EFProcessingCountFeatureContainer()).getCreateFeature(fp));
-		features.add((new EFProcessingMinFeatureContainer()).getCreateFeature(fp));
 		return features;
 	}
 }

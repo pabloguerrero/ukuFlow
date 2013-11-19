@@ -55,7 +55,8 @@ public class UkuConstant extends PrimaryExpression {
 
 	boolean isBool;
 	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
-	public UkuConstant(int value) throws InvalidConstantValueException{
+
+	public UkuConstant(int value) throws InvalidConstantValueException {
 		setValue(value);
 		isBool = false;
 	}
@@ -65,7 +66,7 @@ public class UkuConstant extends PrimaryExpression {
 		isBool = true;
 	}
 
-	public UkuConstant(String s) throws InvalidConstantValueException{
+	public UkuConstant(String s) throws InvalidConstantValueException {
 		boolean tmp = false;
 		try {
 			tmp = Boolean.parseBoolean(s);
@@ -74,34 +75,34 @@ public class UkuConstant extends PrimaryExpression {
 		} catch (Exception e) {
 			try {
 				int radix = 10;
-				if(s.startsWith("0x")){
-					radix =16;
+				if (s.startsWith("0x")) {
+					radix = 16;
 					s = s.substring(2);
-				} else if(s.startsWith("0b")){
+				} else if (s.startsWith("0b")) {
 					radix = 2;
 					s = s.substring(2);
 				}
-				int t = new BigInteger(s,radix).intValue();
+				int t = new BigInteger(s, radix).intValue();
 				setValue(t);
 				isBool = false;
-			} catch(InvalidConstantValueException ex){
+			} catch (InvalidConstantValueException ex) {
 				throw ex;
-			}catch (Exception ex) {
+			} catch (Exception ex) {
 				log.debug("The token is neither boolean nor integer");
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public void setValue(int intValue) throws InvalidConstantValueException{
+	public void setValue(int intValue) throws InvalidConstantValueException {
 		if (intValue >= 0 && intValue < 256)
-			type = (byte) UkuConstants.OperatorConstants.UINT8_VALUE;
+			type = (byte) UkuConstants.DataTypeConstants.UINT8_VALUE;
 		else if (intValue >= 0 && intValue < 65536)
-			type = (byte) UkuConstants.OperatorConstants.UINT16_VALUE;
+			type = (byte) UkuConstants.DataTypeConstants.UINT16_VALUE;
 		else if (intValue >= -128 && intValue < 128)
-			type = (byte) UkuConstants.OperatorConstants.INT8_VALUE;
+			type = (byte) UkuConstants.DataTypeConstants.INT8_VALUE;
 		else if (intValue >= -32768 && intValue < 32768)
-			type = (byte) UkuConstants.OperatorConstants.INT16_VALUE;
+			type = (byte) UkuConstants.DataTypeConstants.INT16_VALUE;
 		else {
 			throw new InvalidConstantValueException();
 		}
@@ -143,11 +144,11 @@ public class UkuConstant extends PrimaryExpression {
 	public int getLength() {
 
 		switch (getType()) {
-		case UkuConstants.OperatorConstants.UINT8_VALUE:
-		case UkuConstants.OperatorConstants.INT8_VALUE:
+		case UkuConstants.DataTypeConstants.UINT8_VALUE:
+		case UkuConstants.DataTypeConstants.INT8_VALUE:
 			return 2;
-		case UkuConstants.OperatorConstants.UINT16_VALUE:
-		case UkuConstants.OperatorConstants.INT16_VALUE:
+		case UkuConstants.DataTypeConstants.UINT16_VALUE:
+		case UkuConstants.DataTypeConstants.INT16_VALUE:
 			return 3;
 		}
 		return 0;

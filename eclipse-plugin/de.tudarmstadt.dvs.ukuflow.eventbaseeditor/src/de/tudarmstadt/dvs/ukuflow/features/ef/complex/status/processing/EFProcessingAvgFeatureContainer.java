@@ -27,9 +27,12 @@ import org.eclipse.graphiti.services.IPeCreateService;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.StyleUtil;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessingAvg;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.features.ef.complex.status.EFProcessingFeatureContainer;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractECAddShapeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFCreateFeature;
 
 public class EFProcessingAvgFeatureContainer extends
 		EFProcessingFeatureContainer {
@@ -46,55 +49,22 @@ public class EFProcessingAvgFeatureContainer extends
 		return new EFProcessingAvgAddFeature(fp);
 	}
 
-	class EFProcessingAvgCreateFeature extends AbstractCreateFeature {
+	class EFProcessingAvgCreateFeature extends UkuAbstractEFCreateFeature {
 
 		public EFProcessingAvgCreateFeature(IFeatureProvider fp) {
-			super(fp, "Avg", "Create composition 'average' event filter");
+			super(fp, "Avg", "Create composition 'average' event composer");
 		}
 
 		@Override
-		public String getCreateImageId() {
-			return EventImageProvider.FUNNEL_ICON;
+		public EventBaseOperator getCreatingObject() {
+			return EventbaseFactory.eINSTANCE.createEFProcessingAvg();
 		}
 
-		public EFProcessingAvgCreateFeature(IFeatureProvider fp, String name,
-				String description) {
-			super(fp, name, description);
-		}
-
-		public boolean canCreate(ICreateContext context) {
-			return context.getTargetContainer() instanceof Diagram;
-		}
-
-		public Object[] create(ICreateContext context) {
-			EFProcessingAvg newClass = EventbaseFactory.eINSTANCE
-					.createEFProcessingAvg();
-			getDiagram().eResource().getContents().add(newClass);
-
-			// Use the following instead of the above line to store the model
-			// data in a seperate file parallel to the diagram file
-			// try {
-			// try {
-			// TutorialUtil.saveToModelFile(newClass, getDiagram());
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			// } catch (CoreException e) {
-			// e.printStackTrace();
-			// }
-
-			// do the add
-			addGraphicalRepresentation(context, newClass);
-
-			// activate direct editing after object creation
-			getFeatureProvider().getDirectEditingInfo().setActive(true);
-			// return newly created business object(s)
-			return new Object[] { newClass };
-		}
+		
 
 	}
 
-	public class EFProcessingAvgAddFeature extends UkuAbstractEFAddShapeFeature {
+	public class EFProcessingAvgAddFeature extends UkuAbstractECAddShapeFeature {
 
 		public EFProcessingAvgAddFeature(IFeatureProvider fp) {
 			super(fp);

@@ -27,6 +27,8 @@ public class EventImageProvider extends AbstractImageProvider {
 	public static final String GEARS_ICON = PREFIX + "gears";
 	public static final String GEARS2_ICON = PREFIX + "gears2";
 	public static final String FUNNEL_ICON = PREFIX + "funnel";
+	public static final String MERGING_ICON = PREFIX + "merging";
+	
 	@Override
 	protected void addAvailableImages() {
 		// register the path for each image identifier
@@ -34,5 +36,6 @@ public class EventImageProvider extends AbstractImageProvider {
 		addImageFilePath(GEARS_ICON, "icons/16/gears.png");
 		addImageFilePath(GEARS2_ICON, "icons/gears2.png");
 		addImageFilePath(FUNNEL_ICON, "/icons/16/funnel.png");
+		addImageFilePath(MERGING_ICON, "/icons/16/merging.png");
 	}
 }

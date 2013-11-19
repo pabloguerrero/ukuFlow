@@ -211,7 +211,6 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements
 							return;
 						}
 					}
-					System.out.println("remove eventviewer!!!");
 					removeEventViewer(editor);
 				}
 			}
@@ -579,9 +578,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements
 				log.debug("create file " + nid+".evb and try to open it");
 				// create & convert!
 				final Diagram diagram = Graphiti.getPeCreateService()
-						.createDiagram(ProviderID, nid + ".evb", true);
-				System.out.println("diagram " + diagram + "/" + target.getFullPath().toString());
-				System.out.println(target.getProjectRelativePath());
+						.createDiagram(ProviderID, nid + ".evb", true);				
 				URI uri = URI.createPlatformResourceURI(target.getFullPath().toString(), true);
 				// FileService
 				@SuppressWarnings("restriction")

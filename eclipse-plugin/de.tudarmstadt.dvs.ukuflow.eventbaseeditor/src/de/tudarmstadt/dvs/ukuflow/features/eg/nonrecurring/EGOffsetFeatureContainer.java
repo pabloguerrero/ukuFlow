@@ -14,17 +14,12 @@ import org.eclipse.graphiti.features.IResizeShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.IContext;
-import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
-import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.EventImageProvider;
-import de.tudarmstadt.dvs.ukuflow.eventbase.core.TimeUtil;
-import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGAbsolute;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGOffset;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
@@ -40,6 +35,7 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGCreateFeature;
 
 public class EGOffsetFeatureContainer extends EGFeatureContainer {
 
@@ -91,43 +87,20 @@ public class EGOffsetFeatureContainer extends EGFeatureContainer {
 	}
 
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	class EGOffsetCreateFeature extends AbstractCreateFeature {
+	class EGOffsetCreateFeature extends UkuAbstractEGCreateFeature {
 
 		public EGOffsetCreateFeature(IFeatureProvider fp) {
 			super(fp, "Offset", "Create an offset event generator");
 		}
 
-		public EGOffsetCreateFeature(IFeatureProvider fp, String name,
-				String description) {
-			super(fp, name, description);
+		public EventBaseOperator getCreatingObject() {
+			return EventbaseFactory.eINSTANCE.createEGOffset();
 		}
-
-		@Override
-		public String getCreateImageId() {
-			return EventImageProvider.GEARS_ICON;
-		}
-
-		public boolean canCreate(ICreateContext context) {
-			return context.getTargetContainer() instanceof Diagram;
-		}
-
-		public Object[] create(ICreateContext context) {
-			EGOffset newClass = EventbaseFactory.eINSTANCE.createEGOffset();
-			getDiagram().eResource().getContents().add(newClass);
-
-			// do the add
-			addGraphicalRepresentation(context, newClass);
-
-			// activate direct editing after object creation
-			getFeatureProvider().getDirectEditingInfo().setActive(true);
-			// return newly created business object(s)
-			return new Object[] { newClass };
-		}
-
+		
+		
 	}
 
 	public class EGOffsetAddFeature extends UkuAbstractEGAddShapeFeature {

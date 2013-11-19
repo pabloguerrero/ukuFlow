@@ -38,12 +38,12 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.GenericResizeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.GenericUpdateFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.RequestContainer;
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGAddShapeFeature;
+import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEGCreateFeature;
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class EGDistributionFeatureContainer extends EGFeatureContainer {
 	private BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
-	
 
 	public boolean canApplyTo(Object o) {
 		return (o instanceof EGDistribution);
@@ -57,50 +57,15 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 		return new EGDistributionAddFeature(fp);
 	}
 
-
-	class EGDistributionCreateFeature extends AbstractCreateFeature {
+	class EGDistributionCreateFeature extends UkuAbstractEGCreateFeature {
 
 		public EGDistributionCreateFeature(IFeatureProvider fp) {
 			super(fp, "Distribution", "Create an distribution event generator");
 		}
 
-		public EGDistributionCreateFeature(IFeatureProvider fp, String name,
-				String description) {
-			super(fp, name, description);
+		public EventBaseOperator getCreatingObject() {
+			return EventbaseFactory.eINSTANCE.createEGDistribution();
 		}
-		public String getCreateImageId(){
-			return EventImageProvider.GEARS_ICON;
-		}
-		public boolean canCreate(ICreateContext context) {
-			return context.getTargetContainer() instanceof Diagram;
-		}
-
-		public Object[] create(ICreateContext context) {
-			EGDistribution newClass = EventbaseFactory.eINSTANCE
-					.createEGDistribution();
-			getDiagram().eResource().getContents().add(newClass);
-
-			// Use the following instead of the above line to store the model
-			// data in a seperate file parallel to the diagram file
-			// try {
-			// try {
-			// TutorialUtil.saveToModelFile(newClass, getDiagram());
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			// } catch (CoreException e) {
-			// e.printStackTrace();
-			// }
-
-			// do the add
-			addGraphicalRepresentation(context, newClass);
-
-			// activate direct editing after object creation
-			getFeatureProvider().getDirectEditingInfo().setActive(true);
-			// return newly created business object(s)
-			return new Object[] { newClass };
-		}
-
 	}
 
 	public class EGDistributionAddFeature extends UkuAbstractEGAddShapeFeature {
@@ -121,65 +86,73 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 		}
 
 	}
-	public class EGDistributionDoubleClickFeature extends GenericEditPropertiesFeature{
+
+	public class EGDistributionDoubleClickFeature extends
+			GenericEditPropertiesFeature {
 
 		public EGDistributionDoubleClickFeature(IFeatureProvider fp) {
 			super(fp);
 		}
-		public void execute(ICustomContext context){
-			EventBaseOperator bo = (EventBaseOperator)getBusinessObj(context);
-			if(bo == null){
+
+		public void execute(ICustomContext context) {
+			EventBaseOperator bo = (EventBaseOperator) getBusinessObj(context);
+			if (bo == null) {
 				System.out.println("dafuq?");
 				return;
 			}
-			Map<Integer,RequestContainer> properties = FeatureUtil.createQuestions((EventBaseOperator)bo);
+			Map<Integer, RequestContainer> properties = FeatureUtil
+					.createQuestions((EventBaseOperator) bo);
 			EGDistribution off = (EGDistribution) bo;
 			Integer key0 = EventbasePackage.EG_DISTRIBUTION__PERIOD_INTERVAL;
 			Integer key1 = EventbasePackage.EG_DISTRIBUTION__EVALUATION_INTERVAL;
 			Integer key2 = EventbasePackage.EG_DISTRIBUTION__FUNCTION;
-			properties.put(key0,new RequestContainer(new RequestContainer.OffsetTimeValidator(),
-					"" +off.getPeriodInterval(),"Period duration (mm:ss)"));
+			properties.put(key0,
+					new RequestContainer(
+							new RequestContainer.OffsetTimeValidator(), ""
+									+ off.getPeriodInterval(),
+							"Period duration (mm:ss)"));
 			properties.put(key1,
 					new RequestContainer(
 							new RequestContainer.OffsetTimeValidator(), ""
-									+ off.getEvaluationInterval(), "Evaluation Interval (mm:ss)"));// TODO
-			properties.put(key2,
-					new RequestContainer(null,UkuConstants.DistributionFunction.FUNCTIONS ,
-							"Function",off.getFunction()));// off.getFunction());
+									+ off.getEvaluationInterval(),
+							"Evaluation Interval (mm:ss)"));// TODO
+			properties.put(key2, new RequestContainer(null,
+					UkuConstants.DistributionFunction.FUNCTIONS, "Function",
+					off.getFunction()));// off.getFunction());
 			String pa = off.getParameters();
-			if(pa == null ||pa.equals(""))
+			if (pa == null || pa.equals(""))
 				pa = "0 0 0";
-			RequestContainer rc = new RequestContainer(null,null,null);
+			RequestContainer rc = new RequestContainer(null, null, null);
 			rc.currentValue = pa;
 			properties.put(-1, rc);
-			
-			Map<Integer,RequestContainer> results = asking(bo,properties);
-			if(results == null)
+
+			Map<Integer, RequestContainer> results = asking(bo, properties);
+			if (results == null)
 				return;
 			hasDoneChanges = FeatureUtil.fetchAnswer(bo, results);
-			//parameters:
+			// parameters:
 			// 1 element is the function type the rest are parameters
 			String params = results.get(-1).result;
 			log.debug(params);
 			off.setParameters(params);
 			String currentTime = off.getPeriodInterval();
 			String newTime = results.get(key0).result;
-			//int newTime = Integer.parseInt(result.get(key1).result);
+			// int newTime = Integer.parseInt(result.get(key1).result);
 			if (!newTime.equals(currentTime)) {
 				this.hasDoneChanges = true;
 				off.setPeriodInterval(newTime);
 				// updatePictogramElement(pes[0]);
 			}
-			
+
 			currentTime = off.getEvaluationInterval();
 			newTime = results.get(key1).result;
-			//int newTime = Integer.parseInt(result.get(key1).result);
+			// int newTime = Integer.parseInt(result.get(key1).result);
 			if (!newTime.equals(currentTime)) {
 				this.hasDoneChanges = true;
 				off.setEvaluationInterval(newTime);
 				// updatePictogramElement(pes[0]);
 			}
-			
+
 			String currentPattern = off.getFunction();
 			String newPattern = results.get(key2).result;
 			if (!newPattern.equals(currentPattern)) {
@@ -189,9 +162,10 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 			}
 		}
 	}
+
 	@Override
 	public AbstractCustomFeature getDoubleClickFeature(IFeatureProvider fb) {
 		return new EGDistributionDoubleClickFeature(fb);
 	}
-	
+
 }
