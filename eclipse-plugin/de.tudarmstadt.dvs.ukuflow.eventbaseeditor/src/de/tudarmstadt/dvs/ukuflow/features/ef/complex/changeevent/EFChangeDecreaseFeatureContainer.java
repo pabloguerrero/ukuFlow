@@ -35,11 +35,6 @@ public class EFChangeDecreaseFeatureContainer extends EFChangeFeatureContainer{
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp){
 		return null; //TODO ???
 	}
-
-	public AbstractCustomFeature getDoubleClickFeature(IFeatureProvider fb){
-		System.err.print("not implemented yet");
-		return null;
-	}
 	
 	public class EFChangeDecreaseCreateFeature extends UkuAbstractEFCreateFeature {
 

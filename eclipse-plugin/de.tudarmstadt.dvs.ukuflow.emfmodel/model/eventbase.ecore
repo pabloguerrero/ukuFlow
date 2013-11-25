@@ -80,7 +80,12 @@
   <eClassifiers xsi:type="ecore:EClass" name="EFProcessingAvg" eSuperTypes="#//EFProcessing"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFProcessingStDev" eSuperTypes="#//EFProcessing"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFTemporalSequence" eSuperTypes="#//EFTemporal"/>
-  <eClassifiers xsi:type="ecore:EClass" name="EFChangeEvent" eSuperTypes="#//EFComposite"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EFChangeEvent" eSuperTypes="#//EFComposite">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="windowSize" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="1:00"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="changeThreshold" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="10"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EFChangeIncrease" eSuperTypes="#//EFChangeEvent"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFChangeDecrease" eSuperTypes="#//EFChangeEvent"/>
   <eClassifiers xsi:type="ecore:EClass" name="EFChangeRemain" eSuperTypes="#//EFChangeEvent"/>

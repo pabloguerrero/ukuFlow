@@ -1805,13 +1805,31 @@ public interface EventbasePackage extends EPackage {
 	int EF_CHANGE_EVENT__ELEMENT_NAME = EF_COMPOSITE__ELEMENT_NAME;
 
 	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_CHANGE_EVENT__WINDOW_SIZE = EF_COMPOSITE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Change Threshold</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_CHANGE_EVENT__CHANGE_THRESHOLD = EF_COMPOSITE_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>EF Change Event</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EF_CHANGE_EVENT_FEATURE_COUNT = EF_COMPOSITE_FEATURE_COUNT + 0;
+	int EF_CHANGE_EVENT_FEATURE_COUNT = EF_COMPOSITE_FEATURE_COUNT + 2;
 
 	/**
 	 * The meta object id for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EFChangeIncreaseImpl <em>EF Change Increase</em>}' class.
@@ -1849,6 +1867,24 @@ public interface EventbasePackage extends EPackage {
 	 * @ordered
 	 */
 	int EF_CHANGE_INCREASE__ELEMENT_NAME = EF_CHANGE_EVENT__ELEMENT_NAME;
+
+	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_CHANGE_INCREASE__WINDOW_SIZE = EF_CHANGE_EVENT__WINDOW_SIZE;
+
+	/**
+	 * The feature id for the '<em><b>Change Threshold</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_CHANGE_INCREASE__CHANGE_THRESHOLD = EF_CHANGE_EVENT__CHANGE_THRESHOLD;
 
 	/**
 	 * The number of structural features of the '<em>EF Change Increase</em>' class.
@@ -1897,6 +1933,24 @@ public interface EventbasePackage extends EPackage {
 	int EF_CHANGE_DECREASE__ELEMENT_NAME = EF_CHANGE_EVENT__ELEMENT_NAME;
 
 	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_CHANGE_DECREASE__WINDOW_SIZE = EF_CHANGE_EVENT__WINDOW_SIZE;
+
+	/**
+	 * The feature id for the '<em><b>Change Threshold</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_CHANGE_DECREASE__CHANGE_THRESHOLD = EF_CHANGE_EVENT__CHANGE_THRESHOLD;
+
+	/**
 	 * The number of structural features of the '<em>EF Change Decrease</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1941,6 +1995,24 @@ public interface EventbasePackage extends EPackage {
 	 * @ordered
 	 */
 	int EF_CHANGE_REMAIN__ELEMENT_NAME = EF_CHANGE_EVENT__ELEMENT_NAME;
+
+	/**
+	 * The feature id for the '<em><b>Window Size</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_CHANGE_REMAIN__WINDOW_SIZE = EF_CHANGE_EVENT__WINDOW_SIZE;
+
+	/**
+	 * The feature id for the '<em><b>Change Threshold</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EF_CHANGE_REMAIN__CHANGE_THRESHOLD = EF_CHANGE_EVENT__CHANGE_THRESHOLD;
 
 	/**
 	 * The number of structural features of the '<em>EF Change Remain</em>' class.
@@ -2690,6 +2762,28 @@ public interface EventbasePackage extends EPackage {
 	 * @generated
 	 */
 	EClass getEFChangeEvent();
+
+	/**
+	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFChangeEvent#getWindowSize <em>Window Size</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Window Size</em>'.
+	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFChangeEvent#getWindowSize()
+	 * @see #getEFChangeEvent()
+	 * @generated
+	 */
+	EAttribute getEFChangeEvent_WindowSize();
+
+	/**
+	 * Returns the meta object for the attribute '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFChangeEvent#getChangeThreshold <em>Change Threshold</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Change Threshold</em>'.
+	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFChangeEvent#getChangeThreshold()
+	 * @see #getEFChangeEvent()
+	 * @generated
+	 */
+	EAttribute getEFChangeEvent_ChangeThreshold();
 
 	/**
 	 * Returns the meta object for class '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFChangeIncrease <em>EF Change Increase</em>}'.
@@ -3451,6 +3545,22 @@ public interface EventbasePackage extends EPackage {
 		 * @generated
 		 */
 		EClass EF_CHANGE_EVENT = eINSTANCE.getEFChangeEvent();
+
+		/**
+		 * The meta object literal for the '<em><b>Window Size</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EF_CHANGE_EVENT__WINDOW_SIZE = eINSTANCE.getEFChangeEvent_WindowSize();
+
+		/**
+		 * The meta object literal for the '<em><b>Change Threshold</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute EF_CHANGE_EVENT__CHANGE_THRESHOLD = eINSTANCE.getEFChangeEvent_ChangeThreshold();
 
 		/**
 		 * The meta object literal for the '{@link de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EFChangeIncreaseImpl <em>EF Change Increase</em>}' class.

@@ -17,40 +17,38 @@ import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractECAddShapeFe
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFAddShapeFeature;
 import de.tudarmstadt.dvs.ukuflow.features.generic.abstr.UkuAbstractEFCreateFeature;
 
-public class EFChangeRemainFeatureContainer extends EFChangeFeatureContainer{
+public class EFChangeRemainFeatureContainer extends EFChangeFeatureContainer {
 
 	public boolean canApplyTo(Object o) {
 		return o != null && o instanceof EFChangeIncrease;
 	}
 
-	public ICreateFeature getCreateFeature(IFeatureProvider fp){
+	public ICreateFeature getCreateFeature(IFeatureProvider fp) {
 		return new EFChangeRemainCreateFeature(fp);
 	}
 
-	public IAddFeature getAddFeature(IFeatureProvider fp){
+	public IAddFeature getAddFeature(IFeatureProvider fp) {
 		return new EFChangeRemainAddFeature(fp);
 	}
 
-	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp){
-		return null; //TODO ???
+	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
+		return null; // TODO ???
 	}
 
-	public AbstractCustomFeature getDoubleClickFeature(IFeatureProvider fb){
-		System.err.print("not implemented yet");
-		return null;
-	}
 	public class EFChangeRemainCreateFeature extends UkuAbstractEFCreateFeature {
 
 		public EFChangeRemainCreateFeature(IFeatureProvider fp) {
 			super(fp, "Remain", "Create a remain event composer");
 		}
+
 		@Override
 		public EventBaseOperator getCreatingObject() {
 			return EventbaseFactory.eINSTANCE.createEFChangeRemain();
 		}
-		
+
 	}
-	class EFChangeRemainAddFeature extends UkuAbstractECAddShapeFeature{
+
+	class EFChangeRemainAddFeature extends UkuAbstractECAddShapeFeature {
 
 		public EFChangeRemainAddFeature(IFeatureProvider fp) {
 			super(fp);
@@ -64,6 +62,6 @@ public class EFChangeRemainFeatureContainer extends EFChangeFeatureContainer{
 				}
 			return false;
 		}
-		
+
 	}
 }

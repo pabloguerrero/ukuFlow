@@ -816,6 +816,24 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getEFChangeEvent_WindowSize() {
+		return (EAttribute)efChangeEventEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEFChangeEvent_ChangeThreshold() {
+		return (EAttribute)efChangeEventEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getEFChangeIncrease() {
 		return efChangeIncreaseEClass;
 	}
@@ -1144,6 +1162,8 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		efTemporalSequenceEClass = createEClass(EF_TEMPORAL_SEQUENCE);
 
 		efChangeEventEClass = createEClass(EF_CHANGE_EVENT);
+		createEAttribute(efChangeEventEClass, EF_CHANGE_EVENT__WINDOW_SIZE);
+		createEAttribute(efChangeEventEClass, EF_CHANGE_EVENT__CHANGE_THRESHOLD);
 
 		efChangeIncreaseEClass = createEClass(EF_CHANGE_INCREASE);
 
@@ -1316,6 +1336,8 @@ public class EventbasePackageImpl extends EPackageImpl implements EventbasePacka
 		initEClass(efTemporalSequenceEClass, EFTemporalSequence.class, "EFTemporalSequence", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(efChangeEventEClass, EFChangeEvent.class, "EFChangeEvent", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getEFChangeEvent_WindowSize(), ecorePackage.getEString(), "windowSize", "1:00", 0, 1, EFChangeEvent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEFChangeEvent_ChangeThreshold(), ecorePackage.getEInt(), "changeThreshold", "10", 0, 1, EFChangeEvent.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(efChangeIncreaseEClass, EFChangeIncrease.class, "EFChangeIncrease", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
