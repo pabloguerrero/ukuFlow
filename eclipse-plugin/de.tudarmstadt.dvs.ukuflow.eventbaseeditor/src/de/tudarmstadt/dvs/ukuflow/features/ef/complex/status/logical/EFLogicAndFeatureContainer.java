@@ -67,7 +67,7 @@ public class EFLogicAndFeatureContainer extends EFLogicFeatureContainer {
 	class EFLogicAndCreateFeature extends UkuAbstractEFCreateFeature {
 
 		public EFLogicAndCreateFeature(IFeatureProvider fp) {
-			super(fp, "AND Filter", "Create a logical 'AND' event composer");
+			super(fp, "And", "Create a logical 'AND' event composer");
 		}
 		
 		public EventBaseOperator getCreatingObject() {

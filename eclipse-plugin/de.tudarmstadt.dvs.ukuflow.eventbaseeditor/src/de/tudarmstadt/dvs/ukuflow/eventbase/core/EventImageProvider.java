@@ -23,7 +23,7 @@ public class EventImageProvider extends AbstractImageProvider {
 	protected static final String PREFIX = "de.tudarmstadt.dvs.ukuflow.icon."; //$NON-NLS-1$
 	
 	// The image identifier for an EReference.
-	public static final String IMG_EREFERENCE = PREFIX + "ereference"; //$NON-NLS-1$	
+	public static final String CONNECTION_ARROW = PREFIX + "ereference"; //$NON-NLS-1$	
 	public static final String GEARS_ICON = PREFIX + "gears";
 	public static final String GEARS2_ICON = PREFIX + "gears2";
 	public static final String FUNNEL_ICON = PREFIX + "funnel";
@@ -32,7 +32,7 @@ public class EventImageProvider extends AbstractImageProvider {
 	@Override
 	protected void addAvailableImages() {
 		// register the path for each image identifier
-		addImageFilePath(IMG_EREFERENCE, "icons/ereference.gif"); //$NON-NLS-1$
+		addImageFilePath(CONNECTION_ARROW, "icons/ereference.gif"); //$NON-NLS-1$
 		addImageFilePath(GEARS_ICON, "icons/16/gears.png");
 		addImageFilePath(GEARS2_ICON, "icons/gears2.png");
 		addImageFilePath(FUNNEL_ICON, "/icons/16/funnel.png");

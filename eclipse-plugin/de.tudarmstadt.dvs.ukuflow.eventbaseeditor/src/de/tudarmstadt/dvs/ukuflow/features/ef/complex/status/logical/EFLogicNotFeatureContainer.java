@@ -67,7 +67,7 @@ public class EFLogicNotFeatureContainer extends EFLogicFeatureContainer {
 	class EFLogicNotCreateFeature extends UkuAbstractEFCreateFeature {
 
 		public EFLogicNotCreateFeature(IFeatureProvider fp) {
-			super(fp, "NOT Filter", "Create a logical 'NOT' event composer");
+			super(fp, "Not", "Create a logical 'NOT' event composer");
 		}
 
 		@Override

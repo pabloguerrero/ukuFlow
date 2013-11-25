@@ -67,7 +67,7 @@ public class EFLogicOrFeatureContainer extends EFLogicFeatureContainer {
 	class EFLogicOrCreateFeature extends UkuAbstractEFCreateFeature {
 
 		public EFLogicOrCreateFeature(IFeatureProvider fp) {
-			super(fp, "OR composer", "Create a logical 'OR' event composer");
+			super(fp, "Or", "Create a logical 'OR' event composer");
 		}
 
 		@Override

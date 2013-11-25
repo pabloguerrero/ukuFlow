@@ -55,11 +55,7 @@ public class UkuInputDialog extends Dialog {
 	private String title;
 
 	Map<Integer, RequestContainer> requests;
-	/**
-	 * The input validator, or <code>null</code> if none.
-	 */
-	private IInputValidator validator;
-
+	
 	/**
 	 * Ok button widget.
 	 */
@@ -101,7 +97,7 @@ public class UkuInputDialog extends Dialog {
 	 *            an input validator, or <code>null</code> if none
 	 */
 	public UkuInputDialog(Shell parentShell, String dialogTitle,
-			String dialogMessage, String initialValue, IInputValidator validator) {
+			String dialogMessage, String initialValue) {
 		super(parentShell);
 		this.title = dialogTitle;
 
@@ -111,14 +107,12 @@ public class UkuInputDialog extends Dialog {
 		// } else {
 		// value = initialValue;
 		// }
-		this.validator = validator;
 	}
 
 	public UkuInputDialog(Shell parentShell, String dialogTitle,
-			Map<Integer, RequestContainer> requests, IInputValidator validator) {
+			Map<Integer, RequestContainer> requests) {
 		super(parentShell);
 		this.title = dialogTitle;
-		this.validator = validator;
 		this.requests = requests;
 		texts = new HashMap<Integer, Control>();
 
@@ -180,22 +174,9 @@ public class UkuInputDialog extends Dialog {
 				IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID,
 				IDialogConstants.CANCEL_LABEL, false);
-		// do this here because setting the text will set enablement on the ok
-		// button
-
-		// texts.get("").setFocus();
-		/*
-		 * for (Integer key : requests.keySet()) if (requests.get(key) != null)
-		 * if (requests.get(key).requests instanceof String) {
-		 * 
-		 * ((Text) texts.get(key)).setText(requests.get(key).requests
-		 * .toString()); ((Text) texts.get(key)).selectAll(); } else { List<?> l
-		 * = (List<?>) requests.get(key).requests; String[] a = new
-		 * String[l.size()]; for (int i = 0; i < l.size(); i++) { a[i] =
-		 * l.get(i).toString(); } System.out.println(key); ((CCombo)
-		 * texts.get(key)).setItems(a); //((CCombo) texts.get(key)).select(1);
-		 * texts.get(key).setFocus(); }
-		 */
+		if(errorMessageText.getText().length() > 1)
+			okButton.setEnabled(false);
+		
 	}
 
 	/*
@@ -376,15 +357,7 @@ public class UkuInputDialog extends Dialog {
 		requests.put(-1, rc);
 	}
 
-	/**
-	 * Returns the error message label.
-	 * 
-	 * @return the error message label
-	 * @deprecated use setErrorMessage(String) instead
-	 */
-	protected Label getErrorMessageLabel() {
-		return null;
-	}
+	
 
 	/**
 	 * Returns the ok button.
@@ -404,14 +377,6 @@ public class UkuInputDialog extends Dialog {
 		return texts;
 	}
 
-	/**
-	 * Returns the validator.
-	 * 
-	 * @return the validator
-	 */
-	protected IInputValidator getValidator() {
-		return validator;
-	}
 
 	/**
 	 * Validates the input.
@@ -423,10 +388,7 @@ public class UkuInputDialog extends Dialog {
 	 * </p>
 	 */
 	protected void validateInput() {
-		String errorMessage = "";
-		if (validator != null) {
-			// validator should be null anyway.
-		}
+		String errorMessage = "";		
 		for (Integer key : requests.keySet()) {
 			if (texts.get(key) instanceof Text
 					&& requests.get(key).validator != null) {
@@ -503,15 +465,7 @@ public class UkuInputDialog extends Dialog {
 		return SWT.SINGLE | SWT.BORDER;
 	}
 
-	public Map<Integer, RequestContainer> getValues() {
-		/*
-		 * Map<Integer,RequestContainer> result = requests; RequestContainer rc
-		 * = new RequestContainer(null, "", ""); List<Integer> params = new
-		 * ArrayList<Integer>(); params.add(choosen); for(int i = 1; i <4; i++){
-		 * String v = parameters.get(i).getValue();
-		 * params.add(Integer.parseInt(v)); if(choosen!= 0) break; } rc.requests
-		 * = params; result.put(-1, rc);
-		 */
+	public Map<Integer, RequestContainer> getValues() {		
 		return requests;
 	}
 

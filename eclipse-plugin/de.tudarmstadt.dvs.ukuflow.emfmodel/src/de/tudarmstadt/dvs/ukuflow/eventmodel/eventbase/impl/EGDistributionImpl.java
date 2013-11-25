@@ -36,7 +36,7 @@ public class EGDistributionImpl extends EGRecurringImpl implements EGDistributio
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String PERIOD_INTERVAL_EDEFAULT = "01:00";
+	protected static final String PERIOD_INTERVAL_EDEFAULT = "00:20";
 
 	/**
 	 * The cached value of the '{@link #getPeriodInterval() <em>Period Interval</em>}' attribute.

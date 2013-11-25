@@ -42,7 +42,7 @@ public class SequenceFlowCreateFeature extends AbstractCreateConnectionFeature {
 
 	@Override
 	public String getCreateImageId() {
-		return EventImageProvider.IMG_EREFERENCE;
+		return EventImageProvider.CONNECTION_ARROW;
 	}
 
 	private boolean containCircle(EventBaseOperator source,

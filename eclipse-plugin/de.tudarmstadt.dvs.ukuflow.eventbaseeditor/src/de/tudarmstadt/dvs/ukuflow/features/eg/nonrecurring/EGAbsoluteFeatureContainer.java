@@ -96,7 +96,7 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 					new RequestContainer(
 							new RequestContainer.AbsoluteTimeValidator(),
 							currentTime, "Absolute time ("
-									+ TimeUtil.FULL_PATTERN + ")"));
+									+ TimeUtil.FULL_PATTERN.toLowerCase() + ")"));
 
 			Map<Integer, RequestContainer> result = asking(bo, properties);
 			if (result == null)

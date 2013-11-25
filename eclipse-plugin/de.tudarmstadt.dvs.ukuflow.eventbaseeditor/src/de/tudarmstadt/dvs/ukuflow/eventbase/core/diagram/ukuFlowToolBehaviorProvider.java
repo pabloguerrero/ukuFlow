@@ -15,6 +15,7 @@
  *******************************************************************************/
 package de.tudarmstadt.dvs.ukuflow.eventbase.core.diagram;
 
+import java.awt.image.ImageProducer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -113,7 +114,7 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 		// 3.b. create context button and add all applicable features
 		ContextButtonEntry button = new ContextButtonEntry(null, context);
 		button.setText("Create connection"); //$NON-NLS-1$
-		button.setIconId(EventImageProvider.IMG_EREFERENCE);
+		button.setIconId(EventImageProvider.CONNECTION_ARROW);
 		ICreateConnectionFeature[] features = getFeatureProvider()
 				.getCreateConnectionFeatures();
 		for (ICreateConnectionFeature feature : features) {
@@ -159,18 +160,18 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 		List<IPaletteCompartmentEntry> ret = new ArrayList<IPaletteCompartmentEntry>();
 		
 		PaletteCompartmentEntry connectionEntry = new PaletteCompartmentEntry(
-				"Connections", null); //$NON-NLS-1$
+				"Connections", EventImageProvider.CONNECTION_ARROW); //$NON-NLS-1$
 		PaletteCompartmentEntry eventGeneratorEntry = new PaletteCompartmentEntry(
-				"Event Generator", null); //$NON-NLS-1$
+				"Event Generators", EventImageProvider.GEARS_ICON); //$NON-NLS-1$
 		PaletteCompartmentEntry eventFilterEntry = new PaletteCompartmentEntry(
-				"Event Filter", null); //$NON-NLS-1$
-		
+				"Event Filters", EventImageProvider.FUNNEL_ICON); //$NON-NLS-1$
+		PaletteCompartmentEntry eventComposerEntry = new PaletteCompartmentEntry("Event Composers", EventImageProvider.MERGING_ICON);
 		
 		// simple fashion
 		ret.add(connectionEntry);
 		ret.add(eventGeneratorEntry);
 		ret.add(eventFilterEntry);
-
+		ret.add(eventComposerEntry);
 		
 
 		IFeatureProvider featureProvider = getFeatureProvider();
@@ -186,8 +187,8 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 			connectionEntry.addToolEntry(connectionCreationToolEntry);
 			// stackEntry.addCreationToolEntry(connectionCreationToolEntry);
 		}
-		// Add Filter, Event generator
-
+		/** Event generator**/
+		
 		for (ICreateFeature cf : FeatureManager
 				.getNonRecurringEGFeatures(featureProvider)) {
 			ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(
@@ -205,7 +206,7 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 					cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
 			eventGeneratorEntry.addToolEntry(objectCreationToolEntry);
 		}
-		// add event filter feature
+		/** add event filter feature **/
 		for (ICreateFeature cf : FeatureManager
 				.getSimpleEFCreateFeatures(featureProvider)) {
 			ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(
@@ -213,37 +214,35 @@ public class ukuFlowToolBehaviorProvider extends DefaultToolBehaviorProvider {
 					cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
 			eventFilterEntry.addToolEntry(objectCreationToolEntry);
 		}
-		// add separator
-		eventFilterEntry.addToolEntry(new PaletteSeparatorEntry());
-		// add complex event filter!;
+		/** add event composers  **/
 		if (featureProvider instanceof UkuFlowFeatureProvider) {
 			UkuFlowFeatureProvider ufp = (UkuFlowFeatureProvider) featureProvider;
 			for (ICreateFeature cf : ufp.getCreateFeatures(EFLogic.class)) {
 				ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(
 						cf.getCreateName(), cf.getCreateDescription(),
 						cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
-				eventFilterEntry.addToolEntry(objectCreationToolEntry);
+				eventComposerEntry.addToolEntry(objectCreationToolEntry);
 			}
-			eventFilterEntry.addToolEntry(new PaletteSeparatorEntry());
+			eventComposerEntry.addToolEntry(new PaletteSeparatorEntry());
 			for (ICreateFeature cf : ufp.getCreateFeatures(EFProcessing.class)) {
 				ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(
 						cf.getCreateName(), cf.getCreateDescription(),
 						cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
-				eventFilterEntry.addToolEntry(objectCreationToolEntry);
+				eventComposerEntry.addToolEntry(objectCreationToolEntry);
 			}
-			eventFilterEntry.addToolEntry(new PaletteSeparatorEntry());
+			eventComposerEntry.addToolEntry(new PaletteSeparatorEntry());
 			for(ICreateFeature cf : ufp.getCreateFeatures(EFTemporal.class)){
 				ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(
 						cf.getCreateName(), cf.getCreateDescription(),
 						cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
-				eventFilterEntry.addToolEntry(objectCreationToolEntry);
+				eventComposerEntry.addToolEntry(objectCreationToolEntry);
 			}
-			eventFilterEntry.addToolEntry(new PaletteSeparatorEntry());
+			eventComposerEntry.addToolEntry(new PaletteSeparatorEntry());
 			for(ICreateFeature cf : ufp.getCreateFeatures(EFChangeEvent.class)){
 				ObjectCreationToolEntry objectCreationToolEntry = new ObjectCreationToolEntry(
 						cf.getCreateName(), cf.getCreateDescription(),
 						cf.getCreateImageId(), cf.getCreateLargeImageId(), cf);
-				eventFilterEntry.addToolEntry(objectCreationToolEntry);
+				eventComposerEntry.addToolEntry(objectCreationToolEntry);
 			}
 		}
 		return ret.toArray(new IPaletteCompartmentEntry[ret.size()]);

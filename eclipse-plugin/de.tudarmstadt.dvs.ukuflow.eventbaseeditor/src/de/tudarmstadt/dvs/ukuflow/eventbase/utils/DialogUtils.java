@@ -15,7 +15,7 @@ public class DialogUtils {
 		Shell shell = getShell();
 		//DialogPage dp;// = new Dialog
 
-		UkuInputDialog inputDialog = new UkuInputDialog(shell, dialogTitle, requests, null);
+		UkuInputDialog inputDialog = new UkuInputDialog(shell, dialogTitle, requests);
 		
 		int retDialog = inputDialog.open();
 		if (retDialog == Window.OK) {

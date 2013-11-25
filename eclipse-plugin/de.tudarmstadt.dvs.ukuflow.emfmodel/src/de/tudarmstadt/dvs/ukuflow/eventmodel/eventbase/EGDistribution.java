@@ -25,7 +25,7 @@ package de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase;
 public interface EGDistribution extends EGRecurring {
 	/**
 	 * Returns the value of the '<em><b>Period Interval</b></em>' attribute.
-	 * The default value is <code>"01:00"</code>.
+	 * The default value is <code>"00:20"</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Period Interval</em>' attribute isn't clear,
@@ -35,7 +35,7 @@ public interface EGDistribution extends EGRecurring {
 	 * @return the value of the '<em>Period Interval</em>' attribute.
 	 * @see #setPeriodInterval(String)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEGDistribution_PeriodInterval()
-	 * @model default="01:00"
+	 * @model default="00:20"
 	 * @generated
 	 */
 	String getPeriodInterval();
