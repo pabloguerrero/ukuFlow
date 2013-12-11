@@ -4,6 +4,7 @@
  */
 
 /*
+
  * Copyright (c) 2011, Pablo Guerrero, TU Darmstadt, guerrero@dvs.tu-darmstadt.de
  * All rights reserved.
  *
