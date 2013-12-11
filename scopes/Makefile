@@ -4,18 +4,19 @@ DOXYGEN_CONF = doc/scopes.doxyfile
 CLOC = cloc
 SIZE = msp430-size
 
-all: $(CONTIKI_PROJECT)
-	$(DOX) $(DOXYGEN_CONF)
-	$(CLOC) *.c *.h tester/*.c
-	$(SIZE) tester/tester.z1 tester/tester_parallel.z1
-
 ifndef TARGET
   TARGET = z1
 endif
 
+all: $(CONTIKI_PROJECT)
+	$(DOX) $(DOXYGEN_CONF)
+	$(CLOC) *.c *.h tester/*.c
+	$(SIZE) tester/tester.$(TARGET) tester/tester_parallel.$(TARGET)
+
 # Contiki's flags:
 CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
-CFLAGS += -DDEBUG_DEPTH=1
+CFLAGS += -DDEBUG_DEPTH=3
+CFLAGS += -DPROCESS_CONF_NO_PROCESS_NAMES=1
 
 APPS = data-mgr
 
