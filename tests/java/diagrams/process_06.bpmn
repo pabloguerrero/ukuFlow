@@ -28,28 +28,28 @@
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_2" name="" sourceRef="StartEvent_1" targetRef="ScriptTask_1"/>
-    <bpmn2:scriptTask id="ScriptTask_2" name="Script Task 2" scriptFormat="uWDL">
+    <bpmn2:scriptTask id="ScriptTask_2" name="Script Task 2">
       <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
       <bpmn2:script>var4 = 1 + 2;
 var5 = 1 + $var4;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_1" sourceRef="ScriptTask_2" targetRef="InclusiveGateway_2"/>
-    <bpmn2:scriptTask id="ScriptTask_4" name="Script Task 4" scriptFormat="uWDL">
+    <bpmn2:scriptTask id="ScriptTask_4" name="Script Task 4">
       <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
       <bpmn2:script>local blink 2;
 @windows blink 2;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_9" name="" sourceRef="ScriptTask_4" targetRef="InclusiveGateway_2"/>
-    <bpmn2:scriptTask id="ScriptTask_3" name="Script Task 3" scriptFormat="uWDL">
+    <bpmn2:scriptTask id="ScriptTask_3" name="Script Task 3">
       <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
       <bpmn2:script>var5 = 1 + $var4;
 var5 = 1 + $var5;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_6" name="" sourceRef="ScriptTask_3" targetRef="InclusiveGateway_2"/>
-    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1" scriptFormat="uWDL">
+    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1">
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
       <bpmn2:script>var1 = 30;
@@ -58,7 +58,7 @@ var3 = 50;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_3" name="" sourceRef="ScriptTask_1" targetRef="InclusiveGateway_1"/>
     <bpmn2:textAnnotation id="TextAnnotation_1">
-      <bpmn2:text>SCOPE windows 60 (NODE_ID > 3)</bpmn2:text>
+      <bpmn2:text>SCOPE windows (NODE_ID > 3) TTL 60</bpmn2:text>
     </bpmn2:textAnnotation>
     <bpmn2:association id="Association_1" sourceRef="TextAnnotation_1" targetRef="ScriptTask_4"/>
   </bpmn2:process>
@@ -66,6 +66,30 @@ var3 = 50;</bpmn2:script>
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process_06">
       <bpmndi:BPMNShape id="BPMNShape_2" bpmnElement="EndEvent_1">
         <dc:Bounds height="36.0" width="36.0" x="668.0" y="130.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_InclusiveGateway_1" bpmnElement="InclusiveGateway_1">
+        <dc:Bounds height="50.0" width="50.0" x="272.0" y="120.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_InclusiveGateway_2" bpmnElement="InclusiveGateway_2">
+        <dc:Bounds height="50.0" width="50.0" x="584.0" y="122.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1" bpmnElement="StartEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="40.0" y="127.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
+        <dc:Bounds height="50.0" width="110.0" x="380.0" y="28.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_4" bpmnElement="ScriptTask_4">
+        <dc:Bounds height="50.0" width="110.0" x="380.0" y="208.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_3" bpmnElement="ScriptTask_3">
+        <dc:Bounds height="50.0" width="110.0" x="380.0" y="121.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
+        <dc:Bounds height="50.0" width="110.0" x="120.0" y="120.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_1" bpmnElement="TextAnnotation_1">
+        <dc:Bounds height="50.0" width="231.0" x="345.0" y="280.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_InclusiveGateway_2">
         <di:waypoint xsi:type="dc:Point" x="490.0" y="53.0"/>
@@ -75,16 +99,10 @@ var3 = 50;</bpmn2:script>
         <di:waypoint xsi:type="dc:Point" x="76.0" y="145.0"/>
         <di:waypoint xsi:type="dc:Point" x="120.0" y="145.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BPMNShape_InclusiveGateway_1" bpmnElement="InclusiveGateway_1">
-        <dc:Bounds height="50.0" width="50.0" x="272.0" y="120.0"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_3" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_InclusiveGateway_1">
         <di:waypoint xsi:type="dc:Point" x="230.0" y="145.0"/>
         <di:waypoint xsi:type="dc:Point" x="272.0" y="145.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BPMNShape_InclusiveGateway_2" bpmnElement="InclusiveGateway_2">
-        <dc:Bounds height="50.0" width="50.0" x="584.0" y="122.0"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_InclusiveGateway_2" targetElement="BPMNShape_2">
         <di:waypoint xsi:type="dc:Point" x="635.0" y="147.0"/>
         <di:waypoint xsi:type="dc:Point" x="668.0" y="148.0"/>
@@ -105,30 +123,14 @@ var3 = 50;</bpmn2:script>
         <di:waypoint xsi:type="dc:Point" x="297.0" y="171.0"/>
         <di:waypoint xsi:type="dc:Point" x="380.0" y="233.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BPMNShape_1" bpmnElement="StartEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="40.0" y="127.0"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_9" sourceElement="BPMNShape_ScriptTask_4" targetElement="BPMNShape_InclusiveGateway_2">
         <di:waypoint xsi:type="dc:Point" x="490.0" y="233.0"/>
         <di:waypoint xsi:type="dc:Point" x="584.0" y="147.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
-        <dc:Bounds height="50.0" width="110.0" x="380.0" y="28.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_4" bpmnElement="ScriptTask_4">
-        <dc:Bounds height="50.0" width="110.0" x="380.0" y="208.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_3" bpmnElement="ScriptTask_3">
-        <dc:Bounds height="50.0" width="110.0" x="380.0" y="121.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
-        <dc:Bounds height="50.0" width="110.0" x="120.0" y="120.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_1" bpmnElement="TextAnnotation_1">
-        <dc:Bounds height="50.0" width="231.0" x="410.0" y="290.0"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_Association_1" bpmnElement="Association_1" sourceElement="BPMNShape_TextAnnotation_1" targetElement="BPMNShape_ScriptTask_4">
-        <di:waypoint xsi:type="dc:Point" x="410.0" y="305.0"/>
+        <di:waypoint xsi:type="dc:Point" x="460.0" y="280.0"/>
+        <di:waypoint xsi:type="dc:Point" x="460.0" y="271.0"/>
+        <di:waypoint xsi:type="dc:Point" x="435.0" y="271.0"/>
         <di:waypoint xsi:type="dc:Point" x="435.0" y="258.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

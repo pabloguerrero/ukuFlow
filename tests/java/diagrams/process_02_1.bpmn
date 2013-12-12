@@ -8,7 +8,7 @@
     <bpmn2:endEvent id="EndEvent_1">
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
     </bpmn2:endEvent>
-    <bpmn2:scriptTask id="ScriptTask_2" name="Script Task 2">
+    <bpmn2:scriptTask id="ScriptTask_2" name="Script Task 2" scriptFormat="uWDL">
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
       <bpmn2:script>local blink $var2;
@@ -16,7 +16,7 @@ local blink 3;
 local blink 2;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_1" sourceRef="ScriptTask_2" targetRef="EndEvent_1"/>
-    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1">
+    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1" scriptFormat="uWDL">
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
       <bpmn2:script>var1 = 1 + 2;
@@ -32,6 +32,12 @@ var2 = 1 + $var1;</bpmn2:script>
       <bpmndi:BPMNShape id="BPMNShape_2" bpmnElement="EndEvent_1">
         <dc:Bounds height="36.0" width="36.0" x="640.0" y="101.0"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
+        <dc:Bounds height="50.0" width="110.0" x="410.0" y="93.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
+        <dc:Bounds height="50.0" width="110.0" x="220.0" y="93.0"/>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_2">
         <di:waypoint xsi:type="dc:Point" x="520.0" y="118.0"/>
         <di:waypoint xsi:type="dc:Point" x="640.0" y="119.0"/>
@@ -44,12 +50,6 @@ var2 = 1 + $var1;</bpmn2:script>
         <di:waypoint xsi:type="dc:Point" x="330.0" y="118.0"/>
         <di:waypoint xsi:type="dc:Point" x="410.0" y="118.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
-        <dc:Bounds height="50.0" width="110.0" x="410.0" y="93.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
-        <dc:Bounds height="50.0" width="110.0" x="220.0" y="93.0"/>
-      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
