@@ -4,15 +4,17 @@ DOXYGEN_CONF = doc/data-mgr.doxyfile
 CLOC = cloc
 SIZE = msp430-size
 
-all: $(CONTIKI_PROJECT)
-	$(DOX) $(DOXYGEN_CONF)
-	$(CLOC) *.c *.h tester/*.c
-	$(SIZE) tester/tester.z1
-
 ifndef TARGET
   TARGET = z1
 endif
 
+all: $(CONTIKI_PROJECT)
+	$(DOX) $(DOXYGEN_CONF)
+	$(CLOC) *.c *.h tester/*.c
+	$(SIZE) tester/tester.$(TARGET)
+
+# Contiki's flags:
+CFLAGS += -DDEBUG_DEPTH=1
 
 SRCS += data-mgr.c expression-eval.c
 

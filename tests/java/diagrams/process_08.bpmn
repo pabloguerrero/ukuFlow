@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://sample.bpmn2.org/bpmn2/sample/process">
-  <bpmn2:process id="process_08" name="Default Process">
+  <bpmn2:process id="process_08" name="Process 8">
     <bpmn2:startEvent id="StartEvent_1">
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_2" name="" sourceRef="StartEvent_1" targetRef="EventBasedGateway_1"/>
-    <bpmn2:endEvent id="EndEvent_1">
-      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
-    </bpmn2:endEvent>
     <bpmn2:eventBasedGateway id="EventBasedGateway_1" name="Event Based Gateway 1" gatewayDirection="Diverging">
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
@@ -16,7 +13,40 @@
     </bpmn2:eventBasedGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_3" name="" sourceRef="EventBasedGateway_1" targetRef="ReceiveTask_1"/>
     <bpmn2:sequenceFlow id="SequenceFlow_6" name="" sourceRef="EventBasedGateway_1" targetRef="ReceiveTask_2"/>
-    <bpmn2:sequenceFlow id="SequenceFlow_8" name="" sourceRef="EventBasedGateway_1" targetRef="IntermediateCatchEvent_1"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_8" name="" sourceRef="EventBasedGateway_1" targetRef="ReceiveTask_3"/>
+    <bpmn2:receiveTask id="ReceiveTask_2" name="Receive Task 2" eventScript="TOP = PERIODIC_EG SENSOR_TEMPERATURE_CELSIUS ^1:00 @s scope2 x0">
+      <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_10</bpmn2:outgoing>
+    </bpmn2:receiveTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_10" name="" sourceRef="ReceiveTask_2" targetRef="ScriptTask_2"/>
+    <bpmn2:scriptTask id="ScriptTask_2" name="Script Task 2">
+      <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
+      <bpmn2:script>local blink 4;</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_5" name="" sourceRef="ScriptTask_2" targetRef="ExclusiveGateway_1"/>
+    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1">
+      <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+      <bpmn2:script>local blink 2;</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_4" name="" sourceRef="ScriptTask_1" targetRef="ExclusiveGateway_1"/>
+    <bpmn2:receiveTask id="ReceiveTask_1" name="Receive Task 1" eventScript="TOP = PERIODIC_EG SENSOR_TEMPERATURE_RAW ^1:00 @s scope1 x0">
+      <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
+    </bpmn2:receiveTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_9" name="" sourceRef="ReceiveTask_1" targetRef="ScriptTask_1"/>
+    <bpmn2:scriptTask id="ScriptTask_3" name="Script Task 3">
+      <bpmn2:incoming>SequenceFlow_11</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
+      <bpmn2:script>local blink 6;</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_7" name="" sourceRef="ScriptTask_3" targetRef="ExclusiveGateway_1"/>
+    <bpmn2:receiveTask id="ReceiveTask_3" name="Receive Task 3" eventScript="TOP = PERIODIC_EG SENSOR_TEMPERATURE_FAHRENHEIT ^1:00 @s scope3 x0">
+      <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
+    </bpmn2:receiveTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_11" name="" sourceRef="ReceiveTask_3" targetRef="ScriptTask_3"/>
     <bpmn2:exclusiveGateway id="ExclusiveGateway_1" name="Exclusive Gateway 1" gatewayDirection="Converging">
       <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
@@ -24,114 +54,137 @@
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_1" sourceRef="ExclusiveGateway_1" targetRef="EndEvent_1"/>
-    <bpmn2:intermediateCatchEvent id="IntermediateCatchEvent_1" name="Intermediate Catch Event 1">
-      <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
-      <bpmn2:timerEventDefinition id="TimerEventDefinition_1"/>
-    </bpmn2:intermediateCatchEvent>
-    <bpmn2:sequenceFlow id="SequenceFlow_11" name="" sourceRef="IntermediateCatchEvent_1" targetRef="ScriptTask_3"/>
-    <bpmn2:receiveTask id="ReceiveTask_2" name="Receive Task 2">
-      <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_10</bpmn2:outgoing>
-    </bpmn2:receiveTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_10" name="" sourceRef="ReceiveTask_2" targetRef="ScriptTask_2"/>
-    <bpmn2:receiveTask id="ReceiveTask_1" name="Receive Task 1">
-      <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
-    </bpmn2:receiveTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_9" name="" sourceRef="ReceiveTask_1" targetRef="ScriptTask_1"/>
-    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1">
-      <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
-    </bpmn2:scriptTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_4" name="" sourceRef="ScriptTask_1" targetRef="ExclusiveGateway_1"/>
-    <bpmn2:scriptTask id="ScriptTask_2" name="Script Task 2">
-      <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
-    </bpmn2:scriptTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_5" name="" sourceRef="ScriptTask_2" targetRef="ExclusiveGateway_1"/>
-    <bpmn2:scriptTask id="ScriptTask_3" name="Script Task 3">
-      <bpmn2:incoming>SequenceFlow_11</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
-    </bpmn2:scriptTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_7" name="" sourceRef="ScriptTask_3" targetRef="ExclusiveGateway_1"/>
+    <bpmn2:endEvent id="EndEvent_1">
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:textAnnotation id="TextAnnotation_1">
+      <bpmn2:text>SCOPE scope1 (NODE_ID == 2) TTL 60</bpmn2:text>
+    </bpmn2:textAnnotation>
+    <bpmn2:textAnnotation id="TextAnnotation_2">
+      <bpmn2:text>SCOPE scope2 (NODE_ID == 3) TTL 60</bpmn2:text>
+    </bpmn2:textAnnotation>
+    <bpmn2:textAnnotation id="TextAnnotation_3">
+      <bpmn2:text>SCOPE scope3 (NODE_ID == 4) TTL 60</bpmn2:text>
+    </bpmn2:textAnnotation>
+    <bpmn2:association id="Association_1" sourceRef="ReceiveTask_3" targetRef="TextAnnotation_3"/>
+    <bpmn2:association id="Association_2" sourceRef="ReceiveTask_2" targetRef="TextAnnotation_2"/>
+    <bpmn2:association id="Association_3" sourceRef="ReceiveTask_1" targetRef="TextAnnotation_1"/>
   </bpmn2:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Process Diagram">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Process 8">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process_08">
       <bpmndi:BPMNShape id="BPMNShape_1" bpmnElement="StartEvent_1">
         <dc:Bounds height="36.0" width="36.0" x="22.0" y="148.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_2" bpmnElement="EndEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="648.0" y="149.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="650.0" y="147.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_ExclusiveGateway_1" targetElement="BPMNShape_2">
-        <di:waypoint xsi:type="dc:Point" x="599.0" y="167.0"/>
-        <di:waypoint xsi:type="dc:Point" x="648.0" y="167.0"/>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_EventBasedGateway_1" bpmnElement="EventBasedGateway_1">
         <dc:Bounds height="50.0" width="50.0" x="104.0" y="140.0"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_1" bpmnElement="ExclusiveGateway_1" isMarkerVisible="true">
+        <dc:Bounds height="50.0" width="50.0" x="548.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ReceiveTask_2" bpmnElement="ReceiveTask_2">
+        <dc:Bounds height="50.0" width="110.0" x="200.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
+        <dc:Bounds height="50.0" width="110.0" x="358.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
+        <dc:Bounds height="50.0" width="110.0" x="358.0" y="10.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ReceiveTask_1" bpmnElement="ReceiveTask_1">
+        <dc:Bounds height="50.0" width="110.0" x="200.0" y="10.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_3" bpmnElement="ScriptTask_3">
+        <dc:Bounds height="50.0" width="110.0" x="358.0" y="290.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_1" bpmnElement="TextAnnotation_1">
+        <dc:Bounds height="51.0" width="211.0" x="149.0" y="77.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_2" bpmnElement="TextAnnotation_2">
+        <dc:Bounds height="50.0" width="241.0" x="148.0" y="220.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ReceiveTask_3" bpmnElement="ReceiveTask_3">
+        <dc:Bounds height="50.0" width="110.0" x="200.0" y="290.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_3" bpmnElement="TextAnnotation_3">
+        <dc:Bounds height="50.0" width="231.0" x="153.0" y="370.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_ExclusiveGateway_1" targetElement="BPMNShape_2">
+        <di:waypoint xsi:type="dc:Point" x="599.0" y="165.0"/>
+        <di:waypoint xsi:type="dc:Point" x="621.0" y="165.0"/>
+        <di:waypoint xsi:type="dc:Point" x="621.0" y="165.0"/>
+        <di:waypoint xsi:type="dc:Point" x="650.0" y="165.0"/>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_1" targetElement="BPMNShape_EventBasedGateway_1">
         <di:waypoint xsi:type="dc:Point" x="58.0" y="166.0"/>
         <di:waypoint xsi:type="dc:Point" x="104.0" y="165.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_3" sourceElement="BPMNShape_EventBasedGateway_1" targetElement="BPMNShape_ReceiveTask_1">
         <di:waypoint xsi:type="dc:Point" x="129.0" y="140.0"/>
-        <di:waypoint xsi:type="dc:Point" x="200.0" y="82.0"/>
+        <di:waypoint xsi:type="dc:Point" x="129.0" y="35.0"/>
+        <di:waypoint xsi:type="dc:Point" x="200.0" y="35.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_1" bpmnElement="ExclusiveGateway_1" isMarkerVisible="true">
-        <dc:Bounds height="50.0" width="50.0" x="548.0" y="142.0"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_ExclusiveGateway_1">
-        <di:waypoint xsi:type="dc:Point" x="468.0" y="82.0"/>
-        <di:waypoint xsi:type="dc:Point" x="548.0" y="167.0"/>
+        <di:waypoint xsi:type="dc:Point" x="468.0" y="35.0"/>
+        <di:waypoint xsi:type="dc:Point" x="573.0" y="35.0"/>
+        <di:waypoint xsi:type="dc:Point" x="573.0" y="140.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_5" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_ExclusiveGateway_1">
         <di:waypoint xsi:type="dc:Point" x="468.0" y="165.0"/>
-        <di:waypoint xsi:type="dc:Point" x="548.0" y="167.0"/>
+        <di:waypoint xsi:type="dc:Point" x="504.0" y="165.0"/>
+        <di:waypoint xsi:type="dc:Point" x="504.0" y="165.0"/>
+        <di:waypoint xsi:type="dc:Point" x="548.0" y="165.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_6" sourceElement="BPMNShape_EventBasedGateway_1" targetElement="BPMNShape_ReceiveTask_2">
         <di:waypoint xsi:type="dc:Point" x="155.0" y="165.0"/>
         <di:waypoint xsi:type="dc:Point" x="200.0" y="165.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="SequenceFlow_7" sourceElement="BPMNShape_ScriptTask_3" targetElement="BPMNShape_ExclusiveGateway_1">
-        <di:waypoint xsi:type="dc:Point" x="468.0" y="255.0"/>
-        <di:waypoint xsi:type="dc:Point" x="548.0" y="167.0"/>
+        <di:waypoint xsi:type="dc:Point" x="468.0" y="315.0"/>
+        <di:waypoint xsi:type="dc:Point" x="573.0" y="315.0"/>
+        <di:waypoint xsi:type="dc:Point" x="573.0" y="191.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BPMNShape_IntermediateCatchEvent_1" bpmnElement="IntermediateCatchEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="200.0" y="237.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="BPMNShape_EventBasedGateway_1" targetElement="BPMNShape_IntermediateCatchEvent_1">
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="BPMNShape_EventBasedGateway_1" targetElement="BPMNShape_ReceiveTask_3">
         <di:waypoint xsi:type="dc:Point" x="129.0" y="191.0"/>
-        <di:waypoint xsi:type="dc:Point" x="200.0" y="255.0"/>
+        <di:waypoint xsi:type="dc:Point" x="129.0" y="315.0"/>
+        <di:waypoint xsi:type="dc:Point" x="200.0" y="315.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_9" sourceElement="BPMNShape_ReceiveTask_1" targetElement="BPMNShape_ScriptTask_1">
-        <di:waypoint xsi:type="dc:Point" x="310.0" y="82.0"/>
-        <di:waypoint xsi:type="dc:Point" x="358.0" y="82.0"/>
+        <di:waypoint xsi:type="dc:Point" x="310.0" y="35.0"/>
+        <di:waypoint xsi:type="dc:Point" x="331.0" y="35.0"/>
+        <di:waypoint xsi:type="dc:Point" x="331.0" y="35.0"/>
+        <di:waypoint xsi:type="dc:Point" x="358.0" y="35.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_10" bpmnElement="SequenceFlow_10" sourceElement="BPMNShape_ReceiveTask_2" targetElement="BPMNShape_ScriptTask_2">
         <di:waypoint xsi:type="dc:Point" x="310.0" y="165.0"/>
         <di:waypoint xsi:type="dc:Point" x="358.0" y="165.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="SequenceFlow_11" sourceElement="BPMNShape_IntermediateCatchEvent_1" targetElement="BPMNShape_ScriptTask_3">
-        <di:waypoint xsi:type="dc:Point" x="236.0" y="255.0"/>
-        <di:waypoint xsi:type="dc:Point" x="358.0" y="255.0"/>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="SequenceFlow_11" sourceElement="BPMNShape_ReceiveTask_3" targetElement="BPMNShape_ScriptTask_3">
+        <di:waypoint xsi:type="dc:Point" x="310.0" y="315.0"/>
+        <di:waypoint xsi:type="dc:Point" x="331.0" y="315.0"/>
+        <di:waypoint xsi:type="dc:Point" x="331.0" y="315.0"/>
+        <di:waypoint xsi:type="dc:Point" x="358.0" y="315.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BPMNShape_ReceiveTask_2" bpmnElement="ReceiveTask_2">
-        <dc:Bounds height="50.0" width="110.0" x="200.0" y="140.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_ReceiveTask_1" bpmnElement="ReceiveTask_1">
-        <dc:Bounds height="50.0" width="110.0" x="200.0" y="57.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
-        <dc:Bounds height="50.0" width="110.0" x="358.0" y="57.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
-        <dc:Bounds height="50.0" width="110.0" x="358.0" y="140.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_3" bpmnElement="ScriptTask_3">
-        <dc:Bounds height="50.0" width="110.0" x="358.0" y="230.0"/>
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_Association_1" bpmnElement="Association_1" sourceElement="BPMNShape_ReceiveTask_3" targetElement="BPMNShape_TextAnnotation_3">
+        <di:waypoint xsi:type="dc:Point" x="255.0" y="340.0"/>
+        <di:waypoint xsi:type="dc:Point" x="255.0" y="353.0"/>
+        <di:waypoint xsi:type="dc:Point" x="268.0" y="353.0"/>
+        <di:waypoint xsi:type="dc:Point" x="268.0" y="370.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Association_2" bpmnElement="Association_2" sourceElement="BPMNShape_ReceiveTask_2" targetElement="BPMNShape_TextAnnotation_2">
+        <di:waypoint xsi:type="dc:Point" x="255.0" y="190.0"/>
+        <di:waypoint xsi:type="dc:Point" x="255.0" y="203.0"/>
+        <di:waypoint xsi:type="dc:Point" x="268.0" y="203.0"/>
+        <di:waypoint xsi:type="dc:Point" x="268.0" y="220.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Association_3" bpmnElement="Association_3" sourceElement="BPMNShape_ReceiveTask_1" targetElement="BPMNShape_TextAnnotation_1">
+        <di:waypoint xsi:type="dc:Point" x="255.0" y="60.0"/>
+        <di:waypoint xsi:type="dc:Point" x="255.0" y="67.0"/>
+        <di:waypoint xsi:type="dc:Point" x="254.0" y="67.0"/>
+        <di:waypoint xsi:type="dc:Point" x="254.0" y="77.0"/>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>

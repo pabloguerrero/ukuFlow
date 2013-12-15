@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>ukuFlowEngine</name>
+	<name>ukuFlow - engine</name>
 	<comment></comment>
 	<projects>
 		<project>ukuFlow - data-mgr</project>

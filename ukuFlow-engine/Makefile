@@ -4,19 +4,18 @@ DOXYGEN_CONF = doc/ukuFlow.doxyfile
 CLOC = cloc
 SIZE = msp430-size
 
-
-all: $(CONTIKI_PROJECT)	 
-	$(DOX) $(DOXYGEN_CONF)
-	$(CLOC) *.c *.h tester/*.c
-	$(SIZE) ukuflow-serial.z1 tester/tester.z1
-
 ifndef TARGET
   TARGET = z1
 endif
 
+all: $(CONTIKI_PROJECT)	 
+	$(DOX) $(DOXYGEN_CONF)
+	$(CLOC) *.c *.h tester/*.c
+	$(SIZE) ukuflow-serial.$(TARGET) tester/tester.$(TARGET)
+
 # Contiki's flags:
 CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
-CFLAGS += -DDEBUG_DEPTH=2
+CFLAGS += -DDEBUG_DEPTH=1
 CFLAGS += -DPROCESS_CONF_NO_PROCESS_NAMES=1
 
 APPS = serial-shell data-mgr scopes 

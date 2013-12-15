@@ -5,21 +5,21 @@
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_2" name="" sourceRef="StartEvent_1" targetRef="ScriptTask_1"/>
-    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1" scriptFormat="uWDL">
-      <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
-      <bpmn2:script>var1 = 0 + SENSOR_TEMPERATURE_CELSIUS;</bpmn2:script>
-    </bpmn2:scriptTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_1" name="" sourceRef="ScriptTask_1" targetRef="ScriptTask_2"/>
+    <bpmn2:endEvent id="EndEvent_1">
+      <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
+    </bpmn2:endEvent>
     <bpmn2:scriptTask id="ScriptTask_2" name="Script Task 2">
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
       <bpmn2:script>local blink $var1;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_4" name="" sourceRef="ScriptTask_2" targetRef="EndEvent_1"/>
-    <bpmn2:endEvent id="EndEvent_1">
-      <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
-    </bpmn2:endEvent>
+    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1">
+      <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+      <bpmn2:script>var1 = 0 + SENSOR_TEMPERATURE_CELSIUS;</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" name="" sourceRef="ScriptTask_1" targetRef="ScriptTask_2"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Process 2-2">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process_2_2">
@@ -27,26 +27,32 @@
         <dc:Bounds height="36.0" width="36.0" x="100.0" y="100.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_2" bpmnElement="EndEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="580.0" y="103.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="580.0" y="100.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
+        <dc:Bounds height="50.0" width="110.0" x="390.0" y="93.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
+        <dc:Bounds height="50.0" width="110.0" x="210.0" y="93.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_1" targetElement="BPMNShape_ScriptTask_1">
         <di:waypoint xsi:type="dc:Point" x="136.0" y="118.0"/>
-        <di:waypoint xsi:type="dc:Point" x="180.0" y="119.0"/>
+        <di:waypoint xsi:type="dc:Point" x="169.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="169.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="210.0" y="118.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
-        <dc:Bounds height="50.0" width="110.0" x="180.0" y="94.0"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_2">
-        <di:waypoint xsi:type="dc:Point" x="470.0" y="120.0"/>
-        <di:waypoint xsi:type="dc:Point" x="580.0" y="121.0"/>
+        <di:waypoint xsi:type="dc:Point" x="500.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="536.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="536.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="580.0" y="118.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_ScriptTask_2">
-        <di:waypoint xsi:type="dc:Point" x="290.0" y="119.0"/>
-        <di:waypoint xsi:type="dc:Point" x="360.0" y="120.0"/>
+        <di:waypoint xsi:type="dc:Point" x="320.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="351.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="351.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="390.0" y="118.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
-        <dc:Bounds height="50.0" width="110.0" x="360.0" y="95.0"/>
-      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>

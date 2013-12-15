@@ -13,3 +13,6 @@
 /ukuflow-serial.ihex
 /ukuflow-serial.sky
 /ukuflow-serial.z1
+/ukuflow-serial.xm1000
+/contiki-xm1000.a
+/contiki-xm1000.map
