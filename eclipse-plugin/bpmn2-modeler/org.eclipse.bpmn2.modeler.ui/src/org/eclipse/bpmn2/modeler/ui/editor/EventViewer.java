@@ -296,12 +296,15 @@ public class EventViewer extends DiagramEditor {
 			} else if (top instanceof EFComposite) {
 				if (top instanceof EFChangeEvent) {
 					if (top instanceof EFChangeDecrease) {
-
+						sb.append(" DECREASE_EC");
 					} else if (top instanceof EFChangeIncrease) {
-
+						sb.append(" INCREASE_EC");
 					} else if (top instanceof EFChangeRemain) {
-
+						sb.append(" REMAIN_EC");
 					}
+					EFChangeEvent local = (EFChangeEvent)top;
+					sb.append(" "+ local.getWindowSize());
+					sb.append(" "+ local.getChangeThreshold());
 				} else if (top instanceof EFStatusEvent) {
 					if (top instanceof EFLogic) {
 						sb.append("TODO_EFLOGIC");

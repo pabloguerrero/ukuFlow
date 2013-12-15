@@ -29,26 +29,21 @@
  */
 package de.tudarmstadt.dvs.ukuflow.deployment.launch.console;
 
-import org.eclipse.debug.internal.ui.DebugPluginImages;
-import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.console.IConsoleConstants;
-import org.eclipse.ui.internal.console.ConsolePluginImages;
-import org.eclipse.ui.internal.console.IInternalConsoleConstants;
+import org.eclipse.ui.PlatformUI;
 
 /**
- * @author hien
+ * @author hien quoc dang
  * 
  */
 public class DeploymentConsoleView extends AbstractDeploymentConsoleView {
 
-	private boolean isStopped = true;
 
 	/*
 	 * (non-Javadoc)
@@ -57,100 +52,24 @@ public class DeploymentConsoleView extends AbstractDeploymentConsoleView {
 	 * AbstractDeploymentConsoleView#setFocus()
 	 */
 	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-
+	public void setFocus() {		
 	}
 
-	private class StopAction extends Action {
-		public StopAction() {
-			setText("Terminate");
-			setToolTipText("Erase History and Terminate");
-			setImageDescriptor(DebugPluginImages
-					.getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_TERMINATE));
-			setDisabledImageDescriptor(DebugPluginImages
-					.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_TERMINATE));
-			setHoverImageDescriptor(DebugPluginImages
-					.getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_TERMINATE));
-		}
-
-		@Override
-		public void run() {
-			setStopped();
-		}
-	}
-
-	private class ClearAction extends Action {
-		public ClearAction() {
-			setText("Clear Output");
-			setToolTipText("Clear Output");
-			setImageDescriptor(ConsolePluginImages
-					.getImageDescriptor(IInternalConsoleConstants.IMG_ELCL_CLEAR));
-			setDisabledImageDescriptor(ConsolePluginImages
-					.getImageDescriptor(IInternalConsoleConstants.IMG_DLCL_CLEAR));
-			setHoverImageDescriptor(ConsolePluginImages
-					.getImageDescriptor(IConsoleConstants.IMG_LCL_CLEAR));
-		}
-
-		@Override
-		public boolean isEnabled() {
-			return textWidget.getText().length() > 0;
-		}
-
-		@Override
-		public void run() {
-			textWidget.setText("");
-			setEnabled(false);
-		}
-	}
-
-	private class RelaunchAction extends Action {
-		public RelaunchAction() {
-			setText("Reconnect");
-			setToolTipText("Reconnect to the sensor node");
-			setImageDescriptor(DebugPluginImages
-					.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_TERMINATE_AND_RELAUNCH));
-			setDisabledImageDescriptor(DebugPluginImages
-					.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_TERMINATE_AND_RELAUNCH));
-			setHoverImageDescriptor(DebugPluginImages
-					.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_TERMINATE_AND_RELAUNCH));
-		}
-
-		public void run() {
-			// TODO:?
-		}
-	}
-
-	private Action stopAction = new StopAction();
-	private Action clearAction = new ClearAction();
-	private Action relaunchAction = new RelaunchAction();
-
-	private String processName = "";
 	private String portName = "";
 
 	private void setStarted() {
 		isStopped = false;
 		stopAction.setEnabled(true);
-		setContentDescription("UkuFlow Deployment (" + processName + "->"
-				+ portName + ")");
+		setContentDescription("ukuFlow Deployment on " + portName + "");
 		// TODO connect to terminal
 	}
 
-	private void setStopped() {
-		// TODO disconnect terminal
-		isStopped = true;
-		stopAction.setEnabled(false);
-		setContentDescription("<terminated>" + getContentDescription());
-	}
+	
 
-	public boolean isStopped() {
-		return isStopped;
-	}
 
 	@Override
 	public void createPartControl(Composite parent) {
-		processName = getViewSite().getSecondaryId();// ???TODO what is
-														// secondary id?
+		portName = getViewSite().getSecondaryId();
 		createDeploymentPartControl(parent);
 	}
 
@@ -160,9 +79,11 @@ public class DeploymentConsoleView extends AbstractDeploymentConsoleView {
 		IToolBarManager toolbarManager = getViewSite().getActionBars()
 				.getToolBarManager();
 		toolbarManager.add(stopAction);
-		toolbarManager.add(relaunchAction);
+		toolbarManager.add(suspendAction);
+		toolbarManager.add(resumeAction);
 		toolbarManager.add(new Separator());
 		toolbarManager.add(clearAction);
+		
 		// String processName = getViewSite().getSecondaryId();
 
 	}
@@ -179,21 +100,34 @@ public class DeploymentConsoleView extends AbstractDeploymentConsoleView {
 	}
 
 	public void error(String... errs) {
-
-		displayError(buildString(errs));
+		
+		if(textWidget.isDisposed()){
+			IWorkbench wb = PlatformUI.getWorkbench();
+			IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+			IWorkbenchPage page = win.getActivePage();
+			DeploymentConsoleView.makeVisible(page, portName);
+		}
+		displayError(buildString(errs));		
 	}
 
 	public void out(String... out) {
-		displayOutput(buildString(out));
+		
+		if(textWidget.isDisposed()){
+			IWorkbench wb = PlatformUI.getWorkbench();
+			IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+			IWorkbenchPage page = win.getActivePage();
+			DeploymentConsoleView.makeVisible(page, portName);
+		}
+		displayOutput(buildString(out));		
 	}
 
 	// / static method:
 
-	private static DeploymentConsoleView show(String fileName, int mode,
+	private static DeploymentConsoleView show(int mode,
 			IWorkbenchPage page, String port) {
 		try {
 			DeploymentConsoleView console = (DeploymentConsoleView) page
-					.showView(DEPLOYMENT_VIEW_ID, fileName, mode);
+					.showView(DEPLOYMENT_VIEW_ID, port, mode);
 			console.setContentDescription("UkuFlow Deployment (" + port + ")");
 			console.setStarted();
 			return console;
@@ -203,14 +137,12 @@ public class DeploymentConsoleView extends AbstractDeploymentConsoleView {
 		return null;
 	}
 
-	public static DeploymentConsoleView makeVisible(IWorkbenchPage page,
-			String fileName, String port) {
-		return show(fileName, IWorkbenchPage.VIEW_VISIBLE, page, port);
+	public static DeploymentConsoleView makeVisible(IWorkbenchPage page, String port) {
+		return show(IWorkbenchPage.VIEW_VISIBLE, page, port);
 	}
 
-	public static DeploymentConsoleView makeActive(IWorkbenchPage page,
-			String fileName, String port) {
-		return show(fileName, IWorkbenchPage.VIEW_ACTIVATE, page, port);
+	public static DeploymentConsoleView makeActive(IWorkbenchPage page, String port) {
+		return show(IWorkbenchPage.VIEW_ACTIVATE, page, port);
 		
 	}
 }

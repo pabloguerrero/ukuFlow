@@ -134,21 +134,8 @@ public class EFSimpleFeatureContainer extends EFFeatureContainer {
 
 		public Object[] create(ICreateContext context) {
 			EFSimple newClass = EventbaseFactory.eINSTANCE.createEFSimple();
-			getDiagram().eResource().getContents().add(newClass);
-
-			// Use the following instead of the above line to store the model
-			// data in a seperate file parallel to the diagram file
-			// try {
-			// try {
-			// TutorialUtil.saveToModelFile(newClass, getDiagram());
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			// } catch (CoreException e) {
-			// e.printStackTrace();
-			// }
-
-			// do the add
+			newClass.setConstraints("");
+			getDiagram().eResource().getContents().add(newClass);		
 			addGraphicalRepresentation(context, newClass);
 
 			// activate direct editing after object creation

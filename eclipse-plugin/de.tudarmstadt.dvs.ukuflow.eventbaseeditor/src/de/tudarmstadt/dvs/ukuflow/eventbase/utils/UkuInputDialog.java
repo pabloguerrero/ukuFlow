@@ -174,8 +174,10 @@ public class UkuInputDialog extends Dialog {
 				IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID,
 				IDialogConstants.CANCEL_LABEL, false);
-		if(errorMessageText.getText().length() > 1)
+		if(errorMessageText.getText().length() > 1){
+			System.out.println("set Button enabled = false:'"+errorMessageText.getText()+"'");			
 			okButton.setEnabled(false);
+		}
 		
 	}
 
@@ -205,6 +207,8 @@ public class UkuInputDialog extends Dialog {
 			Control text = null;
 			log.debug("requests of " + message + " : "
 					+ requests.get(message).requests);
+			if(requests.get(message).requests == null)
+				requests.get(message).requests = "";
 			if (requests.get(message).requests instanceof String) {
 				text = new Text(composite, getInputTextStyle());
 				text.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
@@ -220,8 +224,8 @@ public class UkuInputDialog extends Dialog {
 				CCombo combo = new CCombo(composite, getInputTextStyle());
 				combo.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 						| GridData.HORIZONTAL_ALIGN_FILL));
-				//System.out.println("map: "+requests);	 
-				//System.out.println("mesg:"+message + "/ req:"+requests.get(message).requests);
+				System.out.println("map: "+requests);	 
+				System.out.println("mesg:"+message + "/ req:"+requests.get(message).requests);
 				List l = (List<?>) requests.get(message).requests;
 				String[] a = new String[l.size()];
 				int selectIndex = 0;
@@ -429,8 +433,7 @@ public class UkuInputDialog extends Dialog {
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 		if (errorMessageText != null && !errorMessageText.isDisposed()) {
-			errorMessageText
-					.setText(errorMessage == null ? " \n " : errorMessage); //$NON-NLS-1$
+			errorMessageText.setText(errorMessage == null ? "\n" : errorMessage);
 			// Disable the error message text control if there is no error, or
 			// no error text (empty or whitespace only). Hide it also to avoid
 			// color change.

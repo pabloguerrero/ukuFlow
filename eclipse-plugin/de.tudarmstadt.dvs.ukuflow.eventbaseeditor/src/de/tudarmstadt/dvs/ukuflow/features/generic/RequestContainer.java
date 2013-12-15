@@ -1,114 +1,144 @@
 package de.tudarmstadt.dvs.ukuflow.features.generic;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.eclipse.jface.dialogs.IInputValidator;
 
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.TimeUtil;
 
-public class RequestContainer{
+public class RequestContainer {
 	public IInputValidator validator;
 	public Object requests;
 	public String result;
 	public String currentValue;
 	public String title;
-	public RequestContainer(IInputValidator validator, Object requests, String title){
+
+	public RequestContainer(IInputValidator validator, Object requests,
+			String title) {
 		this.validator = validator;
 		this.requests = requests;
 		this.title = title;
 	}
-	public RequestContainer(IInputValidator validator, Object requests, String title, String currentValue){
-		this(validator,requests,title);
+
+	public RequestContainer(IInputValidator validator, Object requests,
+			String title, String currentValue) {
+		this(validator, requests, title);
 		this.currentValue = currentValue;
 	}
-	public String validateInput(){
-		if(validator == null)
+
+	public String validateInput() {
+		if (validator == null)
 			return null;
 		return validator.isValid(requests.toString());
 	}
-	public static IntegerValidator getIntValidator(){
+
+	public static IntegerValidator getIntValidator() {
 		return new RequestContainer.IntegerValidator();
 	}
-	public static class OffsetTimeValidator implements IInputValidator{
+
+	public static class OffsetTimeValidator implements IInputValidator {
 
 		public String isValid(String newText) {
-			if(newText == null || newText.equals(""))
+			if (newText == null || newText.equals(""))
 				return "empty input!";
-			if(newText.matches("[0-9]+:[0-9]+"))
+			if (newText.matches("[0-9]+:[0-9]+"))
 				return null;
-			else 
+			else
 				return "expecting offset time in format: \"mm:ss\"";
 		}
-		
+
 	}
+
 	public static class AbsoluteTimeValidator implements IInputValidator {
-		public String isValid(String newText){
-			if(newText == null || newText.equals(""))
-				return "Empty input";
+		public String isValid(String newText) {
+			if (newText == null || newText.equals(""))
+				return "empty input";
 			try {
-				SimpleDateFormat format = new SimpleDateFormat(TimeUtil.FULL_PATTERN);
-				format.parse(newText);
+				SimpleDateFormat format = new SimpleDateFormat(
+						TimeUtil.FULL_PATTERN);
+				Date d = format.parse(newText);
+				if (d.getTime() < 0)
+					throw new IllegalArgumentException(
+							"Negative time is now allowed");
 				return null;
-			} catch(Exception e){
-				return "expecting absolute time in format of \""+TimeUtil.FULL_PATTERN+"\"";
+			} catch (IllegalArgumentException ie) {
+				return ie.getMessage();
+			} catch (Exception e) {
+				return "expecting absolute time in format of \""
+						+ TimeUtil.FULL_PATTERN + "\"";
 			}
 		}
 	}
-	public static class DatePatternValidator implements IInputValidator{
+
+	public static class DatePatternValidator implements IInputValidator {
 		String pattern = "";
+
 		public DatePatternValidator(String pattern) {
 			this.pattern = pattern;
 		}
-		public String isValid(String newText){
-			if(newText == null || newText.equals(""))
-				return "Empty input";
-			try{
+
+		public String isValid(String newText) {
+			if (newText == null || newText.equals(""))
+				return "empty input";
+			try {
 				SimpleDateFormat format = new SimpleDateFormat(pattern);
-				format.parse(newText);
+				Date d = format.parse(newText);
+				if (d.getTime() < 0)
+					throw new IllegalArgumentException(
+							"negative time is now allowed");
 				return null;
-			}catch (Exception e){
-				return "expecting input in format of \""+pattern + "\"!";
+			} catch (IllegalArgumentException ie) {
+				return ie.getMessage();
+			} catch (Exception e) {
+				return "expecting input in format of \"" + pattern + "\"!";
 			}
 		}
 	}
-	public static class IntegerValidator implements IInputValidator{
+
+	public static class IntegerValidator implements IInputValidator {
 		int min = 0;
 		int max = 0;
 		boolean minmaxset = false;
-		public IntegerValidator(){
-			
+
+		public IntegerValidator() {
+
 		}
-		public IntegerValidator(int min, int max){
+
+		public IntegerValidator(int min, int max) {
 			minmaxset = true;
 			this.min = min;
 			this.max = max;
 		}
-		public String isValid(String newText){
-			if(newText == null || newText.equals(""))
+
+		public String isValid(String newText) {
+			if (newText == null || newText.equals(""))
 				return "Empty input";
 			try {
 				int num = Integer.parseInt(newText);
-				if(minmaxset){
-					if(num < min || num > max){
-						return num + " is not in range of ("+min + ", "+max+")";
+				if (minmaxset) {
+					if (num < min || num > max) {
+						return num + " is not in range of (" + min + ", " + max
+								+ ")";
 					}
 				}
 				return null;
-			} catch(Exception e){
+			} catch (Exception e) {
 				return "Expecting a number";
 			}
 		}
 	}
-	public static class BinaryValidator implements IInputValidator{
+
+	public static class BinaryValidator implements IInputValidator {
 
 		public String isValid(String newText) {
-			if(newText == null || newText.equals(""))
+			if (newText == null || newText.equals(""))
 				return "empty input";
-			if( newText.matches("[1,0]+"))
+			if (newText.matches("[1,0]+"))
 				return null;
-			else 
+			else
 				return "expecting binary input (e.g 10110)";
 		}
-		
+
 	}
 }

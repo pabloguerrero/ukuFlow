@@ -40,6 +40,7 @@ import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAbsoluteEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicDistributionEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicPatternedEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChangeEvent;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChiSquareFunction;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilterBinaryExpression;
@@ -387,6 +388,25 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	@Override
 	public void visit(ELogicalCompositionEF ef) {
 		// TODO Auto-generated method stub
-		//TODO
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChangeEvent)
+	 */
+	@Override
+	public void visit(EChangeEvent eChangeEvent) {
+		out.add(eChangeEvent.getTypecode()); // type
+		out.add(eChangeEvent.getOperatorID());
+		out.add(eChangeEvent.getChannel());
+		out.addAll(eChangeEvent.getTime().getValue(2));
+		byte first = (byte) (eChangeEvent.getThreshold()/ 256);
+		out.add(first);
+		out.add((byte)(eChangeEvent.getThreshold()%256));
+		EventBaseOperator source = eChangeEvent.getSource();
+		if(source != null){
+			source.accept(this);
+		} else {
+			System.err.println("source of "+eChangeEvent + " is null");
+		}
 	}
 }

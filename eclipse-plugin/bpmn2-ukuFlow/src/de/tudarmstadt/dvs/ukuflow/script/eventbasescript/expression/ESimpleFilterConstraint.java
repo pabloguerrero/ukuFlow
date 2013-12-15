@@ -79,8 +79,8 @@ public class ESimpleFilterConstraint implements Visitable {
 			length = 2;
 			break;
 		case UkuConstants.EventFields.TIMESTAMP_F:
-			result.add(UkuConstants.DataTypeConstants.CUSTOM_INPUT_VALUE);
-			length = 4;
+			result.add(UkuConstants.DataTypeConstants.UINT16_VALUE);
+			length = 2;
 			break;
 		}
 		int tmp = value;

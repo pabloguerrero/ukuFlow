@@ -30,9 +30,12 @@
 
 package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import de.tudarmstadt.dvs.ukuflow.xml.BPMN2XMLParser.Point;
 
 /**
  * this is an abstract class, which can be used to represent an execute task (
@@ -114,6 +117,18 @@ public abstract class UkuElement extends UkuEntity {
 	}
 
 	public List<UkuSequenceFlow> getOutgoingEntity() {
+		List<UkuSequenceFlow> result = new ArrayList<UkuSequenceFlow>(outgoingEntities);//new ArrayList<UkuSequenceFlow>();
+		for(int i = 0; i < result.size()-1; i++){			
+			for(int j = i+1; j < result.size(); j++){
+				Point p1 = result.get(i).getPoint();
+				Point p2 = result.get(j).getPoint();
+				if(p1.x*10000+p1.y > p2.x*10000+p2.y){
+					UkuSequenceFlow tmp = result.get(i);
+					result.set(i, result.get(j));
+					result.set(j, tmp);
+				}
+			}
+		}
 		return outgoingEntities;
 	}
 

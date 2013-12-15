@@ -30,6 +30,8 @@
 
 package de.tudarmstadt.dvs.ukuflow.preference;
 
+import java.util.Calendar;
+
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -41,6 +43,8 @@ public class UkuPreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 	    store.setDefault(UkuPreference.TIMEOUT,10);
+	    store.setDefault(UkuPreference.TIME_ZONE,Calendar.getInstance().getTimeZone().getID());
+	    store.setDefault(UkuPreference.DEFAULT_SCOPE, "WORLD");
 	}
 
 }

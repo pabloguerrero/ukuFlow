@@ -97,7 +97,10 @@ public class EGOffsetFeatureContainer extends EGFeatureContainer {
 		}
 
 		public EventBaseOperator getCreatingObject() {
-			return EventbaseFactory.eINSTANCE.createEGOffset();
+			EGOffset off = EventbaseFactory.eINSTANCE.createEGOffset();
+			setDefaultvalue(off);
+			off.setOffsetTime("01:00");			
+			return off;
 		}
 		
 		

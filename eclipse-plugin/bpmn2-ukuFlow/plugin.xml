@@ -232,7 +232,7 @@
             class="de.tudarmstadt.dvs.ukuflow.deployment.launch.console.DeploymentConsoleView"
             icon="icon/deployment.gif"
             id="de.tudarmstadt.dvs.ukuflow.deploymentView"
-            name="UkuFlow Deployment"
+            name="ukuFlow"
             restorable="false">
       </view>
    </extension>

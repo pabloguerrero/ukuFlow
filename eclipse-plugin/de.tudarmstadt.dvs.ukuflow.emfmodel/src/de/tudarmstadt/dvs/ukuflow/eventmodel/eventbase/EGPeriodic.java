@@ -22,7 +22,6 @@ package de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase;
 public interface EGPeriodic extends EGRecurring {
 	/**
 	 * Returns the value of the '<em><b>Time</b></em>' attribute.
-	 * The default value is <code>"01:00"</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Time</em>' attribute isn't clear,
@@ -32,7 +31,7 @@ public interface EGPeriodic extends EGRecurring {
 	 * @return the value of the '<em>Time</em>' attribute.
 	 * @see #setTime(String)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEGPeriodic_Time()
-	 * @model default="01:00"
+	 * @model
 	 * @generated
 	 */
 	String getTime();

@@ -64,7 +64,13 @@ public class EGDistributionFeatureContainer extends EGFeatureContainer {
 		}
 
 		public EventBaseOperator getCreatingObject() {
-			return EventbaseFactory.eINSTANCE.createEGDistribution();
+			EGDistribution dis = EventbaseFactory.eINSTANCE.createEGDistribution();
+			setDefaultvalue(dis);
+			dis.setEvaluationInterval("01:00");
+			dis.setPeriodInterval("00:20");
+			dis.setFunction("GAUSSIAN_DISTRIBUTION");
+			dis.setParameters("m0 v0 a2");
+			return dis;
 		}
 	}
 

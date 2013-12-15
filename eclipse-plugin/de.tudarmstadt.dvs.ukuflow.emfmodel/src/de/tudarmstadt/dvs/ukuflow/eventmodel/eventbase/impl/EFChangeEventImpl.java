@@ -32,7 +32,7 @@ public class EFChangeEventImpl extends EFCompositeImpl implements EFChangeEvent 
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String WINDOW_SIZE_EDEFAULT = "1:00";
+	protected static final String WINDOW_SIZE_EDEFAULT = null;
 	/**
 	 * The cached value of the '{@link #getWindowSize() <em>Window Size</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -50,7 +50,7 @@ public class EFChangeEventImpl extends EFCompositeImpl implements EFChangeEvent 
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int CHANGE_THRESHOLD_EDEFAULT = 10;
+	protected static final int CHANGE_THRESHOLD_EDEFAULT = 0;
 	/**
 	 * The cached value of the '{@link #getChangeThreshold() <em>Change Threshold</em>}' attribute.
 	 * <!-- begin-user-doc -->

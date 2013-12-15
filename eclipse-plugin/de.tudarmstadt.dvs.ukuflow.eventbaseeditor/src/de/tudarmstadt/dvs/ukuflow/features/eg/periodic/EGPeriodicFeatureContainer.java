@@ -100,7 +100,10 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 
 		@Override
 		public EventBaseOperator getCreatingObject() {
-			return EventbaseFactory.eINSTANCE.createEGPeriodic();
+			EGPeriodic eg =  EventbaseFactory.eINSTANCE.createEGPeriodic();
+			setDefaultvalue(eg);
+			eg.setTime("01:00");
+			return eg;
 		}
 
 	

@@ -19,7 +19,6 @@ public class EGDoubleClickFeature extends GenericEditPropertiesFeature{
 
 	public EGDoubleClickFeature(IFeatureProvider fp) {
 		super(fp);
-		// TODO Auto-generated constructor stub
 	}
 	
 	protected void addProperties(Map<Integer,RequestContainer> properties, EventBaseOperator ebo){

@@ -30,7 +30,44 @@
 
 package de.tudarmstadt.dvs.ukuflow.preference;
 
-public abstract class UkuPreference {
+import java.util.TimeZone;
+
+import de.tudarmstadt.dvs.ukuflow.converter.Activator;
+
+public class UkuPreference {
 	public static final String TIMEOUT = "ukuflow_connection_timeout";
 	public static final String OUTPUT_DIR = "ukuflow_output_directory";
+	public static final String TIME_ZONE = "ukuflow_timezone";
+	public static final String DEFAULT_SCOPE = "ukuflow_default_scope";
+	
+	public static final String[][] timezones;
+	public static String currentTimeZone = "";
+	static {
+		String[] ids = TimeZone.getAvailableIDs();
+	
+		timezones = new String[ids.length][2];
+		for(int i = 0; i< ids.length; i++){
+			timezones[i][0] = ids[i];
+			timezones[i][1] = ids[i];
+		}
+		//Calendar.getInstance().getTimeZone().getID();
+	}
+	
+	public static String getTimeZone(){
+		String tmp = Activator.getDefault().getPreferenceStore().getString(UkuPreference.TIME_ZONE);
+		return tmp;
+	}
+	
+	public static String getDefaultScope(){
+		try{
+			String tmp = Activator.getDefault().getPreferenceStore().getString(DEFAULT_SCOPE);
+			if(tmp != null)
+				return tmp;
+			return "";
+		}catch (Exception e){
+			System.out.println("there is no default value for scope");
+			return "";
+		}
+		
+	}
 }

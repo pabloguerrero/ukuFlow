@@ -33,39 +33,41 @@ public interface ukuFlowScriptConstants {
   /** RegularExpression Id. */
   int SCOPE_DESC = 15;
   /** RegularExpression Id. */
-  int LOCAL = 16;
+  int TTL = 16;
   /** RegularExpression Id. */
-  int SCOPE = 17;
+  int LOCAL = 17;
   /** RegularExpression Id. */
-  int VARIABLE = 18;
+  int SCOPE = 18;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 19;
+  int VARIABLE = 19;
   /** RegularExpression Id. */
-  int DECIMAL_LITERAL = 20;
+  int INTEGER_LITERAL = 20;
   /** RegularExpression Id. */
-  int HEX_LITERAL = 21;
+  int DECIMAL_LITERAL = 21;
   /** RegularExpression Id. */
-  int BINARY_LITERAL = 22;
+  int HEX_LITERAL = 22;
   /** RegularExpression Id. */
-  int IDENTIFIER = 23;
+  int BINARY_LITERAL = 23;
   /** RegularExpression Id. */
-  int LETTER = 24;
+  int IDENTIFIER = 24;
   /** RegularExpression Id. */
-  int DIGIT = 25;
+  int LETTER = 25;
   /** RegularExpression Id. */
-  int EQUAL = 26;
+  int DIGIT = 26;
   /** RegularExpression Id. */
-  int UNEQUAL = 27;
+  int EQUAL = 27;
   /** RegularExpression Id. */
-  int GREATERTHAN = 28;
+  int UNEQUAL = 28;
   /** RegularExpression Id. */
-  int LESSTHAN = 29;
+  int GREATERTHAN = 29;
   /** RegularExpression Id. */
-  int GREATEROREQUAL = 30;
+  int LESSTHAN = 30;
   /** RegularExpression Id. */
-  int LESSOREQUAL = 31;
+  int GREATEROREQUAL = 31;
   /** RegularExpression Id. */
-  int STRING = 32;
+  int LESSOREQUAL = 32;
+  /** RegularExpression Id. */
+  int STRING = 33;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -88,6 +90,7 @@ public interface ukuFlowScriptConstants {
     "<FALSE>",
     "\"@\"",
     "\"SCOPE\"",
+    "\"TTL\"",
     "\"local\"",
     "<SCOPE>",
     "<VARIABLE>",

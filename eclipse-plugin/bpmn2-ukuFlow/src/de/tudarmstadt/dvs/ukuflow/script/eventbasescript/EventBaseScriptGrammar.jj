@@ -26,128 +26,24 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- */options{  LOOKAHEAD= 3;  CHOICE_AMBIGUITY_CHECK = 2;  OTHER_AMBIGUITY_CHECK = 1;  STATIC = false;  DEBUG_PARSER = false;  DEBUG_LOOKAHEAD = false;  DEBUG_TOKEN_MANAGER = false;  ERROR_REPORTING = true;  JAVA_UNICODE_ESCAPE = false;  UNICODE_INPUT = true;  IGNORE_CASE = true;  USER_TOKEN_MANAGER = false;  USER_CHAR_STREAM = false;  BUILD_PARSER = true;  BUILD_TOKEN_MANAGER = true;  SANITY_CHECK = true;  FORCE_LA_CHECK = false;}PARSER_BEGIN(EventBaseScript)package de.tudarmstadt.dvs.ukuflow.script.eventbasescript;import java.io.*;import java.util.List;import java.util.ArrayList;import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.*;import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.ChannelIDManager;import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
-public class EventBaseScript{  private static EventBaseScript INSTANCE;  private static BpmnLog log = BpmnLog.getInstance(EventBaseScript.class.getSimpleName());  public static void main(String args []) throws ParseException  {    String fileName = "eventbasescript.txt";    EventBaseScript INSTANCE = null;    try    {      INSTANCE = new EventBaseScript(new FileInputStream(fileName));    }    catch (FileNotFoundException e1)    {      e1.printStackTrace();    }    log.debug("testbegin");    INSTANCE.validate();    log.debug("testdone");  }  public static EventBaseScript getInstance(String text)  {    InputStream is = null;    try    {      is = new ByteArrayInputStream(text.getBytes("UTF-8"));    }    catch (UnsupportedEncodingException e)    {      e.printStackTrace();    }    if (INSTANCE == null) INSTANCE = new EventBaseScript(is);    else INSTANCE.ReInit(is);    //INSTANCE.errors = new LinkedList < String > ();
+ */options{  LOOKAHEAD= 3;  CHOICE_AMBIGUITY_CHECK = 2;  OTHER_AMBIGUITY_CHECK = 1;  STATIC = false;  DEBUG_PARSER = false;  DEBUG_LOOKAHEAD = false;  DEBUG_TOKEN_MANAGER = false;  ERROR_REPORTING = true;  JAVA_UNICODE_ESCAPE = false;  UNICODE_INPUT = true;  IGNORE_CASE = true;  USER_TOKEN_MANAGER = false;  USER_CHAR_STREAM = false;  BUILD_PARSER = true;  BUILD_TOKEN_MANAGER = true;  SANITY_CHECK = true;  FORCE_LA_CHECK = false;}PARSER_BEGIN(EventBaseScript)package de.tudarmstadt.dvs.ukuflow.script.eventbasescript;import java.io.*;import java.util.List;import java.util.ArrayList;import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.*;import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.ChannelIDManager;import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;public class EventBaseScript{  private static EventBaseScript INSTANCE;  private static BpmnLog log = BpmnLog.getInstance(EventBaseScript.class.getSimpleName());  public static void main(String args []) throws ParseException  {    String fileName = "eventbasescript.txt";    EventBaseScript INSTANCE = null;    try    {      INSTANCE = new EventBaseScript(new FileInputStream(fileName));    }    catch (FileNotFoundException e1)    {      e1.printStackTrace();    }    log.debug("testbegin");    INSTANCE.validate();    log.debug("testdone");  }  public static EventBaseScript getInstance(String text)  {    InputStream is = null;    try    {      is = new ByteArrayInputStream(text.getBytes("UTF-8"));    }    catch (UnsupportedEncodingException e)    {      e.printStackTrace();    }    if (INSTANCE == null) INSTANCE = new EventBaseScript(is);    else INSTANCE.ReInit(is);    //INSTANCE.errors = new LinkedList < String > ();
     //INSTANCE.variables = new LinkedList < String > ();
     return INSTANCE;  }}PARSER_END(EventBaseScript)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* binary logical operators */{  < AND :    (      "AND"      //    | "&"
     | "&&"    ) >| < OR :    (      "OR"      //    | "|"
     | "||"    ) >| < NOT :    (      "NOT"    | "~"    ) >}TOKEN :{  < COMPOSITION_POLICY :    (      "CP1"    | "CP2"    ) >  //TODO FIXME enter policy
 | < EVICTION :    (      "EV1"    | "EV2"    ) >}//< EVENT_OUTPUT_TYPE > <COMPARISON > <EVENT_OUTPUT_VALUE >
-TOKEN :{  < EVENT_OUTPUT_TYPE :    (      "EVENT_TYPE"    | "EVENT_OPERATOR_ID"    | "SOURCE" 
-    | "MAGNITUDE"    | "TIMESTAMP"
-    | "ORIGIN_NODE"    | "ORIGIN_SCOPE"    ) >}TOKEN :{  < COMPARISON :    (      "<"    | ">"    | "<="    | ">="    | "=="    | "!="    ) >}TOKEN : /* BOOLEAN */{  < BOOLEAN :    (      < TRUE >    | < FALSE >    ) >| < #TRUE :    (      "TRUE"    | "true"    ) >| < #FALSE :    (      "FALSE"    | "false"    ) >}TOKEN : /** KEYWORD*/{  < immediate_EG : "IMMEDIATE_EG" >| < absolute_EG : "ABSOLUTE_EG" >| < offset_EG : "OFFSET_EG" >| < relative_EG : "RELATIVE_EG" >| < functional_EG : "FUNCTIONAL_EG" >| < PEG : "PERIODIC_EG" >| < APEG : "PATTERN_EG" >| < ADEG : "DISTRIBUTION_EG" >| < SEF : "SIMPLE_EF" >| < AND_COMPOSITION_EF : "AND_EC" >
-| < OR_COMPOSITION_EF : "OR_EC" >
-| < NOT_COMPOSITION_EF : "NOT_EC" >
-| < SEQUENCE_COMPOSITION_EF : "SEQUENCE_EC" >
-| < MIN_COMPOSITION_EF : "MIN_EC" >
-| < MAX_COMPOSITION_EF : "MAX_EC" >
-| < COUNT_COMPOSITION_EF : "COUNT_EC" >
-| < SUM_COMPOSITION_EF : "SUM_EC" >
-| < AVG_COMPOSITION_EF : "AVG_EC" >
-| < STDEV_COMPOSITION_EF : "STDEV_EC" >
-| < INCREASE_EF : "INCREASE_EC" >
-| < DECREASE_EF : "DECREASE_EC" >
-| < REMAIN_EF : "REMAIN_EC" >| < TOP : "TOP" >}TOKEN : /* SENSOR TYPE */{  < SENSOR_TYPE :    (      "SENSOR_LIGHT_PAR_RAW"    | "SENSOR_LIGHT_TSR_RAW"    | "SENSOR_TEMPERATURE_RAW"    | "SENSOR_TEMPERATURE_CELSIUS"    | "SENSOR_TEMPERATURE_FAHRENHEIT"    | "SENSOR_HUMIDITY_RAW"    | "SENSOR_HUMIDITY_PERCENT"    | "SENSOR_ACCM_X_AXIS"    | "SENSOR_ACCM_Y_AXIS"    | "SENSOR_ACCM_Z_AXIS"    | "SENSOR_VOLTAGE_RAW"    | "SENSOR_CO2"    | "SENSOR_CO"    | "NODE_ID"
-  	| "NODE_TIME"    ) >}TOKEN :
-{
-  
-    < M : "m" < POSITIVE_NUMBER >>
-    |
-    < V : "v" < POSITIVE_NUMBER >>
-    |
-    < A : "a" < POSITIVE_NUMBER >>
-    |
-    < K : "k" < POSITIVE_NUMBER >>
-  	|
-  	< I : "i" < POSITIVE_NUMBER >> 
- 
-}TOKEN : /* Numeric CONSTANTS */{ < POSITIVE_NUMBER : (["0"-"9"])+ >
-//| < NEGATIVE_NUMBER : "-" (["0"-"9"])+ >}TOKEN :{  < BINARY : ([ "0", "1" ])+ >}TOKEN : /**/{  < PATTERN :    (      "p"    | "P"    )    < BINARY >>}TOKEN :
-{
-  < REPETITION : "x" < POSITIVE_NUMBER >>}
- /*
+TOKEN :{  < EVENT_OUTPUT_TYPE :    (      "EVENT_TYPE"    | "EVENT_OPERATOR_ID"    | "SOURCE"    | "MAGNITUDE"    | "TIMESTAMP"    | "ORIGIN_NODE"    | "ORIGIN_SCOPE"    ) >}TOKEN :{  < COMPARISON :    (      "<"    | ">"    | "<="    | ">="    | "=="    | "!="    ) >}TOKEN : /* BOOLEAN */{  < BOOLEAN :    (      < TRUE >    | < FALSE >    ) >| < #TRUE :    (      "TRUE"    | "true"    ) >| < #FALSE :    (      "FALSE"    | "false"    ) >}TOKEN : /** KEYWORD*/{  < immediate_EG : "IMMEDIATE_EG" >| < absolute_EG : "ABSOLUTE_EG" >| < offset_EG : "OFFSET_EG" >| < relative_EG : "RELATIVE_EG" >| < functional_EG : "FUNCTIONAL_EG" >| < PEG : "PERIODIC_EG" >| < APEG : "PATTERN_EG" >| < ADEG : "DISTRIBUTION_EG" >| < SEF : "SIMPLE_EF" >| < AND_COMPOSITION_EF : "AND_EC" >| < OR_COMPOSITION_EF : "OR_EC" >| < NOT_COMPOSITION_EF : "NOT_EC" >| < SEQUENCE_COMPOSITION_EF : "SEQUENCE_EC" >| < MIN_COMPOSITION_EF : "MIN_EC" >| < MAX_COMPOSITION_EF : "MAX_EC" >| < COUNT_COMPOSITION_EF : "COUNT_EC" >| < SUM_COMPOSITION_EF : "SUM_EC" >| < AVG_COMPOSITION_EF : "AVG_EC" >| < STDEV_COMPOSITION_EF : "STDEV_EC" >| < INCREASE_EC : "INCREASE_EC" >| < DECREASE_EC : "DECREASE_EC" >| < REMAIN_EC : "REMAIN_EC" >| < TOP : "TOP" >}TOKEN : /* SENSOR TYPE */{  < SENSOR_TYPE :    (      "SENSOR_LIGHT_PAR_RAW"    | "SENSOR_LIGHT_TSR_RAW"    | "SENSOR_TEMPERATURE_RAW"    | "SENSOR_TEMPERATURE_CELSIUS"    | "SENSOR_TEMPERATURE_FAHRENHEIT"    | "SENSOR_HUMIDITY_RAW"    | "SENSOR_HUMIDITY_PERCENT"    | "SENSOR_ACCM_X_AXIS"    | "SENSOR_ACCM_Y_AXIS"    | "SENSOR_ACCM_Z_AXIS"    | "SENSOR_VOLTAGE_RAW"    | "SENSOR_CO2"    | "SENSOR_CO"    | "NODE_ID"    | "NODE_TIME"    ) >}TOKEN :{  < M : "m" < POSITIVE_NUMBER >>| < V : "v" < POSITIVE_NUMBER >>| < A : "a" < POSITIVE_NUMBER >>| < K : "k" < POSITIVE_NUMBER >>| < I : "i" < POSITIVE_NUMBER >>}TOKEN : /* Numeric CONSTANTS */{  < POSITIVE_NUMBER : ([ "0"-"9" ])+ >  //| < NEGATIVE_NUMBER : "-" (["0"-"9"])+ >}TOKEN :{  < BINARY : ([ "0", "1" ])+ >}TOKEN : /**/{  < PATTERN :    (      "p"    | "P"    )    < BINARY >>}TOKEN :{  < REPETITION : "x" < POSITIVE_NUMBER >>}/*
 TOKEN :
 {
   < PERIODIC:"PERIODIC_EG" >
 | < PATTERNED:"PATTERNED_EG" >
 | < DISTRIBUTION:"DISTRIBUTION_EG" >
 }
-*/
-TOKEN :
-{
- // < FUNCTION_NAME : (< GAUSSIAN_DISTRIBUTION >|< CHI_SQUARE_DISTRIBUTION > | < PARETO_DISTRIBUTION >) >
- < GAUSSIAN_DISTRIBUTION : "GAUSSIAN_DISTRIBUTION">
-|< CHI_SQUARE_DISTRIBUTION : "CHI_SQUARE_DISTRIBUTION" >
-|< PARETO_DISTRIBUTION : "PARETO_DISTRIBUTION" >}
-
-TOKEN : /* IDENTIFIERS */
-{
-  < IDENTIFIER :
-    (
-      < LETTER >
-    | "_"
-    )
-    (
-      < LETTER >
-    | < DIGIT >
-    | "_"
-    )* >
-| < #LETTER : [ "\u0024", "\u0041"-"\u005a", "\u005f", "\u0061"-"\u007a", "\u00c0"-"\u00d6", "\u00d8"-"\u00f6", "\u00f8"-"\u00ff", "\u0100"-"\u1fff", "\u3040"-"\u318f", "\u3300"-"\u337f", "\u3400"-"\u3d2d", "\u4e00"-"\u9fff", "\uf900"-"\ufaff" ] >
-| < #DIGIT : [ "\u0030"-"\u0039", "\u0660"-"\u0669", "\u06f0"-"\u06f9", "\u0966"-"\u096f", "\u09e6"-"\u09ef", "\u0a66"-"\u0a6f", "\u0ae6"-"\u0aef", "\u0b66"-"\u0b6f", "\u0be7"-"\u0bef", "\u0c66"-"\u0c6f", "\u0ce6"-"\u0cef", "\u0d66"-"\u0d6f", "\u0e50"-"\u0e59", "\u0ed0"-"\u0ed9", "\u1040"-"\u1049" ] >
-}
-String variable():{
-  String result;}{
-  	(
-	  < I > | < M >|< A >|< K > |
-	  < IDENTIFIER >
-	)
-	{
-	  result = token.image.trim();
-	  return result;	}}EEventBaseScript validate() :{  EventBaseOperator top = null;  EventBaseOperator tmp;  List < EventBaseOperator > result = new ArrayList < EventBaseOperator > ();}{  (    tmp = any_function()    {      result.add(tmp);    }  )*  top = TOP()  (    tmp = any_function()    {      result.add(tmp);    }  )*  < EOF >  {
-    log.debug("cerate ebscript with " + result + "/ top= " + top);    return new EEventBaseScript(result, top);  }}/**
+*/TOKEN :{  // < FUNCTION_NAME : (< GAUSSIAN_DISTRIBUTION >|< CHI_SQUARE_DISTRIBUTION > | < PARETO_DISTRIBUTION >) >
+  < GAUSSIAN_DISTRIBUTION : "GAUSSIAN_DISTRIBUTION" >| < CHI_SQUARE_DISTRIBUTION : "CHI_SQUARE_DISTRIBUTION" >| < PARETO_DISTRIBUTION : "PARETO_DISTRIBUTION" >}TOKEN : /* IDENTIFIERS */{  < IDENTIFIER :    (      < LETTER >    | "_"    )    (      < LETTER >    | < DIGIT >    | "_"    )* >| < #LETTER : [ "$", "A"-"Z", "_", "a"-"z", "À"-"Ö", "Ø"-"ö", "ø"-"ÿ", "Ā"-"῿", "぀"-"㆏", "㌀"-"㍿", "㐀"-"㴭", "一"-"鿿", "豈"-"﫿" ] >| < #DIGIT : [ "0"-"9", "٠"-"٩", "۰"-"۹", "०"-"९", "০"-"৯", "੦"-"੯", "૦"-"૯", "୦"-"୯", "௧"-"௯", "౦"-"౯", "೦"-"೯", "൦"-"൯", "๐"-"๙", "໐"-"໙", "၀"-"၉" ] >}String variable() :{  String result;}{  (    < I >  | < M >  | < A >  | < K >  | < IDENTIFIER >  )  {    result = token.image.trim();    return result;  }}EEventBaseScript validate() :{  EventBaseOperator top = null;  EventBaseOperator tmp;  List < EventBaseOperator > result = new ArrayList < EventBaseOperator > ();}{  (    tmp = any_function()    {      result.add(tmp);    }  )*  top = TOP()  (    tmp = any_function()    {      result.add(tmp);    }  )*  < EOF >  {    log.debug("cerate ebscript with " + result + "/ top= " + top);    return new EEventBaseScript(result, top);  }}/**
 * assignment
-*/EventBaseOperator any_function() :{  EventBaseOperator result = null;  String var = null;}{
-  var = variable()
-  "="  (    result = eventbaseOperator()  )  {    EVariable evar = new EVariable(var, result);    ChannelIDManager.variableMapping.put(var, evar);    return result;  }}EventBaseOperator eventbaseOperator() :{  EventBaseOperator result = null;
-  log.debug("fetching ebOperator");}{  (   result = Recurring_EG()  | result = SEF()  | result = CEF()
-  | result = min_ef()  | result = NonRecurring_EG()  )  {
-    log.debug("EB operator is " + result);    return result;  }}EventBaseOperator TOP() :{  EventBaseOperator result = null;}{  < TOP > "="  (
-    {
-      log.debug("top expression detected");
-    }    result = eventbaseOperator()  | variable()    {      result = ChannelIDManager.variableMapping.get(token.image.trim());    }  )  {    return result;  }}String scope() :{}{  "@s"   < IDENTIFIER >
-  {	return token.image.trim();
-  }}
-EventBaseOperator Recurring_EG():
-{
-  EventBaseOperator result;}{
-  (
-    result = PEG()
-  | result = APEG()
-  | result = ADEG()  )
-  [
-  	< REPETITION >
-  	{
-  	  int rep = Integer.parseInt(token.image.trim().substring(1));
-  	  ((ERecurringEG)result).setRepetition(rep);  	}
-  ]
-  {
-    return result;  }
-  }EventBaseOperator NonRecurring_EG() :{  EventBaseOperator result;}{  (    result = immediate_EG()  | result = absolute_EG()  | result = offset_EG()  | result = relative_EG()  )  {    return result;  }}EventBaseOperator immediate_EG() :{  EImmediateEG result = new EImmediateEG();}{  (    < immediate_EG >     < SENSOR_TYPE >    {      result.setSensorType(token.image.trim());    }    [      "@s"       < IDENTIFIER >      {        result.setScope(token.image.trim());      }    ]  )  {    return result;  }}EventBaseOperator absolute_EG() :{  EAbsoluteEG result = new EAbsoluteEG();  TimeExpression time;}{  (    < absolute_EG >     < SENSOR_TYPE >    {      result.setSensorType(token.image.trim());    }    time = timeExpression()    {      result.setTimeExpression(time);    }    [      "@s"       < IDENTIFIER >      {        result.setScope(token.image.trim());      }    ]  )  {    return result;  }}EventBaseOperator offset_EG() :{  EOffsetEG result = new EOffsetEG();  TimeExpression time;}{  (    < offset_EG >     < SENSOR_TYPE >    {      result.setSensorType(token.image.trim());    }    time = timeExpression()    {      result.setTimeExpression(time);    }    [      "@s"       < IDENTIFIER >      {        result.setScope(token.image.trim());      }    ]  )  {    return result;  }}EventBaseOperator relative_EG() :{  ERelativeEG result = new ERelativeEG();  EventBaseOperator source;  TimeExpression time;
-  String scope = null;}{  (    < relative_EG >     < SENSOR_TYPE >    {      result.setSensorType(token.image.trim());    }    time = timeExpression()    {      result.setTimeExpression(time);
-    }
-    // scope is optional
-    [
-    	scope = scope()
-    ]    "("     source = Terminate_Operand()     ")"  )  {    result.setSource(source);
-    if(scope == null)
-    	scope = "WORLD";
-    result.setScope(scope);    return result;  }}EPeriodicEG PEG() : /* PERIODIC */{  EPeriodicEG result = new EPeriodicEG();  TimeExpression periodic;}{
-  (      < PEG > < SENSOR_TYPE >  {    result.setSensorType(token.image.trim());  }  "^" periodic = timeExpression()  {    result.setTime(periodic);  }
-  [  "@s" < IDENTIFIER >  {    result.setScope(token.image.trim());     }
-  ]
-){ 
- return result;
-}}/**
+*/EventBaseOperator any_function() :{  EventBaseOperator result = null;  String var = null;}{  var = variable() "="  (    result = eventbaseOperator()  )  {    EVariable evar = new EVariable(var, result);    ChannelIDManager.variableMapping.put(var, evar);    return result;  }}EventBaseOperator eventbaseOperator() :{  EventBaseOperator result = null;  log.debug("fetching ebOperator");}{  (    result = Recurring_EG()  | result = SEF()  | result = CEF()  | result = min_ef()  | result = NonRecurring_EG()  )  {    log.debug("EB operator is " + result);    return result;  }}EventBaseOperator TOP() :{  EventBaseOperator result = null;}{  < TOP > "="  (    {      log.debug("top expression detected");    }    result = eventbaseOperator()  | variable()    {      result = ChannelIDManager.variableMapping.get(token.image.trim());    }  )  {    return result;  }}String scope() :{}{  "@s" < IDENTIFIER >  {    return token.image.trim();  }}EventBaseOperator Recurring_EG() :{  EventBaseOperator result;}{  (    result = PEG()  | result = APEG()  | result = ADEG()  )  [    < REPETITION >    {      int rep = Integer.parseInt(token.image.trim().substring(1));      ((ERecurringEG) result).setRepetition(rep);    }  ]  {    return result;  }}EventBaseOperator NonRecurring_EG() :{  EventBaseOperator result;}{  (    result = immediate_EG()  | result = absolute_EG()  | result = offset_EG()  | result = relative_EG()  )  {    return result;  }}EventBaseOperator immediate_EG() :{  EImmediateEG result = new EImmediateEG();}{  (    < immediate_EG > < SENSOR_TYPE >    {      result.setSensorType(token.image.trim());    }    [      "@s" < IDENTIFIER >      {        result.setScope(token.image.trim());      }    ]  )  {    return result;  }}EventBaseOperator absolute_EG() :{  EAbsoluteEG result = new EAbsoluteEG();  TimeExpression time;}{  (    < absolute_EG > < SENSOR_TYPE >    {      result.setSensorType(token.image.trim());    }    time = timeExpression()    {      result.setTimeExpression(time);    }    [      "@s" < IDENTIFIER >      {        result.setScope(token.image.trim());      }    ]  )  {    return result;  }}EventBaseOperator offset_EG() :{  EOffsetEG result = new EOffsetEG();  TimeExpression time;}{  (    < offset_EG > < SENSOR_TYPE >    {      result.setSensorType(token.image.trim());    }    time = timeExpression()    {      result.setTimeExpression(time);    }    [      "@s" < IDENTIFIER >      {        result.setScope(token.image.trim());      }    ]  )  {    return result;  }}EventBaseOperator relative_EG() :{  ERelativeEG result = new ERelativeEG();  EventBaseOperator source;  TimeExpression time;  String scope = null;}{  (    < relative_EG > < SENSOR_TYPE >    {      result.setSensorType(token.image.trim());    }    time = timeExpression()    {      result.setTimeExpression(time);    }    // scope is optional
+    [ scope = scope() ] "(" source = Terminate_Operand() ")"  )  {    result.setSource(source);    if (scope == null) scope = "WORLD";    result.setScope(scope);    return result;  }}EPeriodicEG PEG() : /* PERIODIC */{  EPeriodicEG result = new EPeriodicEG();  TimeExpression periodic;}{  (    < PEG > < SENSOR_TYPE >    {      result.setSensorType(token.image.trim());    }    "^" periodic = timeExpression()    {      result.setTime(periodic);    }    [      "@s" < IDENTIFIER >      {        result.setScope(token.image.trim());      }    ]  )  {    return result;  }}/**
 * allowed formats:
 * 	dd-MM-yyyy HH:mm:ss (absolute time)
 *	HH:mm:ss			(time amount)
@@ -155,129 +51,47 @@ String variable():{
 */TimeExpression timeExpression() :{  TimeExpression result = new TimeExpression();  //int hour_minute = 0;
   //int minute_second = 0;
   int first = 0;}{  < POSITIVE_NUMBER > // year/hour/minute
-  {    first = Integer.parseInt(token.image.trim());  }  (
-    //LOOKAHEAD(1)    
-    ":"    {      result.minute = first;    }    < POSITIVE_NUMBER > /// minute
-    {      result.second = Integer.parseInt(token.image.trim());    }    [      ":"       < POSITIVE_NUMBER > /// second
-      {        result.hour = result.minute;        result.minute = result.second;        result.second = Integer.parseInt(token.image.trim());      }    ]  |     // < NUMBER > /// year
-   
+  {    first = Integer.parseInt(token.image.trim());  }  (    //LOOKAHEAD(1)    ":"    {      result.minute = first;    }    < POSITIVE_NUMBER > /// minute
+    {      result.second = Integer.parseInt(token.image.trim());    }    [      ":" < POSITIVE_NUMBER > /// second
+      {        result.hour = result.minute;        result.minute = result.second;        result.second = Integer.parseInt(token.image.trim());      }    ]  | // < NUMBER > /// year
     "-"    {      result.day = first;    }    < POSITIVE_NUMBER > /// month
     {      result.month = Integer.parseInt(token.image.trim());    }    "-" < POSITIVE_NUMBER > /// day
     {      result.year = Integer.parseInt(token.image.trim());    }    < POSITIVE_NUMBER > /// hour
-    {      result.hour = Integer.parseInt(token.image.trim());    }    ":"     < POSITIVE_NUMBER > /// minute
+    {      result.hour = Integer.parseInt(token.image.trim());    }    ":" < POSITIVE_NUMBER > /// minute
     {      result.minute = Integer.parseInt(token.image.trim());    }    ":" < POSITIVE_NUMBER > /// second
-    {      result.second = Integer.parseInt(token.image.trim());    }  )  {    return result;  }}EAperiodicPatternedEG APEG() : /* APERIODIC PATTERNED*/{  EAperiodicPatternedEG result = new EAperiodicPatternedEG();  TimeExpression time;}{  < APEG > < SENSOR_TYPE >  {    result.setSensorType(token.image.trim());  }  < PATTERN >  {
-    result.setPattern(token.image.trim());  }  "^"   time = timeExpression()  {    result.setTime(time);  }  "@s" < IDENTIFIER >  {    result.setScope(token.image.trim());    return result;  }}EAperiodicDistributionEG ADEG() : /*APERIODIC DISTRIBUTED */{  EAperiodicDistributionEG result = new EAperiodicDistributionEG();  //String function = null; //List < Integer > params = new ArrayList < Integer > ();
-  EDistributionFunction func = null;  int tmp = 0;  TimeExpression period_length = null;  TimeExpression evaluation_frequency = null;}{  < ADEG > < SENSOR_TYPE >  {    result.setSensorType(token.image.trim());  }  "^"   period_length = timeExpression()
-  {
-    log.debug("parse time exp was successful");
-    result.setPeriodInterval(period_length);  }  //< I >
-  "#"  evaluation_frequency = timeExpression()
-  {
-    log.debug("2. parse time exp was successful");
-    result.setEvaluationInterval(evaluation_frequency);
-  }   //function
-  (
-    (      < GAUSSIAN_DISTRIBUTION >
-      {
-        log.debug("gaussian");      }
-      < M >
-      {
-        EGausianFunction func_t = new EGausianFunction();        func_t.setM(Integer.parseInt(token.image.trim().replace("m","")));
-        //SET M
-      }
-      < V >
-      {
-        //SET V
-        func_t.setV(Integer.parseInt(token.image.trim().replace("v","")));      }
-      < A >
-      {
-        func_t.setA(Integer.parseInt(token.image.trim().replace("a","")));
-        func = func_t;      }
-    )
-    |
-    (      < CHI_SQUARE_DISTRIBUTION >
-      < K >
-      {
-        EChiSquareFunction func_t = new EChiSquareFunction();
-        func_t.setK(Integer.parseInt(token.image.trim().replace("k","")));
-        func = func_t;      }
-     )
-    |
-    (
-    < PARETO_DISTRIBUTION >
-    < A >
-    //< POSITIVE_NUMBER >
-    {
-     	EParetoFunction func_t = new EParetoFunction();
-     	func_t.setA(Integer.parseInt(token.image.trim().replace("a","")));
-     	func=func_t;    }
-    )  
-)  {   result.setFunction(func);  }  "@s" < IDENTIFIER >  {    result.setScope(token.image.trim());    return result;  }}ESimpleEF SEF() : /* SIMPLE EVENT FILTER*/{  ESimpleEF result = new ESimpleEF();  List < ESimpleFilterNestedConstraint > constraints = new ArrayList < ESimpleFilterNestedConstraint > ();  ESimpleFilterNestedConstraint constr = null;
-  EventBaseOperator source = null;}{  < SEF > "[" constr = nestedConstraint()  {    if (constr != null)    {      constraints.add(constr);    }  }  (    "," constr = nestedConstraint()    {      if (constr != null)      {        constraints.add(constr);      }      else      { //TODO error
-      }    }  )*  "]"
-  "(" 	source = Terminate_Operand()   ")"  {
-    result.setSource(source);    result.setConstraints(constraints);    return result;  }}EventGenerator event_generator() :{  EventGenerator result;}{  (    result = PEG()  | result = APEG()  | result = ADEG()  )  {    return result;  }}ESimpleFilterNestedConstraint nestedConstraint():
+    {      result.second = Integer.parseInt(token.image.trim());    }  )  {    return result;  }}EAperiodicPatternedEG APEG() : /* APERIODIC PATTERNED*/{  EAperiodicPatternedEG result = new EAperiodicPatternedEG();  TimeExpression time;}{  < APEG > < SENSOR_TYPE >  {    result.setSensorType(token.image.trim());  }  < PATTERN >  {    result.setPattern(token.image.trim());  }  "^" time = timeExpression()  {    result.setTime(time);  }  "@s" < IDENTIFIER >  {    result.setScope(token.image.trim());    return result;  }}EAperiodicDistributionEG ADEG() : /*APERIODIC DISTRIBUTED */{  EAperiodicDistributionEG result = new EAperiodicDistributionEG();  //String function = null;  //List < Integer > params = new ArrayList < Integer > ();
+  EDistributionFunction func = null;  int tmp = 0;  TimeExpression period_length = null;  TimeExpression evaluation_frequency = null;}{  < ADEG > < SENSOR_TYPE >  {    result.setSensorType(token.image.trim());  }  "^" period_length = timeExpression()  {    log.debug("parse time exp was successful");    result.setPeriodInterval(period_length);  }  //< I >
+  "#" evaluation_frequency = timeExpression()  {    log.debug("2. parse time exp was successful");    result.setEvaluationInterval(evaluation_frequency);  }  //function
+  (    (      < GAUSSIAN_DISTRIBUTION >      {        log.debug("gaussian");      }      < M >      {        EGausianFunction func_t = new EGausianFunction();        func_t.setM(Integer.parseInt(token.image.trim().replace("m", "")));        //SET M
+      }      < V >      {        //SET V
+        func_t.setV(Integer.parseInt(token.image.trim().replace("v", "")));      }      < A >      {        func_t.setA(Integer.parseInt(token.image.trim().replace("a", "")));        func = func_t;      }    )  |    (      < CHI_SQUARE_DISTRIBUTION > < K >      {        EChiSquareFunction func_t = new EChiSquareFunction();        func_t.setK(Integer.parseInt(token.image.trim().replace("k", "")));        func = func_t;      }    )  |    (      < PARETO_DISTRIBUTION > < A >      //< POSITIVE_NUMBER >
+      {        EParetoFunction func_t = new EParetoFunction();        func_t.setA(Integer.parseInt(token.image.trim().replace("a", "")));        func = func_t;      }    )  )  {    result.setFunction(func);  }  "@s" < IDENTIFIER >  {    result.setScope(token.image.trim());    return result;  }}ESimpleEF SEF() : /* SIMPLE EVENT FILTER*/{  ESimpleEF result = new ESimpleEF();  List < ESimpleFilterNestedConstraint > constraints = new ArrayList < ESimpleFilterNestedConstraint > ();  ESimpleFilterNestedConstraint constr = null;  EventBaseOperator source = null;}{  < SEF >   "["  [    constr = nestedConstraint()    {      if (constr != null)      {        constraints.add(constr);      }    }    (      "," constr = nestedConstraint()      {        if (constr != null)        {          constraints.add(constr);        }        else        { //TODO error
+        }      }    )*  ]  "]"   "(" source = Terminate_Operand() ")"  {    result.setSource(source);    result.setConstraints(constraints);    return result;  }}EventGenerator event_generator() :{  EventGenerator result;}{  (    result = PEG()  | result = APEG()  | result = ADEG()  )  {    return result;  }}ESimpleFilterNestedConstraint nestedConstraint() :{  ESimpleFilterNestedConstraint result = new ESimpleFilterNestedConstraint();  result.resetConstraints();  ESimpleFilterConstraint cons = null;}{  (    cons = Constraint()    {      result.addConstraints(cons);      return result;    }  )|  (    "(" cons = Constraint()    {      result.addConstraints(cons);    }    ")"    (      < OR > "(" cons = Constraint()      {        result.addConstraints(cons);      }      ")"    )*    {      return result;    }  )}ESimpleFilterConstraint Constraint() :{  ESimpleFilterConstraint result = null;  String type = null, value = null, op = null;  boolean valueFirst = true;}{  (    (      < EVENT_OUTPUT_TYPE >      {        valueFirst = false;        type = token.image.trim();      }      < COMPARISON >      {        op = token.image.trim();      }      Event_output_value()      {        value = token.image.trim();      }    )  |    (      Event_output_value()      {        value = token.image.trim();      }      < COMPARISON >      {        op = token.image.trim();      }      < EVENT_OUTPUT_TYPE >      {        type = token.image.trim();      }    )  )  {    result = new ESimpleFilterConstraint(type + "_F", op, value, valueFirst);    return result;  }}String Event_output_value() :{  String result = null;}{  (    < IDENTIFIER >  | Number()  | < SENSOR_TYPE >  )  {    result = token.image.trim();    return result;  }}EChangeEvent change_ec():
 {
-  ESimpleFilterNestedConstraint result = new ESimpleFilterNestedConstraint();
-  result.resetConstraints();
-  ESimpleFilterConstraint cons= null;}{
-  (
-  cons = Constraint()  {
-    result.addConstraints(cons);
-    return result;  }
-  )
-|(
-	"("
-	cons = Constraint()
-	{
-    result.addConstraints(cons);
-  	}
-	")"
-	(
-	  < OR >
-	  "("
-	  cons = Constraint()
-	  {
-    	result.addConstraints(cons);
-  	  }
-	  ")"	)*
-	{
-	  return result;	}
-)
-}ESimpleFilterConstraint Constraint() :{  ESimpleFilterConstraint result = null;  String type = null, value = null, op = null;  boolean valueFirst = true;}{  (    (      < EVENT_OUTPUT_TYPE >      {        valueFirst = false;        type = token.image.trim();      }      < COMPARISON >      {        op = token.image.trim();      }      Event_output_value()      {        value = token.image.trim();      }    )  |    (      Event_output_value()      {        value = token.image.trim();      }      < COMPARISON >      {        op = token.image.trim();      }      < EVENT_OUTPUT_TYPE >      {        type = token.image.trim();      }    )  )  {    result = new ESimpleFilterConstraint(type+"_F", op, value, valueFirst);    return result;  }}String Event_output_value() :{  String result = null;}{  (    < IDENTIFIER >  | Number()  | < SENSOR_TYPE >  )  {    result = token.image.trim();    return result;  }}EProcessingEF min_ef():{
-  EProcessingEF result = null;
+  EChangeEvent result = null;
   EventBaseOperator source = null;
-  TimeExpression time = null;}{
-  (    < MIN_COMPOSITION_EF >
-  | <MAX_COMPOSITION_EF >
-  | < COUNT_COMPOSITION_EF >
-  | < SUM_COMPOSITION_EF >
-  | < AVG_COMPOSITION_EF  >
-  | < STDEV_COMPOSITION_EF >
-  )
-  {
-    result = new EProcessingEF(token.image.trim());
-    log.debug("creating EProcessingEF " + token.image);  }
-  //< POSITIVE_NUMBER >
+  TimeExpression time = null;}
+{
+  (
+    < INCREASE_EC >
+  | < DECREASE_EC >
+  | < REMAIN_EC >  )  {
+    result = new EChangeEvent(token.image.trim());
+    log.debug("creating EChangeEvent " + token.image);  }
   time = timeExpression()
   {
-    //int window = Integer.parseInt(token.image.trim());
-    result.setWindow(time);  }
-  "(" 
-    source = Terminate_Operand() 
+    result.setTime(time);  }
+  < POSITIVE_NUMBER >
+  {
+    int threshold = Integer.parseInt(token.image.trim());
+    result.setThreshold(threshold);  }
+  "("
+  source = Terminate_Operand()
   ")"
   {
     result.setSource(source);
-    return result;  }
-}EComplexEF CEF() : /* COMPLEX EVENT FILTER */{  EEvaluableExpression exp = null;  EComplexEF result = new EComplexEF();}{  "FFF" exp = OR_operator() // (policy())?
+    return result;  }}EProcessingEF min_ef() :{  EProcessingEF result = null;  EventBaseOperator source = null;  TimeExpression time = null;}{  (    < MIN_COMPOSITION_EF >  | < MAX_COMPOSITION_EF >  | < COUNT_COMPOSITION_EF >  | < SUM_COMPOSITION_EF >  | < AVG_COMPOSITION_EF >  | < STDEV_COMPOSITION_EF >  )  {    result = new EProcessingEF(token.image.trim());    log.debug("creating EProcessingEF " + token.image);  }  //< POSITIVE_NUMBER >
+  time = timeExpression()  {    //int window = Integer.parseInt(token.image.trim());
+    result.setWindow(time);  }  "(" source = Terminate_Operand() ")"  {    result.setSource(source);    return result;  }}EComplexEF CEF() : /* COMPLEX EVENT FILTER */{  EEvaluableExpression exp = null;  EComplexEF result = new EComplexEF();}{  "FFF" exp = OR_operator() // (policy())?
   //HIEN
-  {    result.setCondition(exp);    return result;  }}void policy() :{}{  "/" < COMPOSITION_POLICY > "/" < EVICTION >}EEvaluableExpression OR_operator() :{  EEvaluableExpression result = null;  String op = "OR";  EEvaluableExpression left = null;  EEvaluableExpression right = null;}{  left = AND_operator()  (    < OR > right = AND_operator()    {      if (result != null)       left = result;      result = new EComplexFilterBinaryExpression(op, left, right);    }  )*  {    if (result == null) result = left;    return result;  }}EEvaluableExpression AND_operator() :{  EEvaluableExpression result = null;  EEvaluableExpression left = null;  EEvaluableExpression right = null;  String op = "AND";}{  left = NOT_operator()  (    < AND > right = NOT_operator()    {      if (result != null)       left = result;      result = new EComplexFilterBinaryExpression(op, left, right);    }  )*  {    if (result == null) result = left;    return result;  }}EEvaluableExpression NOT_operator() :{  String op = "NOT";  EEvaluableExpression exp;}{  exp = Terminate_Operand()  {    return exp;  }| < NOT > exp = NOT_operator()  {    return new EComplexFilterUnaryExpression(op, exp);  }| "(" exp = OR_operator() ")"  {    return exp;  }}EventBaseOperator Terminate_Operand() :{  EventBaseOperator result = null;}{  (    < IDENTIFIER >    {      result = ChannelIDManager.variableMapping.get(token.image.trim());    }  | result = eventbaseOperator()  )  {    return result;  }}int Number() :{
-  int positive = 1;
- }{
-  [
-  	"-"
-  	{  	  positive = -1;
-  	}
-  ]  (    < BINARY >  | < POSITIVE_NUMBER >
-//  | < NEGATIVE_NUMBER >  )  {    return positive *Integer.parseInt(token.image.trim());  }}
+  {    result.setCondition(exp);    return result;  }}void policy() :{}{  "/" < COMPOSITION_POLICY > "/" < EVICTION >}EEvaluableExpression OR_operator() :{  EEvaluableExpression result = null;  String op = "OR";  EEvaluableExpression left = null;  EEvaluableExpression right = null;}{  left = AND_operator()  (    < OR > right = AND_operator()    {      if (result != null) left = result;      result = new EComplexFilterBinaryExpression(op, left, right);    }  )*  {    if (result == null) result = left;    return result;  }}EEvaluableExpression AND_operator() :{  EEvaluableExpression result = null;  EEvaluableExpression left = null;  EEvaluableExpression right = null;  String op = "AND";}{  left = NOT_operator()  (    < AND > right = NOT_operator()    {      if (result != null) left = result;      result = new EComplexFilterBinaryExpression(op, left, right);    }  )*  {    if (result == null) result = left;    return result;  }}EEvaluableExpression NOT_operator() :{  String op = "NOT";  EEvaluableExpression exp;}{  exp = Terminate_Operand()  {    return exp;  }| < NOT > exp = NOT_operator()  {    return new EComplexFilterUnaryExpression(op, exp);  }| "(" exp = OR_operator() ")"  {    return exp;  }}EventBaseOperator Terminate_Operand() :{  EventBaseOperator result = null;}{  (    < IDENTIFIER >    {      result = ChannelIDManager.variableMapping.get(token.image.trim());    }  | result = eventbaseOperator()  )  {    return result;  }}int Number() :{  int positive = 1;}{  [    "-"    {      positive = - 1;    }  ]  (    < BINARY >  | < POSITIVE_NUMBER >    //  | < NEGATIVE_NUMBER >  )  {    return positive * Integer.parseInt(token.image.trim());  }}

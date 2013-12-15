@@ -61,6 +61,7 @@ public interface ScriptTask extends Task {
 
     /**
      * Returns the value of the '<em><b>Script Format</b></em>' attribute.
+     * The default value is <code>"uWDL"</code>.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Script Format</em>' attribute isn't clear,
@@ -70,7 +71,7 @@ public interface ScriptTask extends Task {
      * @return the value of the '<em>Script Format</em>' attribute.
      * @see #setScriptFormat(String)
      * @see org.eclipse.bpmn2.Bpmn2Package#getScriptTask_ScriptFormat()
-     * @model ordered="false"
+     * @model default="uWDL" ordered="false"
      *        extendedMetaData="kind='attribute' name='scriptFormat'"
      * @generated
      */

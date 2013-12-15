@@ -101,7 +101,10 @@ public class EGRelativeFeatureContainer extends EGFeatureContainer {
 
 		@Override
 		public EventBaseOperator getCreatingObject() {
-			return EventbaseFactory.eINSTANCE.createEGRelative();
+			EGRelative eg =  EventbaseFactory.eINSTANCE.createEGRelative();
+			setDefaultvalue(eg);
+			eg.setDelayTime("01:00");			
+			return eg;
 		}
 
 		

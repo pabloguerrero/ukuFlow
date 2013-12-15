@@ -39,7 +39,6 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisito
 public class EProcessingEF extends EStatusEF {
 	private String type = null;
 	private TimeExpression window = null;
-	private EventBaseOperator source;
 
 	public EProcessingEF(String type) {
 		this.type = type;
@@ -64,13 +63,7 @@ public class EProcessingEF extends EStatusEF {
 		return 0;
 	}
 
-	public EventBaseOperator getSource() {
-		return source;
-	}
-
-	public void setSource(EventBaseOperator source) {
-		this.source = source;
-	}
+	
 
 	/* (non-Javadoc)
 	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EStatusEF#accept(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor)

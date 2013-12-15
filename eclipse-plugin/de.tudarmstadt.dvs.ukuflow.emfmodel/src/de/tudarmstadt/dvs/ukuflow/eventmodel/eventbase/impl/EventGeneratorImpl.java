@@ -54,7 +54,7 @@ public class EventGeneratorImpl extends EventBaseOperatorImpl implements EventGe
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String SCOPE_EDEFAULT = "WORLD";
+	protected static final String SCOPE_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getScope() <em>Scope</em>}' attribute.

@@ -71,7 +71,7 @@ public class GotoEventViewerCustomFeature extends AbstractCustomFeature {
 
 	@Override
 	public String getDescription() {
-		return "Open an event editor for this receive task";
+		return "Open the event script diagram editor for this receive task";
 	}
 
 	@Override

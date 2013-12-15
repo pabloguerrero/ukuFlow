@@ -43,9 +43,12 @@ public class EGAbsoluteFeatureContainer extends EGFeatureContainer {
 		public EGAbsoluteCreateFeature(IFeatureProvider fp) {
 			super(fp, "Absolute", "Create an absolute event generator");
 		}
-
+		
 		public EventBaseOperator getCreatingObject() {
-			return EventbaseFactory.eINSTANCE.createEGAbsolute();
+			EGAbsolute  r = EventbaseFactory.eINSTANCE.createEGAbsolute();
+			setDefaultvalue(r);
+			r.setAbsoluteTime(TimeUtil.getCurrentTime());			
+			return r;
 		}
 
 		

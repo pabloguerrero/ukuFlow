@@ -69,11 +69,11 @@ public interface EventBaseScriptConstants {
   /** RegularExpression Id. */
   int STDEV_COMPOSITION_EF = 33;
   /** RegularExpression Id. */
-  int INCREASE_EF = 34;
+  int INCREASE_EC = 34;
   /** RegularExpression Id. */
-  int DECREASE_EF = 35;
+  int DECREASE_EC = 35;
   /** RegularExpression Id. */
-  int REMAIN_EF = 36;
+  int REMAIN_EC = 36;
   /** RegularExpression Id. */
   int TOP = 37;
   /** RegularExpression Id. */

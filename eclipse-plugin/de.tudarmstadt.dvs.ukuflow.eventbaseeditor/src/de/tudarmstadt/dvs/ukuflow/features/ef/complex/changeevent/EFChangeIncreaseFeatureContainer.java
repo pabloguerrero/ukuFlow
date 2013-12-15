@@ -43,7 +43,10 @@ public class EFChangeIncreaseFeatureContainer extends EFChangeFeatureContainer{
 		}
 		@Override
 		public EventBaseOperator getCreatingObject() {
-			return EventbaseFactory.eINSTANCE.createEFChangeIncrease();
+			EFChangeIncrease ef= EventbaseFactory.eINSTANCE.createEFChangeIncrease();
+			ef.setChangeThreshold(15);
+			ef.setWindowSize("5:00");
+			return ef;
 		}
 		
 	}

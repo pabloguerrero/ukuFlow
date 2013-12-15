@@ -98,7 +98,11 @@ public class EGPatternedFeatureContainer extends EGFeatureContainer {
 		}
 
 		public EventBaseOperator getCreatingObject() {
-			return EventbaseFactory.eINSTANCE.createEGPatterned();
+			EGPatterned eg = EventbaseFactory.eINSTANCE.createEGPatterned();
+			setDefaultvalue(eg);
+			eg.setPattern("10");
+			eg.setTime("01:00");
+			return eg;
 		}
 
 	}

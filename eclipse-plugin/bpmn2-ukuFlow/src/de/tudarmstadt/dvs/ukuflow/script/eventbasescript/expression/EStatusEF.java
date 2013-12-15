@@ -37,10 +37,20 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisito
  */
 public abstract class  EStatusEF extends ECompositeEF {
 
+	protected EventBaseOperator source;
+
 	/* (non-Javadoc)
 	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ECompositeEF#accept(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor)
 	 */
 	@Override
 	public abstract void accept(EventBaseVisitor visitor);
+	
+	public EventBaseOperator getSource() {
+		return source;
+	}
+
+	public void setSource(EventBaseOperator source) {
+		this.source = source;
+	}
 
 }

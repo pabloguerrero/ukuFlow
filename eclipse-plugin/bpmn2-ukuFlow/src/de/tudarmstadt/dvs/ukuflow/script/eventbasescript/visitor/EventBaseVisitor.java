@@ -35,6 +35,7 @@ import java.util.Vector;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAbsoluteEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicDistributionEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicPatternedEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChangeEvent;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChiSquareFunction;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EComplexFilterBinaryExpression;
@@ -93,4 +94,8 @@ public interface EventBaseVisitor {
 	void visit(EProcessingEF f);
 	
 	void visit(ELogicalCompositionEF ef);
+	/**
+	 * @param eChangeEvent
+	 */
+	public void visit(EChangeEvent eChangeEvent);
 }

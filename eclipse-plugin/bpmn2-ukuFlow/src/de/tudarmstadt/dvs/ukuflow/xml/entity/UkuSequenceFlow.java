@@ -37,6 +37,7 @@ import de.tudarmstadt.dvs.ukuflow.script.generalscript.TokenMgrError;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ukuFlowScript;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuExpression;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
+import de.tudarmstadt.dvs.ukuflow.xml.BPMN2XMLParser.Point;
 
 public class UkuSequenceFlow extends UkuEntity {
 	private BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
@@ -45,7 +46,6 @@ public class UkuSequenceFlow extends UkuEntity {
 
 	private UkuEntity sourceEntity;
 	private UkuEntity targetEntity;
-
 
 	UkuExpression conditionExp = null;
 	private boolean hasCondition = false;
@@ -57,28 +57,29 @@ public class UkuSequenceFlow extends UkuEntity {
 		this.source = source;
 		this.target = target;
 	}
-	
-	public UkuSequenceFlow(String id, UkuEntity source, UkuEntity target){
+
+	public UkuSequenceFlow(String id, UkuEntity source, UkuEntity target) {
 		super(id);
 		this.sourceEntity = source;
 		this.targetEntity = target;
 	}
-	
+
 	public void setTargetID(String target) {
 		this.target = target;
 	}
-	public void setTargetEntity(UkuEntity  target){
+
+	public void setTargetEntity(UkuEntity target) {
 		this.targetEntity = target;
 	}
-	
+
 	public void setSourceID(String source) {
 		this.source = source;
 	}
-	
-	public void setSourceEntity(UkuEntity source){
+
+	public void setSourceEntity(UkuEntity source) {
 		this.sourceEntity = source;
 	}
-	
+
 	public void setReference(Map<String, UkuEntity> ref) {
 		if (ref.containsKey(source)) {
 			sourceEntity = (UkuElement) ref.get(source);
@@ -107,14 +108,14 @@ public class UkuSequenceFlow extends UkuEntity {
 	}
 
 	public void setCondition(String condition) {
-		if (condition == null || condition.equals("")){
+		if (condition == null || condition.equals("")) {
 			return;
 		}
 		hasCondition = true;
 		ukuFlowScript parser = ukuFlowScript.getInstance(condition);
 		try {
-			conditionExp = parser.parseCondition();			
-		}catch (Error error) {
+			conditionExp = parser.parseCondition();
+		} catch (Error error) {
 			if (parser.token != null)
 				addErrorMessage("in sequence flow " + id + ", at line: "
 						+ parser.token.beginLine + " column: "
@@ -124,7 +125,7 @@ public class UkuSequenceFlow extends UkuEntity {
 				addErrorMessage(error.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			String msg =e.getMessage().replace("\n", " ");
+			String msg = e.getMessage().replace("\n", " ");
 			String location = "in sequence flow " + id + ", line: "
 					+ parser.token.beginLine + " column: "
 					+ parser.token.beginColumn;
@@ -136,7 +137,7 @@ public class UkuSequenceFlow extends UkuEntity {
 	public boolean hasCondition() {
 		return hasCondition;
 	}
-	
+
 	public UkuExpression getConditionExp() {
 		return conditionExp;
 	}
@@ -157,5 +158,19 @@ public class UkuSequenceFlow extends UkuEntity {
 
 	public int getPriority() {
 		return priority;
+	}
+
+	/**
+	 * @param location
+	 */
+	private Point location;
+
+	public Point getPoint() {
+		return location;
+	}
+
+	public void setLocation(Point location) {
+		this.location = location;
+
 	}
 }

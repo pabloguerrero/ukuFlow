@@ -32,7 +32,7 @@ public class EFChangeRemainFeatureContainer extends EFChangeFeatureContainer {
 	}
 
 	public ICustomFeature[] getCustomFeatures(IFeatureProvider fp) {
-		return null; // TODO ???
+		return null;
 	}
 
 	public class EFChangeRemainCreateFeature extends UkuAbstractEFCreateFeature {
@@ -43,7 +43,10 @@ public class EFChangeRemainFeatureContainer extends EFChangeFeatureContainer {
 
 		@Override
 		public EventBaseOperator getCreatingObject() {
-			return EventbaseFactory.eINSTANCE.createEFChangeRemain();
+			EFChangeRemain ef = EventbaseFactory.eINSTANCE.createEFChangeRemain();
+			ef.setChangeThreshold(15);
+			ef.setWindowSize("5:00");
+			return ef;
 		}
 
 	}

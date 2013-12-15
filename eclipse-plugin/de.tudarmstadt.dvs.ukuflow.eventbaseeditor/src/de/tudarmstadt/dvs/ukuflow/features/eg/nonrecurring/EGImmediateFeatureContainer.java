@@ -91,7 +91,9 @@ public class EGImmediateFeatureContainer extends EGFeatureContainer {
 		}
 
 		public EventBaseOperator getCreatingObject() {
-			return EventbaseFactory.eINSTANCE.createEGImmediate();
+			EGImmediate eg = EventbaseFactory.eINSTANCE.createEGImmediate();
+			setDefaultvalue(eg);
+			return eg;
 		}
 	}
 

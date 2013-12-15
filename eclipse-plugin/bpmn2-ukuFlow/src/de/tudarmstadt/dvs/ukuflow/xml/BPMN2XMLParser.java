@@ -276,9 +276,11 @@ public class BPMN2XMLParser {
 			String sourceRef = e.getAttributeValue("sourceRef");
 			String targetRef = e.getAttributeValue("targetRef");
 			String priority = e.getAttributeValue("priority");
+			Point location = getTargetPosition(e, id);
 
 			UkuSequenceFlow result = new UkuSequenceFlow(id, sourceRef,
 					targetRef);
+			result.setLocation(location);
 			result.setName(bpmn2_name);
 			if (priority != null)
 				try {
@@ -551,5 +553,37 @@ public class BPMN2XMLParser {
 		idPool.add(newID + i);
 		log.info("add new id to pool -> " + (newID + i));
 		return newID + i;
+	}
+
+	private Point getTargetPosition(Element e, String id) {
+		if (e == null)
+			return null;
+		for (Element e2 : e.getChildren()) {
+			if (e2.getName().equals("BPMNDiagram")) {
+				for (Element e3 : e2.getChildren()) {
+					if (e3.getName().equals("BPMNPlane")) {
+						for (Element e4 : e3.getChildren()) {
+							String e4_id = e4.getAttributeValue("bpmnElement");
+							if (e4_id.equals(id)) {
+								Point p = new Point();
+								for (Element e5 : e4.getChildren()) {
+									float x = Float.parseFloat(e5.getAttributeValue("x"));
+									float y = Float.parseFloat(e5.getAttributeValue("y"));									
+									p.x = x;
+									p.y = y;									
+								}
+								return p;
+							}
+						}
+					}
+				}
+			}
+		}
+		return getTargetPosition(e.getParentElement(), id);
+	}
+
+	public class Point {
+		public float x = 0.0f;
+		public float y = 0.0f;
 	}
 }

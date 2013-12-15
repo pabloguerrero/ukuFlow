@@ -49,7 +49,6 @@ public interface EventGenerator extends EventBaseOperator {
 
 	/**
 	 * Returns the value of the '<em><b>Scope</b></em>' attribute.
-	 * The default value is <code>"WORLD"</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Scope</em>' attribute isn't clear,
@@ -59,7 +58,7 @@ public interface EventGenerator extends EventBaseOperator {
 	 * @return the value of the '<em>Scope</em>' attribute.
 	 * @see #setScope(String)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEventGenerator_Scope()
-	 * @model default="WORLD"
+	 * @model
 	 * @generated
 	 */
 	String getScope();

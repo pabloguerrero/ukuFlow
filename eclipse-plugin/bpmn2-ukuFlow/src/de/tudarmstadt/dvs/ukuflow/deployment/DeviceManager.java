@@ -38,6 +38,7 @@ import gnu.io.SerialPort;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -46,6 +47,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import org.eclipse.core.runtime.CoreException;
@@ -69,12 +71,15 @@ public class DeviceManager {
 	public final static int WINDOWS_OS = 0;
 	public final static int LINUX_OS = 1;
 	public final static int MAC_OS = 2;
-	
+
 	private Map<String, String> devs;
 	private int os = -1;
 	private static DeviceManager INSTANCE = null;
-	//private static UkuConsole console = UkuConsole.getConsole();
-	static LinkedBlockingDeque<String> usedPort = new LinkedBlockingDeque<String>();
+	// private static UkuConsole console = UkuConsole.getConsole();
+	// static LinkedBlockingDeque<String> usedPort = new
+	static ConcurrentHashMap<String, UkuSerialPort> usedPorts = new ConcurrentHashMap<String, DeviceManager.UkuSerialPort>();
+
+	// LinkedBlockingDeque<String>();
 	private static BpmnLog log = BpmnLog.getInstance(DeviceManager.class
 			.getSimpleName());
 
@@ -111,22 +116,24 @@ public class DeviceManager {
 			log.error("your operating system is not supported yet");
 			return null;
 		}
-		for (String used : usedPort) {
-			devs.remove(used);
+		for (String used : usedPorts.keySet()) {
+			if (!devs.containsKey(used))
+				devs.put(used, used);
 		}
 		return devs;
 	}
 
 	private Set<String> portList(Set<String> ports) {
 		Set<String> portName = new HashSet<String>();
-		java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
+		java.util.Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier
+				.getPortIdentifiers();
 		while (portEnum.hasMoreElements()) {
 			CommPortIdentifier portIdentifier = portEnum.nextElement();
 			String name = portIdentifier.getName();
-			if (usedPort.contains(name)) {
-				log.info("port " + name + " is currently in use");
-				continue;
-			}
+			/*
+			 * if (usedPort.contains(name)) { log.info("port " + name +
+			 * " is currently in use"); continue; }
+			 */
 			if (!ports.contains(name)) {
 				log.info(name + " is not a sensor device");
 				continue;
@@ -190,96 +197,123 @@ public class DeviceManager {
 	}
 
 	public void undeploy(String portName, int process_id, int timeout) {
-		DeploymentConsoleView console = getConsole("Process ID " +process_id, portName);
+		DeploymentConsoleView console = getConsole(portName);
 		SerialPort serialPort = null;
-		try {
-			CommPortIdentifier portIdentifier = CommPortIdentifier
-					.getPortIdentifier(portName);
-			if (portIdentifier.isCurrentlyOwned()
-					|| usedPort.contains(portName)) {
-
-				console.error("ERROR", portName + " is currently in use");
-			} else {
-				CommPort commPort = null;
-				commPort = portIdentifier.open(this.getClass().getName(), 2000);
-
-				if (commPort instanceof SerialPort) {
-					usedPort.add(portName);
-					serialPort = (SerialPort) commPort;
-					serialPort.setSerialPortParams(115200,
-							SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-							SerialPort.PARITY_NONE);
-
-					InputStream in = serialPort.getInputStream();
-					OutputStream out = serialPort.getOutputStream();
-
-					new Thread((new SerialReader(in, timeout, serialPort,
-							portName, console))).start();
-					(new Thread(new SerialWriter(out, process_id))).start();
+		if (usedPorts.containsKey(portName)) {
+			new Thread(
+					new SerialWriter(usedPorts.get(portName).out, process_id))
+					.start();
+		} else
+			try {
+				CommPortIdentifier portIdentifier = CommPortIdentifier
+						.getPortIdentifier(portName);
+				if (portIdentifier.isCurrentlyOwned()) {
+					console.error("ERROR", portName + " is currently in use");
 				} else {
+					CommPort commPort = null;
+					commPort = portIdentifier.open(this.getClass().getName(),
+							2000);
+
+					if (commPort instanceof SerialPort) {
+						serialPort = (SerialPort) commPort;
+						serialPort.setSerialPortParams(115200,
+								SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+								SerialPort.PARITY_NONE);
+
+						InputStream in = serialPort.getInputStream();
+						OutputStream out = serialPort.getOutputStream();
+
+						new Thread((new SerialReader(in, timeout, serialPort,
+								portName, console))).start();
+						(new Thread(new SerialWriter(out, process_id))).start();
+						usedPorts.put(portName, new UkuSerialPort(in, out));
+					}
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				usedPorts.remove(portName);
+				if (serialPort != null)
+					serialPort.close();
+				console.error("ERROR", portName + " is busy");
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			usedPort.remove(portName);
-			if (serialPort != null)
-				serialPort.close();
-			console.error("ERROR", portName + " is busy");
-		}
 	}
-	private DeploymentConsoleView getConsole(String fileName, String portName){
+
+	private DeploymentConsoleView getConsole(String portName) {
 		IWorkbench wb = PlatformUI.getWorkbench();
 		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
 		IWorkbenchPage page = win.getActivePage();
-		DeploymentConsoleView dConsole = DeploymentConsoleView.makeActive(page, fileName,portName);
+		DeploymentConsoleView dConsole = DeploymentConsoleView.makeActive(page,
+				portName);
 		return dConsole;
 	}
+
 	public void deploy(String portName, String fileName, int timeout) {
-		DeploymentConsoleView console = getConsole(fileName, portName);
+		DeploymentConsoleView console = getConsole(portName);
 		File f = new File(fileName);
 		if (!f.exists()) {
 			console.error("file \"" + fileName + "\" doesn't exist");
 			return;
 		}
-		deploy(portName, f, timeout,console);
+		deploy(portName, f, timeout, console);
 	}
 
-	public void deploy(String portName, File file, int timeout,DeploymentConsoleView console) {
+	public class UkuSerialPort {
+		InputStream in;
+		OutputStream out;
+		String name;
+
+		public UkuSerialPort(InputStream in, OutputStream out) {
+			this.in = in;
+			this.out = out;
+		}
+	}
+
+	
+	public void deploy(String portName, File file, int timeout,
+			DeploymentConsoleView console) {
 		SerialPort serialPort = null;
-		try {
-			CommPortIdentifier portIdentifier = CommPortIdentifier
-					.getPortIdentifier(portName);
-			if (portIdentifier.isCurrentlyOwned()
-					|| usedPort.contains(portName)) {
-
-				console.error("ERROR", portName + " is currently in use");
-			} else {
-				CommPort commPort = null;
-				commPort = portIdentifier.open(this.getClass().getName(), 2000);
-
-				if (commPort instanceof SerialPort) {
-					usedPort.add(portName);
-					serialPort = (SerialPort) commPort;
-					serialPort.setSerialPortParams(115200,
-							SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-							SerialPort.PARITY_NONE);
-
-					InputStream in = serialPort.getInputStream();
-					OutputStream out = serialPort.getOutputStream();
-
-					(new Thread(new SerialReader(in, timeout, serialPort, portName,console))).start();
-					(new Thread(
-							new SerialWriter(out, new FileInputStream(file))))
-							.start();
-				} else {
-				}
+		if (usedPorts.containsKey(portName)) {
+			try {
+				(new Thread(new SerialWriter(usedPorts.get(portName).out,
+						new FileInputStream(file)))).start();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			usedPort.remove(portName);
-			if (serialPort != null)
-				serialPort.close();
-			console.error("ERROR", portName + " is busy");
+		} else {
+			try {
+				CommPortIdentifier portIdentifier = CommPortIdentifier
+						.getPortIdentifier(portName);
+				if (portIdentifier.isCurrentlyOwned()) {
+					console.error("ERROR", portName + " is currently in use");
+				} else {
+					CommPort commPort = null;
+					commPort = portIdentifier.open(this.getClass().getName(),
+							2000);
+
+					if (commPort instanceof SerialPort) {
+						serialPort = (SerialPort) commPort;
+						serialPort.setSerialPortParams(115200,
+								SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+								SerialPort.PARITY_NONE);
+
+						InputStream in = serialPort.getInputStream();
+						OutputStream out = serialPort.getOutputStream();
+
+						(new Thread(new SerialReader(in, timeout, serialPort,
+								portName, console))).start();
+
+						(new Thread(new SerialWriter(out, new FileInputStream(
+								file)))).start();
+						usedPorts.put(portName, new UkuSerialPort(in, out));
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				usedPorts.remove(portName);
+				if (serialPort != null)
+					serialPort.close();
+				console.error("ERROR", portName + " is busy");
+			}
 		}
 
 	}
@@ -291,8 +325,9 @@ public class DeviceManager {
 		String portName;
 		BufferedReader br;
 		DeploymentConsoleView console;
+
 		public SerialReader(InputStream in, int timeout, SerialPort port,
-				String portName,DeploymentConsoleView console) {
+				String portName, DeploymentConsoleView console) {
 			this.console = console;
 			this.in = in;
 			br = new BufferedReader(new InputStreamReader(in));
@@ -321,7 +356,7 @@ public class DeviceManager {
 							len = br.read(buffer);
 
 							String tmp = new String(buffer, 0, len);
-							log.debug("[" + tmp + "]");
+							// log.debug("[" + tmp + "]");
 							if (tmp.contains("\n")) {
 								String tmps[] = tmp.split("\n");
 								if (tmps.length <= 0) {
@@ -354,8 +389,8 @@ public class DeviceManager {
 			} catch (IOException e) {
 				console.error("SYSTEM", "device may be disconnected");
 			} finally {
-				usedPort.remove(portName);
-				try {				
+				usedPorts.remove(portName);
+				try {
 				} catch (Exception e) {
 				}
 				if (serialPort != null)

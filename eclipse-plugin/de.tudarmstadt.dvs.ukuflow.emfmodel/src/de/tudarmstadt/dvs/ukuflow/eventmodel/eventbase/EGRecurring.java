@@ -22,7 +22,6 @@ package de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase;
 public interface EGRecurring extends EventGenerator {
 	/**
 	 * Returns the value of the '<em><b>Repetition</b></em>' attribute.
-	 * The default value is <code>"0"</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Repetition</em>' attribute isn't clear,
@@ -32,7 +31,7 @@ public interface EGRecurring extends EventGenerator {
 	 * @return the value of the '<em>Repetition</em>' attribute.
 	 * @see #setRepetition(int)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEGRecurring_Repetition()
-	 * @model default="0"
+	 * @model
 	 * @generated
 	 */
 	int getRepetition();

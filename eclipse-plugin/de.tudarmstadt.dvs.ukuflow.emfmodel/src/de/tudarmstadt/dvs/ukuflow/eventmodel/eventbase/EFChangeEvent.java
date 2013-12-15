@@ -24,7 +24,6 @@ public interface EFChangeEvent extends EFComposite {
 
 	/**
 	 * Returns the value of the '<em><b>Window Size</b></em>' attribute.
-	 * The default value is <code>"1:00"</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Window Size</em>' attribute isn't clear,
@@ -34,7 +33,7 @@ public interface EFChangeEvent extends EFComposite {
 	 * @return the value of the '<em>Window Size</em>' attribute.
 	 * @see #setWindowSize(String)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEFChangeEvent_WindowSize()
-	 * @model default="1:00"
+	 * @model
 	 * @generated
 	 */
 	String getWindowSize();
@@ -51,7 +50,6 @@ public interface EFChangeEvent extends EFComposite {
 
 	/**
 	 * Returns the value of the '<em><b>Change Threshold</b></em>' attribute.
-	 * The default value is <code>"10"</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Change Threshold</em>' attribute isn't clear,
@@ -61,7 +59,7 @@ public interface EFChangeEvent extends EFComposite {
 	 * @return the value of the '<em>Change Threshold</em>' attribute.
 	 * @see #setChangeThreshold(int)
 	 * @see de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbasePackage#getEFChangeEvent_ChangeThreshold()
-	 * @model default="10"
+	 * @model
 	 * @generated
 	 */
 	int getChangeThreshold();

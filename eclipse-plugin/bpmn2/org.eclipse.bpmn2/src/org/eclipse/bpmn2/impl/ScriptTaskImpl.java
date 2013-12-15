@@ -63,7 +63,7 @@ public class ScriptTaskImpl extends TaskImpl implements ScriptTask {
      * @generated
      * @ordered
      */
-    protected static final String SCRIPT_FORMAT_EDEFAULT = null;
+    protected static final String SCRIPT_FORMAT_EDEFAULT = "uWDL";
 
     /**
      * The cached value of the '{@link #getScriptFormat() <em>Script Format</em>}' attribute.
