@@ -186,5 +186,5 @@
     <colors/>
     <fonts name="Arial" size="8" bold="true"/>
   </pi:Diagram>
-  <de.tudarmstadt.dvs.ukuflow.eventbase:EGPeriodic elementName="periodic"/>
+  <de.tudarmstadt.dvs.ukuflow.eventbase:EGPeriodic elementName="periodic" sensorType="SENSOR_TEMPERATURE_RAW" scope="floor4" time="1:00"/>
 </xmi:XMI>
