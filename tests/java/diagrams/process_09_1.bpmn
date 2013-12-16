@@ -41,7 +41,7 @@
       <bpmn2:script>local blink 2;</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_2" name="Sequence Flow 2" sourceRef="ScriptTask_1" targetRef="ExclusiveGateway_1"/>
-    <bpmn2:receiveTask id="ReceiveTask_1" name="Receive Task 1" eventScript="TOP = SIMPLE_EF [ORIGIN_NODE >= 3] ( PATTERN_EG NODE_ID p10100 ^01:00 @s WORLD x0)">
+    <bpmn2:receiveTask id="ReceiveTask_1" name="Receive Task 1" eventScript="TOP = SIMPLE_EF [ORIGIN_NODE >= 3, TIMESTAMP > 200] ( PATTERN_EG NODE_ID p10100 ^1:00 @s floor12 x0)">
       <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
     </bpmn2:receiveTask>
