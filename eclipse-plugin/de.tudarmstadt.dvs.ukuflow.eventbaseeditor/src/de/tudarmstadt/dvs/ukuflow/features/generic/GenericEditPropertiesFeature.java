@@ -106,7 +106,7 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 				if (bo instanceof EGRecurring) {
 					properties.put(EventbasePackage.EG_RECURRING__REPETITION,
 							new RequestContainer(
-									new RequestContainer.IntegerValidator(),
+									new RequestContainer.IntegerValidator(0,255),
 									((EGRecurring) bo).getRepetition() + "",
 									"Number of repetitions (0-255, 0 means infinite)"));
 				}
@@ -184,8 +184,7 @@ public class GenericEditPropertiesFeature extends AbstractCustomFeature {
 					EGPeriodic off = (EGPeriodic) bo;
 					properties.put(EventbasePackage.EG_PERIODIC__TIME,
 							new RequestContainer(
-									new RequestContainer.DatePatternValidator(
-											TimeUtil.SHORT_TIME_PATTERN), ""
+									new RequestContainer.OffsetTimeValidator(), ""
 											+ off.getTime(),
 									"Period duration (in mm:ss format)"));
 

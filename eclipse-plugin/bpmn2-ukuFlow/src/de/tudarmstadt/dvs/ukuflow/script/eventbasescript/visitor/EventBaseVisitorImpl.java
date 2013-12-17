@@ -57,12 +57,16 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleFilterConstraint;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleFilterNestedConstraint;
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ETopExpression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EVariable;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventGenerator;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_binary_exp;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_expression;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_not;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_primary;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ScopeManager;
+import de.tudarmstadt.dvs.ukuflow.tools.NumericTools;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.DuplicateScopeNameException;
 import de.tudarmstadt.dvs.ukuflow.tools.exception.ScopeNotExistException;
@@ -79,26 +83,22 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	Vector<Byte> out = new Vector<Byte>();
 	@Override
 	public void visit(EEventBaseScript eventBaseScript) {
-		// TODO Auto-generated method stub
-		
+		throw new NullPointerException();
 	}
 
 	@Override
 	public void visit(EComplexEF ef) {
-		// TODO Auto-generated method stub
-		
+		throw new NullPointerException();
 	}
 
 	@Override
 	public void visit(EComplexFilterBinaryExpression exp) {
-		// TODO Auto-generated method stub
-		
+		throw new NullPointerException();
 	}
 
 	@Override
 	public void visit(EComplexFilterPolicy policy) {
-		// TODO Auto-generated method stub
-		
+		throw new NullPointerException();		
 	}
 
 	@Override
@@ -113,8 +113,12 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		out.add(sef.getOperatorID());
 		out.add(sef.getChannel());
 		out.add((byte)sef.getConstraints().size());
-		for(ESimpleFilterNestedConstraint c : sef.getConstraints()){
-			c.accept(this);
+		
+		for(sef_expression exp : sef.getConstraints()){
+			int index = out.size();
+			out.add((byte)-1); //placeholder
+			exp.accept(this);
+			out.set(index,(byte)(out.size()-index)); // update site
 		}
 		sef.getSource().accept(this);
 	}
@@ -408,5 +412,53 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		} else {
 			System.err.println("source of "+eChangeEvent + " is null");
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_binary_exp)
+	 */
+	@Override
+	public void visit(sef_binary_exp sef_binary_exp) {
+		out.add(sef_binary_exp.getOperator());
+		sef_binary_exp.getLeft().accept(this);
+		sef_binary_exp.getRight().accept(this);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_primary)
+	 */
+	@Override
+	public void visit(sef_primary sef_primary_) {
+		switch (sef_primary_.type){
+		case sef_primary.BOOLEAN:
+			out.add(UkuConstants.DataTypeConstants.UINT8_VALUE);
+			if(sef_primary_.token.equalsIgnoreCase("true"))
+				out.add((byte)1);
+			else 
+				out.add((byte)0);
+			break;
+		case sef_primary.EVENT_OUTPUT_TYPE:
+			out.add(UkuConstants.DataTypeConstants.CUSTOM_INPUT_VALUE);
+			out.add(UkuConstants.getConstantByName(sef_primary_.token+"_F"));
+			break;
+		case sef_primary.NUMBER:
+			int n = NumericTools.toInt(sef_primary_.token);
+			out.addAll(NumericTools.toByteArray(n));			
+			break;
+		case sef_primary.SENSOR_TYPE:
+			out.add(UkuConstants.DataTypeConstants.UINT8_VALUE);
+			out.add(UkuConstants.getConstantByName(sef_primary_.token));
+			break;
+		case sef_primary.STRING: break;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor#visit(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_not)
+	 */
+	@Override
+	public void visit(sef_not sef_not_) {
+		out.add(UkuConstants.OperatorConstants.OPERATOR_NOT);
+		sef_not_.getExp().accept(this);
 	}
 }

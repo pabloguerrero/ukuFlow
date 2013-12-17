@@ -6,6 +6,7 @@ import java.util.Date;
 import org.eclipse.jface.dialogs.IInputValidator;
 
 import de.tudarmstadt.dvs.ukuflow.eventbase.core.TimeUtil;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EventBaseScript;
 
 public class RequestContainer {
 	public IInputValidator validator;
@@ -70,7 +71,7 @@ public class RequestContainer {
 			}
 		}
 	}
-
+	/*
 	public static class DatePatternValidator implements IInputValidator {
 		String pattern = "";
 
@@ -85,8 +86,7 @@ public class RequestContainer {
 				SimpleDateFormat format = new SimpleDateFormat(pattern);
 				Date d = format.parse(newText);
 				if (d.getTime() < 0)
-					throw new IllegalArgumentException(
-							"negative time is now allowed");
+					throw new IllegalArgumentException("negative time is now allowed");
 				return null;
 			} catch (IllegalArgumentException ie) {
 				return ie.getMessage();
@@ -95,7 +95,7 @@ public class RequestContainer {
 			}
 		}
 	}
-
+	*/
 	public static class IntegerValidator implements IInputValidator {
 		int min = 0;
 		int max = 0;
@@ -140,5 +140,22 @@ public class RequestContainer {
 				return "expecting binary input (e.g 10110)";
 		}
 
+	}
+	
+	public static class SEFConstraintsValidator implements IInputValidator{
+
+		@Override
+		public String isValid(String newText) {
+			if(newText.equals(""))
+				return null;
+			try{
+				EventBaseScript.getInstance(newText).is_a_valid_sef_constraint();
+			} catch (Exception e){
+				return "Invalid format :"+e.getMessage();
+			} catch (Error er){
+				return "Invalid format :"+er.getMessage();
+			}
+			return null;
+		}
 	}
 }

@@ -33,10 +33,12 @@ package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_expression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
 public class ESimpleEF extends EEventFilter {
 	List<ESimpleFilterNestedConstraint> constraints = new ArrayList<ESimpleFilterNestedConstraint>();
+	List<sef_expression> sef_constraints;
 	List<String> sourceVariable = new ArrayList<String>();
 	EventBaseOperator sourceDirect = null;
 
@@ -56,14 +58,14 @@ public class ESimpleEF extends EEventFilter {
 		visitor.visit(this);
 	}
 
-	public void setConstraints(List<ESimpleFilterNestedConstraint> cons) {
-		this.constraints = cons;
+	public void setConstraints(List<sef_expression> cons) {
+		this.sef_constraints = cons;
 	}
 
-	public List<ESimpleFilterNestedConstraint> getConstraints() {
-		return constraints;
+	public List<sef_expression> getConstraints() {
+		return sef_constraints;
 	}
-
+	/*
 	public String toString() {
 		String s = "SEF ";
 		s += "[";
@@ -77,5 +79,5 @@ public class ESimpleEF extends EEventFilter {
 		s += sourceDirect;
 		s += "]";
 		return s;
-	}
+	}*/
 }
