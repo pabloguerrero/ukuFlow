@@ -100,13 +100,11 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 
 		@Override
 		public EventBaseOperator getCreatingObject() {
-			EGPeriodic eg =  EventbaseFactory.eINSTANCE.createEGPeriodic();
+			EGPeriodic eg = EventbaseFactory.eINSTANCE.createEGPeriodic();
 			setDefaultvalue(eg);
 			eg.setTime("01:00");
 			return eg;
 		}
-
-	
 
 	}
 
@@ -141,12 +139,11 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 					.createQuestions(bo);
 
 			EGPeriodic off = (EGPeriodic) bo;
-			properties.put(
-					EventbasePackage.EG_PERIODIC__TIME,
+			properties.put(EventbasePackage.EG_PERIODIC__TIME,
 					new RequestContainer(
-							new RequestContainer.DatePatternValidator(
-									TimeUtil.SHORT_TIME_PATTERN), ""
-									+ off.getTime(),
+							new RequestContainer.OffsetTimeValidator()
+							// TimeUtil.SHORT_TIME_PATTERN)
+							, "" + off.getTime(),
 							"Period duration (in mm:ss format)"));
 
 			Map<Integer, RequestContainer> result = asking(bo, properties);
@@ -166,7 +163,7 @@ public class EGPeriodicFeatureContainer extends EGFeatureContainer {
 
 	@Override
 	public AbstractCustomFeature getDoubleClickFeature(IFeatureProvider fb) {
-		
+
 		return new EGPeriodicDoubleClickFeature(fb);
 	}
 }

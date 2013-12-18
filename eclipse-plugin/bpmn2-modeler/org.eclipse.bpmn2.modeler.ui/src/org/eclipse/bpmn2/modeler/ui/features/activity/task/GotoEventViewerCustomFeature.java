@@ -13,8 +13,6 @@ import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.InputSet;
-import org.eclipse.bpmn2.ItemDefinition;
-import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.ReceiveTask;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.modeler.core.adapters.InsertionAdapter;
@@ -26,24 +24,15 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.transaction.RecordingCommand;
-import org.eclipse.emf.transaction.TransactionalEditingDomain;
-import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
-import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IPeService;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
-import org.eclipse.jdt.internal.core.ModelUpdater;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
 
-import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EventBaseScript;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
@@ -194,8 +183,7 @@ public class GotoEventViewerCustomFeature extends AbstractCustomFeature {
 			log.info("script from receiveTask: \"" + text + "\"");
 			try {
 				if (!text.equals("")) {
-					top = EventBaseScript.getInstance(text)
-							.validate();
+					top = EventBaseScript.getInstance(text).validate();
 					log.info("successfully validate script : " + text);
 				}
 			} catch (Exception e) {
@@ -206,11 +194,14 @@ public class GotoEventViewerCustomFeature extends AbstractCustomFeature {
 			e.printStackTrace();
 		}
 		DesignEditor editor = (DesignEditor) getDiagramEditor();
+		//editor.isDirty()
 		if (task != null) {
-			editor.getMultipageEditor().createEventViewer(task, (be.getId() + "_" + task.getId()).toLowerCase(),
-					text,top);
+			System.out.println("before: dirty?=" +editor.isDirty());
+			editor.getMultipageEditor().createEventViewer(task, (be.getId() + "_" + task.getId()).toLowerCase(),text,top);
+			System.out.println("after : dirty?=" +editor.isDirty());
 		} else
-			log.error("cannot jump to receiveTask editor, id doesn't exist!");
+			log.error("cannot jump to receiveTask editor, id"+be.getId()+" doesn't exist!");
+		
 
 	}
 
@@ -226,7 +217,7 @@ public class GotoEventViewerCustomFeature extends AbstractCustomFeature {
 
 	@Override
 	public boolean hasDoneChanges() {
-		return changesDone;
+		return false;
 	}
 
 	protected List<EClass> getAvailableTypes() {

@@ -116,7 +116,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements
 	Map<EditorPart, Tupel> mapping = new HashMap<EditorPart, Tupel>();
 	// providerID is the id for event viewer editor. so that Graphiti knows how
 	// to open it.
-	private static String ProviderID = "ukuFlowEvent";
+	private final static String ProviderID = "ukuFlowEvent";
 	private BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
 	// HIENDONE
 	public BPMN2MultiPageEditor() {
@@ -197,8 +197,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements
 						};
 						choice = d.open();
 						switch (choice) {
-						case ISaveablePart2.YES: // yes
-							System.out.println("yes");
+						case ISaveablePart2.YES: // yes							
 							editor.doSave(new NullProgressMonitor());
 							break;
 						case ISaveablePart2.NO: // no
@@ -725,9 +724,16 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements
 		// page in the tab folder
 		for(EditorPart ed : mapping.keySet()){
 			if(ed.equals(view)){
+				int removeIndex = mapping.get(ed).index;
+				System.out.println("remove page with id "+ removeIndex);
 				removePage(mapping.get(ed).index);
 				mapping.remove(ed);
 				view = null;
+				for(EditorPart ed1: mapping.keySet()){
+					// update indices
+					if(mapping.get(ed1).index>removeIndex)
+						mapping.get(ed1).index -= 1;
+				}
 				break;
 			}
 			

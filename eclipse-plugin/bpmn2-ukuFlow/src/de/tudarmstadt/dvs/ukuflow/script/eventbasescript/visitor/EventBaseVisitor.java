@@ -57,6 +57,9 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ETopExpressi
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EVariable;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_binary_exp;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_not;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_primary;
 
 
 public interface EventBaseVisitor { 
@@ -98,4 +101,16 @@ public interface EventBaseVisitor {
 	 * @param eChangeEvent
 	 */
 	public void visit(EChangeEvent eChangeEvent);
+	/**
+	 * @param sef_binary_exp
+	 */
+	public void visit(sef_binary_exp sef_binary_exp);
+	/**
+	 * @param sef_primary
+	 */
+	public void visit(sef_primary sef_primary);
+	/**
+	 * @param sef_not
+	 */
+	public void visit(sef_not sef_not_);
 }

@@ -235,27 +235,6 @@ private int jjStartNfaWithStates_0(int pos, int kind, int state)
    catch(java.io.IOException e) { return pos + 1; }
    return jjMoveNfa_0(state, pos + 1);
 }
-static final long[] jjbitVec0 = {
-   0x1ff00000fffffffeL, 0xffffffffffffc000L, 0xffffffffL, 0x600000000000000L
-};
-static final long[] jjbitVec2 = {
-   0x0L, 0x0L, 0x0L, 0xff7fffffff7fffffL
-};
-static final long[] jjbitVec3 = {
-   0x3fffffffffL, 0x0L, 0x0L, 0x0L
-};
-static final long[] jjbitVec4 = {
-   0x0L, 0xffffffffffffffffL, 0xffffffffffffffffL, 0xffffffffffffffffL
-};
-static final long[] jjbitVec5 = {
-   0xffffffffffffffffL, 0xffffffffffffffffL, 0xffffL, 0x0L
-};
-static final long[] jjbitVec6 = {
-   0xffffffffffffffffL, 0xffffffffffffffffL, 0x0L, 0x0L
-};
-static final long[] jjbitVec7 = {
-   0x3fffffffffffL, 0x0L, 0x0L, 0x0L
-};
 private int jjMoveNfa_0(int startState, int curPos)
 {
    int startsAt = 0;
@@ -1906,124 +1885,6 @@ private int jjMoveNfa_0(int startState, int curPos)
          {
             switch(jjstateSet[--i])
             {
-               case 2:
-                  if (!jjCanMove_0(hiByte, i1, i2, l1, l2))
-                     break;
-                  if (kind > 24)
-                     kind = 24;
-                  jjCheckNAddStates(0, 3);
-                  break;
-               case 67:
-                  if (jjCanMove_0(hiByte, i1, i2, l1, l2))
-                  {
-                     if (kind > 24)
-                        kind = 24;
-                     jjCheckNAdd(303);
-                  }
-                  if (jjCanMove_0(hiByte, i1, i2, l1, l2))
-                  {
-                     if (kind > 33)
-                        kind = 33;
-                     jjCheckNAddStates(7, 9);
-                  }
-                  if (jjCanMove_0(hiByte, i1, i2, l1, l2))
-                  {
-                     if (kind > 33)
-                        kind = 33;
-                     jjCheckNAddStates(7, 9);
-                  }
-                  break;
-               case 304:
-                  if (jjCanMove_0(hiByte, i1, i2, l1, l2))
-                  {
-                     if (kind > 24)
-                        kind = 24;
-                     jjCheckNAdd(303);
-                  }
-                  if (jjCanMove_0(hiByte, i1, i2, l1, l2))
-                  {
-                     if (kind > 33)
-                        kind = 33;
-                     jjCheckNAddStates(7, 9);
-                  }
-                  if (jjCanMove_0(hiByte, i1, i2, l1, l2))
-                  {
-                     if (kind > 33)
-                        kind = 33;
-                     jjCheckNAddStates(7, 9);
-                  }
-                  break;
-               case 20:
-                  if (!jjCanMove_0(hiByte, i1, i2, l1, l2))
-                     break;
-                  if (kind > 18)
-                     kind = 18;
-                  jjCheckNAddStates(10, 13);
-                  break;
-               case 38:
-                  if (jjCanMove_0(hiByte, i1, i2, l1, l2))
-                  {
-                     if (kind > 24)
-                        kind = 24;
-                     jjCheckNAdd(303);
-                  }
-                  if (jjCanMove_0(hiByte, i1, i2, l1, l2))
-                  {
-                     if (kind > 33)
-                        kind = 33;
-                     jjCheckNAddStates(7, 9);
-                  }
-                  if (jjCanMove_0(hiByte, i1, i2, l1, l2))
-                  {
-                     if (kind > 33)
-                        kind = 33;
-                     jjCheckNAddStates(7, 9);
-                  }
-                  break;
-               case 16:
-               case 17:
-                  if (!jjCanMove_0(hiByte, i1, i2, l1, l2))
-                     break;
-                  if (kind > 18)
-                     kind = 18;
-                  jjCheckNAddStates(16, 18);
-                  break;
-               case 21:
-                  if (!jjCanMove_0(hiByte, i1, i2, l1, l2))
-                     break;
-                  if (kind > 18)
-                     kind = 18;
-                  jjCheckNAdd(21);
-                  break;
-               case 28:
-               case 29:
-                  if (!jjCanMove_0(hiByte, i1, i2, l1, l2))
-                     break;
-                  if (kind > 19)
-                     kind = 19;
-                  jjCheckNAdd(29);
-                  break;
-               case 33:
-                  if (!jjCanMove_0(hiByte, i1, i2, l1, l2))
-                     break;
-                  if (kind > 33)
-                     kind = 33;
-                  jjCheckNAddStates(7, 9);
-                  break;
-               case 34:
-                  if (!jjCanMove_0(hiByte, i1, i2, l1, l2))
-                     break;
-                  if (kind > 33)
-                     kind = 33;
-                  jjCheckNAddStates(7, 9);
-                  break;
-               case 303:
-                  if (!jjCanMove_0(hiByte, i1, i2, l1, l2))
-                     break;
-                  if (kind > 24)
-                     kind = 24;
-                  jjCheckNAdd(303);
-                  break;
                default : break;
             }
          } while(i != startsAt);
@@ -2046,28 +1907,6 @@ static final int[] jjnextStates = {
    16, 17, 15, 15, 18, 20, 22, 286, 292, 294, 67, 85, 105, 130, 158, 175, 
    196, 212, 228, 244, 260, 269, 277, 44, 47, 38, 40, 
 };
-private static final boolean jjCanMove_0(int hiByte, int i1, int i2, long l1, long l2)
-{
-   switch(hiByte)
-   {
-      case 0:
-         return ((jjbitVec2[i2] & l2) != 0L);
-      case 45:
-         return ((jjbitVec3[i2] & l2) != 0L);
-      case 48:
-         return ((jjbitVec4[i2] & l2) != 0L);
-      case 49:
-         return ((jjbitVec5[i2] & l2) != 0L);
-      case 51:
-         return ((jjbitVec6[i2] & l2) != 0L);
-      case 61:
-         return ((jjbitVec7[i2] & l2) != 0L);
-      default :
-         if ((jjbitVec0[i1] & l1) != 0L)
-            return true;
-         return false;
-   }
-}
 
 /** Token literal values. */
 public static final String[] jjstrLiteralImages = {

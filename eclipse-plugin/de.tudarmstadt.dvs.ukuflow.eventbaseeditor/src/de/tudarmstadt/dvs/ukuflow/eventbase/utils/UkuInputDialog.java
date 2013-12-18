@@ -55,7 +55,7 @@ public class UkuInputDialog extends Dialog {
 	private String title;
 
 	Map<Integer, RequestContainer> requests;
-	
+
 	/**
 	 * Ok button widget.
 	 */
@@ -74,7 +74,7 @@ public class UkuInputDialog extends Dialog {
 	/**
 	 * Error message string.
 	 */
-	private String errorMessage;
+	// private String errorMessage;
 
 	/**
 	 * Creates an input dialog with OK and Cancel buttons. Note that the dialog
@@ -112,10 +112,10 @@ public class UkuInputDialog extends Dialog {
 	public UkuInputDialog(Shell parentShell, String dialogTitle,
 			Map<Integer, RequestContainer> requests) {
 		super(parentShell);
+		//setShellStyle(getShellStyle()|SWT.RESIZE);
 		this.title = dialogTitle;
 		this.requests = requests;
-		texts = new HashMap<Integer, Control>();
-
+		texts = new HashMap<Integer, Control>();		
 	}
 
 	/*
@@ -160,7 +160,6 @@ public class UkuInputDialog extends Dialog {
 			shell.setText(title);
 		}
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -168,17 +167,20 @@ public class UkuInputDialog extends Dialog {
 	 * org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse
 	 * .swt.widgets.Composite)
 	 */
+	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		// create OK and Cancel buttons by default
 		okButton = createButton(parent, IDialogConstants.OK_ID,
 				IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID,
 				IDialogConstants.CANCEL_LABEL, false);
-		if(errorMessageText.getText().length() > 1){
-			System.out.println("set Button enabled = false:'"+errorMessageText.getText()+"'");			
+		okButton.setEnabled(true);
+		if (errorMessageText.getText().length() > 1) {
+			System.out.println("set Button enabled = false:'"
+					+ errorMessageText.getText() + "'");
 			okButton.setEnabled(false);
 		}
-		
+
 	}
 
 	/*
@@ -188,31 +190,34 @@ public class UkuInputDialog extends Dialog {
 		// create composite
 		Composite composite = (Composite) super.createDialogArea(parent);
 
+		GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);		
+		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
 		// create message
 		for (Integer message : requests.keySet()) {
 			// ignore a special one
 			if (message == -1)
 				continue;
 			if (message != null) {
-				Label label = new Label(composite, SWT.WRAP);
+				Label label = new Label(composite, SWT.READ_ONLY | SWT.WRAP);
 				label.setText(requests.get(message).title);
-				GridData data = new GridData(GridData.GRAB_HORIZONTAL
-						| GridData.GRAB_VERTICAL
-						| GridData.HORIZONTAL_ALIGN_FILL
-						| GridData.VERTICAL_ALIGN_CENTER);
-				data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+
 				label.setLayoutData(data);
 				label.setFont(parent.getFont());
 			}
 			Control text = null;
 			log.debug("requests of " + message + " : "
 					+ requests.get(message).requests);
-			if(requests.get(message).requests == null)
+
+			if (requests.get(message).requests == null){
+				// to deal with processes which are created using older version
 				requests.get(message).requests = "";
+			}
+			
 			if (requests.get(message).requests instanceof String) {
-				text = new Text(composite, getInputTextStyle());
-				text.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-						| GridData.HORIZONTAL_ALIGN_FILL));
+				GridData gdata= new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
+				gdata.heightHint=100;
+				text = new Text(composite, SWT.WRAP|SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
+				text.setLayoutData(gdata);
 				((Text) text)
 						.setText(requests.get(message).requests.toString());
 				((Text) text).addModifyListener(new ModifyListener() {
@@ -224,8 +229,9 @@ public class UkuInputDialog extends Dialog {
 				CCombo combo = new CCombo(composite, getInputTextStyle());
 				combo.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 						| GridData.HORIZONTAL_ALIGN_FILL));
-				System.out.println("map: "+requests);	 
-				System.out.println("mesg:"+message + "/ req:"+requests.get(message).requests);
+				// System.out.println("map: "+requests);
+				// System.out.println("mesg:"+message +
+				// "/ req:"+requests.get(message).requests);
 				List l = (List<?>) requests.get(message).requests;
 				String[] a = new String[l.size()];
 				int selectIndex = 0;
@@ -249,16 +255,20 @@ public class UkuInputDialog extends Dialog {
 				}
 				text = combo;
 			}
+
 			texts.put(message, text);
 		}
+
+		// Set the error message text
+		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=66292
+		// setErrorMessage(errorMessage);
+		// create error message erea:
 		errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
+
 		errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.HORIZONTAL_ALIGN_FILL));
 		errorMessageText.setBackground(errorMessageText.getDisplay()
 				.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-		// Set the error message text
-		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=66292
-		setErrorMessage(errorMessage);
 
 		applyDialogFont(composite);
 		return composite;
@@ -271,7 +281,7 @@ public class UkuInputDialog extends Dialog {
 	private void init_function_parameters(Composite composite, Composite parent) {
 		String val = requests.get(-1).currentValue.trim();
 		String[] vals = val.split("[a-z ]+");
-		
+
 		Composite subComp = new Composite(composite, SWT.NONE);
 		subComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 		GridLayout layout = new GridLayout(7, false);
@@ -334,10 +344,11 @@ public class UkuInputDialog extends Dialog {
 			parameters.get(1).setText(" mean");
 			for (int i = 1; i < 4; i++) {
 				Tupel t = parameters.get(i);
-				//if (!t.lb.isVisible())
-					t.setVisible(true);
-				params += " "+t.lb.getText().trim().replace("mean", "m")
-						.replace("variance", "v").replace("peak", "a")
+				// if (!t.lb.isVisible())
+				t.setVisible(true);
+				params += " "
+						+ t.lb.getText().trim().replace("mean", "m")
+								.replace("variance", "v").replace("peak", "a")
 						+ t.getValue();
 			}
 			break;
@@ -361,8 +372,6 @@ public class UkuInputDialog extends Dialog {
 		requests.put(-1, rc);
 	}
 
-	
-
 	/**
 	 * Returns the ok button.
 	 * 
@@ -381,7 +390,6 @@ public class UkuInputDialog extends Dialog {
 		return texts;
 	}
 
-
 	/**
 	 * Validates the input.
 	 * <p>
@@ -392,7 +400,7 @@ public class UkuInputDialog extends Dialog {
 	 * </p>
 	 */
 	protected void validateInput() {
-		String errorMessage = "";		
+		String errorMessage = "";
 		for (Integer key : requests.keySet()) {
 			if (texts.get(key) instanceof Text
 					&& requests.get(key).validator != null) {
@@ -431,9 +439,10 @@ public class UkuInputDialog extends Dialog {
 	 * @since 3.0
 	 */
 	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
+		log.debug("set error message: !" + errorMessage + "!");
 		if (errorMessageText != null && !errorMessageText.isDisposed()) {
-			errorMessageText.setText(errorMessage == null ? "\n" : errorMessage);
+			errorMessageText
+					.setText(errorMessage == null ? "\n" : errorMessage);
 			// Disable the error message text control if there is no error, or
 			// no error text (empty or whitespace only). Hide it also to avoid
 			// color change.
@@ -441,10 +450,13 @@ public class UkuInputDialog extends Dialog {
 			boolean hasError = errorMessage != null
 					&& (StringConverter.removeWhiteSpaces(errorMessage))
 							.length() > 0;
+			if (errorMessage != null)
+				errorMessageText.setSize(errorMessageText.getSize().x, 13 * errorMessage.split("\n").length);			
 			errorMessageText.setEnabled(hasError);
 			errorMessageText.setVisible(hasError);
 			errorMessageText.getParent().update();
 			errorMessageText.setForeground(new Color(null, 255, 0, 0));
+
 			// Access the ok button by id, in case clients have overridden
 			// button creation.
 			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=113643
@@ -468,7 +480,7 @@ public class UkuInputDialog extends Dialog {
 		return SWT.SINGLE | SWT.BORDER;
 	}
 
-	public Map<Integer, RequestContainer> getValues() {		
+	public Map<Integer, RequestContainer> getValues() {
 		return requests;
 	}
 
