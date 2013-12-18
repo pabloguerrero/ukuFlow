@@ -61,7 +61,7 @@ public class TextObjectEditor extends ObjectEditor {
 
 		if (testMultiLine && ModelUtil.isMultiLine(object,feature)) {
 			multiLine = true;
-			style |= SWT.MULTI | SWT.V_SCROLL;
+			style |= SWT.MULTI | SWT.V_SCROLL | SWT.WRAP;
 		}
 
 		text = getToolkit().createText(composite, "", style | SWT.BORDER);

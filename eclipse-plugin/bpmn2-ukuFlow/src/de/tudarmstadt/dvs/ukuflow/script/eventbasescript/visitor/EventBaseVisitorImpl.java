@@ -75,6 +75,7 @@ import de.tudarmstadt.dvs.ukuflow.tools.exception.TooManyScopeException;
 public class EventBaseVisitorImpl implements EventBaseVisitor{
 	
 	BpmnLog log = BpmnLog.getInstance(this.getClass().getSimpleName());
+	StringBuilder debugtext = new StringBuilder();
 	@Override
 	public void reset(){
 		out.clear();
@@ -110,15 +111,21 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 	public void visit(ESimpleEF sef) {
 		log.debug("visiting Simple EF : " +sef);
 		out.add(UkuConstants.EFConstants.SIMPLE_EF);
+		debugtext.append("\n"+UkuConstants.EFConstants.SIMPLE_EF+"[SimpleEF] ");
 		out.add(sef.getOperatorID());
 		out.add(sef.getChannel());
+		debugtext.append(sef.getOperatorID() + "[op_id] "+sef.getChannel() + "[channel] ");
 		out.add((byte)sef.getConstraints().size());
+		debugtext.append(sef.getConstraints().size() + "[number_of_constraint] ");
 		
 		for(sef_expression exp : sef.getConstraints()){
+			int ph = debugtext.length();
+			debugtext.append("<pl> [size]");
 			int index = out.size();
 			out.add((byte)-1); //placeholder
 			exp.accept(this);
-			out.set(index,(byte)(out.size()-index)); // update site
+			out.set(index,(byte)(out.size()-index-1)); // update site
+			debugtext.replace(ph, ph+4, ""+(out.size()-index-1));
 		}
 		sef.getSource().accept(this);
 	}
@@ -138,18 +145,27 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 
 	@Override
 	public void visit(EAperiodicDistributionEG a) {
+		debugtext.append("\n");
 		out.add((byte)UkuConstants.EGConstants.FUNCTIONAL_EG);
+		debugtext.append(UkuConstants.EGConstants.FUNCTIONAL_EG+ "[func_eg] ");
+		debugtext.append(a.getOperatorID() + "[op_id] ");
 		out.add(a.getOperatorID());
+		debugtext.append(a.getChannel() + "[channel] ");
 		out.add(a.getChannel());
+		debugtext.append(a.getSensorType() + "["+a.sensortype_+"] ");
 		out.add(a.getSensorType());
-		out.add(getScope(a));
-		
+		byte sc = getScope(a);
+		debugtext.append(sc + "["+a.getScope()+"] ");
+		out.add(sc);
+		debugtext.append(a.getRepetition()+ "[repetition] ");
 		out.add(a.getRepetition());
 		
 		//TODO:
 		//1. period length(2bytes in seconds)
+		debugtext.append(a.getPeriodInterval().getValue(2) + "[period time] ");
 		out.addAll(a.getPeriodInterval().getValue(2));
 		//2. evaluation frequency (2 bytes, in seconds)
+		debugtext.append(a.getEvaluationInterval().getValue(2)+"[evaluation] ");
 		out.addAll(a.getEvaluationInterval().getValue(2));
 		//3. mathematical function (1 byte)
 		a.getFunction().accept(this);
@@ -161,9 +177,9 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		
 	}
 
-	private byte getScope(EventGenerator e){
+	public static byte getScope(EventGenerator e){
 		String scope = e.getScope();
-		Random rand = new Random(System.currentTimeMillis());
+		//Random rand = new Random(System.currentTimeMillis());
 		byte result = 0;
 		if(scope.equalsIgnoreCase("world"))
 			return (byte)255;

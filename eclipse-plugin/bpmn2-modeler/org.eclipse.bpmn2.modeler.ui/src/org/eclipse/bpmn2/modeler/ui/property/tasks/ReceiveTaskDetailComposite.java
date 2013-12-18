@@ -5,6 +5,7 @@ import org.eclipse.bpmn2.modeler.core.merrimac.clad.DefaultDetailComposite;
 import org.eclipse.bpmn2.modeler.core.merrimac.dialogs.TextObjectEditor;
 import org.eclipse.bpmn2.modeler.core.utils.ModelUtil;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 public class ReceiveTaskDetailComposite extends DefaultDetailComposite {
@@ -32,6 +33,7 @@ public class ReceiveTaskDetailComposite extends DefaultDetailComposite {
 		ModelUtil.setMultiLine(be, be.eClass().getEStructuralFeature("eventScript"),true);
 		scriptEditor = new TextObjectEditor(this, be, be.eClass()
 				.getEStructuralFeature("eventScript"));
+		scriptEditor.setStyle(SWT.WRAP | SWT.MULTI);
 		scriptEditor.createControl(getAttributesParent(), "Script");
 		
 	}
