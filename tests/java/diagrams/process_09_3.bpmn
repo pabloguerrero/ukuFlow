@@ -46,6 +46,10 @@
       <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_3" name="Sequence Flow 3" sourceRef="ExclusiveGateway_1" targetRef="EndEvent_1"/>
+    <bpmn2:textAnnotation id="TextAnnotation_1">
+      <bpmn2:text>SCOPE floor1 ( NODE_ID &lt;= 3 ) TTL 60</bpmn2:text>
+    </bpmn2:textAnnotation>
+    <bpmn2:association id="Association_1" sourceRef="ReceiveTask_1" targetRef="TextAnnotation_1"/>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Process 9-3">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="process_09_3">
@@ -72,6 +76,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_2">
         <dc:Bounds height="50.0" width="110.0" x="505.0" y="186.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_1" bpmnElement="TextAnnotation_1">
+        <dc:Bounds height="50.0" width="301.0" x="290.0" y="118.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_ExclusiveGateway_1">
         <di:waypoint xsi:type="dc:Point" x="615.0" y="55.0"/>
@@ -116,6 +123,14 @@
         <di:waypoint xsi:type="dc:Point" x="406.0" y="211.0"/>
         <di:waypoint xsi:type="dc:Point" x="406.0" y="211.0"/>
         <di:waypoint xsi:type="dc:Point" x="505.0" y="211.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Association_1" bpmnElement="Association_1" sourceElement="BPMNShape_ReceiveTask_1" targetElement="BPMNShape_TextAnnotation_1">
+        <di:waypoint xsi:type="dc:Point" x="345.0" y="80.0"/>
+        <di:waypoint xsi:type="dc:Point" x="345.0" y="89.0"/>
+        <di:waypoint xsi:type="dc:Point" x="335.0" y="89.0"/>
+        <di:waypoint xsi:type="dc:Point" x="335.0" y="102.0"/>
+        <di:waypoint xsi:type="dc:Point" x="440.0" y="102.0"/>
+        <di:waypoint xsi:type="dc:Point" x="440.0" y="118.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
