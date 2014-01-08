@@ -36,7 +36,7 @@ public abstract class EventGenerator extends EventBaseOperator {
 	
 	protected String scope = null;
 	protected int sensorType = -1;
-	
+	public String sensortype_ = ""; 
 	/**
 	 * return scope of the event generator 
 	 * @return
@@ -58,6 +58,7 @@ public abstract class EventGenerator extends EventBaseOperator {
 	}
 	public void setSensorType(String sensorType) {
 		this.sensorType = UkuConstants.getConstantByName(sensorType);
+		sensortype_ = sensorType;
 	}
 	
 

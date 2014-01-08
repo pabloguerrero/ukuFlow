@@ -205,7 +205,7 @@ public class UkuInputDialog extends Dialog {
 				label.setFont(parent.getFont());
 			}
 			Control text = null;
-			log.debug("requests of " + message + " : "
+			log.debug("requests of " + message + "["+requests.get(message).title+"] : "
 					+ requests.get(message).requests);
 
 			if (requests.get(message).requests == null){
@@ -215,8 +215,13 @@ public class UkuInputDialog extends Dialog {
 			
 			if (requests.get(message).requests instanceof String) {
 				GridData gdata= new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
-				gdata.heightHint=100;
-				text = new Text(composite, SWT.WRAP|SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
+				if("Filter's constraints".equals(requests.get(message).title)){
+					text = new Text(composite, SWT.WRAP|SWT.MULTI | SWT.BORDER | SWT.V_SCROLL|SWT.RESIZE);
+					gdata.heightHint = 100;
+					gdata.widthHint = 200;
+				}
+				else 
+					text = new Text(composite, getInputTextStyle());
 				text.setLayoutData(gdata);
 				((Text) text)
 						.setText(requests.get(message).requests.toString());

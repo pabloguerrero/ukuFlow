@@ -35,90 +35,107 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.Vector;
 
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 import de.tudarmstadt.dvs.ukuflow.tools.TimeUtil;
 
 /**
- * @author �Hien Quoc Dang�
- *
+ * @author Hien Quoc Dang
+ * 
  */
 public class TimeExpression extends EEvaluableExpression {
-	
+
 	public int year = 0;
-	public int month = 0 ;
+	public int month = 0;
 	public int day = 0;
 	public int hour = 0;
 	public int minute = 0;
 	public int second = 0;
 	public int minisecond = 0;
-	
+
 	@Override
-	public String toString(){
-		String r = "";		
-		r += day + "-"+month+"-" +year + " "+hour+":"+minute+":"+second;
-		
+	public String toString() {
+		String r = "";
+		r += day + "-" + month + "-" + year + " " + hour + ":" + minute + ":"
+				+ second;
+
 		return r;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable#accept(de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.tudarmstadt.dvs.ukuflow.script.eventbasescript.Visitable#accept(de
+	 * .tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor)
 	 */
 	@Override
 	public void accept(EventBaseVisitor visitor) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	public String getOffsetTime(){
+
+	public String getOffsetTime() {
 		int t = getValueInt();
-		return "" + t/60 + ":" + t%60;
+		return "" + t / 60 + ":" + t % 60;
 	}
+
 	/**
 	 * return the time in seconds
+	 * 
 	 * @return
 	 */
-	public int getValueInt(){
+	public int getValueInt() {
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		String date = String.format("%02d-%02d-%04d %02d:%02d:%02d", day,month,year,hour,minute,second);
+		String date = String.format("%02d-%02d-%04d %02d:%02d:%02d", day,
+				month, year, hour, minute, second);
 		format.setTimeZone(TimeZone.getTimeZone("UTC"));
-			Date d;
-			try {
-				d = format.parse(date);
-				long seconds = (int) (d.getTime()/1000L);
-				if(seconds < 0)
-					seconds = (60*hour+minute)*60 +second;
-				return (int)seconds;
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+		Date d;
+		try {
+			d = format.parse(date);
+			long seconds = (int) (d.getTime() / 1000L);
+			if (seconds < 0)
+				seconds = (60 * hour + minute) * 60 + second;
+			return (int) seconds;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		return 0;
 	}
+
 	/**
 	 * 
 	 * @return
 	 */
-	public Collection<? extends Byte> getValue(){
+	public Collection<? extends Byte> getValue() {
 		return getValue(4);
 	}
+
 	/**
 	 * return the time (in seconds) in <code>length</code> bytes
+	 * 
 	 * @return
 	 */
 	public Collection<? extends Byte> getValue(int length) {
-		Collection<Byte> result = new ArrayList<Byte>();		
-		String date = String.format("%02d-%02d-%04d %02d:%02d:%02d", day,month,year,hour,minute,second);
+		Vector<Byte> result = new Vector<Byte>();
+		String date = String.format("%02d-%02d-%04d %02d:%02d:%02d", day,
+				month, year, hour, minute, second);
 		long seconds = TimeUtil.convert(TimeUtil.FULL_PATTERN, date);
 		if (seconds < 0)
 			seconds = (hour * 60 + minute) * 60 + second;
-		if (length == 4)
-			result.add((byte) (seconds / (256 * 256 * 256)));
-		if (length >= 3)
-			result.add((byte) (seconds / (256 * 256)));
-		if (length >= 2)
-			result.add((byte) (seconds / (256)));
 		if (length >= 1)
 			result.add((byte) (seconds % (256)));
+		if (length >= 2) {
+			result.add((byte) (seconds / (256)));
+		}
+		if (length >= 3) {
+			result.add((byte) (seconds / (256 * 256)));
+		}
+		if (length == 4) {
+			result.add((byte) (seconds / (256 * 256 * 256)));
+		}
 		return result;
 	}
-	
+
 }

@@ -125,8 +125,10 @@ public class UkuProcessValidation {
 					&& last instanceof UkuEvent
 					&& ((UkuEvent) last).getType() == UkuConstants.WorkflowOperators.END_EVENT)
 				log.info("workflow is well-formed");
-			else
+			else{
 				log.error("workflow is not well-formed " + last);
+				ErrorManager.getInstance().addError(process.name, "Process is not well-formed");
+			}
 		}
 
 	}	
@@ -211,14 +213,12 @@ public class UkuProcessValidation {
 			} else {
 				Set<UkuElement> nextElement = new HashSet<UkuElement>();
 				for (UkuSequenceFlow seq : tmp.getOutgoingEntity()) {
-					UkuElement t = wellformednessChecking3((UkuElement) seq
-							.getTargetEntity());
+					UkuElement t = wellformednessChecking3((UkuElement) seq.getTargetEntity());
 					nextElement.add(t);
 
 				}
 				if (nextElement.size() > 1) {
-					String msg = "found " + nextElement.size()
-							+ " matched gateway:";
+					String msg = "found " + nextElement.size()+ " matched gateway:";
 					boolean coma = false;
 					for (UkuElement e : nextElement) {
 						if (coma)
@@ -248,6 +248,9 @@ public class UkuProcessValidation {
 							return wellformednessChecking3((UkuElement) g
 									.getOutgoingEntity().get(0)
 									.getTargetEntity());
+						else {
+							start.addErrorMessage("element '"+g.getName()+"' is not suitable for merging branches from '"+start.getName()+"'");
+						}
 					}
 					return null;
 				}
