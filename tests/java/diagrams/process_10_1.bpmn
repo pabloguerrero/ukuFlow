@@ -9,7 +9,7 @@
       </bpmn2:timerEventDefinition>
     </bpmn2:intermediateCatchEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_8" name="Sequence Flow 8" sourceRef="IntermediateCatchEvent_1" targetRef="ScriptTask_2"/>
-    <bpmn2:receiveTask id="ReceiveTask_1" name="Receive Task 1" eventScript="TOP = COUNT_EC 1:00 ( SIMPLE_EF [ORIGIN_NODE > 3] ( PATTERN_EG SENSOR_LIGHT_PAR_RAW p10 ^00:65 @s floor1 x0))">
+    <bpmn2:receiveTask id="ReceiveTask_1" name="Receive Task 1" eventScript="TOP = COUNT_EC 1:00 ( SIMPLE_EF [ORIGIN_NODE > 3] ( PATTERN_EG SENSOR_LIGHT_PAR_RAW p10 ^01:00 @s floor1 x0))">
       <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
     </bpmn2:receiveTask>

@@ -264,7 +264,7 @@
     <fonts name="Arial" size="8" bold="true"/>
     <fonts name="Arial" size="8" italic="true"/>
   </pi:Diagram>
-  <de.tudarmstadt.dvs.ukuflow.eventbase:EGPatterned outgoing="/4" elementName="Pattern_EG" sensorType="SENSOR_LIGHT_PAR_RAW" scope="floor1" time="00:65" pattern="10"/>
+  <de.tudarmstadt.dvs.ukuflow.eventbase:EGPatterned outgoing="/4" elementName="Pattern_EG" sensorType="SENSOR_LIGHT_PAR_RAW" scope="floor1" time="01:00" pattern="10"/>
   <de.tudarmstadt.dvs.ukuflow.eventbase:EFSimple incoming="/4" outgoing="/5" elementName="Simple_EF" constraints="ORIGIN_NODE > 3"/>
   <de.tudarmstadt.dvs.ukuflow.eventbase:EFProcessingCount incoming="/5" elementName="Count_EC"/>
   <de.tudarmstadt.dvs.ukuflow.eventbase:ESequenceFlow source="/1" target="/2"/>
