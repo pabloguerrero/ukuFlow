@@ -186,6 +186,7 @@ public class EventBaseVisitorImpl implements EventBaseVisitor{
 		if(scope.equalsIgnoreCase("local")){
 			return (byte)0;
 		}
+		System.out.println("getScope: "+scope);
 		try {
 			return (byte) ScopeManager.getInstance().getScopeID(scope);
 		} catch (ScopeNotExistException e1) {

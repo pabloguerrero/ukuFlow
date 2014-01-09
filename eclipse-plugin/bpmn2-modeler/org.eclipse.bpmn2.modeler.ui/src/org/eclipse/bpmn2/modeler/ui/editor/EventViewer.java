@@ -19,10 +19,14 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
@@ -62,8 +66,11 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESequenceFlow;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventFilter;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventGenerator;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EventbaseUtils;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventFilter;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class EventViewer extends DiagramEditor {
@@ -158,19 +165,15 @@ public class EventViewer extends DiagramEditor {
 		int y = 40;
 		for (de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator ebo : script
 				.getLocalExp()) {
-			x = x >= 400 ? 40 : x + 40;
-			if (x == 40)
-				y += 40;
-			AddContext context = new AddContext();
-			EventBaseOperator tmp = EventbaseUtils.convert(ebo);
-			context.setNewObject(tmp);
-			context.setLocation(x, y);
-			context.setTargetContainer(diagram);
-			featureProvider.addIfPossible(context);
-			log.debug("adding "+ebo);
-		}
-		x += 40;
-
+			//EventBaseOperator eb = EventbaseUtils.convert(ebo);
+			addElement(diagram,featureProvider,ebo,x,y);
+			y+= 25;
+		}		
+		y+= 40;
+		x = 20;
+		addElement(diagram,featureProvider,top,x,y);
+		
+		/*
 		AddContext context = new AddContext();
 		context.setNewObject(EventbaseUtils.convert(top));
 		context.setLocation(x, y);
@@ -178,8 +181,61 @@ public class EventViewer extends DiagramEditor {
 		log.info("adding "+top+" to diagram");
 		featureProvider.addIfPossible(context);
 		log.debug("adding top exp (): "+script.getTopExp());
+		*/
 	}
+	private void addConnection(Diagram diagram, IFeatureProvider featureProvider, EventBaseOperator source, EventBaseOperator target){
+		ContainerShape s = (ContainerShape) featureProvider.getPictogramElementForBusinessObject(source);
+		ContainerShape t = (ContainerShape) featureProvider.getPictogramElementForBusinessObject(target);		
+		ICreateConnectionFeature[] createConnection = featureProvider.getCreateConnectionFeatures();
+		ICreateConnectionFeature createConnectionF = createConnection[0];
+		
+		if (source != null && target != null) {
+			// create new business object
+			ESequenceFlow seqFlow = createEReference(source, target);
+			// add connection for business object
+			AddConnectionContext addConnectionContext = new AddConnectionContext(s.getAnchors().get(0), t.getAnchors().get(0));
+			addConnectionContext.setNewObject(seqFlow);
+			featureProvider.addIfPossible(
+					addConnectionContext);
+			// link(newConnection, eReference);
+		}
+	}
+	/**
+	 * Creates a EReference between two EClasses.
+	 */
+	private ESequenceFlow createEReference(EventBaseOperator source,
+			EventBaseOperator target) {
+		// EReference eReference = EcoreFactory.eINSTANCE.createEReference();
+		ESequenceFlow eReference = EventbaseFactory.eINSTANCE
+				.createESequenceFlow();		// EventbasePackage.eINSTANCE.getESequenceFlow();//new
+											// EConnection((IEEvaluableExpression)source,
+											// (IEEvaluableExpression)target);
+		eReference.setSource(source);
+		eReference.setTarget(target);
 
+		
+		return eReference;
+	}
+	private EventBaseOperator addElement(Diagram diagram, IFeatureProvider featureProvider, de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator eb,int x, int y){
+		//x = x >= 400 ? 40 : x + 40;
+		//if (x == 40)
+		//	y += 40;
+		if(x<0) x = 0;
+		AddContext context = new AddContext();
+		EventBaseOperator tmp = EventbaseUtils.convert(eb);
+		context.setNewObject(tmp);
+		context.setLocation(x, y);
+		context.setTargetContainer(diagram);
+		featureProvider.addIfPossible(context);
+		log.debug("adding "+eb);
+		if(eb instanceof ESimpleEF){
+			ESimpleEF ef = (ESimpleEF) eb;
+			de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator source = ef.getSource();
+			EventBaseOperator tar = addElement(diagram, featureProvider, source, x+150, y);
+			addConnection(diagram,featureProvider,tar,tmp);
+		}
+		return tmp;
+	}
 	@Override
 	public TransactionalEditingDomain getEditingDomain() {
 		return super.getEditingDomain();

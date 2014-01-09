@@ -29,6 +29,7 @@
  */
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript;
 
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGAbsolute;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGImmediate;
@@ -52,6 +53,9 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EOffsetEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EPeriodicEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERecurringEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_expression;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_or;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 /**
@@ -118,6 +122,19 @@ public class EventbaseUtils {
 				log.error("there are more than one sensors with same value " + sensors);
 			}
 		} else if (ebo instanceof EEventFilter) {
+			if(ebo instanceof ESimpleEF){
+				result = factory.createEFSimple();
+				ESimpleEF simple = (ESimpleEF) ebo;
+				String constraints = "";
+				for(sef_expression exp : simple.getConstraints()){
+					constraints += exp.toString() + ", ";
+				}
+				if(constraints.endsWith(", ")){
+					constraints = constraints.substring(0, constraints.length()-2);
+				}
+				((EFSimple)result).setConstraints(constraints);
+				return result;
+			}
 			log.error("TODO: implementing for event filter");
 			// TODO
 		} else {

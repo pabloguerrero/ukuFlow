@@ -37,7 +37,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventGenerator;
 import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.ScopeManager;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.ComputationalFunction;
 import de.tudarmstadt.dvs.ukuflow.script.generalscript.functions.LocalFunction;
@@ -147,7 +149,7 @@ public class UkuProcessValidation {
 	/**
 	 * @param e
 	 */
-	private void validate(UkuReceiveTask e) {
+	private void validate(UkuReceiveTask e) {		
 		log.debug("validating a receiveTask : " + e.getID());
 		if (e.isFake()){
 			validateFakeReceiveTask(e);
@@ -161,7 +163,32 @@ public class UkuProcessValidation {
 		if (e.getOutgoingEntity() == null || e.getOutgoingEntity().size() == 0) {
 			e.addErrorMessage("This ReceiveTask has no outgoing sequence flow");
 		}
-
+		for(String s : e.scopes){
+			try {
+				ScopeManager.getInstance().getScopeID(s);
+			} catch (ScopeNotExistException e1) {
+				List<String> scopes = new ArrayList<String>();
+				for(UkuScope sp : process.getScope()){
+					scopes.add(sp.getName());
+				}
+				e.addErrorMessage("No declaration for scope '" + s+ "'. Declared scopes are "+scopes);
+			}
+		}
+		/*for(EventBaseOperator eb : e.topOperator){
+			if(eb instanceof EventGenerator){
+				String scope = ((EventGenerator)eb).getScope();
+				log.debug("validating scope '"+scope+"'");
+				try {
+					ScopeManager.getInstance().getScopeID(scope);
+				} catch (ScopeNotExistException e1) {
+					List<String> scopes = new ArrayList<String>();
+					for(UkuScope sp : process.getScope()){
+						scopes.add(sp.getName());
+					}
+					e.addErrorMessage("No declaration for scope '" + scope+ "'. Declared scopes are "+scopes);
+				}
+			}
+		}*/
 	}
 
 	/**

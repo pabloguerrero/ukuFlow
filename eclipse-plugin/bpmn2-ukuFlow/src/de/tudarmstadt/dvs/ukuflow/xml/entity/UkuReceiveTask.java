@@ -29,6 +29,8 @@
  */
 package de.tudarmstadt.dvs.ukuflow.xml.entity;
 
+import java.util.List;
+
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EventBaseScript;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.ParseException;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
@@ -42,7 +44,8 @@ import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
  */
 public class UkuReceiveTask extends UkuActivity {
 	public EventBaseOperator topOperator;
-	EEventBaseScript ebScript;
+	public EEventBaseScript ebScript;
+	public List<String> scopes;
 	private static BpmnLog log;
 	boolean isFake = false;
 
@@ -94,6 +97,7 @@ public class UkuReceiveTask extends UkuActivity {
 			log.info((isFake?"fake":"")+" receiveTask with script : " + script);
 			ebScript = parser.validate();
 			topOperator = ebScript.getTopExp();
+			scopes = parser.scopes;
 			log.info("top operator is: " +topOperator);
 		} catch (ParseException e) {
 			String tkn = null;
