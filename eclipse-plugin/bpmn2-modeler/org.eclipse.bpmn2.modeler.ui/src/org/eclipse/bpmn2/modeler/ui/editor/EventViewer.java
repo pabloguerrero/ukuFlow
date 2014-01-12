@@ -3,9 +3,6 @@ package org.eclipse.bpmn2.modeler.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.bpmn2.Assignment;
-import org.eclipse.bpmn2.DataInputAssociation;
-import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ReceiveTask;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -26,7 +23,6 @@ import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
@@ -68,9 +64,13 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventFilter;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventGenerator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EventbaseUtils;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChangeEvent;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ECompositeEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
-import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventFilter;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ELogicalCompositionEF;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EProcessingEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.IEConnection;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class EventViewer extends DiagramEditor {
@@ -233,6 +233,18 @@ public class EventViewer extends DiagramEditor {
 			de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator source = ef.getSource();
 			EventBaseOperator tar = addElement(diagram, featureProvider, source, x+150, y);
 			addConnection(diagram,featureProvider,tar,tmp);
+		} else if (eb instanceof EProcessingEF){
+			EProcessingEF cef = (EProcessingEF)eb;
+			//for(EventBaseOperator c :cef.getSource()){
+				//de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator source = (de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator)c.getSource();
+			de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator source = cef.getSource();
+			EventBaseOperator tar = addElement(diagram, featureProvider, source, x+150, y);
+			addConnection(diagram, featureProvider, tar, tmp);
+			//}
+		} else if (eb instanceof EChangeEvent){
+			log.debug("TODO: eChange");
+		} else if (eb instanceof ELogicalCompositionEF){
+			log.debug("TODO: logical composition ef");
 		}
 		return tmp;
 	}

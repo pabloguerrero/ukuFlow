@@ -29,6 +29,7 @@
  */
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript;
 
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessing;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGAbsolute;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution;
@@ -46,11 +47,14 @@ import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAbsoluteEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicDistributionEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicPatternedEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChangeEvent;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventFilter;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EImmediateEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ELogicalCompositionEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ENonRecurringEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EOffsetEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EPeriodicEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EProcessingEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERecurringEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
@@ -72,6 +76,7 @@ public class EventbaseUtils {
 	 */
 	public static EventBaseOperator convert(
 			de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator ebo) {
+		log.debug("try to convert element :'"+ebo+"'");
 		EventBaseOperator result = null;
 		EventbaseFactory factory = EventbaseFactory.eINSTANCE;
 		if (ebo instanceof de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventGenerator) {
@@ -133,6 +138,22 @@ public class EventbaseUtils {
 					constraints = constraints.substring(0, constraints.length()-2);
 				}
 				((EFSimple)result).setConstraints(constraints);
+				return result;
+			} else if(ebo instanceof EChangeEvent){
+				log.error("TODO: implementation for echangeEvent");
+			} else if (ebo instanceof ELogicalCompositionEF){
+				log.error("TODO: implementation for elogical");
+			} else if(ebo instanceof EProcessingEF){
+				byte type = ((EProcessingEF)ebo).getTypecode();
+				switch (type){
+				case UkuConstants.EFConstants.MIN_EC: result = factory.createEFProcessingMin(); break;
+				case UkuConstants.EFConstants.MAX_EC: result = factory.createEFProcessingMax(); break;
+				case UkuConstants.EFConstants.AVG_EC: result = factory.createEFProcessingAvg(); break;
+				case UkuConstants.EFConstants.COUNT_EC: result = factory.createEFProcessingCount(); break;
+				case UkuConstants.EFConstants.SUM_EC: result = factory.createEFProcessingSum(); break;
+				case UkuConstants.EFConstants.STDEV_EC: result = factory.createEFProcessingStDev(); break;
+				}
+				((EFProcessing) result).setWindowSize(((EProcessingEF)ebo).getWindow().getOffsetTime());
 				return result;
 			}
 			log.error("TODO: implementing for event filter");
