@@ -1,11 +1,13 @@
 package org.eclipse.bpmn2.modeler.ui.editor;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.ReceiveTask;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -64,6 +66,7 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventFilter;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventGenerator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventBaseOperatorImpl;
+import de.tudarmstadt.dvs.ukuflow.hash.HashUtil;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EventbaseUtils;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChangeEvent;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ECompositeEF;
@@ -464,17 +467,27 @@ public class EventViewer extends DiagramEditor {
 
 		// wrap up!!
 		final String newContent = sb.toString();
-
+		final String hashScript = HashUtil.getHash(newContent);
+		InputStream is = null;
+		try {
+			is = getModelFile().getContents(true);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		final String hashFile = HashUtil.getHash(is);
+		//final String hash2 = HashUtil.getHash();
 		TransactionalEditingDomain editingDomain = TransactionUtil
 				.getEditingDomain(task);
 		if (editingDomain == null)
 			return;
 		final CommandStack commandStack = editingDomain.getCommandStack();
 		commandStack.execute(new RecordingCommand(editingDomain) {
-
 			@Override
 			protected void doExecute() {
-				task.setEventScript(newContent);			
+				task.setEventScript(newContent);
+				System.out.format("file %s, script %s \n",hashFile,hashScript);
+				task.setScriptHash(hashScript);
+				task.setFileHash(hashFile);
 			}
 		});
 	}

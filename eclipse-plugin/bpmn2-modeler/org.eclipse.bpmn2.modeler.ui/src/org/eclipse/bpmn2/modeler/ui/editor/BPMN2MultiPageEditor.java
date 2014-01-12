@@ -81,6 +81,8 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageEditorSite;
 import org.eclipse.ui.internal.WorkbenchMessages;
+
+import de.tudarmstadt.dvs.ukuflow.hash.HashUtil;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
@@ -537,7 +539,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements
 	}
 
 	public void createEventViewer(ReceiveTask task, String nid, String text,EEventBaseScript ebs) {
-		boolean recreteDiagram = false;
+		boolean recreateDiagram = false;
 		EventViewer eventView = null;
 		for (EditorPart ed : mapping.keySet()) {
 			if (ed instanceof EventViewer) {
@@ -558,22 +560,58 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements
 					target = ResourcesPlugin.getWorkspace().getRoot().getFile(folder.getFullPath().addTrailingSeparator().append(nid+".evb"));
 				}
 				else 
-					log.error("cannot get file '"+nid+".evb' from folder " + folder);
-				/*
-				 * if (folder instanceof IFolder) { target = ((IFolder)
-				 * folder).getFile(nid + ".evb"); } else if (folder instanceof
-				 * IProject){ target = ((IProject)folder).getFile(nid+".evb"); }
-				 */
+					log.error("cannot get file '"+nid+".evb' from folder " + folder);				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			if (target.exists()) {
 				log.debug("target exists -> check matching and openfile?");
-				// check if matched & open file
-				// TODO:
+				String lastFileHash = task.getFileHash();
+				String lastScriptHash = task.getScriptHash();
+				if(task.getEventScript() == null || lastFileHash == null || lastScriptHash == null){
+					recreateDiagram = true;					
+				} else {
+					String fileHash = HashUtil.getHash(target.getContents());
+					String scriptHash = HashUtil.getHash(task.getEventScript());
+					if(!fileHash.equals(lastFileHash) ||!scriptHash.equals(lastScriptHash)){
+						// TODO inform user that target file will be overrided!!!
+						Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+						String[] buttons = new String[] {
+								IDialogConstants.YES_LABEL,
+								//IDialogConstants.NO_LABEL,
+								IDialogConstants.CANCEL_LABEL 
+								};
+						@SuppressWarnings("restriction")
+						MessageDialog d = new MessageDialog(shell,
+								"Override exist file?", null, ".evb file and the script are inconsistent. Do you want to override .evb file?",
+								MessageDialog.QUESTION, buttons, 0) {
+							protected int getShellStyle() {
+								return super.getShellStyle() | SWT.SHEET;
+							}
+						};
+						int choice = d.open();
+						switch (choice) {
+						case ISaveablePart2.YES: // yes							
+							//editor.doSave(new NullProgressMonitor());
+							break;
+						case ISaveablePart2.NO: // no
+							System.out.println("no");
+							return;
+						default:
+						case ISaveablePart2.CANCEL: // cancel
+							System.out.println("cancel");
+							//event.doit = false;
+							return;
+						}
+						recreateDiagram = true;
+					}
+				}
 			} else
+				recreateDiagram = true;
+			
+			if(recreateDiagram)
 			{
-				recreteDiagram = true;
+				recreateDiagram = true;
 				log.debug("create file " + nid+".evb and try to open it");
 				// create & convert!
 				final Diagram diagram = Graphiti.getPeCreateService()
@@ -608,7 +646,7 @@ public class BPMN2MultiPageEditor extends MultiPageEditorPart implements
 					URI.createPlatformResourceURI(target.getFullPath().toString(), true),
 					id);
 
-			eventView = new EventViewer(task, nid, pageIndex,recreteDiagram,ebs);//TODO
+			eventView = new EventViewer(task, nid, pageIndex,recreateDiagram,ebs);//TODO
 			addPage(pageIndex, eventView, input);
 			tabFolder.getItem(pageIndex).setShowClose(true);
 
