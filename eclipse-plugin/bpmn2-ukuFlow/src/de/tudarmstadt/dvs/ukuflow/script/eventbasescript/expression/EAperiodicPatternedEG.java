@@ -67,7 +67,9 @@ public class EAperiodicPatternedEG extends ERecurringEG{
 			//int t =  Integer.parseInt(pattern, 2);
 			for(int i = 0; i < length; i++){
 				String tmp = pattern.substring(i*8, Math.min(i*8+8, pattern.length()));
+				tmp = new StringBuilder(tmp).reverse().toString();
 				int t = Integer.parseInt(tmp,2);
+				//System.out.println(tmp);
 				result.add((byte)t);
 				//byte tmp = (byte) (t % 256);
 				//result.add(length-i-1,tmp);
