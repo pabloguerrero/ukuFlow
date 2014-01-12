@@ -29,6 +29,7 @@
  */
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript;
 
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFChangeEvent;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessing;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGAbsolute;
@@ -60,6 +61,7 @@ import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_expression;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_or;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuConstant;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 /**
@@ -140,7 +142,21 @@ public class EventbaseUtils {
 				((EFSimple)result).setConstraints(constraints);
 				return result;
 			} else if(ebo instanceof EChangeEvent){
-				log.error("TODO: implementation for echangeEvent");
+				EChangeEvent ce = (EChangeEvent)ebo;
+				switch(ce.getTypecode()){
+				case UkuConstants.EFConstants.INCREASE_EC:
+					result = factory.createEFChangeIncrease();
+					break;
+				case UkuConstants.EFConstants.DECREASE_EC:
+					result = factory.createEFChangeDecrease();
+					break;
+				case UkuConstants.EFConstants.REMAIN_EC:
+					result = factory.createEFChangeRemain();
+					break;
+				}
+				((EFChangeEvent)result).setChangeThreshold(ce.getThreshold());
+				((EFChangeEvent)result).setWindowSize(ce.getTime().getOffsetTime());
+				return result;
 			} else if (ebo instanceof ELogicalCompositionEF){
 				log.error("TODO: implementation for elogical");
 			} else if(ebo instanceof EProcessingEF){

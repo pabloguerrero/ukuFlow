@@ -63,6 +63,7 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventFilter;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventGenerator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventBaseOperatorImpl;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EventbaseUtils;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChangeEvent;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ECompositeEF;
@@ -242,7 +243,10 @@ public class EventViewer extends DiagramEditor {
 			addConnection(diagram, featureProvider, tar, tmp);
 			//}
 		} else if (eb instanceof EChangeEvent){
-			log.debug("TODO: eChange");
+			EChangeEvent ec = (EChangeEvent)eb;
+			de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator source = ec.getSource();
+			EventBaseOperator tar = addElement(diagram, featureProvider, source, x+150, y);
+			addConnection(diagram, featureProvider, tar, tmp);
 		} else if (eb instanceof ELogicalCompositionEF){
 			log.debug("TODO: logical composition ef");
 		}
@@ -373,6 +377,9 @@ public class EventViewer extends DiagramEditor {
 					EFChangeEvent local = (EFChangeEvent)top;
 					sb.append(" "+ local.getWindowSize());
 					sb.append(" "+ local.getChangeThreshold());
+					sb.append(" (");
+					parse(local.getIncoming().get(0).getSource(),sb,connection,elements);
+					sb.append(")");
 				} else if (top instanceof EFStatusEvent) {
 					if (top instanceof EFLogic) {
 						sb.append("TODO_EFLOGIC");
