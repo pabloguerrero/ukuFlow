@@ -1,14 +1,13 @@
 package org.eclipse.bpmn2.modeler.ui.editor;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.bpmn2.Assignment;
-import org.eclipse.bpmn2.DataInputAssociation;
-import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ReceiveTask;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -19,9 +18,12 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.eclipse.graphiti.features.ICreateConnectionFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.pictograms.Connection;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -62,8 +64,17 @@ import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.ESequenceFlow;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventBaseOperator;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventFilter;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventGenerator;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EventbaseFactory;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.impl.EventBaseOperatorImpl;
+import de.tudarmstadt.dvs.ukuflow.hash.HashUtil;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.EventbaseUtils;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChangeEvent;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ECompositeEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventBaseScript;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ELogicalCompositionEF;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EProcessingEF;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.IEConnection;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 public class EventViewer extends DiagramEditor {
@@ -158,19 +169,15 @@ public class EventViewer extends DiagramEditor {
 		int y = 40;
 		for (de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator ebo : script
 				.getLocalExp()) {
-			x = x >= 400 ? 40 : x + 40;
-			if (x == 40)
-				y += 40;
-			AddContext context = new AddContext();
-			EventBaseOperator tmp = EventbaseUtils.convert(ebo);
-			context.setNewObject(tmp);
-			context.setLocation(x, y);
-			context.setTargetContainer(diagram);
-			featureProvider.addIfPossible(context);
-			log.debug("adding "+ebo);
-		}
-		x += 40;
-
+			//EventBaseOperator eb = EventbaseUtils.convert(ebo);
+			addElement(diagram,featureProvider,ebo,x,y);
+			y+= 25;
+		}		
+		y+= 40;
+		x = 20;
+		addElement(diagram,featureProvider,top,x,y);
+		
+		/*
 		AddContext context = new AddContext();
 		context.setNewObject(EventbaseUtils.convert(top));
 		context.setLocation(x, y);
@@ -178,8 +185,76 @@ public class EventViewer extends DiagramEditor {
 		log.info("adding "+top+" to diagram");
 		featureProvider.addIfPossible(context);
 		log.debug("adding top exp (): "+script.getTopExp());
+		*/
 	}
+	private void addConnection(Diagram diagram, IFeatureProvider featureProvider, EventBaseOperator source, EventBaseOperator target){
+		ContainerShape s = (ContainerShape) featureProvider.getPictogramElementForBusinessObject(source);
+		ContainerShape t = (ContainerShape) featureProvider.getPictogramElementForBusinessObject(target);		
+		ICreateConnectionFeature[] createConnection = featureProvider.getCreateConnectionFeatures();
+		ICreateConnectionFeature createConnectionF = createConnection[0];
+		
+		if (source != null && target != null) {
+			// create new business object
+			ESequenceFlow seqFlow = createEReference(source, target);
+			// add connection for business object
+			AddConnectionContext addConnectionContext = new AddConnectionContext(s.getAnchors().get(0), t.getAnchors().get(0));
+			addConnectionContext.setNewObject(seqFlow);
+			featureProvider.addIfPossible(
+					addConnectionContext);
+			// link(newConnection, eReference);
+		}
+	}
+	/**
+	 * Creates a EReference between two EClasses.
+	 */
+	private ESequenceFlow createEReference(EventBaseOperator source,
+			EventBaseOperator target) {
+		// EReference eReference = EcoreFactory.eINSTANCE.createEReference();
+		ESequenceFlow eReference = EventbaseFactory.eINSTANCE
+				.createESequenceFlow();		// EventbasePackage.eINSTANCE.getESequenceFlow();//new
+											// EConnection((IEEvaluableExpression)source,
+											// (IEEvaluableExpression)target);
+		eReference.setSource(source);
+		eReference.setTarget(target);
 
+		
+		return eReference;
+	}
+	private EventBaseOperator addElement(Diagram diagram, IFeatureProvider featureProvider, de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator eb,int x, int y){
+		//x = x >= 400 ? 40 : x + 40;
+		//if (x == 40)
+		//	y += 40;
+		if(x<0) x = 0;
+		AddContext context = new AddContext();
+		EventBaseOperator tmp = EventbaseUtils.convert(eb);
+		context.setNewObject(tmp);
+		context.setLocation(x, y);
+		context.setTargetContainer(diagram);
+		featureProvider.addIfPossible(context);
+		log.debug("adding "+eb);
+		if(eb instanceof ESimpleEF){
+			ESimpleEF ef = (ESimpleEF) eb;
+			de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator source = ef.getSource();
+			EventBaseOperator tar = addElement(diagram, featureProvider, source, x+150, y);
+			addConnection(diagram,featureProvider,tar,tmp);
+		} else if (eb instanceof EProcessingEF){
+			EProcessingEF cef = (EProcessingEF)eb;
+			//for(EventBaseOperator c :cef.getSource()){
+				//de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator source = (de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator)c.getSource();
+			de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator source = cef.getSource();
+			EventBaseOperator tar = addElement(diagram, featureProvider, source, x+150, y);
+			addConnection(diagram, featureProvider, tar, tmp);
+			//}
+		} else if (eb instanceof EChangeEvent){
+			EChangeEvent ec = (EChangeEvent)eb;
+			de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator source = ec.getSource();
+			EventBaseOperator tar = addElement(diagram, featureProvider, source, x+150, y);
+			addConnection(diagram, featureProvider, tar, tmp);
+		} else if (eb instanceof ELogicalCompositionEF){
+			log.debug("TODO: logical composition ef");
+		}
+		return tmp;
+	}
 	@Override
 	public TransactionalEditingDomain getEditingDomain() {
 		return super.getEditingDomain();
@@ -305,6 +380,9 @@ public class EventViewer extends DiagramEditor {
 					EFChangeEvent local = (EFChangeEvent)top;
 					sb.append(" "+ local.getWindowSize());
 					sb.append(" "+ local.getChangeThreshold());
+					sb.append(" (");
+					parse(local.getIncoming().get(0).getSource(),sb,connection,elements);
+					sb.append(")");
 				} else if (top instanceof EFStatusEvent) {
 					if (top instanceof EFLogic) {
 						sb.append("TODO_EFLOGIC");
@@ -389,17 +467,27 @@ public class EventViewer extends DiagramEditor {
 
 		// wrap up!!
 		final String newContent = sb.toString();
-
+		final String hashScript = HashUtil.getHash(newContent);
+		InputStream is = null;
+		try {
+			is = getModelFile().getContents(true);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		final String hashFile = HashUtil.getHash(is);
+		//final String hash2 = HashUtil.getHash();
 		TransactionalEditingDomain editingDomain = TransactionUtil
 				.getEditingDomain(task);
 		if (editingDomain == null)
 			return;
 		final CommandStack commandStack = editingDomain.getCommandStack();
 		commandStack.execute(new RecordingCommand(editingDomain) {
-
 			@Override
 			protected void doExecute() {
-				task.setEventScript(newContent);			
+				task.setEventScript(newContent);
+				System.out.format("file %s, script %s \n",hashFile,hashScript);
+				task.setScriptHash(hashScript);
+				task.setFileHash(hashFile);
 			}
 		});
 	}

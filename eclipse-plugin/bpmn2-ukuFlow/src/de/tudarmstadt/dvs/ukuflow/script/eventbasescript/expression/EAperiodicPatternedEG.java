@@ -64,17 +64,24 @@ public class EAperiodicPatternedEG extends ERecurringEG{
 			int length = pattern.length()/8 + 1;
 			List<Byte> result = new ArrayList<Byte>(length);
 			
-			int t =  Integer.parseInt(pattern, 2);
+			//int t =  Integer.parseInt(pattern, 2);
 			for(int i = 0; i < length; i++){
-				byte tmp = (byte) (t % 256);
-				result.add(length-i-1,tmp);
-				log.debug((i+1) + ". byte of the pattern!");
+				String tmp = pattern.substring(i*8, Math.min(i*8+8, pattern.length()));
+				tmp = new StringBuilder(tmp).reverse().toString();
+				int t = Integer.parseInt(tmp,2);
+				//System.out.println(tmp);
+				result.add((byte)t);
+				//byte tmp = (byte) (t % 256);
+				//result.add(length-i-1,tmp);
+				//log.debug((i+1) + ". byte of the pattern!");
 			}
 			return result;
 		} catch (Exception e){
+			e.printStackTrace();
 			return null;
 		}
 	}
+	
 	public void setPattern(String pattern){
 		if(pattern.startsWith("p"))
 			pattern = pattern.substring(1);
@@ -97,7 +104,11 @@ public class EAperiodicPatternedEG extends ERecurringEG{
 		return "PEG_"+getSensorType()+"_"+s+"@"+getScope();
 	}
 	public static void main(String[] args) {
-		String pattern = "00001010";
+		String pattern = "01100001010";
+		System.out.println(pattern.substring(0, 8));
+		EAperiodicPatternedEG t = new EAperiodicPatternedEG();
+		t.pattern = pattern;
+		System.out.println(t.getPatternInByte());
 		int num = Integer.parseInt(pattern, 2);
 		System.out.println(num);
 	}

@@ -29,6 +29,7 @@
  */
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef;
 
+import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.visitor.EventBaseVisitor;
 
 /**
@@ -73,5 +74,27 @@ public abstract class sef_binary_exp extends sef_expression{
 	}
 	public void accept(EventBaseVisitor visitor){
 		visitor.visit(this);
+	}
+	
+	public String toString(){
+		String st = "";
+		st += " " + left.toString();
+		switch (getOperator()) {
+			case UkuConstants.OperatorConstants.OPERATOR_ADD: st += " +";break;
+			case UkuConstants.OperatorConstants.OPERATOR_DIV: st += " /";break;
+			case UkuConstants.OperatorConstants.OPERATOR_MOD: st += " %";break;
+			case UkuConstants.OperatorConstants.OPERATOR_MULT: st += " *";break;
+			case UkuConstants.OperatorConstants.OPERATOR_SUB: st += " -";break;
+			case UkuConstants.OperatorConstants.OPERATOR_AND: st += " &&";break;
+			case UkuConstants.OperatorConstants.OPERATOR_OR: st += " ||";break;
+			case UkuConstants.OperatorConstants.PREDICATE_EQ: st += " ==";break;
+			case UkuConstants.OperatorConstants.PREDICATE_GET: st += " >=";break;
+			case UkuConstants.OperatorConstants.PREDICATE_GT: st += " >";break;
+			case UkuConstants.OperatorConstants.PREDICATE_LET: st += " <=";break;
+			case UkuConstants.OperatorConstants.PREDICATE_LT: st += " <";break;
+			case UkuConstants.OperatorConstants.PREDICATE_NEQ: st += " !=";break;
+		}
+		st += " "+right.toString();
+		return st;
 	}
 }

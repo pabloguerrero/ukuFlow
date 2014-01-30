@@ -81,7 +81,7 @@ public class UkuScope extends UkuEntity {
 		}
 		name = exp.name;
 		sExpression = exp.scopeExp;
-		try {
+		try {			
 			scopeID = ScopeManager.getInstance().registerScope(name);
 		} catch (DuplicateScopeNameException e) {
 			addErrorMessage("Scope '" + name + "' already exists");

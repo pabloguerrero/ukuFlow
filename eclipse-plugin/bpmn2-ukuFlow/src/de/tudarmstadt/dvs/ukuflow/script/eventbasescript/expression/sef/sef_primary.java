@@ -54,5 +54,11 @@ public class sef_primary extends sef_expression{
 	@Override
 	public void accept(EventBaseVisitor visitor) {
 		visitor.visit(this);
-	}	
+	}
+	
+	public String toString(){
+		String st = "";
+		st += " "+token;
+		return st;
+	}
 }

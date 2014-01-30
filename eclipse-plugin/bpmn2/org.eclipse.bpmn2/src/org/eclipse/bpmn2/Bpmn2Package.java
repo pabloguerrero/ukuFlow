@@ -15162,13 +15162,31 @@ public interface Bpmn2Package extends EPackage {
     int RECEIVE_TASK__EVENT_SCRIPT = TASK_FEATURE_COUNT + 4;
 
     /**
+     * The feature id for the '<em><b>Script Hash</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int RECEIVE_TASK__SCRIPT_HASH = TASK_FEATURE_COUNT + 5;
+
+    /**
+     * The feature id for the '<em><b>File Hash</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int RECEIVE_TASK__FILE_HASH = TASK_FEATURE_COUNT + 6;
+
+    /**
      * The number of structural features of the '<em>Receive Task</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int RECEIVE_TASK_FEATURE_COUNT = TASK_FEATURE_COUNT + 5;
+    int RECEIVE_TASK_FEATURE_COUNT = TASK_FEATURE_COUNT + 7;
 
     /**
      * The meta object id for the '{@link org.eclipse.bpmn2.impl.RelationshipImpl <em>Relationship</em>}' class.
@@ -23873,6 +23891,28 @@ public interface Bpmn2Package extends EPackage {
     EAttribute getReceiveTask_EventScript();
 
     /**
+     * Returns the meta object for the attribute '{@link org.eclipse.bpmn2.ReceiveTask#getScriptHash <em>Script Hash</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Script Hash</em>'.
+     * @see org.eclipse.bpmn2.ReceiveTask#getScriptHash()
+     * @see #getReceiveTask()
+     * @generated
+     */
+    EAttribute getReceiveTask_ScriptHash();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.eclipse.bpmn2.ReceiveTask#getFileHash <em>File Hash</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>File Hash</em>'.
+     * @see org.eclipse.bpmn2.ReceiveTask#getFileHash()
+     * @see #getReceiveTask()
+     * @generated
+     */
+    EAttribute getReceiveTask_FileHash();
+
+    /**
      * Returns the meta object for class '{@link org.eclipse.bpmn2.Relationship <em>Relationship</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -29355,6 +29395,22 @@ public interface Bpmn2Package extends EPackage {
          * @generated
          */
         EAttribute RECEIVE_TASK__EVENT_SCRIPT = eINSTANCE.getReceiveTask_EventScript();
+
+        /**
+         * The meta object literal for the '<em><b>Script Hash</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute RECEIVE_TASK__SCRIPT_HASH = eINSTANCE.getReceiveTask_ScriptHash();
+
+        /**
+         * The meta object literal for the '<em><b>File Hash</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute RECEIVE_TASK__FILE_HASH = eINSTANCE.getReceiveTask_FileHash();
 
         /**
          * The meta object literal for the '{@link org.eclipse.bpmn2.impl.RelationshipImpl <em>Relationship</em>}' class.

@@ -44,5 +44,10 @@ public class sef_not extends sef_unary_exp {
 	public void accept(EventBaseVisitor visitor) {
 		visitor.visit(this);
 	}
-	
+	@Override
+	public String toString(){
+		String st = "";
+		st += " NOT("+getExp().toString()+") ";
+		return st;
+	}
 }

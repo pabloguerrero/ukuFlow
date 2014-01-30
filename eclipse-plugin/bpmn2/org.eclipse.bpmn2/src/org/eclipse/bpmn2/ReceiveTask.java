@@ -27,6 +27,8 @@ package org.eclipse.bpmn2;
  *   <li>{@link org.eclipse.bpmn2.ReceiveTask#getMessageRef <em>Message Ref</em>}</li>
  *   <li>{@link org.eclipse.bpmn2.ReceiveTask#getOperationRef <em>Operation Ref</em>}</li>
  *   <li>{@link org.eclipse.bpmn2.ReceiveTask#getEventScript <em>Event Script</em>}</li>
+ *   <li>{@link org.eclipse.bpmn2.ReceiveTask#getScriptHash <em>Script Hash</em>}</li>
+ *   <li>{@link org.eclipse.bpmn2.ReceiveTask#getFileHash <em>File Hash</em>}</li>
  * </ul>
  * </p>
  *
@@ -169,5 +171,58 @@ public interface ReceiveTask extends Task {
      * @generated
      */
     void setEventScript(String value);
+
+    /**
+     * Returns the value of the '<em><b>Script Hash</b></em>' attribute.
+     * The default value is <code>""</code>.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Script Hash</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Script Hash</em>' attribute.
+     * @see #setScriptHash(String)
+     * @see org.eclipse.bpmn2.Bpmn2Package#getReceiveTask_ScriptHash()
+     * @model default=""
+     * @generated
+     */
+    String getScriptHash();
+
+    /**
+     * Sets the value of the '{@link org.eclipse.bpmn2.ReceiveTask#getScriptHash <em>Script Hash</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Script Hash</em>' attribute.
+     * @see #getScriptHash()
+     * @generated
+     */
+    void setScriptHash(String value);
+
+    /**
+     * Returns the value of the '<em><b>File Hash</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>File Hash</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>File Hash</em>' attribute.
+     * @see #setFileHash(String)
+     * @see org.eclipse.bpmn2.Bpmn2Package#getReceiveTask_FileHash()
+     * @model
+     * @generated
+     */
+    String getFileHash();
+
+    /**
+     * Sets the value of the '{@link org.eclipse.bpmn2.ReceiveTask#getFileHash <em>File Hash</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>File Hash</em>' attribute.
+     * @see #getFileHash()
+     * @generated
+     */
+    void setFileHash(String value);
 
 } // ReceiveTask

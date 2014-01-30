@@ -29,6 +29,9 @@
  */
 package de.tudarmstadt.dvs.ukuflow.script.eventbasescript;
 
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFChangeEvent;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFProcessing;
+import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EFSimple;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGAbsolute;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGDistribution;
 import de.tudarmstadt.dvs.ukuflow.eventmodel.eventbase.EGImmediate;
@@ -45,13 +48,20 @@ import de.tudarmstadt.dvs.ukuflow.script.UkuConstants;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAbsoluteEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicDistributionEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EAperiodicPatternedEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EChangeEvent;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EEventFilter;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EImmediateEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ELogicalCompositionEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ENonRecurringEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EOffsetEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EPeriodicEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EProcessingEF;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERecurringEG;
 import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ERelativeEG;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.ESimpleEF;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_expression;
+import de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.sef.sef_or;
+import de.tudarmstadt.dvs.ukuflow.script.generalscript.expression.UkuConstant;
 import de.tudarmstadt.dvs.ukuflow.tools.debugger.BpmnLog;
 
 /**
@@ -68,6 +78,7 @@ public class EventbaseUtils {
 	 */
 	public static EventBaseOperator convert(
 			de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventBaseOperator ebo) {
+		log.debug("try to convert element :'"+ebo+"'");
 		EventBaseOperator result = null;
 		EventbaseFactory factory = EventbaseFactory.eINSTANCE;
 		if (ebo instanceof de.tudarmstadt.dvs.ukuflow.script.eventbasescript.expression.EventGenerator) {
@@ -118,6 +129,49 @@ public class EventbaseUtils {
 				log.error("there are more than one sensors with same value " + sensors);
 			}
 		} else if (ebo instanceof EEventFilter) {
+			if(ebo instanceof ESimpleEF){
+				result = factory.createEFSimple();
+				ESimpleEF simple = (ESimpleEF) ebo;
+				String constraints = "";
+				for(sef_expression exp : simple.getConstraints()){
+					constraints += exp.toString() + ", ";
+				}
+				if(constraints.endsWith(", ")){
+					constraints = constraints.substring(0, constraints.length()-2);
+				}
+				((EFSimple)result).setConstraints(constraints);
+				return result;
+			} else if(ebo instanceof EChangeEvent){
+				EChangeEvent ce = (EChangeEvent)ebo;
+				switch(ce.getTypecode()){
+				case UkuConstants.EFConstants.INCREASE_EC:
+					result = factory.createEFChangeIncrease();
+					break;
+				case UkuConstants.EFConstants.DECREASE_EC:
+					result = factory.createEFChangeDecrease();
+					break;
+				case UkuConstants.EFConstants.REMAIN_EC:
+					result = factory.createEFChangeRemain();
+					break;
+				}
+				((EFChangeEvent)result).setChangeThreshold(ce.getThreshold());
+				((EFChangeEvent)result).setWindowSize(ce.getTime().getOffsetTime());
+				return result;
+			} else if (ebo instanceof ELogicalCompositionEF){
+				log.error("TODO: implementation for elogical");
+			} else if(ebo instanceof EProcessingEF){
+				byte type = ((EProcessingEF)ebo).getTypecode();
+				switch (type){
+				case UkuConstants.EFConstants.MIN_EC: result = factory.createEFProcessingMin(); break;
+				case UkuConstants.EFConstants.MAX_EC: result = factory.createEFProcessingMax(); break;
+				case UkuConstants.EFConstants.AVG_EC: result = factory.createEFProcessingAvg(); break;
+				case UkuConstants.EFConstants.COUNT_EC: result = factory.createEFProcessingCount(); break;
+				case UkuConstants.EFConstants.SUM_EC: result = factory.createEFProcessingSum(); break;
+				case UkuConstants.EFConstants.STDEV_EC: result = factory.createEFProcessingStDev(); break;
+				}
+				((EFProcessing) result).setWindowSize(((EProcessingEF)ebo).getWindow().getOffsetTime());
+				return result;
+			}
 			log.error("TODO: implementing for event filter");
 			// TODO
 		} else {

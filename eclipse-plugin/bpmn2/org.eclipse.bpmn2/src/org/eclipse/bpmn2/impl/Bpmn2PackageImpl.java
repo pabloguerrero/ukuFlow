@@ -6331,6 +6331,24 @@ public class Bpmn2PackageImpl extends EPackageImpl implements Bpmn2Package {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getReceiveTask_ScriptHash() {
+        return (EAttribute) getReceiveTask().getEStructuralFeatures().get(5);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getReceiveTask_FileHash() {
+        return (EAttribute) getReceiveTask().getEStructuralFeatures().get(6);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getRelationship() {
         if (relationshipEClass == null) {
             relationshipEClass = (EClass) EPackage.Registry.INSTANCE
