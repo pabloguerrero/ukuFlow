@@ -109,18 +109,18 @@ enum entry_type {
 	data_len_t data_len;
 
 /**  \brief Generic repository entry*/
-struct repository_entry {
+struct  __attribute__((__packed__)) repository_entry {
 	GENERIC_REPOSITORY_ENTRY_FIELDS
 };
 
 /**  \brief Fields for a repository entry which is updated manually */
-struct manual_repository_entry {
+struct __attribute__((__packed__)) manual_repository_entry {
 	GENERIC_REPOSITORY_ENTRY_FIELDS
 	// followed by data array
 };
 
 /**  \brief Fields for a repository entry which is updated automatically (note the pointer to the updater function) */
-struct auto_repository_entry {
+struct __attribute__((__packed__)) auto_repository_entry {
 	GENERIC_REPOSITORY_ENTRY_FIELDS
 	/**  \brief Timestamp for last update of the entry */
 	clock_time_t timestamp;
