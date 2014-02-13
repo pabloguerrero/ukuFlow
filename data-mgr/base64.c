@@ -134,13 +134,13 @@ static int base64_add_char(struct base64_decoder_state *s, char c,
  * \return						The size of the decoded output, in bytes, or 0 if nothing was decoded
  *
  */
-data_len_t base64_decode(char *input, uint8_t *output,
-		data_len_t output_max_len) {
+uint16_t base64_decode(char *input, uint8_t *output,
+		uint16_t output_max_len) {
 
 	// Check whether the specified output length suffices:
 	if (output_max_len >= strlen(input) * 3 / 4) {
-		data_len_t i;
-		data_len_t decoded_len = 0;
+		uint16_t i;
+		uint16_t decoded_len = 0;
 
 		// Initialize state
 		s.sextets = s.dataptr = s.padding = 0;
