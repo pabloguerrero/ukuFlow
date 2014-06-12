@@ -649,7 +649,7 @@ void data_mgr_set_data( //
 	if (entry == NULL)
 		return;
 
-	// ok, entry exists (now). put data into it:
+	// ok, entry exists now. Put data into it:
 	switch (entry_type) {
 	case MANUAL_UPDATE_ENTRY: {
 		memcpy(((uint8_t*) entry) + sizeof(struct manual_repository_entry),
