@@ -391,9 +391,10 @@ static long int eval_repository_value(void) {
 				&data_len);
 
 		if (data != NULL) {
-			uint16_t retval = *((uint16_t*) data);
+			long int retval;
+			memcpy(&retval, data, data_len);
 
-			PRINTF(5, "(EXPR-EVAL) repo value: %u\n", retval);
+			PRINTF(5, "(EXPR-EVAL) repo value: %ld, %d %d %d %d\n", retval, data[0], data[1], data[2], data[3]);
 
 			return (retval);
 		}
@@ -477,6 +478,8 @@ long int expression_eval_evaluate(uint8_t *expression_spec, data_len_t spec_len)
 	if (IS_VALID(code)) {
 		/* call evaluator */
 		long int value = evaluator[code]();
+
+		printf("res eval %d %d %d %d\n", ((uint8_t*)&value)[0], ((uint8_t*)&value)[1], ((uint8_t*)&value)[2], ((uint8_t*)&value)[3]);
 
 		/* check if invalid input flag is set */
 		if (!invalid_input) {
