@@ -294,7 +294,7 @@ static long int eval_predicate_lt(void) {
 	long int op1, op2;
 	eval_binary(&op1, &op2);
 
-	PRINTF(5, "comparing %lu with %lu\n", op1, op2);
+	PRINTF(1, "comparing %lu with %lu\n", op1, op2);
 
 	/* calculate result */
 	long int retval = (op1 < op2);
@@ -337,7 +337,7 @@ static long int eval_predicate_get(void) {
 static long int eval_uint8_value(void) {
 	uint8_t retval = read_byte();
 
-	PRINTF(5, "uint8 converted value is %li\n", (long int)retval);
+	PRINTF(5, "uint8 converted value is %ld\n", (long int )retval);
 	return (retval);
 }
 
@@ -358,7 +358,7 @@ static long int eval_int8_value(void) {
 
 /*---------------------------------------------------------------------------*/
 static long int eval_int16_value(void) {
-	int16_t v1 = read_byte(), v2 = read_byte(), retval = v2<<8 | v1;
+	int16_t v1 = read_byte(), v2 = read_byte(), retval = v2 << 8 | v1;
 
 	return (retval);
 }
@@ -391,10 +391,11 @@ static long int eval_repository_value(void) {
 				&data_len);
 
 		if (data != NULL) {
-			long int retval;
+			long int retval = 0;
 			memcpy(&retval, data, data_len);
 
-			PRINTF(5, "(EXPR-EVAL) repo value: %ld, %d %d %d %d\n", retval, data[0], data[1], data[2], data[3]);
+			PRINTF(5, "(EXPR-EVAL) repo value: %ld, %d %d %d %d\n", retval,
+					data[0], data[1], data[2], data[3]);
 
 			return (retval);
 		}
@@ -420,25 +421,12 @@ static long int eval_custom_input_value(void) {
 		index, custom_input);
 
 		if (data != NULL) {
-			switch (data_len) {
-			case (sizeof(uint8_t)): {
-				retval = *((uint8_t*) data);
-				break;
-			}
-			case (sizeof(uint16_t)): {
-				retval = *((uint16_t*) data);
-				break;
-			}
-			case (sizeof(clock_time_t)): {
-				retval = *((clock_time_t*) data);
-				break;
-			}
-			} // switch
-			PRINTF(5, "output value: %lu\n", retval);
-
+			memcpy(&retval, data, data_len);
+			PRINTF(5,
+					"custom input: copied %d, value %lu\n", data_len, retval);
 		} // if
-	}
-	PRINTF(5, "custom input can't be obtained because expression is malformed!\n");
+	} //
+	PRINTF(5, "output value: %lu\n", retval);
 	return (retval);
 }
 
@@ -479,7 +467,9 @@ long int expression_eval_evaluate(uint8_t *expression_spec, data_len_t spec_len)
 		/* call evaluator */
 		long int value = evaluator[code]();
 
-		printf("res eval %d %d %d %d\n", ((uint8_t*)&value)[0], ((uint8_t*)&value)[1], ((uint8_t*)&value)[2], ((uint8_t*)&value)[3]);
+		PRINTF(5, "res eval %u %u %u %u\n", ((uint8_t* )&value)[0],
+				((uint8_t* )&value)[1], ((uint8_t* )&value)[2],
+				((uint8_t* )&value)[3]);
 
 		/* check if invalid input flag is set */
 		if (!invalid_input) {
