@@ -52,6 +52,12 @@
 /** \brief Returns the minimum of two values */
 #define MIN(a,b) ((a)>(b)?(b):(a))
 
+/** \brief		Defines the level with which the main messages of this module are logged	*/
+#define FRAG_UNICAST_NORMAL_DEBUG_LEVEL	5
+
+/** \brief		Defines the level with which error messages of this module are logged		*/
+#define FRAG_UNICAST_ERROR_DEBUG_LEVEL	6
+
 /*---------------------------------------------------------------------------*/
 static void drop_fragments();
 
@@ -68,7 +74,7 @@ static void drop_fragments();
 static void recv_from_unicast(struct unicast_conn *unicast,
 		const rimeaddr_t *from) {
 
-	PRINTF(5, "(FRAG-UC) recv_from_unicast from %u.%u, datalen %u\n",
+	PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) recv_from_unicast from %u.%u, datalen %u\n",
 			from->u8[0], from->u8[1], packetbuf_datalen());
 
 	uint8_t data[packetbuf_datalen()];
@@ -79,36 +85,36 @@ static void recv_from_unicast(struct unicast_conn *unicast,
 
 	struct frag_unicast_conn *fu_conn = (struct frag_unicast_conn *) unicast;
 
-	PRINTF(5, "(FRAG-UC) recv_from_unicast : dataptr's len: %u, contents: ",
+	PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) recv_from_unicast : dataptr's len: %u, contents: ",
 			packetbuf_datalen());
-	PRINT_ARR(5, data, payload_len);
+	PRINT_ARR(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, data, payload_len);
 
 	uint8_t received_packet_id = hdr->packet_id;
 	uint8_t fragment_nr = hdr->fragment_nr;
 	uint16_t buffer_len = hdr->buffer_len;
 	uint8_t num_fragments = (buffer_len + FRAGMENT_SIZE - 1) / FRAGMENT_SIZE;
-	PRINTF(5,
+	PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL,
 			"(FRAG-UC) recv_from_unicast from %u.%u, last_received_packet_id: %u, received_packet_id: %u, fragment_nr: %u, num_fragments: %u\n",
 			from->u8[0], from->u8[1], fu_conn->last_received_packet_id,
 			received_packet_id, fragment_nr, num_fragments);
 
-#if DEBUG_DEPTH>=5
-	PRINTF(5,"(FRAG-UC) recv_from_unicast : Status is [");
+#if DEBUG_DEPTH>=FRAG_UNICAST_NORMAL_DEBUG_LEVEL
+	PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL,"(FRAG-UC) recv_from_unicast : Status is [");
 	switch (fu_conn->status) {
 		case (IDLE): {
-			PRINTF(5,"IDLE");
+			PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL,"IDLE");
 			break;
 		}
 		case (SENDING): {
-			PRINTF(5,"SENDING");
+			PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL,"SENDING");
 			break;
 		}
 		case (RECEIVING): {
-			PRINTF(5,"RECEIVING");
+			PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL,"RECEIVING");
 			break;
 		}
 	}
-	PRINTF(5,"]\n");
+	PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL,"]\n");
 #endif
 
 	if ((fu_conn->status == IDLE) || // either this node was idle, or
@@ -118,7 +124,7 @@ static void recv_from_unicast(struct unicast_conn *unicast,
 
 		fu_conn->status = RECEIVING;
 
-		PRINTF(5, "(FRAG-UC) recv_from_unicast, status is correct\n");
+		PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) recv_from_unicast, status is correct\n");
 
 		if (fragment_nr == 0) {
 
@@ -129,11 +135,11 @@ static void recv_from_unicast(struct unicast_conn *unicast,
 
 			fu_conn->last_received_packet_id = received_packet_id;
 			fu_conn->buffer_len = buffer_len;
-			PRINTF(5, "(FRAG-UC) recv_from_unicast, setting timer\n");
+			PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) recv_from_unicast, setting timer\n");
 			ctimer_set(&fu_conn->reassembly_timer, REASSEMBLY_TIMEOUT,
 					drop_fragments, fu_conn);
 		} else {
-			PRINTF(5, "(FRAG-UC) recv_from_unicast, resetting timer\n");
+			PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) recv_from_unicast, resetting timer\n");
 			ctimer_restart(&fu_conn->reassembly_timer);
 		}
 
@@ -145,15 +151,15 @@ static void recv_from_unicast(struct unicast_conn *unicast,
 
 		memcpy(buffer_ptr, payload, payload_len);
 
-		PRINTF(5, "(FRAG-UC) after fragment %u, added %u bytes: ", fragment_nr,
+		PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) after fragment %u, added %u bytes: ", fragment_nr,
 				payload_len);
-		PRINT_ARR(5, frag_unicast_buffer_ptr(fu_conn),
+		PRINT_ARR(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, frag_unicast_buffer_ptr(fu_conn),
 				fragment_nr * FRAGMENT_SIZE + payload_len);
 
 		if (bitvector_all_set(fu_conn->bitvector_received_fragments,
 				num_fragments)) {
 			ctimer_stop(&fu_conn->reassembly_timer);
-			PRINTF(5, "(FRAG-UC) recv_from_unicast, stopping timer\n");
+			PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) recv_from_unicast, stopping timer\n");
 
 			fu_conn->status = IDLE;
 			if (fu_conn->u->recv != NULL)
@@ -162,10 +168,10 @@ static void recv_from_unicast(struct unicast_conn *unicast,
 
 	} else {
 		if (fu_conn->status == SENDING) {
-			PRINTF(5,
+			PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL,
 					"(FRAG-UC) recv_from_unicast, node was already sending, packet discarded!\n");
 		} else if (!rimeaddr_cmp(&fu_conn->from, from)) {
-			PRINTF(5,
+			PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL,
 					"(FRAG-UC) recv_from_unicast, node was already receiving fragments from node %u.%u, packet discarded!\n",
 					fu_conn->from.u8[0], fu_conn->from.u8[1]);
 			return;
@@ -174,7 +180,7 @@ static void recv_from_unicast(struct unicast_conn *unicast,
 
 	}
 
-	PRINTF(5, "(FRAG-UC) recv_from_unicast, end\n");
+	PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) recv_from_unicast, end\n");
 
 }
 
@@ -189,7 +195,7 @@ static const struct unicast_callbacks unicast_cbs = { recv_from_unicast };
 void frag_unicast_open(struct frag_unicast_conn *fu_conn, uint16_t channel,
 		const struct frag_unicast_callbacks *u) {
 
-	PRINTF(5, "(FRAG-UC) Size of bitvector_received_fragments is %u\n",
+	PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) Size of bitvector_received_fragments is %u\n",
 			sizeof(fu_conn->bitvector_received_fragments));
 
 	unicast_open(&fu_conn->c, channel, &unicast_cbs);
@@ -212,7 +218,7 @@ void frag_unicast_close(struct frag_unicast_conn *fu_conn) {
 int frag_unicast_send(struct frag_unicast_conn *fu_conn,
 		const rimeaddr_t *receiver) {
 
-	PRINTF(5, "(FRAG-UC) frag_unicast_send, invoked with receiver %u.%u\n",
+	PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) frag_unicast_send, invoked with receiver %u.%u\n",
 			receiver->u8[0], receiver->u8[1]);
 
 	/* Check if connection is idle */
@@ -247,7 +253,7 @@ int frag_unicast_send(struct frag_unicast_conn *fu_conn,
 	uint8_t num_fragments = (fu_conn->buffer_len + FRAGMENT_SIZE - 1)
 			/ FRAGMENT_SIZE;
 
-	PRINTF(5,
+	PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL,
 			"(FRAG-UC) frag_unicast_send, number of fragments to be sent: %u\n",
 			num_fragments);
 
@@ -271,16 +277,16 @@ int frag_unicast_send(struct frag_unicast_conn *fu_conn,
 		uint8_t *payload = ((uint8_t *) fragment) + sizeof(struct fragment_hdr);
 		memcpy(payload, current_buffer_fragment, min);
 
-		PRINTF(5,
+		PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL,
 				"(FRAG-UC) frag_unicast_send, sending with last_sent_packet_id %u, fragment nr %u, num_fragments %u, to %u.%u, len will be %u\n",
 				fu_conn->last_sent_packet_id, fragment_nr, num_fragments,
 				receiver->u8[0], receiver->u8[1], min);
 
 		packetbuf_copyfrom(fragment, sizeof(fragment));
 
-		PRINTF(5, "(FRAG-UC) frag_unicast_send, dataptr's len: %u, contents: ",
+		PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) frag_unicast_send, dataptr's len: %u, contents: ",
 				packetbuf_datalen());
-		PRINT_ARR(5, packetbuf_dataptr(), packetbuf_datalen());
+		PRINT_ARR(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, packetbuf_dataptr(), packetbuf_datalen());
 
 		result &= unicast_send(&fu_conn->c, receiver);
 
@@ -290,7 +296,7 @@ int frag_unicast_send(struct frag_unicast_conn *fu_conn,
 		/* adjust remaining length */
 		remaining_len -= min;
 
-		PRINTF(5, "(FRAG-UC) frag_unicast_send, result till now is %u\n",
+		PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) frag_unicast_send, result till now is %u\n",
 				result);
 	}
 
@@ -309,7 +315,7 @@ int frag_unicast_send(struct frag_unicast_conn *fu_conn,
  */
 static void drop_fragments(void *arg) {
 
-	PRINTF(5,
+	PRINTF(FRAG_UNICAST_ERROR_DEBUG_LEVEL,
 			"(FRAG-UC) drop_fragments, dropping fragments due to expired timer!\n");
 
 	struct frag_unicast_conn *fu_conn = (struct frag_unicast_conn *) arg;
@@ -326,7 +332,7 @@ static void drop_fragments(void *arg) {
  * \brief		Returns a pointer to the buffer used by this fragmentation unicast connection
  */
 uint8_t *frag_unicast_buffer_ptr(struct frag_unicast_conn *fu_conn) {
-	PRINTF(7, "(FRAG-UC) returning pointer to fragmentation buffer\n");
+	PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) returning pointer to fragmentation buffer\n");
 	return (fu_conn->buffer);
 }
 
@@ -341,7 +347,7 @@ uint16_t frag_unicast_buffer_getlen(struct frag_unicast_conn *fu_conn) {
  * \brief		Sets the length of the buffer used by this fragmentation unicast connection
  */
 void frag_unicast_buffer_setlen(struct frag_unicast_conn *fu_conn, uint16_t len) {
-	PRINTF(7, "(FRAG-UC) frag_unicast_buffer_setlen() : setting length to %u\n",
+	PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) frag_unicast_buffer_setlen() : setting length to %u\n",
 			len);
 	fu_conn->buffer_len = len;
 }
@@ -350,7 +356,7 @@ void frag_unicast_buffer_setlen(struct frag_unicast_conn *fu_conn, uint16_t len)
  * \brief		Clears the buffer used by this fragmentation unicast connection
  */
 void frag_unicast_buffer_clear(struct frag_unicast_conn *fu_conn) {
-	PRINTF(7, "(FRAG-UC) clearing buffer\n");
+	PRINTF(FRAG_UNICAST_NORMAL_DEBUG_LEVEL, "(FRAG-UC) clearing buffer\n");
 	uint16_t i;
 	for (i = 0; i < FRAGMENTATION_BUFFER_SIZE; i++)
 		fu_conn->buffer[i] = 0;
