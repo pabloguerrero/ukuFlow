@@ -1,0 +1,3 @@
+# ukuFlow's Update site #
+To be able to keep the plug in up-to-date, the installation and update of ukuFlow plugin could be done via the
+[update site](http://www.student.informatik.tu-darmstadt.de/~q_dang/ukuflow/). The installation & update process is tested with Eclipse Juno (aka version 4.2). <br />It is required that users **do not** have bpmn2 modeler already installed otherwise there will be a dependencies conflict between ukuFlow's plugin and  bpmn2-modeler plugin. ukuFlow's plugin itself contains a version of bpmn2-modeler.

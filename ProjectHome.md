@@ -1,0 +1,1 @@
+ukuFlow is a workflow engine for wireless sensor networks and energy-efficient networked embedded devices. With ukuFlow, developers model the application logic using processes, or workflows, as programming abstraction. This macroprogramming approach enables domain experts to focus on the application logic, hiding away low-level system issues.
